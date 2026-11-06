@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24476B">
+  <title>Role Selection &bull; Tourism Business &amp; Outdoor Photography Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .role-selection-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .role-selection-card:hover {
+      border-color: #24476B;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(36, 71, 107, 0.14);
+    }
+    .role-icon-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      transition: all 0.25s ease;
+    }
+    .role-card-citizen .role-icon-circle {
+      background-color: #e8f5e9;
+      color: #1b5e20;
+    }
+    .role-card-to .role-icon-circle {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+    }
+    .role-card-ia .role-icon-circle {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+    .role-card-dto .role-icon-circle {
+      background-color: #ede7f6;
+      color: #4a148c;
+    }
+    .role-selection-card:hover .role-icon-circle {
+      transform: scale(1.08);
+    }
+    .role-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 0.35rem 0.65rem;
+      border-radius: 50rem;
+    }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link for Accessibility -->
+  <a class="gov-skip-link" href="#main-role-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Accessibility Toolbar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+          <i class="bi bi-flask-fill me-1"></i> PROTOTYPE STAGE 02
+        </span>
+        <span class="small text-white-50 d-none d-sm-inline">Demonstration Environment &bull; Role Selection</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="decrease" title="Decrease font size">A-</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="reset" title="Reset font size">A</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="increase" title="Increase font size">A+</button>
+        </div>
+        <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast">
+          <i class="bi bi-circle-half me-1"></i>Contrast
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 58px; width: auto;">
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 1px;">Government of Sikkim</span>
+            <h1 class="h5 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
+            <span class="small text-muted">Tourism Business &amp; Outdoor Photography Registration Service</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="index.html" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 shadow-xs">
+            <i class="bi bi-arrow-left"></i>
+            <span>Portal Home</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content: Role Selection Grid -->
+  <main id="main-role-content" class="flex-grow-1 py-5">
+    <div class="container-xl">
+      
+      <!-- Screen Heading & Introductory Guidance -->
+      <div class="text-center max-w-700 mx-auto mb-4" style="max-width: 760px;">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 fw-bold text-uppercase mb-2">
+          <i class="bi bi-shield-check me-1"></i> Access Gateway
+        </span>
+        <h2 class="h2 fw-bold text-dark mb-2">Select Your Access Role</h2>
+        <p class="text-muted fs-6 mb-3">
+          Welcome to the Tourism Business &amp; Outdoor Photography Registration demonstration. Please select which role workspace you wish to evaluate. Each role provides a tailored dashboard, action queues, and workflow tracking.
+        </p>
+
+        <!-- Demonstration Notice Banner with District Switcher -->
+        <div class="alert alert-info border-0 shadow-xs d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 py-2.5 px-3 text-start mb-4 rounded-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-info-circle-fill text-primary fs-5 flex-shrink-0"></i>
+            <span class="small text-dark">
+              <strong>Demonstration Note:</strong> Real Sikkim GO authentication is simulated. Select any role below to proceed directly into its dedicated workspace.
+            </span>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <label for="districtSelect" class="small fw-bold text-dark mb-0 text-nowrap"><i class="bi bi-geo-alt-fill text-danger me-1"></i>District:</label>
+            <select id="districtSelect" class="form-select form-select-sm py-1 px-2 border fw-semibold bg-white text-dark shadow-xs" style="min-width: 150px;" onchange="saveActiveDistrict(this.value)">
+              <option value="Gangtok" selected>Gangtok (HQ)</option>
+              <option value="Namchi">Namchi</option>
+              <option value="Gyalshing">Gyalshing</option>
+              <option value="Mangan">Mangan</option>
+              <option value="Pakyong">Pakyong</option>
+              <option value="Soreng">Soreng</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Role Options Grid -->
+      <div class="row g-4 justify-content-center" style="max-width: 1200px; margin: 0 auto;">
+        
+        <!-- OPTION 1: CITIZEN -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-citizen p-4 text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-end mb-2">
+                <span class="role-badge bg-success-subtle text-success border border-success-subtle">
+                  Citizen Gateway
+                </span>
+              </div>
+              <div class="role-icon-circle mx-auto">
+                <i class="bi bi-person-fill"></i>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-1">Citizen</h3>
+              <p class="text-muted small mb-3">
+                Apply for Travel Agent, Tour Operator, Equipment Dealer, or Outdoor Photographer registration.
+              </p>
+              
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span>4 distinct application tracks</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span>5-Step verification lifecycle tracker</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span>Instant Certificate download</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span>5 demo citizen scenarios</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="text-center mt-2">
+              <a href="dashboard.html" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                <span>Continue as Citizen</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTION 2: LEVEL 0 TOURISM OFFICER (TO) -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-to p-4 text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-end mb-2">
+                <span class="role-badge bg-primary-subtle text-primary border border-primary-subtle">
+                  Level 0: TO Scrutiny
+                </span>
+              </div>
+              <div class="role-icon-circle mx-auto">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-1">Tourism Officer</h3>
+              <p class="text-muted small mb-3">
+                Level 0 scrutiny: verify municipal trade licenses, firm registration &amp; credentials.
+              </p>
+
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-primary"></i>
+                  <span>Trade license verification</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-primary"></i>
+                  <span>Assign Level 1 IA for Dealers</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-primary"></i>
+                  <span>Forward TA / TO / PHO to DTO</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-primary"></i>
+                  <span>Clarification query to applicant</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="text-center mt-2">
+              <a href="dashboard-to.html" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                <span>Enter Level 0 Desk</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTION 3: LEVEL 1 INSPECTING AUTHORITY (IA) -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-ia p-4 text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-end mb-2">
+                <span class="role-badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                  Level 1: IA Field
+                </span>
+              </div>
+              <div class="role-icon-circle mx-auto">
+                <i class="bi bi-clipboard2-check-fill"></i>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-1">Inspecting Authority</h3>
+              <p class="text-muted small mb-3">
+                Level 1 field inspection: on-site physical premises &amp; equipment check for Dealers.
+              </p>
+
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-warning"></i>
+                  <span>200 sq.ft shop norm check</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-warning"></i>
+                  <span>Mountaineering gear inventory</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-warning"></i>
+                  <span>UIAA safety &amp; fire compliance</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-warning"></i>
+                  <span>Submit inspection report to DTO</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="text-center mt-2">
+              <a href="dashboard-ia.html" class="btn btn-sm btn-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                <span>Enter Level 1 Desk</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTION 4: LEVEL 2 DISTRICT TOURISM OFFICER (DTO) -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-dto p-4 text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-end mb-2">
+                <span class="role-badge bg-info-subtle text-info border border-info-subtle">
+                  Level 2: DTO Sanction
+                </span>
+              </div>
+              <div class="role-icon-circle mx-auto">
+                <i class="bi bi-award-fill"></i>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-1">District Tourism Officer</h3>
+              <p class="text-muted small mb-3">
+                Level 2 approving authority: multi-tier appraisal, statutory sanction &amp; certificate issuance.
+              </p>
+
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-info"></i>
+                  <span>Evaluate TO + IA dossiers</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-info"></i>
+                  <span>Final statutory approval</span>
+                </li>
+                <li class="mb-2 d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-info"></i>
+                  <span>Issue 3-year signed certificate</span>
+                </li>
+                <li class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-info"></i>
+                  <span>District-wide audit &amp; registers</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="text-center mt-2">
+              <a href="dashboard-dto.html" class="btn btn-sm btn-info text-white px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                <span>Enter Level 2 Desk</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Helper Footer Card -->
+      <div class="mt-5 text-center text-muted small">
+        <p class="mb-1">
+          <i class="bi bi-info-circle me-1"></i> You can switch roles or change citizen demonstration scenarios from within any dashboard using the top navigation bar.
+        </p>
+        <p class="mb-0 text-secondary">
+          Government Services Prototype Framework &bull; Stage 02 Implementation &bull; Government of Sikkim
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+    <div class="container-xl">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    function saveActiveDistrict(val) {
+      localStorage.setItem('tb_active_district', val);
+    }
+
+    (function () {
+      'use strict';
+      var savedDist = localStorage.getItem('tb_active_district') || 'Gangtok';
+      var select = document.getElementById('districtSelect');
+      if (select) select.value = savedDist;
+
+      var html = document.documentElement;
+      var body = document.body;
+
+      // Font Resizer
+      document.querySelectorAll('[data-font-action]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var action = this.getAttribute('data-font-action');
+          if (action === 'increase') html.setAttribute('data-font-size', 'large');
+          else if (action === 'decrease') html.setAttribute('data-font-size', 'small');
+          else html.setAttribute('data-font-size', 'normal');
+        });
+      });
+
+      // High Contrast
+      var contrastBtn = document.getElementById('btn-contrast-toggle');
+      if (contrastBtn) {
+        contrastBtn.addEventListener('click', function () {
+          var isHc = html.classList.toggle('high-contrast');
+          body.classList.toggle('high-contrast', isHc);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

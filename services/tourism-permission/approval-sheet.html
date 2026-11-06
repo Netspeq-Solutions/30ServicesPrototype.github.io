@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HQ Departmental Approval Sheet &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    body {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-family: 'Noto Sans', sans-serif;
+    }
+    .gov-doc-container {
+      max-width: 860px;
+      margin: 1.5rem auto 3rem auto;
+    }
+    .gov-doc-page {
+      background: #ffffff;
+      padding: 3.5rem 4rem;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+      border-radius: 4px;
+      line-height: 1.6;
+    }
+    .gov-doc-watermark {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px;
+      height: 380px;
+      opacity: 0.045;
+      pointer-events: none;
+      background-image: url('../../common/assets/images/sikkim-government-logo-dark.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      z-index: 0;
+    }
+    .gov-doc-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .gov-doc-header-border {
+      border-bottom: 2px solid #0b4d75;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .gov-doc-meta-table td, .gov-doc-meta-table th {
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8125rem;
+    }
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+      body {
+        background: #ffffff !important;
+        font-size: 10.5pt !important;
+      }
+      .gov-doc-container {
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      .gov-doc-page {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="royal-navy">
+
+  <!-- Top Action & Navigation Bar (No-Print) -->
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top shadow-sm py-2 no-print" aria-label="Document Controls">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light d-inline-flex align-items-center gap-1" onclick="handleBackNav()">
+          <i class="bi bi-arrow-left"></i>
+          <span id="backNavText">Back</span>
+        </button>
+        <span class="navbar-text small text-white-50 ms-2 d-none d-md-inline">
+          <i class="bi bi-shield-check text-primary me-1"></i> Stage 06 HQ Clearance Deliverable
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small" id="sheetStatusPill">
+          <i class="bi bi-file-earmark-check-fill me-1"></i> HQ Verification Cleared
+        </span>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-xs" onclick="window.print()">
+          <i class="bi bi-printer-fill"></i>
+          <span>Print / Save as PDF</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Document Viewer Canvas -->
+  <main class="gov-doc-container">
+    
+    <!-- A4 Document Sheet -->
+    <article class="gov-doc-page" id="printableApprovalSheetDocument">
+      
+      <!-- Subtle Emblem Watermark -->
+      <div class="gov-doc-watermark" aria-hidden="true"></div>
+
+      <div class="gov-doc-inner">
+
+        <!-- 1. Government Letterhead & Header -->
+        <header class="text-center gov-doc-header-border">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" style="height: 64px; width: auto; margin-bottom: 0.5rem;">
+          <div class="text-uppercase fw-bold text-dark fs-6" style="letter-spacing: 1.5px;">Government of Sikkim</div>
+          <h1 class="h5 fw-bold text-dark mb-0 text-uppercase" style="letter-spacing: 0.5px;">Tourism &amp; Civil Aviation Department</h1>
+          <div class="small fw-semibold text-secondary">Directorate Headquarters &bull; Paryatan Bhawan, Tadong, Gangtok, Sikkim - 737102</div>
+          <div class="small text-muted" style="font-size: 0.75rem;">State Clearances, Inter-Agency e-Office Concurrence &amp; Sanctions Directorate</div>
+          
+          <div class="d-flex justify-content-center mt-3">
+            <span class="badge bg-primary text-white px-3 py-1.5 text-uppercase fw-bold" style="font-size: 0.8125rem; letter-spacing: 1px;">
+              PROTOTYPE – DEPARTMENTAL APPROVAL SHEET
+            </span>
+          </div>
+          <div class="text-muted text-uppercase fw-semibold mt-1" style="font-size: 0.6875rem; letter-spacing: 0.5px;">
+            Headquarters Technical Verification &bull; Inter-Agency Security Concurrence Record
+          </div>
+        </header>
+
+        <!-- 2. Document Reference & Metadata Bar -->
+        <div class="p-2 bg-light rounded border mb-3 small">
+          <div class="row g-2 align-items-center">
+            <div class="col-sm-5">
+              <span class="text-muted d-block" style="font-size: 0.725rem;">Approval Sheet Reference:</span>
+              <strong class="font-monospace text-primary fs-6" id="sheetRefNo">HQ/APP-SHEET/2026/00512</strong>
+            </div>
+            <div class="col-sm-4">
+              <span class="text-muted d-block" style="font-size: 0.725rem;">Associated Application ID (ARN):</span>
+              <strong class="font-monospace text-dark" id="sheetArnRef">SK-TP-2026-APP-00512</strong>
+            </div>
+            <div class="col-sm-3 text-sm-end">
+              <span class="text-muted d-block" style="font-size: 0.725rem;">Date of Preparation:</span>
+              <strong class="text-dark" id="sheetDatePrepared">03 Nov 2026</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Applicant Details -->
+        <section class="mb-3">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            A. Applicant Information
+          </h2>
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm align-middle mb-0 gov-doc-meta-table">
+              <tbody>
+                <tr>
+                  <th style="width: 28%;" class="bg-light">Applicant Full Name</th>
+                  <td style="width: 72%;"><strong class="text-dark" id="sheetApplicantName">Dawa Tshering Lepcha</strong></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Address / Circle Location</th>
+                  <td id="sheetApplicantAddress">Upper Sichey, Gangtok, Sikkim - 737101</td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Contact Information</th>
+                  <td>
+                    <span>Phone: <strong class="text-dark" id="sheetApplicantPhone">9832012345</strong></span> &bull; 
+                    <span class="ms-2">Email: <strong class="text-dark" id="sheetApplicantEmail">dawa.lepcha@gmail.com</strong></span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Originating Circle</th>
+                  <td><span class="badge bg-light text-dark border" id="sheetDistrictCircle"><i class="bi bi-geo-alt me-1 text-primary"></i>Gangtok District</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 4. Application Details & Scope -->
+        <section class="mb-3">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            B. Application Scope &amp; Activity Information
+          </h2>
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm align-middle mb-0 gov-doc-meta-table">
+              <tbody>
+                <tr>
+                  <th style="width: 28%;" class="bg-light">Permission Category</th>
+                  <td style="width: 72%;"><strong class="text-dark" id="sheetCategory">Trekking</strong></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Subject / Title</th>
+                  <td><strong class="text-dark" id="sheetActivityTitle">Khangchendzonga High-Altitude Trek</strong></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Activity Description</th>
+                  <td class="text-secondary" id="sheetActivityDesc">8-member expedition trekking along Dzongri - Goecha La trail with high-altitude safety equipment.</td>
+                </tr>
+                <!-- Conditional LO row -->
+                <tr id="sheetLoRow" class="d-none">
+                  <th class="bg-light text-primary">Assigned Liaison Officer</th>
+                  <td><strong class="text-dark" id="sheetLoName">Norbu Tenzing Lepcha</strong> (Statutory Mountaineering Escort)</td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Supporting Documents Attached</th>
+                  <td id="sheetDocsAttached">
+                    <span class="badge bg-light text-dark border me-1"><i class="bi bi-file-earmark-pdf text-danger me-1"></i>Route Map</span>
+                    <span class="badge bg-light text-dark border me-1"><i class="bi bi-file-earmark-pdf text-danger me-1"></i>Medical Insurance</span>
+                    <span class="badge bg-light text-dark border"><i class="bi bi-file-earmark-pdf text-danger me-1"></i>Forest NOC</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Departmental Technical Review & e-Office Concurrence -->
+        <section class="mb-3">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            C. Departmental Technical Review &amp; Inter-Agency Clearances
+          </h2>
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm align-middle mb-0 gov-doc-meta-table">
+              <tbody>
+                <tr>
+                  <th style="width: 28%;" class="bg-light">Originating DTO Reference</th>
+                  <td style="width: 72%;"><strong class="font-monospace text-dark" id="sheetDtoRef">DTO-GKT-VRF-2026-0512</strong> (Forwarded with local recommendation)</td>
+                </tr>
+                <tr>
+                  <th class="bg-light">External e-Office File No</th>
+                  <td><strong class="font-monospace text-primary" id="sheetEOfficeNo">EOF-2026-SK-TOUR-0512</strong></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Inter-Agency Concurrence</th>
+                  <td>
+                    <div class="d-flex flex-wrap gap-1 mb-1">
+                      <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i>Home Department (Security): Cleared</span>
+                      <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i>Sikkim Police: Verified</span>
+                      <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i>Forest Department: Endorsed</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Headquarters Review Remarks</th>
+                  <td class="text-dark" id="sheetHqRemarks">Inter-departmental security concurrence cleared under e-Office note sheet #18. Documents verified against state guidelines.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 6. Recommendation & Decision Record -->
+        <section class="mb-4">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            D. Approval Recommendation &amp; Forwarding Record
+          </h2>
+          <div class="p-3 bg-light rounded border small">
+            <div class="d-flex align-items-center gap-2 text-success fw-bold mb-2">
+              <i class="bi bi-check2-circle fs-5"></i>
+              <span>RECOMMENDATION: APPLICATION CLEARED FOR STATUTORY APPROVAL</span>
+            </div>
+            <p class="mb-2 text-secondary" style="line-height: 1.55;">
+              The Directorate Headquarters has scrutinized the application and recorded requisite inter-departmental concurrence. The application along with this official Approval Sheet is hereby transmitted back to the <strong>District Tourism Officer (<span id="sheetForwardDistrict">Gangtok</span> Circle)</strong> for final statutory sanction and issuance of the Tourism Permission Letter.
+            </p>
+            <div class="alert alert-warning py-2 px-3 mb-0 border-0 rounded-2 text-dark" style="font-size: 0.725rem;">
+              <i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>
+              <strong>Statutory Boundary Notice:</strong> This document records Headquarters review and recommendations. It does not represent the final permission approval. Final sanction and letter issuance is vested exclusively in the respective District Tourism Officer.
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. Authentication & Sign-off Block -->
+        <div class="row g-3 align-items-center pt-2 border-top">
+          <div class="col-sm-6">
+            <div class="p-2 border rounded bg-light small" style="font-size: 0.75rem;">
+              <span class="text-muted d-block">Transmitted To:</span>
+              <strong class="text-dark" id="sheetTransmittedOffice">District Tourism Office, Gangtok Circle</strong>
+              <div class="text-muted">For Final DTO Sanction &amp; Issuance</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="gov-doc-signature-box d-flex flex-column justify-content-center">
+              <div class="d-inline-flex align-items-center justify-content-center gap-1 text-primary fw-bold small mb-1">
+                <i class="bi bi-shield-check fs-5"></i>
+                <span>HEADQUARTERS VERIFICATION ENDORSED</span>
+              </div>
+              <div class="fw-bold text-dark fs-6" id="sheetSignerName">Dr. Tshering Yangchen Lepcha</div>
+              <div class="text-muted small" id="sheetSignerDesig">Additional Secretary (Tourism) &amp; HQ Administrator</div>
+              <div class="text-secondary" style="font-size: 0.6875rem;">Directorate of Tourism, Paryatan Bhawan, Tadong, Gangtok</div>
+              <div class="text-muted font-monospace mt-1" style="font-size: 0.65rem;" id="sheetSignTimestamp">
+                Prepared Date: 03 Nov 2026 &bull; Directorate Approval Sheet Record
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Footer Notice -->
+        <footer class="gov-doc-footer-notice">
+          <div>Prepared for departmental processing under the Tourism Permission Service &bull; Government of Sikkim.</div>
+          <div class="text-muted" style="font-size: 0.65rem;">PROTOTYPE-GENERATED FORMAT PENDING DEPARTMENTAL APPROVAL &bull; Demonstration Artifact</div>
+        </footer>
+
+      </div>
+    </article>
+  </main>
+
+  <!-- Scripts -->
+  <script src="workflow-engine.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const arn = urlParams.get('arn') || 'SK-TP-2026-APP-00512';
+      const role = urlParams.get('role') || 'citizen';
+
+      let app = null;
+      if (typeof WorkflowEngine !== 'undefined') {
+        app = WorkflowEngine.getApplication(arn);
+      }
+
+      // Fallback demo data
+      if (!app) {
+        app = {
+          refNo: arn,
+          applicantName: 'Dawa Tshering Lepcha',
+          phone: '9832012345',
+          email: 'dawa.lepcha@gmail.com',
+          address: 'Upper Sichey, Gangtok, Sikkim - 737101',
+          category: 'Trekking',
+          categoryKey: 'trekking',
+          activityTitle: 'Khangchendzonga High-Altitude Trek',
+          activityDescription: '8-member expedition trekking along Dzongri - Goecha La trail with high-altitude safety equipment.',
+          district: 'Gangtok',
+          dtoOffice: 'District Tourism Office, Gangtok Circle',
+          status: 'Submitted',
+          currentStage: 'Awaiting Final DTO Approval',
+          approvalSheet: {
+            sheetNo: 'HQ/APP-SHEET/2026/00512',
+            fileName: 'HQ_Approval_Sheet_SK-TP-00512.pdf',
+            size: '1.4 MB',
+            uploadDate: '03 Nov 2026',
+            uploadedBy: 'Dr. Tshering Yangchen Lepcha',
+            designation: 'Additional Secretary (Tourism) & HQ Administrator',
+            office: 'Headquarters, Paryatan Bhawan, Tadong, Gangtok',
+            eOfficeNumber: 'EOF-2026-SK-TOUR-0512',
+            concurrenceRemarks: 'Inter-departmental security concurrence cleared under e-Office note sheet #18.'
+          },
+          hqRemarks: 'Headquarters verification complete. Sanction sheet attached. Transmitted back to concerned DTO for final approval and issuance.',
+          documents: [
+            { name: 'Route Map' },
+            { name: 'Medical Insurance' },
+            { name: 'Forest NOC' }
+          ]
+        };
+      }
+
+      const sheet = app.approvalSheet || {
+        sheetNo: `HQ/APP-SHEET/2026/${app.refNo.split('-').pop()}`,
+        uploadDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        uploadedBy: 'Dr. Tshering Yangchen Lepcha',
+        designation: 'Additional Secretary (Tourism) & HQ Administrator',
+        office: 'Headquarters, Paryatan Bhawan, Tadong, Gangtok',
+        eOfficeNumber: app.eOfficeNumber || `EOF-2026-SK-TOUR-${app.refNo.split('-').pop()}`,
+        concurrenceRemarks: app.hqRemarks || 'Inter-departmental security concurrence recorded at Directorate level.'
+      };
+
+      document.getElementById('sheetRefNo').textContent = sheet.sheetNo || `HQ/APP-SHEET/2026/${app.refNo.split('-').pop()}`;
+      document.getElementById('sheetArnRef').textContent = app.refNo;
+      document.getElementById('sheetDatePrepared').textContent = sheet.uploadDate || '03 Nov 2026';
+
+      document.getElementById('sheetApplicantName').textContent = app.applicantName;
+      document.getElementById('sheetApplicantAddress').textContent = app.address || `${app.district} District, Sikkim`;
+      document.getElementById('sheetApplicantPhone').textContent = app.phone || '9800123456';
+      document.getElementById('sheetApplicantEmail').textContent = app.email || 'citizen@sikkim.gov.in';
+      document.getElementById('sheetDistrictCircle').innerHTML = `<i class="bi bi-geo-alt me-1 text-primary"></i>${app.district} Circle`;
+
+      document.getElementById('sheetCategory').textContent = app.category;
+      document.getElementById('sheetActivityTitle').textContent = app.activityTitle;
+      document.getElementById('sheetActivityDesc').textContent = app.activityDescription;
+
+      // Conditional Liaison Officer
+      const loRow = document.getElementById('sheetLoRow');
+      if (app.categoryKey === 'expedition' && app.liaisonOfficer) {
+        loRow.classList.remove('d-none');
+        document.getElementById('sheetLoName').textContent = app.liaisonOfficer;
+      } else {
+        loRow.classList.add('d-none');
+      }
+
+      // Supporting Docs
+      const docsCell = document.getElementById('sheetDocsAttached');
+      if (app.documents && app.documents.length > 0) {
+        docsCell.innerHTML = app.documents.map(d => `<span class="badge bg-light text-dark border me-1 mb-1"><i class="bi bi-file-earmark-pdf text-danger me-1"></i>${d.name || d.fileName}</span>`).join(' ');
+      }
+
+      // Technical Review
+      document.getElementById('sheetDtoRef').textContent = `DTO-${(app.district || 'GKT').toUpperCase().slice(0, 3)}-VRF-2026-${app.refNo.split('-').pop()}`;
+      document.getElementById('sheetEOfficeNo').textContent = sheet.eOfficeNumber || app.eOfficeNumber || `EOF-2026-SK-TOUR-${app.refNo.split('-').pop()}`;
+      document.getElementById('sheetHqRemarks').textContent = sheet.concurrenceRemarks || app.hqRemarks || 'Inter-departmental security concurrence cleared under e-Office review.';
+
+      document.getElementById('sheetForwardDistrict').textContent = app.district;
+      document.getElementById('sheetTransmittedOffice').textContent = app.dtoOffice || `District Tourism Office, ${app.district} Circle`;
+
+      document.getElementById('sheetSignerName').textContent = sheet.uploadedBy || 'Dr. Tshering Yangchen Lepcha';
+      document.getElementById('sheetSignerDesig').textContent = sheet.designation || 'Additional Secretary (Tourism) & HQ Administrator';
+      document.getElementById('sheetSignTimestamp').textContent = `Prepared Date: ${sheet.uploadDate || '03 Nov 2026'} \u2022 Directorate Approval Sheet Record`;
+
+      // Back navigation text
+      const backNavText = document.getElementById('backNavText');
+      if (role === 'dto') {
+        backNavText.textContent = 'Back to DTO Desk';
+      } else if (role === 'hq') {
+        backNavText.textContent = 'Back to HQ Desk';
+      } else {
+        backNavText.textContent = 'Back to Citizen Dashboard';
+      }
+
+      window.handleBackNav = function () {
+        if (role === 'dto') {
+          window.location.href = `dashboard-dto.html?district=${encodeURIComponent(app.district)}`;
+        } else if (role === 'hq') {
+          window.location.href = 'dashboard-hq.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      };
+
+    })();
+  </script>
+</body>
+</html>
+

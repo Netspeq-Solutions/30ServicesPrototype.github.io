@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Application Status - Government of Sikkim</title>
+
+  <!-- Bootstrap 5.3 & Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="../css/gigw-template.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-theme="default">
+
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="gov-top-stripe" role="presentation"></div>
+
+  <!-- Utility Bar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+      <div class="d-flex align-items-center gap-3">
+        <span class="small"><i class="bi bi-geo-alt"></i> Government of Sikkim</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <select id="gov-theme-select" class="form-select form-select-sm py-0 px-2 bg-dark text-white border-secondary" style="font-size: 0.75rem;">
+          <option value="default">Theme: Default Slate</option>
+          <option value="forest-green">Theme: Forest & Revenue</option>
+          <option value="saffron-maroon">Theme: Tourism & Culture</option>
+          <option value="royal-navy">Theme: IT & Science</option>
+          <option value="teal">Theme: Urban Development</option>
+        </select>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="font-resize-btn" id="btn-font-decrease">A-</button>
+          <button type="button" class="font-resize-btn" id="btn-font-reset">A</button>
+          <button type="button" class="font-resize-btn" id="btn-font-increase">A+</button>
+        </div>
+        <button type="button" class="contrast-toggle-btn" id="btn-contrast-toggle"><i class="bi bi-circle-half"></i> Contrast</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="gov-header py-2" role="banner">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="gov-emblem-container">
+            <img src="../assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo" class="gov-emblem" width="56" height="52" style="height: 52px; width: auto;">
+          </div>
+          <div class="gov-title-group">
+            <span class="gov-title-sikkim">Government of Sikkim</span>
+            <div class="fw-bold fs-5 text-dark">Application Status Tracking</div>
+          </div>
+        </div>
+        <div>
+          <a href="../../framework-demo.html" class="btn btn-sm btn-outline-secondary"><i class="bi bi-house me-1"></i> Home</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Tracking Container -->
+  <main id="main-content" class="container py-4">
+    
+    <!-- Search / ARN Input Section -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4 text-center">
+        <h2 class="h5 fw-bold mb-2">Track Your Citizen Service Application</h2>
+        <p class="text-muted small mb-4">Enter your 16-character Application Reference Number (ARN) received via SMS.</p>
+        
+        <div class="row justify-content-center">
+          <div class="col-md-7">
+            <form class="d-flex gap-2" onsubmit="event.preventDefault(); GovApp.showNotification('Status refreshed for ARN.', 'info');">
+              <input type="text" class="form-control form-control-lg font-monospace text-uppercase" id="arnInput" value="SK-2026-LRD-00412" placeholder="e.g. SK-2026-LRD-XXXXX" required>
+              <button type="submit" class="btn btn-gov-primary px-4"><i class="bi bi-search"></i> Track</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Summary Header Card -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <span class="text-muted small d-block">Application Reference Number</span>
+          <span class="fs-5 fw-bold font-monospace text-primary">SK-2026-LRD-00412</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="gov-badge gov-badge-review fs-6 px-3 py-2"><i class="bi bi-hourglass-split"></i> Under Field Scrutiny</span>
+        </div>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Service Requested</span>
+            <span class="fw-bold">Certificate of Identification (COI)</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Department</span>
+            <span class="fw-semibold">Land Revenue & Disaster Management</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Applicant Name</span>
+            <span class="fw-semibold">Tenzing Norbu Lepcha</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Submission Date</span>
+            <span class="fw-semibold">28 Oct 2026 (10:30 AM)</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">District / Sub-Division</span>
+            <span class="fw-semibold">Gangtok / Gangtok Sub-Division</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Current Dealing Authority</span>
+            <span class="fw-semibold">Sub-Divisional Magistrate (SDM)</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Statutory SLA Due Date</span>
+            <span class="fw-bold text-success">12 Nov 2026 (In SLA)</span>
+          </div>
+          <div class="col-md-3">
+            <span class="text-muted small d-block">Fees Paid</span>
+            <span class="fw-semibold text-success">₹ 50.00 (Online GRAS)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking Timeline & History -->
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0"><i class="bi bi-diagram-3-fill me-1 text-primary"></i> Workflow Progress Timeline</h3>
+          </div>
+          <div class="card-body p-4">
+            
+            <div class="gov-timeline">
+              <!-- Stage 1 -->
+              <div class="gov-timeline-item completed">
+                <div class="gov-timeline-point"><i class="bi bi-check"></i></div>
+                <div class="gov-timeline-content">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-success">Stage 1: Application Submitted Online</span>
+                    <span class="small text-muted">28 Oct 2026, 10:30 AM</span>
+                  </div>
+                  <p class="small text-muted mb-0">Application form and fee successfully logged via Sikkim Citizen Portal. Forwarded to Dealing Assistant.</p>
+                </div>
+              </div>
+
+              <!-- Stage 2 -->
+              <div class="gov-timeline-item completed">
+                <div class="gov-timeline-point"><i class="bi bi-check"></i></div>
+                <div class="gov-timeline-content">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-success">Stage 2: Document Scrutiny Completed</span>
+                    <span class="small text-muted">29 Oct 2026, 02:15 PM</span>
+                  </div>
+                  <p class="small text-muted mb-1">Dealing Assistant verified uploaded identity proofs and father's Sikkim Subject records.</p>
+                  <div class="small fw-semibold text-secondary"><i class="bi bi-person-fill"></i> Officer: Karma Bhutia (Dealing Assistant)</div>
+                </div>
+              </div>
+
+              <!-- Stage 3 (Active) -->
+              <div class="gov-timeline-item active">
+                <div class="gov-timeline-point"><i class="bi bi-circle-fill" style="font-size: 8px;"></i></div>
+                <div class="gov-timeline-content border-primary">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-primary">Stage 3: Field Verification / Revenue Inspector Report</span>
+                    <span class="badge bg-primary">In Progress</span>
+                  </div>
+                  <p class="small text-muted mb-1">File assigned to Revenue Inspector for local inquiry and verification of ancestral residential records.</p>
+                  <div class="small fw-semibold text-secondary"><i class="bi bi-person-fill"></i> Officer: Passang Doma (Revenue Inspector)</div>
+                </div>
+              </div>
+
+              <!-- Stage 4 -->
+              <div class="gov-timeline-item">
+                <div class="gov-timeline-point">4</div>
+                <div class="gov-timeline-content opacity-75">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-muted">Stage 4: SDM Approval & Order</span>
+                    <span class="small text-muted">Pending</span>
+                  </div>
+                  <p class="small text-muted mb-0">Scrutiny and final sanction by Sub-Divisional Magistrate.</p>
+                </div>
+              </div>
+
+              <!-- Stage 5 -->
+              <div class="gov-timeline-item">
+                <div class="gov-timeline-point">5</div>
+                <div class="gov-timeline-content opacity-75">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-muted">Stage 5: Digital Certificate Issuance</span>
+                    <span class="small text-muted">Pending</span>
+                  </div>
+                  <p class="small text-muted mb-0">Generation of digitally signed certificate with secure QR verification code.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions & Download Sidebar -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0"><i class="bi bi-download me-1 text-primary"></i> Available Downloads</h3>
+          </div>
+          <div class="card-body p-2">
+            <div class="list-group list-group-flush">
+              <button type="button" class="list-group-item list-group-item-action py-2.5 px-3 rounded-2 mb-2 d-flex justify-content-between align-items-center border" onclick="GovApp.showNotification('Downloading Acknowledgment Slip...', 'info');">
+                <span class="small fw-semibold"><i class="bi bi-file-earmark-text text-primary me-2"></i> Acknowledgment Slip</span>
+                <i class="bi bi-arrow-down-circle text-primary"></i>
+              </button>
+              <button type="button" class="list-group-item list-group-item-action py-2.5 px-3 rounded-2 mb-2 d-flex justify-content-between align-items-center border" onclick="GovApp.showNotification('Downloading Payment Receipt...', 'info');">
+                <span class="small fw-semibold"><i class="bi bi-receipt text-secondary me-2"></i> Payment Receipt</span>
+                <i class="bi bi-arrow-down-circle text-secondary"></i>
+              </button>
+              <button type="button" class="list-group-item list-group-item-action py-2.5 px-3 rounded-2 d-flex justify-content-between align-items-center border bg-light text-muted" disabled>
+                <span class="small"><i class="bi bi-patch-check me-2"></i> Final Certificate</span>
+                <span class="badge bg-secondary">Pending Approval</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm bg-light">
+          <div class="card-body p-3">
+            <h4 class="h6 fw-bold text-dark"><i class="bi bi-telephone-inbound me-1"></i> Need Help with this ARN?</h4>
+            <p class="small text-muted mb-3">If SLA has exceeded or you need immediate clarification, contact the Sub-Divisional desk.</p>
+            <div class="small fw-semibold text-dark"><i class="bi bi-building"></i> Gangtok SDM Office Helpdesk</div>
+            <div class="small text-muted"><i class="bi bi-telephone"></i> 03592-202202 | Mon-Fri 10am-4pm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="gov-footer" role="contentinfo">
+    <div class="container py-3 text-center small text-white-50">
+      © 2026 Government of Sikkim. Reusable Application Tracking Template.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/navigation.js"></script>
+</body>
+</html>
+

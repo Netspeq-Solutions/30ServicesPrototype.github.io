@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <meta name="description" content="Citizen Workspace & Dashboard - Tourism Business & Outdoor Photography Registration, Tourism & Civil Aviation Department, Government of Sikkim.">
+  <title>Citizen Dashboard | Tourism Business & Outdoor Photography Registration | Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Framework Standard CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    /* Stage 02 Specialized Styling */
+    .gov-scenario-bar {
+      background: #18334F;
+      color: #e2e8f0;
+      font-size: 0.8125rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .gov-badge-returned {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #f87171;
+    }
+    .gov-badge-rejected {
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+    .gov-nav-active {
+      background-color: var(--gov-primary-light, #e6f4ea) !important;
+      color: var(--gov-primary, #114b3f) !important;
+      font-weight: 700 !important;
+      border-left: 4px solid var(--gov-primary, #114b3f) !important;
+    }
+    .cursor-pointer {
+      cursor: pointer;
+    }
+    /* Timeline tracker enhancements */
+    .timeline-step-pill {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 50rem;
+    }
+    /* Circular Icon Badge Utility (Prevents flex stretching) */
+    .gov-icon-circle {
+      width: 56px !important;
+      height: 56px !important;
+      min-width: 56px !important;
+      min-height: 56px !important;
+      max-width: 56px !important;
+      max-height: 56px !important;
+      aspect-ratio: 1 / 1 !important;
+      border-radius: 50% !important;
+      overflow: hidden !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      align-self: flex-start !important;
+      font-size: 1.6rem !important;
+      padding: 0 !important;
+      line-height: 1 !important;
+      box-sizing: border-box !important;
+    }
+    .gov-icon-circle.gov-icon-circle-sm {
+      width: 42px !important;
+      height: 42px !important;
+      min-width: 42px !important;
+      min-height: 42px !important;
+      max-width: 42px !important;
+      max-height: 42px !important;
+      font-size: 1.25rem !important;
+    }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100">
+
+  <!-- Skip Links for Accessibility -->
+  <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
+  <a class="gov-skip-link" href="#sidebar-nav">Skip to Navigation Menu</a>
+
+  <!-- Tricolor Ribbon -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Reviewer Scenario Control Bar (High-Fidelity Demonstration Switcher) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Scenario Controller">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="fas fa-flask me-1"></i> STAGE 02 DEMO
+          </span>
+          <span class="fw-semibold text-white">Scenario Switcher:</span>
+          <label for="scenarioSelector" class="visually-hidden">Select Citizen Scenario</label>
+          <select id="scenarioSelector" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 340px; font-size: 0.825rem;">
+            <option value="scenarioA">Scenario A: First-Time Citizen (0 Applications)</option>
+            <option value="scenarioB">Scenario B: Citizen with Draft Applications (1 Draft)</option>
+            <option value="scenarioC" selected>Scenario C: Citizen with Submitted Applications (Multiple Active)</option>
+            <option value="scenarioD">Scenario D: Citizen with Returned Application (Needs Clarification)</option>
+            <option value="scenarioE">Scenario E: Citizen with Approved Application (Certificate Issued)</option>
+            <option value="scenarioF">Scenario F: Citizen with Rejected Application (Restricted Zone)</option>
+          </select>
+          <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+            <i class="bi bi-people-fill me-1"></i> Switch Role
+          </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-light-subtle text-white-50 border border-white-50 small d-none d-md-inline-block">
+            <i class="fas fa-shield-alt text-warning me-1"></i> Simulated Sikkim GO SSO Session
+          </span>
+          <!-- Font Sizing & High Contrast Controls -->
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" id="btn-font-reset" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-increase" data-font-action="increase" title="Increase font size">A+</button>
+          </div>
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Brand Header -->
+  <header class="gov-header py-2" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <!-- Left: Logo & Department Identity -->
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle Workspace Menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <a href="index.html" class="d-inline-block" title="Tourism Business & Outdoor Photography Registration Public Portal">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo" class="gov-emblem" style="height: 52px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Tourism &amp; Civil Aviation Department</div>
+            <h1 class="h5 fw-bold mb-0 text-dark">Tourism Business & Outdoor Photography Registration &ndash; Citizen Workspace</h1>
+          </div>
+        </div>
+
+        <!-- Right: Authenticated Citizen Profile Summary -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="citizenNameDisplay">Tenzing Norbu Lepcha</div>
+            <div class="text-muted" style="font-size: 0.75rem;" id="citizenSubDisplay">Gangtok District &bull; CIT-SK-882109</div>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle fs-5 text-primary" aria-hidden="true"></i>
+              <span class="d-none d-md-inline" id="userMenuLabel">My Account</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuBtn">
+              <li><h6 class="dropdown-header text-uppercase">Citizen Profile</h6></li>
+              <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#citizenProfileModal"><i class="fas fa-id-card me-2 text-primary"></i> View Profile Details</button></li>
+              <li><a class="dropdown-item" href="#view-notifications" onclick="switchView('notifications')"><i class="fas fa-bell me-2 text-warning"></i> Notifications</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="index.html" onclick="simulateLogout(event)"><i class="fas fa-sign-out-alt me-2"></i> Exit Workspace (Logout)</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Main Layout (Sidebar + Content Area) -->
+  <div class="gov-workspace-layout flex-grow-1">
+
+    <!-- 10-Item Citizen Navigation Menu (Sidebar) -->
+    <aside class="gov-sidebar" id="sidebar-nav" aria-label="Citizen Navigation Menu">
+      <div class="p-3 border-bottom d-lg-none d-flex justify-content-between align-items-center">
+        <span class="fw-bold small text-muted">WORKSPACE MENU</span>
+        <button type="button" class="btn-close" id="sidebar-close-btn" aria-label="Close menu"></button>
+      </div>
+
+      <ul class="gov-sidebar-nav pt-2">
+        <!-- 1. Dashboard -->
+        <li>
+          <a href="#view-dashboard" class="gov-sidebar-link gov-nav-active" data-view="dashboard" onclick="switchView('dashboard')">
+            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <!-- 2. Apply for New Registration (Instruction-First Journey) -->
+        <li>
+          <a href="instructions.html" class="gov-sidebar-link text-success fw-semibold">
+            <i class="bi bi-plus-circle-fill text-success" aria-hidden="true"></i>
+            <span>Apply for New Registration</span>
+          </a>
+        </li>
+        <!-- 3. My Applications -->
+        <li>
+          <a href="#view-applications" class="gov-sidebar-link" data-view="applications" onclick="switchView('applications')">
+            <i class="bi bi-journal-text" aria-hidden="true"></i>
+            <span>My Applications</span>
+            <span class="badge bg-secondary ms-auto small" id="navAppCount">3</span>
+          </a>
+        </li>
+        <!-- 4. Track Application -->
+        <li>
+          <a href="#view-tracking" class="gov-sidebar-link" data-view="tracking" onclick="switchView('tracking')">
+            <i class="bi bi-geo-alt-fill text-primary" aria-hidden="true"></i>
+            <span>Track Application</span>
+          </a>
+        </li>
+        <!-- 5. Application Instructions -->
+        <li>
+          <a href="instructions.html" class="gov-sidebar-link">
+            <i class="bi bi-file-earmark-ruled" aria-hidden="true"></i>
+            <span>Application Instructions</span>
+          </a>
+        </li>
+        <!-- 6. Notifications -->
+        <li>
+          <a href="#view-notifications" class="gov-sidebar-link" data-view="notifications" onclick="switchView('notifications')">
+            <i class="bi bi-bell-fill text-warning" aria-hidden="true"></i>
+            <span>Notifications</span>
+            <span class="badge bg-danger ms-auto small" id="navNotifCount">1</span>
+          </a>
+        </li>
+        <!-- 7. Help and Support -->
+        <li>
+          <a href="#view-support" class="gov-sidebar-link" data-view="support" onclick="switchView('support')">
+            <i class="bi bi-headset" aria-hidden="true"></i>
+            <span>Help and Support</span>
+          </a>
+        </li>
+
+        <li class="my-2 border-top"></li>
+
+        <!-- 8. My Profile -->
+        <li>
+          <a href="#profile" class="gov-sidebar-link" data-bs-toggle="modal" data-bs-target="#citizenProfileModal">
+            <i class="bi bi-person-badge" aria-hidden="true"></i>
+            <span>My Profile</span>
+          </a>
+        </li>
+        <!-- 9. Switch Role / Logout -->
+        <li>
+          <a href="role-select.html" class="gov-sidebar-link text-danger">
+            <i class="bi bi-box-arrow-left text-danger" aria-hidden="true"></i>
+            <span>Switch Role / Logout</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- District DTO Quick Badge -->
+      <div class="p-3 mt-auto border-top bg-light small">
+        <div class="fw-bold text-dark"><i class="fas fa-building me-1 text-primary"></i> Department Support</div>
+        <div class="text-muted mt-1" style="font-size: 0.75rem;">Toll-Free Helpline:</div>
+        <div class="fw-semibold text-dark">03592-209090</div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content Container -->
+    <main id="main-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
+
+      <!-- ==============================================================
+           VIEW 1: CITIZEN DASHBOARD OVERVIEW
+           ============================================================== -->
+      <section id="section-dashboard" class="workspace-section">
+        <!-- Welcome Banner Section (Action-Oriented) -->
+        <div class="card border-0 bg-white p-4 shadow-xs mb-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <h2 class="h4 fw-bold mb-0 text-dark">Welcome to Tourism Business & Outdoor Photography Registration Services, <span id="welcomeCitizenName">Citizen</span></h2>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="scenarioBadgeDisplay">Scenario C</span>
+              </div>
+              <p class="text-muted small mb-0" id="scenarioDescriptionDisplay">
+                Apply for tourism-related permissions in Sikkim and track the progress of your applications from one place.
+              </p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-plus-lg me-1"></i> Apply for New Registration
+              </a>
+              <a href="role-select.html" class="btn btn-outline-danger btn-sm px-3 py-1.5" title="Switch Role or Exit">
+                <i class="bi bi-people-fill me-1"></i> Switch Role
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             ACTION-ORIENTED CITIZEN CARDS (Priority Order)
+             ============================================================== -->
+
+        <!-- PRIORITY 1: ACTION REQUIRED CARD (Scenario D: Returned Application) -->
+        <div id="actionRequiredBanner" class="card border-danger border-2 shadow-xs mb-4 d-none bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle bg-danger-subtle text-danger" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px; border-radius: 50%; aspect-ratio: 1/1; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-danger text-white fw-bold px-2 py-1">ACTION REQUIRED</span>
+                    <span class="fw-bold font-monospace text-dark" id="actionRequiredRef">SK-TP-2026-APP-00329</span>
+                    <span class="badge bg-light text-dark border" id="actionRequiredCat">Events &amp; Fairs</span>
+                  </div>
+                  <h3 class="h5 fw-bold text-danger mb-2" id="actionRequiredTitle">Department Clarification &amp; Document Resubmission Required</h3>
+                  <div class="p-3 bg-light rounded-2 border small text-dark mb-2" id="actionRequiredRemarks">
+                    <!-- Remarks populated dynamically -->
+                  </div>
+                  <div class="small text-muted d-flex align-items-center gap-3 flex-wrap">
+                    <span><i class="bi bi-calendar-event me-1"></i> Returned On: <strong id="actionRequiredDate">02 Nov 2026</strong></span>
+                    <span><i class="bi bi-clock-history me-1 text-danger"></i> Deadline: <strong class="text-danger" id="actionRequiredDeadline">09 Nov 2026</strong></span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-sm btn-danger px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="openResubmitModal()">
+                  <i class="bi bi-arrow-repeat"></i>
+                  <span>Take Action / Resubmit Clarification</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <!-- PRIORITY 2: APPROVED APPLICATION & ISSUED PERMISSION SHOWCASE CARD -->
+        <div id="approvedApplicationCard" class="card border-success border-2 shadow-sm mb-4 d-none bg-white overflow-hidden">
+          <div class="card-header bg-success-subtle bg-opacity-40 py-2.5 px-4 d-flex justify-content-between align-items-center border-bottom border-success-subtle flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-success text-white fw-bold px-2.5 py-1">
+                <i class="bi bi-patch-check-fill me-1"></i> STATUTORY PERMISSION ISSUED
+              </span>
+              <span class="small text-muted fw-semibold d-none d-sm-inline">Tourism &amp; Civil Aviation Department &bull; Government of Sikkim</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-white text-success border border-success-subtle small font-monospace fw-bold px-2 py-1 shadow-xs" id="approvedCertRefBadge">
+                SK-TOUR-2026-TRE-00215
+              </span>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-4">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle bg-success text-white shadow-xs flex-shrink-0" style="width: 58px; height: 58px; min-width: 58px; min-height: 58px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem;">
+                  <i class="bi bi-file-earmark-check-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-light text-dark border fw-semibold" id="approvedAppCat">Trekking</span>
+                    <span class="small text-muted">Application ID: <strong class="font-monospace text-primary" id="approvedAppRef">SK-TP-2026-APP-00215</strong></span>
+                    <span class="small text-muted">&bull; Sanction Ref: <strong class="text-success font-monospace" id="approvedCertRef">SK-TOUR-2026-TRE-00215</strong></span>
+                  </div>
+                  <h3 class="h5 fw-bold text-dark mb-1" id="approvedAppTitle">Green Lake Reconnaissance Trek (4 Pax)</h3>
+                  <div class="small text-muted mb-2">
+                    Sanctioning Authority: <strong class="text-dark" id="approvedAppOfficer">District Tourism Officer (DTO, Gangtok Circle)</strong> &bull;
+                    Sanction Date: <strong class="text-dark" id="approvedAppDate">28 Oct 2026</strong>
+                  </div>
+                  <div class="d-flex align-items-center gap-3 small text-muted flex-wrap">
+                    <span><i class="bi bi-shield-fill-check text-success me-1"></i> Digitally Signed &amp; Approved</span>
+                    <span><i class="bi bi-qr-code text-primary me-1"></i> Tamper-proof QR Verification Active</span>
+                    <span><i class="bi bi-file-earmark-pdf text-danger me-1"></i> Print-Ready A4 Document</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Instant Direct Actions -->
+              <div class="d-flex flex-column align-items-start align-items-sm-end gap-2 ms-auto">
+                <button type="button" class="btn btn-success px-3.5 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-2" id="btnDownloadApprovedCert" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-file-earmark-arrow-down-fill fs-6"></i>
+                  <span>Download Registration Certificate</span>
+                </button>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <button type="button" class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewApprovedModal" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                    <i class="bi bi-eye"></i>
+                    <span>View Online</span>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewDossier" onclick="openDepartmentDocuments(window.activeApprovedArn || 'SK-TP-2026-APP-00215')" title="View All Department Documents &amp; HQ Concurrence">
+                    <i class="bi bi-folder-check"></i>
+                    <span>Department Documents</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORITY 2: ONGOING APPLICATION UNDER PROCESS CARD (Scenario C / Active Applications) -->
+        <div id="ongoingApplicationCard" class="card border-primary border-2 shadow-xs mb-4 d-none bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle bg-primary-subtle text-primary" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px; border-radius: 50%; aspect-ratio: 1/1; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-hourglass-split"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-primary text-white fw-bold px-2 py-1">APPLICATION UNDER PROCESS</span>
+                    <span class="fw-bold font-monospace text-dark" id="ongoingAppRef">SK-TP-2026-APP-00481</span>
+                    <span class="badge bg-light text-dark border" id="ongoingAppCat">Trekking</span>
+                  </div>
+                  <h3 class="h5 fw-bold text-dark mb-2" id="ongoingAppTitle">Singalila Ridge Scenic Eco-Trek (8 Indian Trekkers)</h3>
+                  
+                  <div class="row g-2 mb-3 small">
+                    <div class="col-sm-6 col-md-4">
+                      <span class="text-muted d-block">Current Processing Stage:</span>
+                      <strong class="text-primary fs-6" id="ongoingAppStage"><i class="bi bi-check-circle-fill text-success me-1"></i> Stage 2: DTO Verification</strong>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                      <span class="text-muted d-block">Current Status:</span>
+                      <strong class="text-dark" id="ongoingAppStatus">Pending with District DTO (Gyalshing)</strong>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                      <span class="text-muted d-block">Last Updated:</span>
+                      <span class="text-muted" id="ongoingAppUpdated">03 Nov 2026, 11:15 AM</span>
+                    </div>
+                  </div>
+
+                  <!-- Next Expected Action Callout -->
+                  <div class="p-3 bg-light rounded-2 border small text-dark d-flex align-items-start gap-2">
+                    <i class="bi bi-info-circle-fill text-primary mt-1 flex-shrink-0"></i>
+                    <div>
+                      <strong>Next Expected Action:</strong> <span id="ongoingAppNextAction">Await departmental verification and forwarding to Headquarters.</span>
+                      <div class="text-muted mt-1"><i class="bi bi-shield-check text-success me-1"></i> <em>No action is required from you at this stage.</em></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column gap-2">
+                <button type="button" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnTrackOngoing" onclick="openTrackingForActive()">
+                  <i class="bi bi-geo-alt-fill"></i>
+                  <span>Track Application</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORITY 2.5: DRAFT / PAYMENT PENDING APPLICATION CARD (Scenario B / LocalStorage Drafts) -->
+        <div id="draftApplicationCard" class="card border-warning border-2 shadow-xs mb-4 d-none bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle bg-warning-subtle text-warning-emphasis" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px; border-radius: 50%; aspect-ratio: 1/1; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-file-earmark-diff-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="draftCardBadge">DRAFT IN PROGRESS</span>
+                    <span class="fw-bold font-monospace text-dark" id="draftAppRef">SK-TP-2026-DFT-0012</span>
+                    <span class="badge bg-light text-dark border" id="draftAppCat">Trekking</span>
+                    <span class="badge bg-primary-subtle text-primary border" id="draftAppFee">₹100 Fee</span>
+                  </div>
+                  <h3 class="h5 fw-bold text-dark mb-1" id="draftAppTitle">Dzongri – Goecha La High Altitude Trek</h3>
+                  <div class="small text-muted mb-2">
+                    <i class="bi bi-clock-history me-1"></i> Last Saved: <span id="draftAppUpdated" class="text-dark fw-semibold">03 Nov 2026, 04:30 PM</span>
+                  </div>
+                  <p class="small text-muted mb-0" id="draftCardNotice">
+                    <i class="bi bi-info-circle-fill text-primary me-1"></i> You have an unsaved application in progress. You can resume at the step you left off.
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2 align-items-center">
+                <a href="apply.html" class="btn btn-sm btn-warning text-dark px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnContinueDraft">
+                  <i class="bi bi-pencil-square"></i>
+                  <span id="btnContinueDraftLabel">Continue Application</span>
+                </a>
+                <button type="button" class="btn btn-outline-danger btn-sm px-3 py-1.5" id="btnDiscardDraft" onclick="promptDeleteDraftFromCard()">
+                  <i class="bi bi-trash"></i>
+                  <span>Discard Draft</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORITY 3: PRIMARY ACTION – APPLY FOR NEW PERMISSION -->
+        <div id="primaryApplyCard" class="card border-0 shadow-xs mb-4 bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-icon-circle bg-success-subtle text-success" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px; border-radius: 50%; aspect-ratio: 1/1; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;">
+                  <i class="bi bi-plus-circle-fill"></i>
+                </div>
+                <div>
+                  <h3 class="h5 fw-bold text-dark mb-1">Apply for New Registration</h3>
+                  <p class="text-muted small mb-0" style="max-width: 620px;">
+                    Start a new statutory registration for Travel Agents, Tour Operators, Equipment Dealers, or Outdoor Photographers across Sikkim.
+                  </p>
+                </div>
+              </div>
+              <div>
+                <a href="instructions.html" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+                  <span>Start New Application</span>
+                  <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORITY 5: NO EXISTING APPLICATIONS EMPTY STATE (Scenario A) -->
+        <div id="emptyStateBanner" class="card border-0 shadow-sm p-5 text-center mb-4 d-none bg-white">
+          <div class="py-3">
+            <div class="p-3 bg-light text-secondary rounded-circle d-inline-flex mb-3" style="width: 72px; height: 72px; align-items: center; justify-content: center; font-size: 2rem;">
+              <i class="bi bi-folder-x"></i>
+            </div>
+            <h3 class="h4 fw-bold text-dark mb-2">You haven't submitted any Tourism Business & Outdoor Photography Registration applications yet.</h3>
+            <p class="text-muted mx-auto mb-4" style="max-width: 600px; font-size: 0.95rem;">
+              Before starting your application, review the instructions and document requirements.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+              <a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+                <i class="bi bi-book-half"></i>
+                <span>Read Application Instructions</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Applications Table -->
+        <div class="card border-0 shadow-sm mb-4" id="recentApplicationsCard">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+            <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-1 text-primary"></i> Recent Application Records</h3>
+            <button type="button" class="btn btn-sm btn-link text-decoration-none fw-semibold p-0" onclick="switchView('applications')">
+              View All Applications &rarr;
+            </button>
+          </div>
+          <!-- Near Table List: Approved Certificate Direct Download Quick-Access Bar -->
+          <div id="tableApprovedCertBanner" class="p-3 bg-success-subtle bg-opacity-35 border-bottom border-success-subtle d-none">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 38px; height: 38px;">
+                  <i class="bi bi-file-earmark-arrow-down-fill fs-5"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 flex-wrap mb-0.5">
+                    <span class="badge bg-success text-white fw-bold"><i class="bi bi-patch-check-fill me-1"></i>Approved Registration Ready</span>
+                    <strong class="font-monospace text-dark small" id="tableBannerCertNo">SK-TOUR-2026-TRE-00215</strong>
+                    <span class="text-muted small">&bull; Ref: <span class="font-monospace text-primary fw-semibold" id="tableBannerArn">SK-TP-2026-APP-00215</span></span>
+                  </div>
+                  <div class="small text-muted" id="tableBannerDesc">
+                    Green Lake Reconnaissance Trek (4 Pax) &bull; Sanctioned by District Tourism Officer
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                  <span>Download Certificate</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-eye"></i>
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <!-- Desktop Table View -->
+            <div class="table-responsive gov-table-desktop d-none d-md-block">
+              <table class="gov-table-compact table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 18%;">Application ID</th>
+                    <th style="width: 14%;">Category</th>
+                    <th style="width: 28%;">Activity Details</th>
+                    <th style="width: 14%;">Submitted Date</th>
+                    <th style="width: 10%;">Status</th>
+                    <th class="text-end" style="width: 16%; min-width: 195px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentApplicationsTableBody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Cards View -->
+            <div class="gov-cards-mobile d-block d-md-none p-3" id="recentApplicationsCardsMobile">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications Preview -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-bell me-1 text-warning"></i> Recent Portal Notifications</h3>
+            <button type="button" class="btn btn-sm btn-link text-decoration-none fw-semibold p-0" onclick="switchView('notifications')">
+              View All &rarr;
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <div class="list-group list-group-flush" id="dashboardNotifList">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 2: MY APPLICATIONS LIST & FILTERING
+           ============================================================== -->
+      <section id="section-applications" class="workspace-section d-none">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+          <div>
+            <h2 class="h4 fw-bold mb-0 text-dark">My Applications</h2>
+            <p class="text-muted small mb-0">Track and filter all your tourism activity permission requests.</p>
+          </div>
+          <div>
+            <a href="instructions.html" class="btn btn-gov-primary">
+              <i class="bi bi-plus-lg me-1"></i> New Application
+            </a>
+          </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-3">
+            <div class="row g-2 align-items-center">
+              <div class="col-md-5">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                  <input type="text" class="form-control border-start-0" id="appSearchInput" placeholder="Search by Reference (ARN) or Activity keyword...">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select form-select-sm" id="appCategoryFilter">
+                  <option value="all">All Categories (7 Types)</option>
+                  <option value="Trekking">Trekking</option>
+                  <option value="Expedition">Expedition</option>
+                  <option value="Events, Fairs, Melas, Rallies and Marathons">Events, Fairs &amp; Marathons</option>
+                  <option value="Drone">Drone Operations</option>
+                  <option value="Adventure Activities">Adventure Activities</option>
+                  <option value="Satellite Phone Usage Permission">Satellite Phone Usage Permission</option>
+                  <option value="Any Other">Any Other</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select form-select-sm" id="appStatusFilter">
+                  <option value="all">All Statuses</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="UNDER_REVIEW">Under Review / Scrutiny</option>
+                  <option value="APPROVED">Approved &amp; Issued</option>
+                  <option value="RETURNED">Returned for Clarification</option>
+                  <option value="REJECTED">Rejected</option>
+                </select>
+              </div>
+              <div class="col-md-1 text-end">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="resetFiltersBtn" title="Reset Filters">
+                  <i class="bi bi-arrow-counterclockwise"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Applications Table -->
+        <div class="card border-0 shadow-sm">
+          <!-- Near Full Table List: Approved Certificate Direct Download Bar -->
+          <div id="fullTableApprovedCertBanner" class="p-3 bg-success-subtle bg-opacity-35 border-bottom border-success-subtle d-none">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 38px; height: 38px;">
+                  <i class="bi bi-file-earmark-arrow-down-fill fs-5"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 flex-wrap mb-0.5">
+                    <span class="badge bg-success text-white fw-bold"><i class="bi bi-patch-check-fill me-1"></i>Approved Registration Ready</span>
+                    <strong class="font-monospace text-dark small" id="fullTableBannerCertNo">SK-TOUR-2026-TRE-00215</strong>
+                    <span class="text-muted small">&bull; Ref: <span class="font-monospace text-primary fw-semibold" id="fullTableBannerArn">SK-TP-2026-APP-00215</span></span>
+                  </div>
+                  <div class="small text-muted" id="fullTableBannerDesc">
+                    Green Lake Reconnaissance Trek (4 Pax) &bull; Sanctioned by District Tourism Officer
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnFullTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                  <span>Download Certificate</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnFullTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-eye"></i>
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <!-- Desktop Table View -->
+            <div class="table-responsive gov-table-desktop d-none d-md-block">
+              <table class="gov-table-compact table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 16%;">Application ID</th>
+                    <th style="width: 13%;">Category</th>
+                    <th style="width: 26%;">Activity &amp; Jurisdiction</th>
+                    <th style="width: 13%;">Submitted</th>
+                    <th style="width: 10%;">Status</th>
+                    <th style="width: 6%;">Fee</th>
+                    <th class="text-end" style="width: 16%; min-width: 195px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="fullApplicationsTableBody">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Cards View -->
+            <div class="gov-cards-mobile d-block d-md-none p-3" id="fullApplicationsCardsMobile">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 3: APPLICATION STATUS TRACKING
+           ============================================================== -->
+      <section id="section-tracking" class="workspace-section d-none">
+        <div class="mb-4">
+          <h2 class="h4 fw-bold mb-0 text-dark">Application Status Tracking</h2>
+          <p class="text-muted small mb-0">Inspect the live progress of your Tourism Business & Outdoor Photography Registration through the 7 departmental workflow stages.</p>
+        </div>
+
+        <!-- ARN Selector / Input Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4 text-center">
+            <h3 class="h6 fw-bold mb-2">Track Application by Reference Number (ARN)</h3>
+            <p class="text-muted small mb-3">Select one of your applications below or enter your 16-character ARN.</p>
+            <div class="row justify-content-center">
+              <div class="col-md-7">
+                <div class="input-group">
+                  <input type="text" class="form-control font-monospace" id="trackingArnInput" placeholder="e.g. SK-TP-2026-APP-XXXXX">
+                  <button type="button" class="btn btn-gov-primary px-4" id="trackSearchBtn">
+                    <i class="bi bi-search me-1"></i> Track
+                  </button>
+                </div>
+                <!-- Quick Selection Chips -->
+                <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap small" id="trackingQuickChips">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Tracking Journey Container -->
+        <div id="trackingResultCard" class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <span class="small text-muted d-block">Tracking Application</span>
+              <span class="fs-5 fw-bold font-monospace text-primary" id="trackCardRef">SK-TP-2026-APP-00481</span>
+              <span class="badge bg-light text-dark border ms-2" id="trackCardCat">Trekking</span>
+            </div>
+            <div id="trackCardStatusBadge">
+              <span class="gov-badge gov-badge-review fs-6 px-3 py-2"><i class="bi bi-hourglass-split"></i> Under Review</span>
+            </div>
+          </div>
+
+          <div class="card-body p-4">
+            <!-- Summary Information Sub-bar -->
+            <div class="bg-light p-3 rounded-3 mb-4 small">
+              <div class="row g-2">
+                <div class="col-md-4">
+                  <span class="text-muted d-block">Activity Outline:</span>
+                  <strong class="text-dark" id="trackActivityDesc">Singalila Ridge Scenic Trek (8 Pax)</strong>
+                </div>
+                <div class="col-md-4">
+                  <span class="text-muted d-block">District Administration:</span>
+                  <strong class="text-dark" id="trackDistrict">Gyalshing District Tourism Office</strong>
+                </div>
+                <div class="col-md-4">
+                  <span class="text-muted d-block">Handling Officer / Authority:</span>
+                  <strong class="text-dark" id="trackOfficer">Dealing Assistant, DTO Office</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7-Stage Visual Progress Timeline -->
+            <h4 class="h6 fw-bold mb-3"><i class="bi bi-diagram-3 me-1 text-primary"></i> 7-Stage Departmental Workflow Progression</h4>
+            
+            <div class="gov-timeline" id="workflowTimelineContainer">
+              <!-- Dynamically populated 7 stages via JS -->
+            </div>
+
+            <!-- Departmental Remarks Box -->
+            <div class="alert alert-info d-flex align-items-start gap-3 mt-4 mb-3" id="trackRemarksAlert">
+              <i class="bi bi-info-circle-fill fs-5 text-primary flex-shrink-0 mt-1"></i>
+              <div>
+                <strong class="d-block mb-1">Official Department Remarks:</strong>
+                <span id="trackRemarksText">Application received and assigned for document verification.</span>
+              </div>
+            </div>
+
+            <!-- Stage 06: Department Documents Section inside Tracking View -->
+            <div id="trackDeptDocsContainer" class="mb-3"></div>
+
+            <!-- Mandatory "What Happens Next?" Explanatory Section -->
+            <div class="card border-0 bg-light p-3 rounded-3" id="whatHappensNextCard">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle gov-icon-circle-sm bg-primary-subtle text-primary mt-1">
+                  <i class="bi bi-arrow-right-circle-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="h6 fw-bold text-dark mb-1">What Happens Next?</h5>
+                  <p class="small text-muted mb-2" id="whatHappensNextText">
+                    DTO will verify and forward the application to HQ.
+                  </p>
+                  <div id="whatHappensNextAction">
+                    <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">
+                      <i class="bi bi-info-circle me-1"></i> No action is required from you at this stage.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 4: APPLICATION GUIDELINES
+           ============================================================== -->
+      <section id="section-guidelines" class="workspace-section d-none">
+        <div class="card border shadow-xs bg-white rounded-3 p-4 mb-4">
+          <div class="d-flex align-items-center gap-3 mb-3 border-bottom pb-3">
+            <div class="gov-icon-circle bg-primary-subtle text-primary">
+              <i class="bi bi-file-earmark-ruled"></i>
+            </div>
+            <div>
+              <h2 class="h5 fw-bold text-dark mb-0">Statutory Registration Guidelines &amp; Fee Matrix</h2>
+              <p class="text-muted small mb-0">Requirements under the Sikkim Registration of Tourist Trade Rules &bull; Valid for 3 Calendar Years</p>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 rounded border bg-light h-100">
+                <span class="badge bg-primary-subtle text-primary mb-2">Category 1 &bull; TA</span>
+                <h3 class="h6 fw-bold text-dark mb-1">Travel Agent</h3>
+                <div class="fw-bold text-primary mb-2">&#8377;3,000 / 3 Years</div>
+                <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
+                  <li>Valid Municipal Trade License</li>
+                  <li>Commercial premises proof in Sikkim</li>
+                  <li>COI / Aadhaar of proprietor</li>
+                  <li>SLA: 15 Working Days</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 rounded border bg-light h-100">
+                <span class="badge bg-info-subtle text-info mb-2">Category 2 &bull; TO</span>
+                <h3 class="h6 fw-bold text-dark mb-1">Tour Operator</h3>
+                <div class="fw-bold text-info mb-2">&#8377;5,000 / 3 Years</div>
+                <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
+                  <li>Head office / Branch in Sikkim</li>
+                  <li>Certified Tour Guide / Manager</li>
+                  <li>Fleet tie-up agreements</li>
+                  <li>SLA: 15 Working Days</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 rounded border bg-light h-100">
+                <span class="badge bg-warning-subtle text-warning-emphasis mb-2">Category 3 &bull; DLR</span>
+                <h3 class="h6 fw-bold text-dark mb-1">Equipment Dealer</h3>
+                <div class="fw-bold text-warning-emphasis mb-2">&#8377;5,000 / 3 Years</div>
+                <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
+                  <li>Physical shop &gt;= 200 sq.ft</li>
+                  <li>UIAA safety gear standards</li>
+                  <li><strong>Level 1 IA On-Site Inspection</strong></li>
+                  <li>SLA: 21 Working Days</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="p-3 rounded border bg-light h-100">
+                <span class="badge bg-success-subtle text-success mb-2">Category 4 &bull; PHO</span>
+                <h3 class="h6 fw-bold text-dark mb-1">Outdoor Photographer</h3>
+                <div class="fw-bold text-success mb-2">&#8377;1,000 / 3 Years</div>
+                <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
+                  <li>Min Class X pass certificate</li>
+                  <li>Portfolio of Sikkim outdoor work</li>
+                  <li>Association recommendation</li>
+                  <li>SLA: 7 Working Days</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-primary-subtle border border-primary-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <span class="small text-dark">
+              <strong>Need full step-by-step instructions?</strong> Review the pre-application instructions and checklist.
+            </span>
+            <a href="instructions.html" class="btn btn-sm btn-gov-primary">View Instructions &amp; Apply</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 5: REQUIRED DOCUMENTS CHECKLIST
+           ============================================================== -->
+      <section id="section-documents" class="workspace-section d-none">
+        <div class="mb-4">
+          <h2 class="h4 fw-bold mb-0 text-dark">Required Clearances &amp; Documents</h2>
+          <p class="text-muted small mb-0">Prepare digital scans of the following statutory clearances prior to application submission.</p>
+        </div>
+
+        <div class="alert alert-warning py-3 px-4 mb-4 small">
+          <i class="bi bi-exclamation-triangle-fill me-2 fs-6 text-warning"></i>
+          <strong>Notice:</strong> Document rules are category-dependent and pending official department confirmation.
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+          <div class="col">
+            <div class="p-4 bg-white rounded-3 shadow-sm border h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 48px; height: 48px; font-size: 1.35rem;">
+                  <i class="fas fa-fire-extinguisher text-danger"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-0">1. Fire Safety NOC</h3>
+                  <span class="badge bg-danger-subtle text-danger border small">Public Events &amp; Fairs</span>
+                </div>
+              </div>
+              <p class="small text-secondary mb-0">
+                Mandatory for fairs, cultural melas, rallies, temporary stages, sound pavilions, and sporting marathons involving public gatherings. Must be obtained from the local District Fire Station.
+              </p>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="p-4 bg-white rounded-3 shadow-sm border h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 48px; height: 48px; font-size: 1.35rem;">
+                  <i class="fas fa-tree text-success"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-0">2. Environment / Forest NOC</h3>
+                  <span class="badge bg-success-subtle text-success border small">Eco-Sensitive Corridors</span>
+                </div>
+              </div>
+              <p class="small text-secondary mb-0">
+                Required when proposed routes or activity zones fall within national parks, sanctuaries, reserved forest boundaries, or designated high-altitude biosphere zones under Forest &amp; Environment Department guidelines.
+              </p>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="p-4 bg-white rounded-3 shadow-sm border h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 48px; height: 48px; font-size: 1.35rem;">
+                  <i class="fas fa-landmark text-primary"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-0">3. Land Revenue / Municipal NOC</h3>
+                  <span class="badge bg-primary-subtle text-primary border small">Venue &amp; Land Clearance</span>
+                </div>
+              </div>
+              <p class="small text-secondary mb-0">
+                Mandatory for events, temporary camping, or staging held on municipal property, Urban Development Department grounds, or District Administrative Centre public spaces.
+              </p>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="p-4 bg-white rounded-3 shadow-sm border h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 48px; height: 48px; font-size: 1.35rem;">
+                  <i class="fas fa-file-alt text-secondary"></i>
+                </div>
+                <div>
+                  <h3 class="h6 fw-bold mb-0">4. Any Other Supporting Document</h3>
+                  <span class="badge bg-light text-dark border small">Activity Specific</span>
+                </div>
+              </div>
+              <p class="small text-secondary mb-0">
+                Route map, participant identity credentials, safety and rescue protocol, medical insurance, or pilot UIN registration certificate (for drone operators).
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 6: NOTIFICATIONS FEED
+           ============================================================== -->
+      <section id="section-notifications" class="workspace-section d-none">
+        <div class="mb-4">
+          <h2 class="h4 fw-bold mb-0 text-dark">Citizen Notifications</h2>
+          <p class="text-muted small mb-0">Official system notifications, status alerts, and departmental remarks.</p>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <div class="list-group list-group-flush" id="fullNotifList">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================================
+           VIEW 7: HELP AND SUPPORT (DISTRICT OFFICES)
+           ============================================================== -->
+      <section id="section-support" class="workspace-section d-none">
+        <div class="mb-4">
+          <h2 class="h4 fw-bold mb-0 text-dark">District Helpdesks &amp; Support Centers</h2>
+          <p class="text-muted small mb-0">Need assistance with your Tourism Business & Outdoor Photography Registration application? Contact your nearest District Tourism Office.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Gangtok (Headquarters)</div>
+              <div class="small text-muted mt-1">Paryatan Bhawan, Tadong, Gangtok – 737102</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-209090</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-gangtok@sikkim.gov.in</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Namchi District Office</div>
+              <div class="small text-muted mt-1">DAC Complex, Namchi, South Sikkim – 737126</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-254210</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-namchi@sikkim.gov.in</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Gyalshing District Office</div>
+              <div class="small text-muted mt-1">DAC Complex, Gyalshing, West Sikkim – 737111</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-250810</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-gyalshing@sikkim.gov.in</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Mangan District Office</div>
+              <div class="small text-muted mt-1">DAC Complex, Mangan, North Sikkim – 737116</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-234205</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-mangan@sikkim.gov.in</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Soreng District Office</div>
+              <div class="small text-muted mt-1">DAC Complex, Soreng, Sikkim – 737121</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-257002</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-soreng@sikkim.gov.in</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Pakyong District Office</div>
+              <div class="small text-muted mt-1">DAC Complex, Pakyong, Sikkim – 737106</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-258014</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-pakyong@sikkim.gov.in</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="gov-footer py-3" role="contentinfo">
+    <div class="container-fluid px-lg-4 text-center small text-white-50">
+      &copy; 2026 Government of Sikkim &bull; Tourism &amp; Civil Aviation Department &bull; Stage 02 Citizen Workspace Prototype
+    </div>
+  </footer>
+
+  <!-- ==============================================================
+       MODALS: Stage Placeholders, Profile, and Detail Views
+       ============================================================== -->
+
+  <!-- Modal 1: Citizen Clarification & Resubmission Modal (Stage 04 Live Synchronization) -->
+  <div class="modal fade" id="modalCitizenResubmit" tabindex="-1" aria-labelledby="resubmitModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-danger text-white py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-repeat fs-5"></i>
+            <h5 class="modal-title fw-bold text-white mb-0" id="resubmitModalLabel">
+              Rectify &amp; Resubmit Application
+            </h5>
+          </div>
+          <span class="badge bg-white text-danger fw-bold ms-auto me-3 font-monospace" id="resubmitArnDisplay">SK-TP-2026-APP-00329</span>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form onsubmit="handleCitizenResubmit(event)">
+          <div class="modal-body p-4">
+            <input type="hidden" id="resubmitArn" value="SK-TP-2026-APP-00329">
+            
+            <div class="alert alert-warning border-0 small d-flex align-items-start gap-2 mb-3">
+              <i class="bi bi-exclamation-triangle-fill text-warning fs-5 flex-shrink-0 mt-1"></i>
+              <div>
+                <strong>Department Objection / Clarification Required:</strong>
+                <p class="mb-0 mt-1" id="resubmitOfficerRemarks">
+                  Fire Safety NOC and certified crowd management layout for the proposed marathon venue are missing. Please attach the Fire NOC and resubmit.
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="resubmitCitizenRemarks" class="form-label fw-bold text-dark small">
+                Applicant Clarification / Response Remarks <span class="text-danger">*</span>
+              </label>
+              <textarea id="resubmitCitizenRemarks" class="form-control" rows="3" required placeholder="Describe the corrections made and provide details of the attached documents..."></textarea>
+              <div class="form-text" style="font-size: 0.75rem;">Your remarks will be transmitted directly to the verifying District Tourism Officer (DTO).</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="resubmitFileInput" class="form-label fw-bold text-dark small">
+                Upload Corrected Supporting Document (PDF / JPG / PNG, max 10MB) <span class="text-danger">*</span>
+              </label>
+              <input type="file" id="resubmitFileInput" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+              <div class="form-text" id="resubmitFileFeedback" style="font-size: 0.75rem;">
+                <i class="bi bi-info-circle me-1"></i> You may attach the required departmental NOC or rectified certificate.
+              </div>
+            </div>
+
+            <div class="card bg-light border-0 p-3 rounded-2 small text-muted">
+              <div class="fw-semibold text-dark mb-1"><i class="bi bi-shield-check text-success me-1"></i> Workflow Continuity Guarantee</div>
+              <div>Resubmission retains your original Application Reference Number (ARN) and shifts the application directly to <strong>Awaiting DTO Reverification</strong> queue in the District Tourism Office.</div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light py-2">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger btn-sm px-4 fw-semibold shadow-xs">
+              <i class="bi bi-send-check me-1"></i> Resubmit Application to DTO
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2A: Department Documents Summary Modal -->
+  <div class="modal fade" id="modalDepartmentDocs" tabindex="-1" aria-labelledby="deptDocsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white py-3">
+          <h5 class="modal-title h6 fw-bold mb-0" id="deptDocsModalLabel">
+            <i class="bi bi-folder-check text-warning me-2"></i> Department Documents &amp; Sanctions
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="deptDocsModalContent">
+            <!-- Dynamically populated via DocumentService.renderDepartmentDocumentsCard -->
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2B: High-Fidelity In-Page Document Viewer Modal -->
+  <div class="modal fade" id="modalDocViewer" tabindex="-1" aria-labelledby="docViewerTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" style="max-width: 920px;">
+      <div class="modal-content border-0 shadow-lg" style="height: 90vh;">
+        <div class="modal-header bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center">
+          <h5 class="modal-title small fw-bold mb-0" id="docViewerTitle">
+            <i class="bi bi-file-earmark-check text-success me-2"></i> Document Viewer
+          </h5>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 font-monospace" id="docViewerPrintBtn" title="Print document" style="font-size: 0.75rem;">
+              <i class="bi bi-printer me-1"></i> Print / PDF
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 font-monospace" id="docViewerExternalBtn" title="Open in dedicated tab" style="font-size: 0.75rem;">
+              <i class="bi bi-box-arrow-up-right me-1"></i> New Tab
+            </button>
+            <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="modal-body p-0 bg-secondary-subtle">
+          <iframe id="docViewerIframe" src="about:blank" style="width: 100%; height: 100%; border: none; min-height: 600px;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Citizen Profile Details Modal -->
+  <div class="modal fade" id="citizenProfileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title" id="profileModalLabel"><i class="fas fa-user-circle me-2"></i> Citizen Profile Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+            <div class="bg-primary-subtle text-primary p-3 rounded-circle" style="width: 54px; height: 54px; display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-user fs-4"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0 text-dark" id="modalProfName">Tenzing Norbu Lepcha</h5>
+              <span class="badge bg-light text-muted border font-monospace" id="modalProfId">CIT-SK-882109</span>
+            </div>
+          </div>
+          <div class="small">
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Mobile Number:</span>
+              <strong id="modalProfMobile">9800123456</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Email Address:</span>
+              <strong id="modalProfEmail">tenzing.lepcha@example.in</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">District Jurisdiction:</span>
+              <strong id="modalProfDistrict">Gangtok District</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Applicant Category:</span>
+              <strong id="modalProfType">Registered Tour &amp; Adventure Operator</strong>
+            </div>
+            <div class="py-2">
+              <span class="text-muted d-block">Residential Address:</span>
+              <span id="modalProfAddress" class="fw-semibold text-dark">Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim &ndash; 737101</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="small text-muted me-auto"><i class="fas fa-shield-alt text-success me-1"></i> Sikkim GO Verified</span>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Delete Draft Confirmation Modal (Scenario B) -->
+  <div class="modal fade" id="deleteDraftConfirmModal" tabindex="-1" aria-labelledby="deleteDraftLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title fs-6" id="deleteDraftLabel"><i class="fas fa-trash-alt me-2"></i> Delete Draft Application?</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body small">
+          Are you sure you want to discard draft application <strong class="font-monospace text-danger" id="deleteDraftRef">SK-TP-2026-DFT-0012</strong>? This action cannot be undone.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger btn-sm" onclick="executeDeleteDraft()">Delete Draft</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="citizen-data.js"></script>
+  <!-- Central Workflow Engine for Stage 04 Live State Sync -->
+  <script src="workflow-engine.js"></script>
+  <script src="document-service.js"></script>
+
+  <!-- Workspace Controller Logic -->
+  <script>
+    (function () {
+      'use strict';
+      const DRAFTS_KEY = 'tourism_business_drafts';
+      const SUBMITTED_KEY = 'tourism_business_submitted';
+
+      function getStoredDrafts() {
+        try {
+          const raw = localStorage.getItem(DRAFTS_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function getStoredSubmissions() {
+        try {
+          const raw = localStorage.getItem(SUBMITTED_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+
+      // Active state
+      let activeScenarioKey = 'scenarioC';
+
+      // Check URL query param for scenario override
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedScenario = urlParams.get('scenario');
+      if (requestedScenario && TourismBusinessData.scenarios[requestedScenario]) {
+        activeScenarioKey = requestedScenario;
+      }
+
+      // Initialize on DOM Ready
+      document.addEventListener('DOMContentLoaded', function () {
+        initScenarioSelector();
+        initMobileSidebar();
+        renderActiveScenario(activeScenarioKey);
+        initApplicationsSearchAndFilters();
+        initTrackingSearch();
+
+        // Check if a view or specific ARN was requested
+        const requestedView = urlParams.get('view');
+        const requestedArn = urlParams.get('arn');
+        if (requestedView) {
+          switchView(requestedView);
+          if (requestedView === 'tracking' && requestedArn) {
+            setTimeout(() => {
+              renderTrackingView(requestedArn);
+            }, 50);
+          }
+        }
+      });
+
+      // 1. Scenario Selector Handler
+      function initScenarioSelector() {
+        const selector = document.getElementById('scenarioSelector');
+        if (!selector) return;
+
+        selector.value = activeScenarioKey;
+        selector.addEventListener('change', function () {
+          activeScenarioKey = this.value;
+          renderActiveScenario(activeScenarioKey);
+          if (window.GovApp && GovApp.showNotification) {
+            GovApp.showNotification(`Switched to ${TourismBusinessData.scenarios[activeScenarioKey].name}`, 'info');
+          }
+        });
+      }
+
+      // 2. Render Active Scenario into Dashboard
+      function renderActiveScenario(scenarioKey) {
+        const scenario = TourismBusinessData.scenarios[scenarioKey];
+        if (!scenario) return;
+
+        const citizen = scenario.citizen;
+        const stats = scenario.stats;
+        const storedSubmissions = getStoredSubmissions();
+        const existingRefs = new Set(scenario.applications.map(a => a.refNo));
+        const extraSubmitted = storedSubmissions.filter(s => !existingRefs.has(s.refNo));
+        const apps = [...extraSubmitted, ...scenario.applications];
+        const notifs = scenario.notifications;
+
+        // Header / Profile details
+        document.getElementById('citizenNameDisplay').textContent = citizen.fullName;
+        document.getElementById('citizenSubDisplay').textContent = `${citizen.district} District • ${citizen.citizenId}`;
+        document.getElementById('welcomeCitizenName').textContent = citizen.fullName.split(' ')[0];
+        document.getElementById('scenarioBadgeDisplay').textContent = scenario.badge;
+        document.getElementById('scenarioDescriptionDisplay').textContent = scenario.description;
+
+        // Profile Modal
+        document.getElementById('modalProfName').textContent = citizen.fullName;
+        document.getElementById('modalProfId').textContent = citizen.citizenId;
+        document.getElementById('modalProfMobile').textContent = citizen.mobile;
+        document.getElementById('modalProfEmail').textContent = citizen.email;
+        document.getElementById('modalProfDistrict').textContent = `${citizen.district} District`;
+        document.getElementById('modalProfType').textContent = citizen.applicantType;
+        document.getElementById('modalProfAddress').textContent = citizen.address;
+
+        // Update Navigation Counters safely
+        const navAppEl = document.getElementById('navAppCount');
+        if (navAppEl) navAppEl.textContent = stats.total;
+        const navNotifEl = document.getElementById('navNotifCount');
+        if (navNotifEl) navNotifEl.textContent = notifs.filter(n => !n.read).length;
+
+        // Priority 1: Action Required Card (Scenario D)
+        const actionBanner = document.getElementById('actionRequiredBanner');
+        if (scenario.actionRequired) {
+          actionBanner.classList.remove('d-none');
+          document.getElementById('actionRequiredRef').textContent = scenario.actionRequired.refNo;
+          document.getElementById('actionRequiredCat').textContent = scenario.actionRequired.category || 'Events & Fairs';
+          document.getElementById('actionRequiredTitle').textContent = `Action Required: Clarification for ${scenario.actionRequired.refNo}`;
+          document.getElementById('actionRequiredRemarks').textContent = scenario.actionRequired.remarks;
+          document.getElementById('actionRequiredDate').textContent = scenario.actionRequired.returnedDate;
+          document.getElementById('actionRequiredDeadline').textContent = scenario.actionRequired.deadline || '7 Days to respond';
+        } else {
+          actionBanner.classList.add('d-none');
+        }
+
+        // Priority 2.5: Draft / Payment Pending Application Card (Scenario B / LocalStorage)
+        const draftCard = document.getElementById('draftApplicationCard');
+        const storedDrafts = getStoredDrafts();
+        const defaultDraft = scenario.applications.find(a => a.status === 'DRAFT');
+        const activeDraft = (storedDrafts.length > 0) ? storedDrafts[0] : (scenarioKey === 'scenarioB' ? defaultDraft : null);
+
+        if (draftCard) {
+          if (activeDraft && scenarioKey !== 'scenarioA') {
+            draftCard.classList.remove('d-none');
+            const dId = activeDraft.draftId || activeDraft.refNo;
+            const dCat = activeDraft.categoryName || activeDraft.category || 'Trekking';
+            const dTitle = activeDraft.subjectTitle || activeDraft.activityTitle || 'Tourism Business & Outdoor Photography Registration Application';
+            const dFee = activeDraft.fee || (activeDraft.feeAmount ? `₹${activeDraft.feeAmount} Fee` : 'Free');
+            const dUpdated = activeDraft.lastUpdated || activeDraft.createdDate || 'Recently';
+
+            document.getElementById('draftAppRef').textContent = dId;
+            document.getElementById('draftAppCat').textContent = dCat;
+            document.getElementById('draftAppFee').textContent = dFee;
+            document.getElementById('draftAppTitle').textContent = dTitle;
+            document.getElementById('draftAppUpdated').textContent = dUpdated;
+
+            const isPaymentPending = (activeDraft.applicationStatus === 'PAYMENT_PENDING' || (activeDraft.isPaid && !activeDraft.paymentComplete && activeDraft.declarationAccepted));
+
+            if (isPaymentPending) {
+              document.getElementById('draftCardBadge').className = 'badge bg-danger text-white fw-bold px-2 py-1';
+              document.getElementById('draftCardBadge').textContent = 'PAYMENT PENDING';
+              document.getElementById('draftCardNotice').innerHTML = '<i class="bi bi-credit-card text-danger me-1"></i> <strong>Payment Pending:</strong> Declaration accepted. Statutory fee payment of ₹100 is pending to complete your submission.';
+              document.getElementById('btnContinueDraft').href = `apply.html?draftId=${encodeURIComponent(dId)}&step=4`;
+              document.getElementById('btnContinueDraftLabel').textContent = 'Complete Payment (₹100)';
+            } else {
+              document.getElementById('draftCardBadge').className = 'badge bg-warning text-dark fw-bold px-2 py-1';
+              document.getElementById('draftCardBadge').textContent = 'DRAFT IN PROGRESS';
+              document.getElementById('draftCardNotice').innerHTML = '<i class="bi bi-info-circle-fill text-primary me-1"></i> You have an unsaved application in progress. You can resume at the step you left off.';
+              document.getElementById('btnContinueDraft').href = `apply.html?draftId=${encodeURIComponent(dId)}`;
+              document.getElementById('btnContinueDraftLabel').textContent = 'Continue Application';
+            }
+            window.activeDraftRef = dId;
+          } else {
+            draftCard.classList.add('d-none');
+            window.activeDraftRef = null;
+          }
+        }
+
+        // Priority 2: Ongoing Application Under Process Card
+        const ongoingCard = document.getElementById('ongoingApplicationCard');
+        const ongoingApp = apps.find(a => a.status === 'UNDER_REVIEW' || a.status === 'SUBMITTED');
+        if (ongoingApp && scenarioKey !== 'scenarioA') {
+          ongoingCard.classList.remove('d-none');
+          document.getElementById('ongoingAppRef').textContent = ongoingApp.refNo;
+          document.getElementById('ongoingAppCat').textContent = ongoingApp.categoryName || ongoingApp.category;
+          document.getElementById('ongoingAppTitle').textContent = ongoingApp.activityTitle;
+          document.getElementById('ongoingAppStage').innerHTML = `<i class="bi bi-hourglass-split text-primary me-1"></i> Stage ${ongoingApp.currentStage || 2}: ${ongoingApp.statusLabel || 'Under Process'}`;
+          document.getElementById('ongoingAppStatus').textContent = `${ongoingApp.statusLabel} (${ongoingApp.district || 'District DTO'})`;
+          document.getElementById('ongoingAppUpdated').textContent = ongoingApp.lastUpdated || ongoingApp.submissionDate;
+          window.activeOngoingRef = ongoingApp.refNo;
+        } else {
+          ongoingCard.classList.add('d-none');
+          window.activeOngoingRef = null;
+        }
+
+        // Priority 2: Approved Application Card & Table Banners
+        const approvedCard = document.getElementById('approvedApplicationCard');
+        const approvedApp = apps.find(a => a.status === 'APPROVED');
+        const tableBanner = document.getElementById('tableApprovedCertBanner');
+        const fullTableBanner = document.getElementById('fullTableApprovedCertBanner');
+
+        if (approvedApp && scenarioKey !== 'scenarioA') {
+          const certNum = approvedApp.certRef || approvedApp.permissionNumber || `SK-TOUR-2026-TRE-${approvedApp.refNo.split('-').pop()}`;
+          const distName = approvedApp.district || 'Gangtok';
+
+          if (approvedCard) {
+            approvedCard.classList.remove('d-none');
+            const refEl = document.getElementById('approvedAppRef');
+            if (refEl) refEl.textContent = approvedApp.refNo;
+            const catEl = document.getElementById('approvedAppCat');
+            if (catEl) catEl.textContent = approvedApp.categoryName || approvedApp.category;
+            const titleEl = document.getElementById('approvedAppTitle');
+            if (titleEl) titleEl.textContent = approvedApp.activityTitle;
+            const dateEl = document.getElementById('approvedAppDate');
+            if (dateEl) dateEl.textContent = approvedApp.lastUpdated || approvedApp.submissionDate;
+            const certEl = document.getElementById('approvedCertRef');
+            if (certEl) certEl.textContent = certNum;
+            const badgeEl = document.getElementById('approvedCertRefBadge');
+            if (badgeEl) badgeEl.textContent = certNum;
+            const officerEl = document.getElementById('approvedAppOfficer');
+            if (officerEl) officerEl.textContent = `District Tourism Officer (DTO, ${distName} Circle)`;
+          }
+
+          // Near-Table Quick-Access Banner (Recent Table)
+          if (tableBanner) {
+            tableBanner.classList.remove('d-none');
+            const tbCert = document.getElementById('tableBannerCertNo');
+            if (tbCert) tbCert.textContent = certNum;
+            const tbArn = document.getElementById('tableBannerArn');
+            if (tbArn) tbArn.textContent = approvedApp.refNo;
+            const tbDesc = document.getElementById('tableBannerDesc');
+            if (tbDesc) tbDesc.textContent = `${approvedApp.activityTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
+          }
+
+          // Near-Table Quick-Access Banner (Full Table)
+          if (fullTableBanner) {
+            fullTableBanner.classList.remove('d-none');
+            const fbCert = document.getElementById('fullTableBannerCertNo');
+            if (fbCert) fbCert.textContent = certNum;
+            const fbArn = document.getElementById('fullTableBannerArn');
+            if (fbArn) fbArn.textContent = approvedApp.refNo;
+            const fbDesc = document.getElementById('fullTableBannerDesc');
+            if (fbDesc) fbDesc.textContent = `${approvedApp.activityTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
+          }
+
+          window.activeApprovedCert = certNum;
+          window.activeApprovedArn = approvedApp.refNo;
+        } else {
+          if (approvedCard) approvedCard.classList.add('d-none');
+          if (tableBanner) tableBanner.classList.add('d-none');
+          if (fullTableBanner) fullTableBanner.classList.add('d-none');
+          window.activeApprovedCert = null;
+          window.activeApprovedArn = null;
+        }
+
+        // Priority 5: Empty State Banner vs Primary Apply Card & Recent Card
+        const emptyBanner = document.getElementById('emptyStateBanner');
+        const primaryApplyCard = document.getElementById('primaryApplyCard');
+        const recentCard = document.getElementById('recentApplicationsCard');
+
+        if (scenarioKey === 'scenarioA' || apps.length === 0) {
+          emptyBanner.classList.remove('d-none');
+          primaryApplyCard.classList.add('d-none');
+          recentCard.classList.add('d-none');
+        } else {
+          emptyBanner.classList.add('d-none');
+          primaryApplyCard.classList.remove('d-none');
+          recentCard.classList.remove('d-none');
+        }
+
+        // Render Recent Table (Dashboard)
+        renderRecentTable(apps);
+
+        // Render Full Applications Table
+        renderFullApplicationsTable(apps);
+
+        // Render Notifications
+        renderNotifications(notifs);
+
+        // Render Tracking Section with top application
+        if (apps.length > 0) {
+          renderTrackingView(apps[0].refNo);
+        } else {
+          renderEmptyTrackingView();
+        }
+
+        // Render Tracking Quick Selection Chips
+        renderTrackingQuickChips(apps);
+      };
+
+      // 3. Render Recent Applications Table
+      function renderRecentTable(apps) {
+        const tbody = document.getElementById('recentApplicationsTableBody');
+        tbody.innerHTML = '';
+
+        if (!apps || apps.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted small">No applications available in this scenario.</td></tr>`;
+          return;
+        }
+
+        const mobileContainer = document.getElementById('recentApplicationsCardsMobile');
+        if (mobileContainer) mobileContainer.innerHTML = '';
+
+        apps.forEach(app => {
+          const isApproved = app.status === 'APPROVED';
+          const permitBadgeHtml = isApproved ? `
+            <div class="mt-1 d-flex align-items-center gap-1.5 flex-wrap">
+              <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-1.5" style="font-size: 0.72rem;">
+                <i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'SK-TOUR-2026-TRE-00215'}
+              </span>
+              <a href="javascript:void(0)" onclick="downloadCertificateDirect('${app.refNo}')" class="text-success text-decoration-none fw-semibold small" style="font-size: 0.74rem;" title="Direct Download Registration Certificate">
+                <i class="bi bi-file-earmark-arrow-down-fill"></i> Download
+              </a>
+            </div>
+          ` : '';
+
+          const tr = document.createElement('tr');
+          if (isApproved) tr.className = 'table-success-subtle bg-success bg-opacity-10';
+          tr.innerHTML = `
+            <td><span class="fw-bold font-monospace text-primary">${app.refNo}</span></td>
+            <td><span class="badge bg-light text-dark border">${app.categoryName || app.category}</span></td>
+            <td>
+              <span class="small text-dark fw-semibold text-truncate d-block" style="max-width: 260px;">${app.activityTitle}</span>
+              ${permitBadgeHtml}
+            </td>
+            <td><span class="small text-muted">${app.submissionDate || app.createdDate}</span></td>
+            <td>${renderStatusBadge(app)}</td>
+            <td class="text-end text-nowrap">${renderActionButtons(app)}</td>
+          `;
+          tbody.appendChild(tr);
+
+          if (mobileContainer) {
+            const card = document.createElement('div');
+            card.className = 'gov-mobile-app-card';
+            card.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold font-monospace text-primary">${app.refNo}</span>
+                ${renderStatusBadge(app)}
+              </div>
+              <div class="small fw-semibold text-dark mb-1">${app.activityTitle}</div>
+              ${isApproved ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
+              <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
+                <span><i class="bi bi-tag me-1"></i>${app.categoryName || app.category}</span>
+                <span><i class="bi bi-calendar-event me-1"></i>${app.submissionDate || app.createdDate}</span>
+              </div>
+              <div class="text-end">
+                ${renderActionButtons(app)}
+              </div>
+            `;
+            mobileContainer.appendChild(card);
+          }
+        });
+      }
+
+      // 4. Render Full Applications Table
+      function renderFullApplicationsTable(apps) {
+        const tbody = document.getElementById('fullApplicationsTableBody');
+        tbody.innerHTML = '';
+
+        if (!apps || apps.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted small">No applications match the current filter.</td></tr>`;
+          return;
+        }
+
+        const mobileFullContainer = document.getElementById('fullApplicationsCardsMobile');
+        if (mobileFullContainer) mobileFullContainer.innerHTML = '';
+
+        apps.forEach(app => {
+          const isApprovedFull = app.status === 'APPROVED';
+          const permitBadgeFullHtml = isApprovedFull ? `
+            <div class="mt-1 d-flex align-items-center gap-1.5 flex-wrap">
+              <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-1.5" style="font-size: 0.72rem;">
+                <i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'SK-TOUR-2026-TRE-00215'}
+              </span>
+              <a href="javascript:void(0)" onclick="downloadCertificateDirect('${app.refNo}')" class="text-success text-decoration-none fw-semibold small" style="font-size: 0.74rem;" title="Direct Download Registration Certificate">
+                <i class="bi bi-file-earmark-arrow-down-fill"></i> Download
+              </a>
+            </div>
+          ` : '';
+
+          const tr = document.createElement('tr');
+          if (isApprovedFull) tr.className = 'table-success-subtle bg-success bg-opacity-10';
+          tr.innerHTML = `
+            <td><span class="fw-bold font-monospace text-primary">${app.refNo}</span></td>
+            <td><span class="badge bg-light text-dark border">${app.categoryName || app.category}</span></td>
+            <td>
+              <div class="small fw-semibold text-dark text-truncate" style="max-width: 250px;">${app.activityTitle}</div>
+              <div class="small text-muted" style="font-size: 0.75rem;"><i class="bi bi-geo-alt me-1"></i>${app.district || 'District DTO'}</div>
+              ${permitBadgeFullHtml}
+            </td>
+            <td><span class="small text-muted">${app.submissionDate || app.createdDate}</span></td>
+            <td>${renderStatusBadge(app)}</td>
+            <td><span class="small text-secondary fw-semibold">${app.fee || 'Free'}</span></td>
+            <td class="text-end text-nowrap">${renderActionButtons(app)}</td>
+          `;
+          tbody.appendChild(tr);
+
+          if (mobileFullContainer) {
+            const card = document.createElement('div');
+            card.className = 'gov-mobile-app-card';
+            card.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold font-monospace text-primary">${app.refNo}</span>
+                ${renderStatusBadge(app)}
+              </div>
+              <div class="small fw-semibold text-dark mb-1">${app.activityTitle}</div>
+              ${isApproved ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
+              <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
+                <span><i class="bi bi-geo-alt me-1"></i>${app.district || 'State'}</span>
+                <span><i class="bi bi-tag me-1"></i>${app.categoryName || app.category}</span>
+                <span>${app.fee || 'Free'}</span>
+              </div>
+              <div class="text-end">
+                ${renderActionButtons(app)}
+              </div>
+            `;
+            mobileFullContainer.appendChild(card);
+          }
+        });
+      }
+
+      // Helper: Render Status Badge
+      function renderStatusBadge(app) {
+        if (app.status === 'APPROVED') {
+          return `<span class="gov-badge gov-badge-approved"><i class="bi bi-check-circle"></i> Approved</span>`;
+        } else if (app.status === 'RETURNED') {
+          return `<span class="gov-badge gov-badge-returned"><i class="bi bi-exclamation-triangle"></i> Returned</span>`;
+        } else if (app.status === 'DRAFT') {
+          return `<span class="gov-badge gov-badge-draft"><i class="bi bi-file-earmark-diff"></i> Draft</span>`;
+        } else if (app.status === 'REJECTED') {
+          return `<span class="gov-badge gov-badge-rejected"><i class="bi bi-x-circle"></i> Rejected</span>`;
+        } else {
+          return `<span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span>`;
+        }
+      }
+
+      // Helper: Render Row Action Buttons
+      function renderActionButtons(app) {
+        let html = '';
+        if (app.status === 'DRAFT') {
+          const isPayPending = app.applicationStatus === 'PAYMENT_PENDING';
+          const resumeUrl = isPayPending ? `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}&step=4` : `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}`;
+          const btnText = isPayPending ? 'Pay & Submit' : 'Continue';
+          const btnClass = isPayPending ? 'btn-warning' : 'btn-primary';
+          const icon = isPayPending ? 'bi-credit-card' : 'bi-pencil-square';
+          html += `
+            <a href="${resumeUrl}" class="btn btn-sm ${btnClass} py-1 px-2 me-1" title="${btnText} Application">
+              <i class="bi ${icon}"></i> ${btnText}
+            </a>
+            <button class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete Draft" onclick="promptDeleteDraft('${app.draftId || app.refNo}')">
+              <i class="bi bi-trash"></i>
+            </button>
+          `;
+        } else if (app.status === 'APPROVED') {
+          html += `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button type="button" class="btn btn-sm btn-success py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Download Official Official Certificate" onclick="downloadCertificateDirect('${app.refNo}')">
+                <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                <span>Certificate</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Track Application Lifecycle" onclick="openTrackingFor('${app.refNo}')">
+                <i class="bi bi-geo-alt"></i>
+                <span>Track</span>
+              </button>
+            </div>
+          `;
+        } else if (app.status === 'RETURNED') {
+          html += `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button class="btn btn-sm btn-danger py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Rectify & Resubmit" onclick="openResubmitModal()">
+                <i class="bi bi-arrow-repeat"></i> Respond
+              </button>
+              <button class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Track Status" onclick="openTrackingFor('${app.refNo}')">
+                <i class="bi bi-geo-alt"></i> Track
+              </button>
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button class="btn btn-sm btn-outline-primary py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Track Status" onclick="openTrackingFor('${app.refNo}')">
+                <i class="bi bi-geo-alt"></i> Track
+              </button>
+            </div>
+          `;
+        }
+        return html;
+      }
+
+      // 5. Render Notifications
+      function renderNotifications(notifs) {
+        const dashList = document.getElementById('dashboardNotifList');
+        const fullList = document.getElementById('fullNotifList');
+        dashList.innerHTML = '';
+        fullList.innerHTML = '';
+
+        if (!notifs || notifs.length === 0) {
+          const emptyItem = `<div class="p-3 text-muted small text-center">No notifications at this time.</div>`;
+          dashList.innerHTML = emptyItem;
+          fullList.innerHTML = emptyItem;
+          return;
+        }
+
+        notifs.forEach(n => {
+          let icon = 'bi-info-circle text-primary';
+          if (n.type === 'danger') icon = 'bi-exclamation-triangle-fill text-danger';
+          if (n.type === 'success') icon = 'bi-check-circle-fill text-success';
+          if (n.type === 'warning') icon = 'bi-bell-fill text-warning';
+
+          const item = document.createElement('div');
+          item.className = 'list-group-item list-group-item-action d-flex align-items-start gap-3 py-3';
+          item.innerHTML = `
+            <i class="bi ${icon} fs-5 mt-1 flex-shrink-0"></i>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center">
+                <strong class="text-dark small">${n.title}</strong>
+                <span class="text-muted" style="font-size: 0.72rem;">${n.date}</span>
+              </div>
+              <p class="small text-muted mb-0 mt-1">${n.message}</p>
+            </div>
+          `;
+          dashList.appendChild(item.cloneNode(true));
+          fullList.appendChild(item);
+        });
+      }
+
+      // 6. 7-Stage Workflow Tracking Renderer
+      function renderTrackingView(refNo) {
+        const scenario = TourismBusinessData.scenarios[activeScenarioKey];
+        const storedSubmissions = getStoredSubmissions();
+        const app = scenario.applications.find(a => a.refNo === refNo) ||
+                    storedSubmissions.find(s => s.refNo === refNo) ||
+                    scenario.applications[0] ||
+                    storedSubmissions[0];
+        if (!app) {
+          renderEmptyTrackingView();
+          return;
+        }
+
+        document.getElementById('trackingArnInput').value = app.refNo;
+        document.getElementById('trackCardRef').textContent = app.refNo;
+        document.getElementById('trackCardCat').textContent = app.categoryName || app.category;
+        document.getElementById('trackActivityDesc').textContent = app.activityTitle;
+        document.getElementById('trackDistrict').textContent = `${app.district || 'State'} District DTO`;
+        document.getElementById('trackOfficer').textContent = app.handlingOfficer || 'Verification Officer';
+        document.getElementById('trackRemarksText').textContent = app.remarks || 'No remarks recorded.';
+        document.getElementById('trackCardStatusBadge').innerHTML = renderStatusBadge(app);
+
+        // Build 7 Stages
+        const container = document.getElementById('workflowTimelineContainer');
+        container.innerHTML = '';
+
+        const stages = TourismBusinessData.workflowStages;
+        const currentStageNum = app.currentStage || 1;
+
+        stages.forEach(st => {
+          const item = document.createElement('div');
+          let itemClass = 'gov-timeline-item';
+          let statusBadge = '<span class="badge bg-light text-muted border">Pending</span>';
+
+          if (app.status === 'REJECTED' && st.step === 6) {
+            itemClass += ' active border-danger';
+            statusBadge = '<span class="badge bg-danger">Application Rejected</span>';
+          } else if (app.status === 'RETURNED' && st.step === currentStageNum) {
+            itemClass += ' active border-warning';
+            statusBadge = '<span class="badge bg-warning text-dark">Returned for Clarification</span>';
+          } else if (st.step < currentStageNum || (st.step === 7 && app.status === 'APPROVED')) {
+            itemClass += ' completed';
+            statusBadge = '<span class="badge bg-success"><i class="bi bi-check me-1"></i> Completed</span>';
+          } else if (st.step === currentStageNum) {
+            itemClass += ' active';
+            statusBadge = '<span class="badge bg-primary">In Progress</span>';
+          }
+
+          item.className = itemClass;
+          item.innerHTML = `
+            <div class="gov-timeline-point">
+              ${st.step < currentStageNum || (st.step === 7 && app.status === 'APPROVED') ? '<i class="bi bi-check"></i>' : st.step}
+            </div>
+            <div class="gov-timeline-content">
+              <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-1">
+                <strong class="text-dark small">Stage ${st.step}: ${st.title}</strong>
+                ${statusBadge}
+              </div>
+              <div class="text-muted small">${st.desc}</div>
+              <div class="small text-secondary mt-1"><i class="bi bi-person me-1"></i> Authority: <strong>${st.authority}</strong></div>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+
+        // Update "What Happens Next?" Explanatory Section
+        var nextText = "DTO will verify applicant credentials, trail/venue feasibility, and forward the application to Headquarters.";
+        var nextActionHtml = '<span class="badge bg-secondary-subtle text-secondary border px-2 py-1"><i class="bi bi-info-circle me-1"></i> No action is required from you at this stage.</span>';
+
+        if (app.status === 'RETURNED') {
+          nextText = "Citizen needs to review the department remarks and take the required action (resubmit missing document/clarification).";
+          nextActionHtml = '<button class="btn btn-sm btn-danger px-3 py-1 fw-semibold" onclick="openResubmitModal()"><i class="bi bi-arrow-repeat me-1"></i> Resubmit Clarification (Stage 03)</button>';
+        } else if (app.status === 'APPROVED') {
+          nextText = "Permission document has been approved and issued by the competent District Tourism Officer. Official Official Certificate and Headquarters Approval Sheet are available.";
+          nextActionHtml = `
+            <div class="d-flex gap-2 flex-wrap mt-1">
+              <button class="btn btn-sm btn-success px-3 py-1 fw-semibold" onclick="openDepartmentDocuments('${app.refNo}')">
+                <i class="bi bi-folder-check me-1"></i> View Department Documents
+              </button>
+              <button class="btn btn-sm btn-outline-success px-3 py-1 fw-semibold" onclick="previewCertificate('${app.refNo}')">
+                <i class="bi bi-printer me-1"></i> Print Official Certificate
+              </button>
+            </div>
+          `;
+        } else if (app.status === 'REJECTED') {
+          nextText = "Official decision recorded. Security clearance was withheld by concerned authorities under border airspace restrictions.";
+          nextActionHtml = '<span class="badge bg-danger-subtle text-danger border px-2 py-1"><i class="bi bi-x-circle me-1"></i> Application Closed (Rejected)</span>';
+        } else if (app.currentStage === 4) {
+          nextText = "Headquarters (Gangtok) will review inter-departmental clearances and transmit the clearance back to the District DTO for final issuance.";
+          nextActionHtml = '<span class="badge bg-secondary-subtle text-secondary border px-2 py-1"><i class="bi bi-info-circle me-1"></i> No action is required from you at this stage.</span>';
+        }
+
+        const whatNextTextEl = document.getElementById('whatHappensNextText');
+        if (whatNextTextEl) whatNextTextEl.textContent = nextText;
+        const whatNextActionEl = document.getElementById('whatHappensNextAction');
+        if (whatNextActionEl) whatNextActionEl.innerHTML = nextActionHtml;
+        // Stage 06: Render Department Documents in Tracking View
+        const trackDocBox = document.getElementById('trackDeptDocsContainer');
+        if (trackDocBox && typeof DocumentService !== 'undefined') {
+          DocumentService.renderDepartmentDocumentsCard(trackDocBox, app.refNo, 'citizen');
+        }
+      };
+
+      // Helper Action Handlers for Action-Oriented Cards
+      function openTrackingForActive() {
+        if (window.activeOngoingRef) {
+          openTrackingFor(window.activeOngoingRef);
+        }
+      };
+
+      function previewActiveCertificate() {
+        if (window.activeApprovedArn) {
+          openDepartmentDocuments(window.activeApprovedArn);
+        } else if (window.activeApprovedCert) {
+          openDepartmentDocuments(window.activeApprovedCert);
+        } else {
+          openDepartmentDocuments('SK-TP-2026-APP-00215');
+        }
+      };
+
+      function renderEmptyTrackingView() {
+        document.getElementById('trackCardRef').textContent = 'No Active Application';
+        document.getElementById('trackCardCat').textContent = 'N/A';
+        document.getElementById('trackActivityDesc').textContent = 'None';
+        document.getElementById('trackDistrict').textContent = 'N/A';
+        document.getElementById('trackOfficer').textContent = 'N/A';
+        document.getElementById('trackRemarksText').textContent = 'Submit a new application to track its progress.';
+        document.getElementById('trackCardStatusBadge').innerHTML = '<span class="badge bg-secondary">No Records</span>';
+        document.getElementById('workflowTimelineContainer').innerHTML = `
+          <div class="p-4 text-center text-muted small bg-light rounded">
+            <i class="bi bi-geo-alt fs-3 d-block mb-2 text-muted"></i>
+            No tracking progression available for this scenario.
+          </div>
+        `;
+      }
+
+      function renderTrackingQuickChips(apps) {
+        const chipsContainer = document.getElementById('trackingQuickChips');
+        chipsContainer.innerHTML = '';
+        if (!apps || apps.length === 0) return;
+
+        chipsContainer.innerHTML = '<span class="text-muted me-1">Your Applications:</span>';
+        apps.forEach(a => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn btn-xs btn-outline-primary py-0 px-2 font-monospace';
+          btn.style.fontSize = '0.75rem';
+          btn.textContent = a.refNo;
+          btn.onclick = () => renderTrackingView(a.refNo);
+          chipsContainer.appendChild(btn);
+        });
+      }
+
+      // 7. Search & Filter Handlers for Applications View
+      function initApplicationsSearchAndFilters() {
+        const searchInput = document.getElementById('appSearchInput');
+        const catFilter = document.getElementById('appCategoryFilter');
+        const statusFilter = document.getElementById('appStatusFilter');
+        const resetBtn = document.getElementById('resetFiltersBtn');
+
+        function applyFilters() {
+          const query = searchInput.value.trim().toLowerCase();
+          const category = catFilter.value;
+          const status = statusFilter.value;
+
+          const scenario = TourismBusinessData.scenarios[activeScenarioKey];
+          const filtered = scenario.applications.filter(app => {
+            const matchesQuery = !query ||
+              app.refNo.toLowerCase().includes(query) ||
+              app.activityTitle.toLowerCase().includes(query) ||
+              (app.category && app.category.toLowerCase().includes(query));
+            const matchesCategory = (category === 'all' || app.category === category);
+            const matchesStatus = (status === 'all' || app.status === status);
+            return matchesQuery && matchesCategory && matchesStatus;
+          });
+
+          renderFullApplicationsTable(filtered);
+        }
+
+        if (searchInput) searchInput.addEventListener('input', applyFilters);
+        if (catFilter) catFilter.addEventListener('change', applyFilters);
+        if (statusFilter) statusFilter.addEventListener('change', applyFilters);
+        if (resetBtn) {
+          resetBtn.addEventListener('click', function () {
+            searchInput.value = '';
+            catFilter.value = 'all';
+            statusFilter.value = 'all';
+            const scenario = TourismBusinessData.scenarios[activeScenarioKey];
+            renderFullApplicationsTable(scenario.applications);
+          });
+        }
+      }
+
+      // 8. Tracking Search Form
+      function initTrackingSearch() {
+        const trackBtn = document.getElementById('trackSearchBtn');
+        const trackInput = document.getElementById('trackingArnInput');
+        if (trackBtn && trackInput) {
+          trackBtn.addEventListener('click', function () {
+            const val = trackInput.value.trim();
+            if (val) {
+              renderTrackingView(val);
+              if (window.GovApp && GovApp.showNotification) {
+                GovApp.showNotification(`Tracking refreshed for ${val}`, 'info');
+              }
+            }
+          });
+        }
+      }
+
+      // 9. Mobile Sidebar Navigation Toggle
+      function initMobileSidebar() {
+        const toggleBtn = document.getElementById('gov-sidebar-toggle');
+        const closeBtn = document.getElementById('sidebar-close-btn');
+        const sidebar = document.getElementById('sidebar-nav');
+
+        if (toggleBtn && sidebar) {
+          toggleBtn.addEventListener('click', () => sidebar.classList.toggle('d-block'));
+        }
+        if (closeBtn && sidebar) {
+          closeBtn.addEventListener('click', () => sidebar.classList.remove('d-block'));
+        }
+      }
+
+      // 10. Switch Views (SPA tab switching)
+      function switchView(viewName, preFilterStatus = null) {
+        // Update sidebar nav active state
+        document.querySelectorAll('.gov-sidebar-link').forEach(link => {
+          if (link.getAttribute('data-view') === viewName) {
+            link.classList.add('gov-nav-active');
+          } else {
+            link.classList.remove('gov-nav-active');
+          }
+        });
+
+        // Toggle sections
+        document.querySelectorAll('.workspace-section').forEach(sec => sec.classList.add('d-none'));
+        const targetSection = document.getElementById(`section-${viewName}`);
+        if (targetSection) {
+          targetSection.classList.remove('d-none');
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Apply pre-filter if supplied (e.g. clicking summary stat card)
+        if (viewName === 'applications' && preFilterStatus) {
+          const statusDropdown = document.getElementById('appStatusFilter');
+          if (statusDropdown) {
+            statusDropdown.value = preFilterStatus;
+            statusDropdown.dispatchEvent(new Event('change'));
+          }
+        }
+
+        // On mobile, close sidebar after clicking
+        const sidebar = document.getElementById('sidebar-nav');
+        if (sidebar && window.innerWidth < 992) {
+          sidebar.classList.remove('d-block');
+        }
+      };
+
+      // 11. Helper Actions
+      function openTrackingFor(refNo) {
+        switchView('tracking');
+        renderTrackingView(refNo);
+      };
+
+      function openDepartmentDocuments(arn) {
+        const ref = arn || window.activeApprovedArn || 'SK-TP-2026-APP-00215';
+        const container = document.getElementById('deptDocsModalContent');
+        if (container && typeof DocumentService !== 'undefined') {
+          DocumentService.renderDepartmentDocumentsCard(container, ref, 'citizen');
+        }
+        const modal = new bootstrap.Modal(document.getElementById('modalDepartmentDocs'));
+        modal.show();
+      };
+
+            function downloadCertificateDirect(arn) {
+        const ref = (arn && arn.startsWith('SK-TP')) ? arn : (window.activeApprovedArn || 'SK-TP-2026-APP-00215');
+        if (typeof DocumentService !== 'undefined') {
+          DocumentService.openPermissionLetter(ref, 'citizen');
+        } else {
+          window.open('dashboard.html?arn=' + encodeURIComponent(ref) + '&role=citizen', '_blank');
+        }
+      };
+
+      function previewCertificate(certRef) {
+        const arn = (certRef && certRef.startsWith('SK-TP')) ? certRef : (window.activeApprovedArn || 'SK-TP-2026-APP-00215');
+        if (typeof DocumentService !== 'undefined') {
+          DocumentService.openDocumentModal('permission', arn, 'citizen');
+        } else {
+          window.open('dashboard.html?arn=' + encodeURIComponent(arn), '_blank');
+        }
+      };
+
+      function promptDeleteDraft(refNo) {
+        document.getElementById('deleteDraftRef').textContent = refNo;
+        const modal = new bootstrap.Modal(document.getElementById('deleteDraftConfirmModal'));
+        modal.show();
+      };
+
+      function promptDeleteDraftFromCard() {
+        if (window.activeDraftRef) {
+          promptDeleteDraft(window.activeDraftRef);
+        }
+      };
+
+      function executeDeleteDraft() {
+        const modalEl = document.getElementById('deleteDraftConfirmModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
+        const refToDelete = document.getElementById('deleteDraftRef').textContent;
+        try {
+          const drafts = getStoredDrafts().filter(d => d.draftId !== refToDelete && d.refNo !== refToDelete);
+          localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
+        } catch (e) {}
+
+        const scenario = TourismBusinessData.scenarios[activeScenarioKey];
+        scenario.applications = scenario.applications.filter(a => a.refNo !== refToDelete && a.draftId !== refToDelete);
+        scenario.stats.total = scenario.applications.length;
+        scenario.stats.draft = 0;
+        renderActiveScenario(activeScenarioKey);
+
+        if (window.GovApp && GovApp.showNotification) {
+          GovApp.showNotification('Draft application discarded successfully.', 'info');
+        }
+      };
+
+      function simulateLogout(e) {
+        e.preventDefault();
+        if (window.GovApp && GovApp.showNotification) {
+          GovApp.showNotification('Signing out of Sikkim GO Citizen Gateway...', 'info');
+        }
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 600);
+      };
+
+
+      // Stage 04 Citizen Resubmission Handlers
+      function openResubmitModal(refNo) {
+        const targetRef = refNo || window.activeReturnedRef || 'SK-TP-2026-APP-00329';
+        const workflowApp = (window.WorkflowEngine) ? WorkflowEngine.getApplication(targetRef) : null;
+        
+        document.getElementById('resubmitArn').value = targetRef;
+        document.getElementById('resubmitArnDisplay').textContent = targetRef;
+
+        let remarks = 'Please review the missing statutory clearance or route information and resubmit.';
+        if (workflowApp && workflowApp.dtoRemarks) {
+          remarks = workflowApp.dtoRemarks;
+        } else if (workflowApp && workflowApp.hqRemarks) {
+          remarks = workflowApp.hqRemarks;
+        } else {
+          const actionRemarksEl = document.getElementById('actionRequiredRemarks');
+          if (actionRemarksEl && actionRemarksEl.textContent.trim()) {
+            remarks = actionRemarksEl.textContent.trim();
+          }
+        }
+
+        document.getElementById('resubmitOfficerRemarks').textContent = remarks;
+        document.getElementById('resubmitCitizenRemarks').value = 'Clarification submitted: Attached the required statutory clearance and rectified application details as instructed.';
+        document.getElementById('resubmitFileInput').value = '';
+
+        const modal = new bootstrap.Modal(document.getElementById('modalCitizenResubmit'));
+        modal.show();
+      };
+
+      function handleCitizenResubmit(e) {
+        if (e) e.preventDefault();
+        const refNo = document.getElementById('resubmitArn').value;
+        const remarks = document.getElementById('resubmitCitizenRemarks').value.trim();
+        const fileInput = document.getElementById('resubmitFileInput');
+        const fileName = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : 'Rectified_Clearance_NOC.pdf';
+
+        if (!remarks) {
+          alert('Please enter your response remarks.');
+          return;
+        }
+
+        const newDoc = {
+          id: 'doc_' + Date.now(),
+          name: 'Applicant Resubmitted Document',
+          fileName: fileName,
+          size: '1.2 MB',
+          date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        };
+
+        if (window.WorkflowEngine) {
+          const res = WorkflowEngine.citizenResubmit(refNo, { newDoc: newDoc }, remarks);
+          if (res.success) {
+            const modalEl = document.getElementById('modalCitizenResubmit');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+
+            // Synchronize scenario data
+            const scenario = TourismBusinessData.scenarios[activeScenarioKey];
+            if (scenario) {
+              const target = scenario.applications.find(a => a.refNo === refNo);
+              if (target) {
+                target.status = 'IN_PROCESS';
+                target.currentStage = 2; // DTO Reverification
+                target.remarks = 'Corrected application resubmitted. Awaiting DTO reverification.';
+              }
+            }
+
+            alert('Application ' + refNo + ' has been resubmitted successfully!\n\nCurrent Stage: Awaiting DTO Reverification\nThe concerned District Tourism Officer has received your corrected application.');
+            renderActiveScenario(activeScenarioKey);
+          } else {
+            alert(res.message);
+          }
+        }
+      };
+
+
+      // Expose handlers to global window for HTML onclick attributes & external callers
+      window.renderActiveScenario = renderActiveScenario;
+      window.renderTrackingView = renderTrackingView;
+      window.openTrackingForActive = openTrackingForActive;
+      window.downloadCertificateDirect = downloadCertificateDirect;
+      window.openDepartmentDocuments = openDepartmentDocuments;
+      window.previewActiveCertificate = previewActiveCertificate;
+      window.switchView = switchView;
+      window.openTrackingFor = openTrackingFor;
+      window.previewCertificate = previewCertificate;
+      window.promptDeleteDraft = promptDeleteDraft;
+      window.promptDeleteDraftFromCard = promptDeleteDraftFromCard;
+      window.executeDeleteDraft = executeDeleteDraft;
+      window.simulateLogout = simulateLogout;
+      window.openResubmitModal = openResubmitModal;
+      window.handleCitizenResubmit = handleCitizenResubmit;
+
+    })();
+  </script>
+</body>
+</html>
+

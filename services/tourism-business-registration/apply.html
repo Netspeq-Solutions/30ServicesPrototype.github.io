@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24476B">
+  <title>Application Form &bull; Tourism Business &amp; Outdoor Photography Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Stepper Styling */
+    .gov-stepper-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .gov-stepper-list {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      justify-content: space-between;
+      position: relative;
+    }
+    .gov-stepper-list::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      right: 30px;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .gov-stepper-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      cursor: pointer;
+    }
+    .gov-stepper-bubble {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      color: #64748b;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      transition: all 0.25s ease;
+      font-size: 0.95rem;
+    }
+    .gov-stepper-title {
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: #64748b;
+      max-width: 120px;
+      line-height: 1.25;
+    }
+    .gov-stepper-step.active .gov-stepper-bubble {
+      background: #24476B;
+      border-color: #24476B;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(36, 71, 107, 0.18);
+    }
+    .gov-stepper-step.active .gov-stepper-title {
+      color: #24476B;
+      font-weight: 700;
+    }
+    .gov-stepper-step.completed .gov-stepper-bubble {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+    .gov-stepper-step.completed .gov-stepper-title {
+      color: #10b981;
+    }
+
+    /* Form Card Container */
+    .form-step-section {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    /* File Dropzone Box */
+    .file-dropzone-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .file-dropzone-box:hover {
+      border-color: #24476B;
+      background: #f0f7ff;
+    }
+
+    .review-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .repeating-record-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+
+    .cursor-pointer { cursor: pointer; }
+
+    @media (max-width: 768px) {
+      .gov-stepper-title { display: none; }
+      .gov-stepper-list::before { top: 20px; }
+      .form-step-section { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Accessibility Skip Link -->
+  <a class="gov-skip-link" href="#main-form-content">Skip to Main Content</a>
+
+  <!-- Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Reviewer Controller Bar (Testing & Category Switcher) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Controls" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+          <i class="bi bi-flask-fill me-1"></i> STAGE 03 FORM
+        </span>
+        <span class="fw-semibold text-white d-none d-sm-inline">Registration Type:</span>
+        <select id="quickCategorySelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px; font-size: 0.8rem;" onchange="switchApplicationType(this.value)">
+          <option value="tour-operator">Tour Operator (Form A)</option>
+          <option value="travel-agent">Travel Agent (Form A)</option>
+          <option value="dealer">Equipment Dealer (Form B)</option>
+          <option value="outdoor-photographer">Outdoor Photographer (Form C)</option>
+        </select>
+        <span class="badge bg-primary-subtle text-white border border-secondary small d-none d-md-inline-block">
+          <i class="bi bi-file-earmark-code me-1"></i> Form Config: <strong id="formConfigLabel">Form A</strong>
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 d-inline-flex align-items-center gap-1" onclick="saveCurrentDraftManual()" title="Save as Draft">
+          <i class="bi bi-save"></i>
+          <span>Save Draft</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" id="btn-contrast-toggle" title="Toggle High Contrast" onclick="document.body.classList.toggle('high-contrast')">
+          <i class="bi bi-circle-half"></i>
+        </button>
+        <a href="dashboard.html" class="btn btn-sm btn-outline-danger py-0 px-2 text-white border-white-50" title="Exit to Citizen Dashboard">
+          <i class="bi bi-box-arrow-left me-1"></i>Exit
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block flex-shrink-0" title="Portal Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 52px; width: auto;">
+          </a>
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 1px;">Government of Sikkim</span>
+            <div class="gov-header-dept h6 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</div>
+            <h1 class="small fw-semibold text-primary mb-0" id="formHeaderTitle">Tour Operator Registration Application</h1>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="text-end d-none d-sm-block">
+            <div class="small text-muted" style="font-size: 0.72rem;">Application Draft ID:</div>
+            <strong class="font-monospace text-dark small" id="headerDraftRef">SK-TBR-2026-DFT-7721</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main id="main-form-content" class="flex-grow-1 py-4">
+    <div class="container-xl" style="max-width: 1040px;">
+
+      <!-- Breadcrumbs -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Citizen Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="instructions.html" class="text-decoration-none">Instructions</a></li>
+          <li class="breadcrumb-item active" aria-current="page" id="breadcrumbFormName">Registration Application</li>
+        </ol>
+      </nav>
+
+      <!-- Dynamic Form Stepper Container -->
+      <div class="gov-stepper-container" id="stepperContainer" aria-label="Application Progress Stepper">
+        <ul class="gov-stepper-list" id="formStepperList">
+          <!-- Populated dynamically via JS based on Form A / B / C -->
+        </ul>
+      </div>
+
+      <!-- Main Application Form -->
+      <form id="tourismBusinessForm" novalidate onsubmit="return false;">
+
+        <!-- ==============================================================
+             FORM A: TOUR OPERATOR / TRAVEL AGENT (Sections 1 to 4)
+             ============================================================== -->
+        <div id="formContainerA" class="form-config-container">
+          
+          <!-- STEP A1: APPLICANT DETAILS (11 fields) -->
+          <section id="step-A-1" class="form-step-section">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-1">Step 1 of 5</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Applicant Details</h2>
+              </div>
+              <span class="text-muted small">All fields marked with <span class="text-danger">*</span> are mandatory</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Field 1: Passport Format Photograph -->
+              <div class="col-md-12">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Passport Format Photograph (Photo of Applicant) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="border rounded p-1 bg-light text-center" style="width: 100px; height: 115px; display: flex; align-items: center; justify-content: center;" id="photoPreviewBoxA">
+                    <i class="bi bi-person text-secondary fs-1"></i>
+                  </div>
+                  <div>
+                    <input type="file" class="form-control form-control-sm mb-1" id="fieldA_photo" accept="image/*" onchange="previewImage(this, 'photoPreviewBoxA')">
+                    <div class="text-muted small" style="font-size: 0.75rem;">Clear front-facing passport photograph (JPEG, PNG &bull; Max 2MB).</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 2: Applicant Name -->
+              <div class="col-md-6">
+                <label for="fieldA_applicantName" class="form-label small fw-bold text-dark mb-1">
+                  Applicant Name <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_applicantName" placeholder="Full name of applicant" required>
+              </div>
+
+              <!-- Field 4: Residential Proof -->
+              <div class="col-md-6">
+                <label for="fieldA_residentialProof" class="form-label small fw-bold text-dark mb-1">
+                  Residential Proof: Domicile / COI / RC (wherever applicable) <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_residentialProof" placeholder="e.g. COI Certificate No. / RC / Domicile ID" required>
+              </div>
+
+              <!-- Field 3: Applicant Address Details -->
+              <div class="col-md-12">
+                <label for="fieldA_address" class="form-label small fw-bold text-dark mb-1">
+                  Applicant Address Details <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_address" rows="2" placeholder="Full residential postal address with PIN code" required></textarea>
+              </div>
+
+              <!-- Field 5: District of Application -->
+              <div class="col-md-4">
+                <label for="fieldA_district" class="form-label small fw-bold text-dark mb-1">
+                  District of Application <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldA_district" required>
+                  <option value="">-- Select District --</option>
+                  <option value="Gangtok" selected>Gangtok District</option>
+                  <option value="Namchi">Namchi District</option>
+                  <option value="Gyalshing">Gyalshing District</option>
+                  <option value="Mangan">Mangan District</option>
+                  <option value="Pakyong">Pakyong District</option>
+                  <option value="Soreng">Soreng District</option>
+                </select>
+              </div>
+
+              <!-- Field 6: Phone Number -->
+              <div class="col-md-4">
+                <label for="fieldA_phone" class="form-label small fw-bold text-dark mb-1">
+                  Phone Number <span class="text-danger">*</span>
+                </label>
+                <input type="tel" class="form-control form-control-sm" id="fieldA_phone" placeholder="10-digit mobile number" maxlength="10" required>
+              </div>
+
+              <!-- Field 7: Email Address -->
+              <div class="col-md-4">
+                <label for="fieldA_email" class="form-label small fw-bold text-dark mb-1">
+                  Email Address <span class="text-danger">*</span>
+                </label>
+                <input type="email" class="form-control form-control-sm" id="fieldA_email" placeholder="applicant@example.com" required>
+              </div>
+
+              <!-- Field 8: Website (Optional) -->
+              <div class="col-md-4">
+                <label for="fieldA_website" class="form-label small fw-bold text-dark mb-1">
+                  Website (Optional)
+                </label>
+                <input type="url" class="form-control form-control-sm" id="fieldA_website" placeholder="https://example.com">
+              </div>
+
+              <!-- Field 9: Educational Qualification -->
+              <div class="col-md-4">
+                <label for="fieldA_eduQualification" class="form-label small fw-bold text-dark mb-1">
+                  Educational Qualification <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_eduQualification" placeholder="e.g. Graduate / Class 12 / Post Graduate" required>
+              </div>
+
+              <!-- Field 10: Technical Qualification -->
+              <div class="col-md-4">
+                <label for="fieldA_techQualification" class="form-label small fw-bold text-dark mb-1">
+                  Technical Qualification <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_techQualification" placeholder="e.g. Tourism Diploma / IATA Certification / GDS" required>
+              </div>
+
+              <!-- Field 11: Tourism & Travel Management Training / Capacity Building Training -->
+              <div class="col-md-12">
+                <label for="fieldA_training" class="form-label small fw-bold text-dark mb-1">
+                  Tourism &amp; Travel Management Training / Capacity Building Training <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_training" placeholder="Details of certified training attended under Sikkim Tourism / MoT / IHMs" required>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-arrow-left me-1"></i> Back to Instructions
+              </a>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepA(1)">
+                <span>Save &amp; Proceed to Organisation</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP A2: ORGANISATION & ACTIVITY (15 fields) -->
+          <section id="step-A-2" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-1">Step 2 of 5</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Organisation &amp; Activity</h2>
+              </div>
+              <span class="text-muted small">Preserve all firm and operational fields</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Field 1: Name of Firm -->
+              <div class="col-md-6">
+                <label for="fieldA_firmName" class="form-label small fw-bold text-dark mb-1">
+                  Name of Firm <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_firmName" placeholder="Commercial establishment or enterprise name" required>
+              </div>
+
+              <!-- Field 2: Legal Constitution of Firm -->
+              <div class="col-md-3">
+                <label for="fieldA_constitution" class="form-label small fw-bold text-dark mb-1">
+                  Legal Constitution of Firm <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldA_constitution" required>
+                  <option value="">-- Select Constitution --</option>
+                  <option value="Proprietorship" selected>Proprietorship</option>
+                  <option value="Partnership">Partnership</option>
+                  <option value="Private Limited Company">Private Limited Company</option>
+                  <option value="Limited Liability Partnership (LLP)">Limited Liability Partnership (LLP)</option>
+                  <option value="Registered Society">Registered Society</option>
+                  <option value="Other">Other Legal Entity</option>
+                </select>
+              </div>
+
+              <!-- Field 3: Building / Office Premises Ownership -->
+              <div class="col-md-3">
+                <label for="fieldA_ownership" class="form-label small fw-bold text-dark mb-1">
+                  Building / Office Premises Ownership <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldA_ownership" required>
+                  <option value="">-- Select Ownership --</option>
+                  <option value="Owned">Owned Premises</option>
+                  <option value="Rented / Tenancy" selected>Rented / Tenancy</option>
+                  <option value="Leased">Leased Premises</option>
+                </select>
+              </div>
+
+              <!-- Field 4: Names of Partners and/or Directors (Repeating Section) -->
+              <div class="col-md-12">
+                <div class="p-3 bg-light rounded border">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label small fw-bold text-dark mb-0">
+                      Names of Partners and/or Directors (Full Name, Designation/Role, Contact Number, Residential Address) <span class="text-danger">*</span>
+                    </label>
+                    <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 d-inline-flex align-items-center gap-1" onclick="addPartnerRowA()">
+                      <i class="bi bi-plus-circle"></i>
+                      <span>Add Partner / Director</span>
+                    </button>
+                  </div>
+                  <div id="partnersContainerA">
+                    <!-- Repeating partner cards rendered via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 5: Exact Office Location & Postal Address -->
+              <div class="col-md-6">
+                <label for="fieldA_officeAddress" class="form-label small fw-bold text-dark mb-1">
+                  Exact Office Location &amp; Postal Address <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_officeAddress" rows="2" placeholder="Full postal address of principal business office in Sikkim" required></textarea>
+              </div>
+
+              <!-- Field 6: Location, Size and Standard of Office -->
+              <div class="col-md-6">
+                <label for="fieldA_officeSizeStandard" class="form-label small fw-bold text-dark mb-1">
+                  Location, Size and Standard of Office <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_officeSizeStandard" rows="2" placeholder="e.g. Floor area in sq.ft, commercial zone standard, client reception" required></textarea>
+              </div>
+
+              <!-- Field 7: Category Applied For -->
+              <div class="col-md-4">
+                <label for="fieldA_categoryApplied" class="form-label small fw-bold text-dark mb-1">
+                  Category Applied For <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm bg-light" id="fieldA_categoryApplied" value="Tour Operator Registration" readonly>
+              </div>
+
+              <!-- Field 8: Association Affiliation -->
+              <div class="col-md-4">
+                <label for="fieldA_association" class="form-label small fw-bold text-dark mb-1">
+                  Association Affiliation <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldA_association" placeholder="e.g. TAAS / SATO / TAAI / IATO / None" required>
+              </div>
+
+              <!-- Field 9: Business Activities -->
+              <div class="col-md-4">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Business Activities (Travel arrangement, Sightseeing, Hotel booking, Air booking, Any Other Activities) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex flex-wrap gap-2 small pt-1">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="actTravel" value="Travel arrangement" checked>
+                    <label class="form-check-label" for="actTravel">Travel arrangement</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="actSightseeing" value="Sightseeing" checked>
+                    <label class="form-check-label" for="actSightseeing">Sightseeing</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="actHotel" value="Hotel booking" checked>
+                    <label class="form-check-label" for="actHotel">Hotel booking</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="actAir" value="Air booking">
+                    <label class="form-check-label" for="actAir">Air booking</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="actOther" value="Any Other Activities" onchange="toggleOtherActivityInput(this)">
+                    <label class="form-check-label" for="actOther">Any Other Activities</label>
+                  </div>
+                </div>
+                <input type="text" class="form-control form-control-sm mt-1 d-none" id="actOtherText" placeholder="Specify any other activities">
+              </div>
+
+              <!-- Field 10: Activities Undertaken (Operational Scope Summary) -->
+              <div class="col-md-6">
+                <label for="fieldA_activitiesSummary" class="form-label small fw-bold text-dark mb-1">
+                  Activities Undertaken (Operational Scope Summary) <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_activitiesSummary" rows="2" placeholder="Summary of scope of operations, tour circuits, client management" required></textarea>
+              </div>
+
+              <!-- Field 11: Experience, Reputation and Efficiency Details -->
+              <div class="col-md-6">
+                <label for="fieldA_experienceDetails" class="form-label small fw-bold text-dark mb-1">
+                  Experience, Reputation and Efficiency Details <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_experienceDetails" rows="2" placeholder="Years in tourist trade, market reputation, client testimonials" required></textarea>
+              </div>
+
+              <!-- Field 12: Insurance of Company -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Insurance of Company (Commercial enterprise liability: Yes/No) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex gap-3 pt-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldA_insuranceCompany" id="insCompYes" value="Yes" checked>
+                    <label class="form-check-label small" for="insCompYes">Yes</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldA_insuranceCompany" id="insCompNo" value="No">
+                    <label class="form-check-label small" for="insCompNo">No</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 13: Insurance of Guest -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Insurance of Guest (Accident and evacuation coverage: Yes/No) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex gap-3 pt-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldA_insuranceGuest" id="insGuestYes" value="Yes" checked>
+                    <label class="form-check-label small" for="insGuestYes">Yes</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldA_insuranceGuest" id="insGuestNo" value="No">
+                    <label class="form-check-label small" for="insGuestNo">No</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 14: Eco-Friendly / Sustainable Tourism Practices and Other Facilities -->
+              <div class="col-md-6">
+                <label for="fieldA_ecoPractices" class="form-label small fw-bold text-dark mb-1">
+                  Eco-Friendly / Sustainable Tourism Practices and Other Facilities <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_ecoPractices" rows="2" placeholder="Leave-No-Trace adherence, plastic reduction, eco-tours protocols" required></textarea>
+              </div>
+
+              <!-- Field 15: Office Equipment & Facilities -->
+              <div class="col-md-6">
+                <label for="fieldA_officeEquipment" class="form-label small fw-bold text-dark mb-1">
+                  Office Equipment &amp; Facilities: 4 workstations, client lounge, high-speed fiber internet, and fire extinguisher. <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldA_officeEquipment" rows="2" placeholder="4 workstations, client lounge, high-speed fiber internet, and fire extinguisher maintained." required></textarea>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepA(1)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepA(2)">
+                <span>Save &amp; Proceed to Staff Qualification</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP A3: STAFF QUALIFICATION (Repeating Section) -->
+          <section id="step-A-3" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-1">Step 3 of 5</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Staff Qualification</h2>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" onclick="addStaffRowA()">
+                <i class="bi bi-plus-circle"></i>
+                <span>Add Staff Member</span>
+              </button>
+            </div>
+
+            <p class="text-muted small mb-3">
+              Add details for all operational, managerial, and field staff employed by the firm.
+            </p>
+
+            <div id="staffContainerA">
+              <!-- Repeating staff member cards rendered via JS -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepA(2)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepA(3)">
+                <span>Save &amp; Proceed to Documents</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP A4: DOCUMENTS (13 Document Upload Requirements) -->
+          <section id="step-A-4" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-1">Step 4 of 5</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Documents</h2>
+              </div>
+              <span class="text-muted small">Upload clear PDF / JPG files (Max 5MB per document)</span>
+            </div>
+
+            <div class="row g-3" id="docsGridA">
+              <!-- 13 Documents dynamically structured with exact names -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepA(3)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepA(4)">
+                <span>Save &amp; Proceed to Summary</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ==============================================================
+             FORM B: DEALER REGISTRATION (Sections 1 to 4)
+             ============================================================== -->
+        <div id="formContainerB" class="form-config-container d-none">
+          
+          <!-- STEP B1: APPLICANT & PREMISES (7 fields) -->
+          <section id="step-B-1" class="form-step-section">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 1 of 5 &bull; Form B</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Applicant &amp; Premises</h2>
+              </div>
+              <span class="text-muted small">All 7 fields are mandatory</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Field 1: Passport Format Photograph -->
+              <div class="col-md-12">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Passport Format Photograph (Photo of Applicant) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="border rounded p-1 bg-light text-center" style="width: 100px; height: 115px; display: flex; align-items: center; justify-content: center;" id="photoPreviewBoxB">
+                    <i class="bi bi-person text-secondary fs-1"></i>
+                  </div>
+                  <div>
+                    <input type="file" class="form-control form-control-sm mb-1" id="fieldB_photo" accept="image/*" onchange="previewImage(this, 'photoPreviewBoxB')">
+                    <div class="text-muted small" style="font-size: 0.75rem;">Clear front-facing passport photograph (JPEG, PNG &bull; Max 2MB).</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 2: Certificate of Identification / Domicile Certificate -->
+              <div class="col-md-6">
+                <label for="fieldB_coi" class="form-label small fw-bold text-dark mb-1">
+                  Certificate of Identification / Domicile Certificate (Details/Number) <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_coi" placeholder="COI / Domicile Certificate No. and date of issue" required>
+              </div>
+
+              <!-- Field 3: Name of Premises -->
+              <div class="col-md-6">
+                <label for="fieldB_premisesName" class="form-label small fw-bold text-dark mb-1">
+                  Name of Premises <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_premisesName" placeholder="Commercial shop / outlet name" required>
+              </div>
+
+              <!-- Field 4: Address of Premises -->
+              <div class="col-md-6">
+                <label for="fieldB_premisesAddress" class="form-label small fw-bold text-dark mb-1">
+                  Address of Premises <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldB_premisesAddress" rows="2" placeholder="Full physical shop address, shop number, road/street, town, PIN" required></textarea>
+              </div>
+
+              <!-- Field 5: Name of Persons Concerned (Full Address Included) -->
+              <div class="col-md-6">
+                <label for="fieldB_personsConcerned" class="form-label small fw-bold text-dark mb-1">
+                  Name of Persons Concerned (Full Address Included) <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldB_personsConcerned" rows="2" placeholder="Names of responsible persons/managers with permanent residential addresses" required></textarea>
+              </div>
+
+              <!-- Field 6: District of Application -->
+              <div class="col-md-6">
+                <label for="fieldB_district" class="form-label small fw-bold text-dark mb-1">
+                  District of Application <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldB_district" required>
+                  <option value="">-- Select District --</option>
+                  <option value="Gangtok" selected>Gangtok District</option>
+                  <option value="Namchi">Namchi District</option>
+                  <option value="Gyalshing">Gyalshing District</option>
+                  <option value="Mangan">Mangan District</option>
+                  <option value="Pakyong">Pakyong District</option>
+                  <option value="Soreng">Soreng District</option>
+                </select>
+              </div>
+
+              <!-- Field 7: Name of Tourist Area for Registration -->
+              <div class="col-md-6">
+                <label for="fieldB_touristArea" class="form-label small fw-bold text-dark mb-1">
+                  Name of Tourist Area for Registration <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldB_touristArea" required>
+                  <option value="">-- Select Tourist Area --</option>
+                  <option value="Gangtok MG Marg Tourist Zone" selected>Gangtok MG Marg Tourist Zone</option>
+                  <option value="Pelling-Yuksam Alpine Corridor">Pelling-Yuksam Alpine Corridor</option>
+                  <option value="Namchi Central Tourism Circuit">Namchi Central Tourism Circuit</option>
+                  <option value="Lachung-Lachen High Altitude Zone">Lachung-Lachen High Altitude Zone</option>
+                  <option value="Ravangla Tourism Zone">Ravangla Tourism Zone</option>
+                  <option value="Pending Departmental Tourist Area List">Pending Departmental Tourist Area Confirmation</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-arrow-left me-1"></i> Back to Instructions
+              </a>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(1)">
+                <span>Save &amp; Proceed to Ownership</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP B2: OWNERSHIP & CONSTITUTION (4 fields with conditional logic) -->
+          <section id="step-B-2" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 2 of 5 &bull; Form B</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Ownership &amp; Constitution</h2>
+              </div>
+              <span class="text-muted small">Conditional fields adapt to business constitution</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Field 1: Name(s) of Proprietor(s) -->
+              <div class="col-md-6">
+                <label for="fieldB_proprietor" class="form-label small fw-bold text-dark mb-1">
+                  Name(s) of Proprietor(s) <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_proprietor" placeholder="Full name of proprietor(s)" required>
+              </div>
+
+              <!-- Constitution Selection for triggering conditions -->
+              <div class="col-md-6">
+                <label for="fieldB_constitutionType" class="form-label small fw-bold text-dark mb-1">
+                  Establishment Legal Constitution <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldB_constitutionType" onchange="handleDealerConstitutionChange(this.value)">
+                  <option value="Proprietorship" selected>Proprietorship Concern</option>
+                  <option value="Partnership">Partnership Concern</option>
+                  <option value="Corporate / Private Limited">Corporate / Private Limited Entity</option>
+                </select>
+              </div>
+
+              <!-- Field 2: Father's Name of Applicant (Conditional: Proprietorship) -->
+              <div class="col-md-6" id="bCondFatherBox">
+                <label for="fieldB_fatherName" class="form-label small fw-bold text-dark mb-1">
+                  Father's Name of Applicant (In case of proprietorship concerns) <span class="badge bg-info-subtle text-info small ms-1">Proprietorship</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_fatherName" placeholder="Father's full name">
+              </div>
+
+              <!-- Field 3: Name(s) of Partner(s)/ Director(s) (Conditional) -->
+              <div class="col-md-6 d-none" id="bCondPartnerNamesBox">
+                <label for="fieldB_partnerNames" class="form-label small fw-bold text-dark mb-1">
+                  Name(s) of Partner(s)/ Director(s) <span class="badge bg-warning-subtle text-warning-emphasis small ms-1">Partnership / Corporate</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_partnerNames" placeholder="Names of all partners or corporate directors">
+              </div>
+
+              <!-- Field 4: Certificate of Identification/Domicile Certificate for Partners / Directors -->
+              <div class="col-md-6 d-none" id="bCondPartnerCoiBox">
+                <label for="fieldB_partnerCoi" class="form-label small fw-bold text-dark mb-1">
+                  Certificate of Identification/Domicile Certificate for Partners / Directors <span class="badge bg-warning-subtle text-warning-emphasis small ms-1">Partners / Directors</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_partnerCoi" placeholder="COI / Domicile Certificate details of partners / directors">
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(1)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(2)">
+                <span>Save &amp; Proceed to Staff &amp; Business</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP B3: STAFF & BUSINESS (6 standalone fields + repeating DETAILS OF EMPLOYED PERSONS) -->
+          <section id="step-B-3" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 3 of 5 &bull; Form B</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Staff &amp; Business</h2>
+              </div>
+              <span class="text-muted small">Equipment Dealer commercial profile</span>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <!-- Field 1: English Fluency (Do persons in charge speak English?) -->
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  English Fluency (Do persons in charge speak English?) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex gap-3 pt-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldB_englishFluent" id="engFluentYes" value="Yes" checked>
+                    <label class="form-check-label small" for="engFluentYes">Yes</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldB_englishFluent" id="engFluentNo" value="No">
+                    <label class="form-check-label small" for="engFluentNo">No</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 2: Foreign Languages Known -->
+              <div class="col-md-6">
+                <label for="fieldB_foreignLanguages" class="form-label small fw-bold text-dark mb-1">
+                  Foreign Languages Known
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_foreignLanguages" placeholder="e.g. French, German, Japanese (or leave blank if none)">
+              </div>
+
+              <!-- Field 3: Registration Number under the Sikkim Shops and Commercial Establishment Act, 1969 -->
+              <div class="col-md-6">
+                <label for="fieldB_shopActLicense" class="form-label small fw-bold text-dark mb-1">
+                  Registration Number under the Sikkim Shops and Commercial Establishment Act, 1969 <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldB_shopActLicense" placeholder="Shop Act License Number" required>
+              </div>
+
+              <!-- Field 4: Telephone Number -->
+              <div class="col-md-6">
+                <label for="fieldB_phone" class="form-label small fw-bold text-dark mb-1">
+                  Telephone Number <span class="text-danger">*</span>
+                </label>
+                <input type="tel" class="form-control form-control-sm" id="fieldB_phone" placeholder="Shop / Business contact number" required>
+              </div>
+
+              <!-- Field 5: Email Address -->
+              <div class="col-md-6">
+                <label for="fieldB_email" class="form-label small fw-bold text-dark mb-1">
+                  Email Address <span class="text-danger">*</span>
+                </label>
+                <input type="email" class="form-control form-control-sm" id="fieldB_email" placeholder="dealer@example.com" required>
+              </div>
+
+              <!-- Field 6: Website URL -->
+              <div class="col-md-6">
+                <label for="fieldB_website" class="form-label small fw-bold text-dark mb-1">
+                  Website URL
+                </label>
+                <input type="url" class="form-control form-control-sm" id="fieldB_website" placeholder="https://outdoor-store.in">
+              </div>
+            </div>
+
+            <!-- Repeating Section: DETAILS OF EMPLOYED PERSONS -->
+            <div class="p-3 bg-light rounded border mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h3 class="h6 fw-bold text-dark text-uppercase mb-0" style="letter-spacing: 0.5px;">DETAILS OF EMPLOYED PERSONS</h3>
+                  <div class="text-muted small" style="font-size: 0.75rem;">Full Name, Educational Qualification &amp; Technical Qualification</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 d-inline-flex align-items-center gap-1" onclick="addEmployeeRowB()">
+                  <i class="bi bi-plus-circle"></i>
+                  <span>Add Employee</span>
+                </button>
+              </div>
+              <div id="employeesContainerB">
+                <!-- Repeating employee cards rendered via JS -->
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(2)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(3)">
+                <span>Save &amp; Proceed to Premises &amp; Documents</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP B4: PREMISES & DOCUMENTS (10 entries with conditional House Owner NOC) -->
+          <section id="step-B-4" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 4 of 5 &bull; Form B</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Premises &amp; Documents</h2>
+              </div>
+              <span class="text-muted small">Upload statutory trade licenses and clearances</span>
+            </div>
+
+            <!-- Field 1: Is the applicant the owner of the building/shop? -->
+            <div class="p-3 bg-light rounded border mb-4">
+              <label class="form-label small fw-bold text-dark mb-1">
+                Is the applicant the owner of the building/shop? <span class="text-danger">*</span>
+              </label>
+              <div class="d-flex gap-4 pt-1">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="fieldB_ownerBuilding" id="bOwnerYes" value="Yes" onchange="handleDealerOwnerChange(this.value)">
+                  <label class="form-check-label small" for="bOwnerYes">Yes &ndash; Applicant is the Owner</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="fieldB_ownerBuilding" id="bOwnerNo" value="No" checked onchange="handleDealerOwnerChange(this.value)">
+                  <label class="form-check-label small" for="bOwnerNo">No &ndash; Operating from Tenant Establishment</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3" id="docsGridB">
+              <!-- 9 Documents + Conditional House Owner NOC dynamically rendered -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(3)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(4)">
+                <span>Save &amp; Proceed to Summary</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ==============================================================
+             FORM C: OUTDOOR PHOTOGRAPHER (Sections 1 to 3)
+             ============================================================== -->
+        <div id="formContainerC" class="form-config-container d-none">
+          
+          <!-- STEP C1: APPLICANT DETAILS (9 fields) -->
+          <section id="step-C-1" class="form-step-section">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 1 of 4 &bull; Form C</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Applicant Details</h2>
+              </div>
+              <span class="text-muted small">Personal &amp; Contact Particulars</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Field 1: Passport Format Photograph -->
+              <div class="col-md-12">
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Passport Format Photograph (Photo of Applicant) <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="border rounded p-1 bg-light text-center" style="width: 100px; height: 115px; display: flex; align-items: center; justify-content: center;" id="photoPreviewBoxC">
+                    <i class="bi bi-person text-secondary fs-1"></i>
+                  </div>
+                  <div>
+                    <input type="file" class="form-control form-control-sm mb-1" id="fieldC_photo" accept="image/*" onchange="previewImage(this, 'photoPreviewBoxC')">
+                    <div class="text-muted small" style="font-size: 0.75rem;">Clear front-facing passport photograph (JPEG, PNG &bull; Max 2MB).</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 2: Name of Applicant -->
+              <div class="col-md-6">
+                <label for="fieldC_applicantName" class="form-label small fw-bold text-dark mb-1">
+                  Name of Applicant <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldC_applicantName" placeholder="Full name of applicant" required>
+              </div>
+
+              <!-- Field 3: Date of Birth -->
+              <div class="col-md-6">
+                <label for="fieldC_dob" class="form-label small fw-bold text-dark mb-1">
+                  Date of Birth <span class="text-danger">*</span>
+                </label>
+                <input type="date" class="form-control form-control-sm" id="fieldC_dob" required>
+              </div>
+
+              <!-- Field 4: Domicile Certificate / Certificate of Identification No. -->
+              <div class="col-md-6">
+                <label for="fieldC_coi" class="form-label small fw-bold text-dark mb-1">
+                  Domicile Certificate / Certificate of Identification No. <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldC_coi" placeholder="COI / Domicile Certificate Number" required>
+              </div>
+
+              <!-- Field 5: Telephone/Mobile Number -->
+              <div class="col-md-6">
+                <label for="fieldC_phone" class="form-label small fw-bold text-dark mb-1">
+                  Telephone/Mobile Number <span class="text-danger">*</span>
+                </label>
+                <input type="tel" class="form-control form-control-sm" id="fieldC_phone" placeholder="10-digit mobile number" maxlength="10" required>
+              </div>
+
+              <!-- Field 6: Residential Address -->
+              <div class="col-md-6">
+                <label for="fieldC_resAddress" class="form-label small fw-bold text-dark mb-1">
+                  Residential Address <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldC_resAddress" rows="2" placeholder="Residential postal address in Sikkim" required></textarea>
+              </div>
+
+              <!-- Field 7: District of Application -->
+              <div class="col-md-6">
+                <label for="fieldC_district" class="form-label small fw-bold text-dark mb-1">
+                  District of Application <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldC_district" required>
+                  <option value="">-- Select District --</option>
+                  <option value="Gangtok" selected>Gangtok District</option>
+                  <option value="Namchi">Namchi District</option>
+                  <option value="Gyalshing">Gyalshing District</option>
+                  <option value="Mangan">Mangan District</option>
+                  <option value="Pakyong">Pakyong District</option>
+                  <option value="Soreng">Soreng District</option>
+                </select>
+              </div>
+
+              <!-- Field 8: Same as Residential Address (Checkbox) -->
+              <div class="col-md-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fieldC_sameAddress" onchange="handleSameAddressChange(this)">
+                  <label class="form-check-label small fw-bold text-dark" for="fieldC_sameAddress">
+                    Same as Residential Address
+                  </label>
+                </div>
+              </div>
+
+              <!-- Field 9: Permanent Address for Correspondence -->
+              <div class="col-md-12">
+                <label for="fieldC_permAddress" class="form-label small fw-bold text-dark mb-1">
+                  Permanent Address for Correspondence <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldC_permAddress" rows="2" placeholder="Permanent address for official departmental correspondence" required></textarea>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-arrow-left me-1"></i> Back to Instructions
+              </a>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepC(1)">
+                <span>Save &amp; Proceed to Qualification</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP C2: QUALIFICATION & EXPERIENCE (5 fields) -->
+          <section id="step-C-2" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 2 of 4 &bull; Form C</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Qualification &amp; Experience</h2>
+              </div>
+              <span class="text-muted small">Photography credentials</span>
+            </div>
+
+            <div class="row g-3">
+              <!-- Field 1: Educational Qualification -->
+              <div class="col-md-6">
+                <label for="fieldC_eduQualification" class="form-label small fw-bold text-dark mb-1">
+                  Educational Qualification <span class="text-danger">*</span>
+                </label>
+                <select class="form-select form-select-sm" id="fieldC_eduQualification" required>
+                  <option value="">-- Select Minimum Educational Qualification --</option>
+                  <option value="Class X (Matriculation) Pass" selected>Class X (Matriculation) Pass &ndash; Minimum Norm</option>
+                  <option value="Class XII Pass">Class XII Pass</option>
+                  <option value="Graduate in any discipline">Graduate in any discipline</option>
+                  <option value="Post Graduate / Diploma">Post Graduate / Diploma</option>
+                </select>
+              </div>
+
+              <!-- Field 2: Certificate in Photography (Institute/Course Name) -->
+              <div class="col-md-6">
+                <label for="fieldC_photoCourse" class="form-label small fw-bold text-dark mb-1">
+                  Certificate in Photography (Institute/Course Name) <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldC_photoCourse" placeholder="Course Name &amp; Issuing Training Institute" required>
+              </div>
+
+              <!-- Field 3: Attach Photography Certificate Copy -->
+              <div class="col-md-12">
+                <label for="fieldC_photoCertFile" class="form-label small fw-bold text-dark mb-1">
+                  Attach Photography Certificate Copy <span class="text-danger">*</span>
+                </label>
+                <input type="file" class="form-control form-control-sm" id="fieldC_photoCertFile" accept=".pdf,image/*">
+                <div class="text-muted small" style="font-size: 0.75rem;">Clear scan of photography diploma / course certificate (PDF, JPG &bull; Max 5MB).</div>
+              </div>
+
+              <!-- Field 4: Professional Photography Experience -->
+              <div class="col-md-6">
+                <label for="fieldC_experience" class="form-label small fw-bold text-dark mb-1">
+                  Professional Photography Experience <span class="text-danger">*</span>
+                </label>
+                <textarea class="form-control form-control-sm" id="fieldC_experience" rows="2" placeholder="Years of landscape/outdoor experience, notable published works, client projects" required></textarea>
+              </div>
+
+              <!-- Field 5: License issued by Competent Authority -->
+              <div class="col-md-6">
+                <label for="fieldC_license" class="form-label small fw-bold text-dark mb-1">
+                  License issued by Competent Authority
+                </label>
+                <input type="text" class="form-control form-control-sm" id="fieldC_license" placeholder="DGCA Drone Pilot License No. / Municipal Trade License (Optional)">
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepC(1)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepC(2)">
+                <span>Save &amp; Proceed to Documents</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP C3: DOCUMENTS (6 documents) -->
+          <section id="step-C-3" class="form-step-section d-none">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+              <div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 3 of 4 &bull; Form C</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Documents</h2>
+              </div>
+              <span class="text-muted small">Supporting certifications &amp; proof</span>
+            </div>
+
+            <div class="row g-3" id="docsGridC">
+              <!-- 6 documents dynamically rendered -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepC(2)">
+                <i class="bi bi-arrow-left me-1"></i> Previous
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepC(3)">
+                <span>Save &amp; Proceed to Summary</span>
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ==============================================================
+             COMMON STEP: APPLICATION SUMMARY & DECLARATION
+             ============================================================== -->
+        <section id="step-common-summary" class="form-step-section d-none">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+            <div>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-1">Verification Step</span>
+              <h2 class="h5 fw-bold text-dark mb-0">Application Summary &amp; Statutory Declaration</h2>
+            </div>
+            <span class="badge bg-info text-white font-monospace" id="summaryCategoryBadge">Tour Operator</span>
+          </div>
+
+          <div class="alert alert-info border-0 shadow-xs small mb-4">
+            <i class="bi bi-info-circle-fill me-1"></i> Please review your application details thoroughly. Use the <strong>Edit Section</strong> buttons if any correction is needed before submitting.
+          </div>
+
+          <!-- Dynamic Summary Container -->
+          <div id="dynamicSummaryContent" class="mb-4">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Mandatory Statutory Declaration -->
+          <div class="p-3 bg-light rounded border border-2 border-primary-subtle mb-4">
+            <h3 class="h6 fw-bold text-dark mb-2">
+              <i class="bi bi-shield-check text-primary me-1"></i> Statutory Declaration &amp; Undertaking:
+            </h3>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="chkFinalDeclaration" onchange="handleDeclarationChange(this)">
+              <label class="form-check-label text-dark small" for="chkFinalDeclaration">
+                <strong>I hereby solemnly declare that:</strong><br>
+                1. All statements, particulars, and documents submitted in this application are true, authentic, and correct to the best of my knowledge.<br>
+                2. I agree to abide by the Sikkim Registration of Tourist Trade Rules and all departmental guidelines issued from time to time.<br>
+                3. I acknowledge that any false declaration or forged document shall render this registration void ab initio and liable for penal action.<br>
+                4. For Dealer applications, I agree to allow the Level 1 Inspecting Authority (IA) to inspect the commercial premises and outdoor equipment inventory.
+              </label>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="returnFromSummary()">
+              <i class="bi bi-arrow-left me-1"></i> Edit Last Step
+            </button>
+            <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs disabled" id="btnSubmitOrPay" onclick="proceedToPaymentStep()">
+              <span id="btnSubmitOrPayLabel">Proceed to Payment Confirmation</span>
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             COMMON STEP: PAYMENT (Pending Departmental Confirmation)
+             ============================================================== -->
+        <section id="step-common-payment" class="form-step-section d-none">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+            <div>
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Fee &amp; Payment Status</span>
+              <h2 class="h5 fw-bold text-dark mb-0">Statutory Registration Payment</h2>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Online Mode</span>
+          </div>
+
+          <!-- Pending Departmental Confirmation Notice -->
+          <div class="p-4 bg-light rounded border text-center my-4">
+            <div class="p-3 bg-white rounded-circle d-inline-flex mb-3 shadow-xs text-primary">
+              <i class="bi bi-credit-card-2-front text-primary" style="font-size: 2.5rem;"></i>
+            </div>
+            <h3 class="h6 fw-bold text-dark mb-1">Payment Configuration: Pending Departmental Confirmation</h3>
+            <p class="text-muted small mx-auto mb-3" style="max-width: 580px;">
+              In accordance with current departmental instructions, statutory registration charges for this service are pending official fee schedule confirmation. For this prototype evaluation, you may complete final submission with zero charge.
+            </p>
+            <div class="d-inline-flex align-items-center gap-2 p-2 px-3 rounded bg-white border">
+              <span class="text-muted small">Total Payable Amount:</span>
+              <strong class="text-success font-monospace fs-5">&#8377;0.00</strong>
+              <span class="badge bg-light text-secondary border small">Prototype Free Submission</span>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToSummaryStep()">
+              <i class="bi bi-arrow-left me-1"></i> Back to Summary
+            </button>
+            <button type="button" class="btn btn-sm btn-success px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="executeFinalSubmission()">
+              <i class="bi bi-send-check"></i>
+              <span>Complete Final Submission</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             COMMON STEP: FINAL SUBMISSION & ACKNOWLEDGEMENT
+             ============================================================== -->
+        <section id="step-common-ack" class="form-step-section d-none">
+          <div class="text-center py-4">
+            <div class="p-3 bg-success-subtle text-success rounded-circle d-inline-flex mb-3 shadow-xs">
+              <i class="bi bi-check-circle-fill" style="font-size: 3.25rem;"></i>
+            </div>
+            <h2 class="h4 fw-bold text-dark mb-1">Registration Application Submitted Successfully!</h2>
+            <p class="text-muted small mb-4">
+              Your application has been registered into the Sikkim Tourism single-window queue for statutory multi-tier scrutiny.
+            </p>
+
+            <!-- Acknowledgement Particulars Card -->
+            <div class="p-3 p-md-4 bg-light rounded-3 border text-start mx-auto mb-4" style="max-width: 680px;">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-2 mb-3 border-bottom">
+                <div>
+                  <span class="text-muted small">Application Reference Number (ARN):</span>
+                  <div class="h5 font-monospace fw-bold text-primary mb-0" id="ackArnValue">SK-TBR-2026-TO-89124</div>
+                </div>
+                <span class="badge bg-primary text-white py-1.5 px-2.5 fw-semibold" id="ackCategoryBadge">Tour Operator</span>
+              </div>
+
+              <div class="row g-2 small">
+                <div class="col-sm-6">
+                  <span class="text-muted">Applicant / Enterprise:</span>
+                  <strong class="d-block text-dark" id="ackEnterpriseName">Singalila Eco-Tours Sikkim</strong>
+                </div>
+                <div class="col-sm-6">
+                  <span class="text-muted">Submission Date &amp; Time:</span>
+                  <strong class="d-block text-dark" id="ackSubmissionTimestamp">06 Nov 2026, 04:30 PM</strong>
+                </div>
+                <div class="col-sm-6">
+                  <span class="text-muted">District Circle:</span>
+                  <strong class="d-block text-dark" id="ackDistrictName">Gangtok Circle</strong>
+                </div>
+                <div class="col-sm-6">
+                  <span class="text-muted">Current Processing Status:</span>
+                  <span class="badge bg-info text-white" id="ackStatusBadge">Awaiting Level 0 TO Scrutiny</span>
+                </div>
+              </div>
+
+              <!-- Uploaded Documents List in Acknowledgement -->
+              <div class="mt-3 pt-3 border-top">
+                <span class="text-muted small fw-bold d-block mb-1">Uploaded Supporting Documents:</span>
+                <ul class="list-unstyled small text-secondary mb-0" id="ackDocsList">
+                  <!-- Dynamically rendered -->
+                </ul>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-center flex-wrap gap-2.5">
+              <a href="dashboard.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-speedometer2 me-1"></i> Go to Citizen Dashboard
+              </a>
+              <a href="dashboard.html#view-tracking" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-geo-alt me-1"></i> Track Application Status
+              </a>
+              <button type="button" class="btn btn-sm btn-outline-dark px-3 py-1.5 fw-semibold shadow-xs" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Print Acknowledgement
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+    <div class="container-xl">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script src="workflow-engine.js"></script>
+  <script src="document-service.js"></script>
+
+  <!-- Form Engine Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Global Form State
+      let activeType = 'tour-operator'; // 'tour-operator', 'travel-agent', 'dealer', 'outdoor-photographer'
+      let activeConfig = 'A'; // 'A', 'B', 'C'
+      let currentStep = 1;
+      let activeDraftId = '';
+      
+      // Repeating Data Stores
+      let partnersA = [
+        { name: "Tenzing Norbu Lepcha", role: "Managing Partner", phone: "9832045612", address: "MG Marg, Gangtok, Sikkim" }
+      ];
+      let staffA = [
+        { name: "Passang Doma Sherpa", academic: "Bachelor in Tourism (BA)", technical: "IATA Certified Ticketing", exp: "5 years travel booking & itinerary curation" },
+        { name: "Kipchu Bhutia", academic: "Higher Secondary (10+2)", technical: "Advance Mountaineering Course (HMI)", exp: "3 years trekking field manager" }
+      ];
+      let employeesB = [
+        { name: "Sonam Gyatso", edu: "Graduate (B.Com)", tech: "Outdoor Gear Safety & Equipment Maintenance (UIAA)" }
+      ];
+
+      // Document Definitions
+      const DOCS_A = [
+        { id: "docA_1", name: "Passport Format Photograph", mandatory: true },
+        { id: "docA_2", name: "Residential Proof: Domicile / COI / RC", mandatory: true },
+        { id: "docA_3", name: "Supporting Qualification / Training Certificate (Applicant)", mandatory: true },
+        { id: "docA_4", name: "Supporting Qualification Document (for Employees)", mandatory: true },
+        { id: "docA_5", name: "Attested Qualification Certificate (Min. Class 10 Pass)", mandatory: true },
+        { id: "docA_6", name: "NOC from Ward / Panchayat / Councillor", mandatory: true },
+        { id: "docA_7", name: "Memorandum of Association / Society / Firm Deed", mandatory: true },
+        { id: "docA_8", name: "Affidavit from Oath Commissioner", mandatory: true },
+        { id: "docA_9", name: "GST Clearance Certificate (If applicable)", mandatory: false },
+        { id: "docA_10", name: "Aadhaar Card", mandatory: true },
+        { id: "docA_11", name: "Identity and address proof of promoter/manager", mandatory: true },
+        { id: "docA_12", name: "Pan Card", mandatory: true },
+        { id: "docA_13", name: "Office Premises Photographs (Max 3)", mandatory: true, isMulti: true }
+      ];
+
+      const DOCS_B = [
+        { id: "docB_1", name: "SSC/COI/RC", mandatory: true },
+        { id: "docB_2", name: "Occupancy Certificate / Parcha / Lease Deed", mandatory: true },
+        { id: "docB_3", name: "NOC from House Owner (Conditional Requirement: Tenant Establishment)", mandatory: true, isConditional: true },
+        { id: "docB_4", name: "NOC from Fire, Health, Energy, Power, Labour & PHE", mandatory: true },
+        { id: "docB_5", name: "Memorandum of Association / Society / Firm Deed", mandatory: true },
+        { id: "docB_6", name: "PAN Card, Aadhaar and GST", mandatory: true },
+        { id: "docB_7", name: "Identity Proof of Promoter/Manager", mandatory: true },
+        { id: "docB_8", name: "Agreement Undertaking for Carrying out Operations", mandatory: true },
+        { id: "docB_9", name: "NOC from Commercial Tax Department (GST)", mandatory: true }
+      ];
+
+      const DOCS_C = [
+        { id: "docC_1", name: "Sikkim Subject / Certificate of Identification", mandatory: true },
+        { id: "docC_2", name: "Education Qualification Certificate (Min. Class X)", mandatory: true },
+        { id: "docC_3", name: "Photography Training Certificate", mandatory: true },
+        { id: "docC_4", name: "Experience Certificate", mandatory: false },
+        { id: "docC_5", name: "Panchayat/Councillor Recommendation", mandatory: true },
+        { id: "docC_6", name: "GST Clearance Certificate", mandatory: true }
+      ];
+
+      // Stepper Definitions
+      const STEPPERS = {
+        'A': [
+          { num: 1, title: "Applicant Details" },
+          { num: 2, title: "Organisation & Activity" },
+          { num: 3, title: "Staff Qualification" },
+          { num: 4, title: "Documents" },
+          { num: 5, title: "Summary & Declaration" }
+        ],
+        'B': [
+          { num: 1, title: "Applicant & Premises" },
+          { num: 2, title: "Ownership & Constitution" },
+          { num: 3, title: "Staff & Business" },
+          { num: 4, title: "Premises & Documents" },
+          { num: 5, title: "Summary & Declaration" }
+        ],
+        'C': [
+          { num: 1, title: "Applicant Details" },
+          { num: 2, title: "Qualification & Experience" },
+          { num: 3, title: "Documents" },
+          { num: 4, title: "Summary & Declaration" }
+        ]
+      };
+
+      // Initialize on load
+      document.addEventListener('DOMContentLoaded', function () {
+        initFormRouting();
+        renderDocumentsGridA();
+        renderDocumentsGridB();
+        renderDocumentsGridC();
+        renderPartnersA();
+        renderStaffA();
+        renderEmployeesB();
+        prepopulateDefaults();
+      });
+
+      function initFormRouting() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const typeParam = urlParams.get('type') || urlParams.get('category');
+        if (typeParam) {
+          activeType = typeParam;
+        }
+
+        const draftParam = urlParams.get('draftId');
+        if (draftParam) {
+          activeDraftId = draftParam;
+          loadDraft(draftParam);
+        } else {
+          activeDraftId = generateDraftId();
+        }
+        document.getElementById('headerDraftRef').textContent = activeDraftId;
+        
+        const catSelect = document.getElementById('quickCategorySelect');
+        if (catSelect) catSelect.value = activeType;
+
+        applyCategoryConfiguration(activeType);
+      }
+
+      function generateDraftId() {
+        const rnd = Math.floor(1000 + Math.random() * 9000);
+        return `SK-TBR-2026-DFT-${rnd}`;
+      }
+
+      function generateArn(catCode) {
+        const rnd = Math.floor(10000 + Math.random() * 90000);
+        return `SK-TBR-2026-${catCode}-${rnd}`;
+      }
+
+      window.switchApplicationType = function (newType) {
+        activeType = newType;
+        applyCategoryConfiguration(newType);
+      };
+
+      function applyCategoryConfiguration(type) {
+        const formA = document.getElementById('formContainerA');
+        const formB = document.getElementById('formContainerB');
+        const formC = document.getElementById('formContainerC');
+        const summarySec = document.getElementById('step-common-summary');
+        const paymentSec = document.getElementById('step-common-payment');
+        const ackSec = document.getElementById('step-common-ack');
+
+        summarySec.classList.add('d-none');
+        paymentSec.classList.add('d-none');
+        ackSec.classList.add('d-none');
+
+        let title = '';
+        let config = 'A';
+        let code = 'TO';
+
+        if (type === 'tour-operator') {
+          title = 'Tour Operator Registration Application';
+          config = 'A';
+          code = 'TO';
+          formA.classList.remove('d-none');
+          formB.classList.add('d-none');
+          formC.classList.add('d-none');
+          document.getElementById('fieldA_categoryApplied').value = 'Tour Operator Registration';
+        } else if (type === 'travel-agent') {
+          title = 'Travel Agent Registration Application';
+          config = 'A';
+          code = 'TA';
+          formA.classList.remove('d-none');
+          formB.classList.add('d-none');
+          formC.classList.add('d-none');
+          document.getElementById('fieldA_categoryApplied').value = 'Travel Agent Registration';
+        } else if (type === 'dealer') {
+          title = 'Dealer Registration Application';
+          config = 'B';
+          code = 'DLR';
+          formA.classList.add('d-none');
+          formB.classList.remove('d-none');
+          formC.classList.add('d-none');
+        } else if (type === 'outdoor-photographer') {
+          title = 'Outdoor Photographer Registration Application';
+          config = 'C';
+          code = 'PHO';
+          formA.classList.add('d-none');
+          formB.classList.add('d-none');
+          formC.classList.remove('d-none');
+        }
+
+        activeConfig = config;
+        document.getElementById('formHeaderTitle').textContent = title;
+        document.getElementById('breadcrumbFormName').textContent = title;
+        document.getElementById('formConfigLabel').textContent = `Form ${config} (${code})`;
+        document.getElementById('summaryCategoryBadge').textContent = title;
+
+        renderStepper(config);
+        goToStep(1);
+      }
+
+      function renderStepper(config) {
+        const list = document.getElementById('formStepperList');
+        const steps = STEPPERS[config];
+        let html = '';
+        steps.forEach((s, idx) => {
+          const isAct = (s.num === currentStep) ? 'active' : '';
+          html += `
+            <li class="gov-stepper-step ${isAct}" id="stepperStep_${s.num}" onclick="handleStepperClick(${s.num})">
+              <div class="gov-stepper-bubble">${s.num}</div>
+              <div class="gov-stepper-title">${s.title}</div>
+            </li>
+          `;
+        });
+        list.innerHTML = html;
+      }
+
+      window.handleStepperClick = function (stepNum) {
+        if (stepNum < currentStep) {
+          goToStep(stepNum);
+        }
+      };
+
+      function goToStep(stepNum) {
+        currentStep = stepNum;
+        
+        // Hide all step sections
+        document.querySelectorAll('.form-step-section').forEach(sec => sec.classList.add('d-none'));
+
+        // Update stepper active classes
+        const steps = STEPPERS[activeConfig];
+        steps.forEach(s => {
+          const node = document.getElementById(`stepperStep_${s.num}`);
+          if (node) {
+            node.classList.remove('active', 'completed');
+            if (s.num === currentStep) node.classList.add('active');
+            else if (s.num < currentStep) node.classList.add('completed');
+          }
+        });
+
+        const totalFormSteps = (activeConfig === 'C') ? 3 : 4;
+
+        if (stepNum <= totalFormSteps) {
+          const activeSec = document.getElementById(`step-${activeConfig}-${stepNum}`);
+          if (activeSec) {
+            activeSec.classList.remove('d-none');
+            if (activeSec && typeof activeSec.scrollIntoView === 'function') { activeSec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+          }
+        } else if (stepNum === totalFormSteps + 1) {
+          // Summary Step
+          renderDynamicSummary();
+          const sumSec = document.getElementById('step-common-summary');
+          sumSec.classList.remove('d-none');
+          sumSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (stepNum === totalFormSteps + 2) {
+          // Payment Step
+          const paySec = document.getElementById('step-common-payment');
+          paySec.classList.remove('d-none');
+          paySec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (stepNum === totalFormSteps + 3) {
+          // Ack Step
+          const ackSec = document.getElementById('step-common-ack');
+          ackSec.classList.remove('d-none');
+          ackSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        saveCurrentDraftState();
+      }
+
+      // Step navigation triggers
+      window.nextStepA = function (fromStep) { goToStep(fromStep + 1); };
+      window.goToStepA = function (stepNum) { goToStep(stepNum); };
+      window.nextStepB = function (fromStep) { goToStep(fromStep + 1); };
+      window.goToStepB = function (stepNum) { goToStep(stepNum); };
+      window.nextStepC = function (fromStep) { goToStep(fromStep + 1); };
+      window.goToStepC = function (stepNum) { goToStep(stepNum); };
+
+      window.returnFromSummary = function () {
+        const lastStep = (activeConfig === 'C') ? 3 : 4;
+        goToStep(lastStep);
+      };
+
+      window.goToSummaryStep = function () {
+        const sumStep = (activeConfig === 'C') ? 4 : 5;
+        goToStep(sumStep);
+      };
+
+      window.proceedToPaymentStep = function () {
+        const payStep = (activeConfig === 'C') ? 5 : 6;
+        goToStep(payStep);
+      };
+
+      // ------------------------------------------------------------------
+      // REPEATING SECTIONS: PARTNERS (FORM A)
+      // ------------------------------------------------------------------
+      function renderPartnersA() {
+        const container = document.getElementById('partnersContainerA');
+        if (!container) return;
+        let html = '';
+        partnersA.forEach((p, idx) => {
+          html += `
+            <div class="repeating-record-card" id="partnerCardA_${idx}">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong class="text-dark small"><i class="bi bi-person-badge text-primary me-1"></i> Partner / Director #${idx + 1}</strong>
+                ${partnersA.length > 1 ? `<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1.5" onclick="removePartnerRowA(${idx})" title="Remove"><i class="bi bi-trash"></i></button>` : ''}
+              </div>
+              <div class="row g-2 small">
+                <div class="col-md-3">
+                  <span class="text-muted">Full Name:</span>
+                  <input type="text" class="form-control form-control-sm" value="${p.name}" onchange="updatePartnerA(${idx}, 'name', this.value)">
+                </div>
+                <div class="col-md-3">
+                  <span class="text-muted">Designation / Role:</span>
+                  <input type="text" class="form-control form-control-sm" value="${p.role}" onchange="updatePartnerA(${idx}, 'role', this.value)">
+                </div>
+                <div class="col-md-2">
+                  <span class="text-muted">Contact Number:</span>
+                  <input type="tel" class="form-control form-control-sm" value="${p.phone}" onchange="updatePartnerA(${idx}, 'phone', this.value)">
+                </div>
+                <div class="col-md-4">
+                  <span class="text-muted">Residential Address:</span>
+                  <input type="text" class="form-control form-control-sm" value="${p.address}" onchange="updatePartnerA(${idx}, 'address', this.value)">
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      window.addPartnerRowA = function () {
+        partnersA.push({ name: "", role: "Partner", phone: "", address: "" });
+        renderPartnersA();
+      };
+
+      window.removePartnerRowA = function (idx) {
+        if (partnersA.length > 1) {
+          partnersA.splice(idx, 1);
+          renderPartnersA();
+        }
+      };
+
+      window.updatePartnerA = function (idx, key, val) {
+        if (partnersA[idx]) partnersA[idx][key] = val;
+      };
+
+      // ------------------------------------------------------------------
+      // REPEATING SECTIONS: STAFF QUALIFICATION (FORM A)
+      // ------------------------------------------------------------------
+      function renderStaffA() {
+        const container = document.getElementById('staffContainerA');
+        if (!container) return;
+        let html = '';
+        staffA.forEach((s, idx) => {
+          html += `
+            <div class="repeating-record-card" id="staffCardA_${idx}">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong class="text-dark small"><i class="bi bi-person-workspace text-primary me-1"></i> Staff Member #${idx + 1}</strong>
+                ${staffA.length > 1 ? `<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1.5" onclick="removeStaffRowA(${idx})" title="Remove"><i class="bi bi-trash"></i></button>` : ''}
+              </div>
+              <div class="row g-2 small">
+                <div class="col-md-3">
+                  <span class="text-muted">Employee Name:</span>
+                  <input type="text" class="form-control form-control-sm" value="${s.name}" onchange="updateStaffA(${idx}, 'name', this.value)">
+                </div>
+                <div class="col-md-3">
+                  <span class="text-muted">Educational / Academic Qualification:</span>
+                  <input type="text" class="form-control form-control-sm" value="${s.academic}" onchange="updateStaffA(${idx}, 'academic', this.value)">
+                </div>
+                <div class="col-md-3">
+                  <span class="text-muted">Technical Qualification:</span>
+                  <input type="text" class="form-control form-control-sm" value="${s.technical}" onchange="updateStaffA(${idx}, 'technical', this.value)">
+                </div>
+                <div class="col-md-3">
+                  <span class="text-muted">Relevant Experience Details:</span>
+                  <input type="text" class="form-control form-control-sm" value="${s.exp}" onchange="updateStaffA(${idx}, 'exp', this.value)">
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      window.addStaffRowA = function () {
+        staffA.push({ name: "", academic: "", technical: "", exp: "" });
+        renderStaffA();
+      };
+
+      window.removeStaffRowA = function (idx) {
+        if (staffA.length > 1) {
+          staffA.splice(idx, 1);
+          renderStaffA();
+        }
+      };
+
+      window.updateStaffA = function (idx, key, val) {
+        if (staffA[idx]) staffA[idx][key] = val;
+      };
+
+      // ------------------------------------------------------------------
+      // REPEATING SECTIONS: DETAILS OF EMPLOYED PERSONS (FORM B)
+      // ------------------------------------------------------------------
+      function renderEmployeesB() {
+        const container = document.getElementById('employeesContainerB');
+        if (!container) return;
+        let html = '';
+        employeesB.forEach((e, idx) => {
+          html += `
+            <div class="repeating-record-card" id="empCardB_${idx}">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong class="text-dark small"><i class="bi bi-person-gear text-warning-emphasis me-1"></i> Employed Person #${idx + 1}</strong>
+                ${employeesB.length > 1 ? `<button type="button" class="btn btn-sm btn-outline-danger py-0 px-1.5" onclick="removeEmployeeRowB(${idx})" title="Remove"><i class="bi bi-trash"></i></button>` : ''}
+              </div>
+              <div class="row g-2 small">
+                <div class="col-md-4">
+                  <span class="text-muted">Full Name:</span>
+                  <input type="text" class="form-control form-control-sm" value="${e.name}" onchange="updateEmployeeB(${idx}, 'name', this.value)">
+                </div>
+                <div class="col-md-4">
+                  <span class="text-muted">Educational Qualification:</span>
+                  <input type="text" class="form-control form-control-sm" value="${e.edu}" onchange="updateEmployeeB(${idx}, 'edu', this.value)">
+                </div>
+                <div class="col-md-4">
+                  <span class="text-muted">Technical Qualification:</span>
+                  <input type="text" class="form-control form-control-sm" value="${e.tech}" onchange="updateEmployeeB(${idx}, 'tech', this.value)">
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      window.addEmployeeRowB = function () {
+        employeesB.push({ name: "", edu: "", tech: "" });
+        renderEmployeesB();
+      };
+
+      window.removeEmployeeRowB = function (idx) {
+        if (employeesB.length > 1) {
+          employeesB.splice(idx, 1);
+          renderEmployeesB();
+        }
+      };
+
+      window.updateEmployeeB = function (idx, key, val) {
+        if (employeesB[idx]) employeesB[idx][key] = val;
+      };
+
+      // ------------------------------------------------------------------
+      // CONDITIONAL FIELD HANDLERS
+      // ------------------------------------------------------------------
+      window.handleDealerConstitutionChange = function (val) {
+        const fatherBox = document.getElementById('bCondFatherBox');
+        const namesBox = document.getElementById('bCondPartnerNamesBox');
+        const coiBox = document.getElementById('bCondPartnerCoiBox');
+
+        if (val === 'Proprietorship') {
+          if (fatherBox) fatherBox.classList.remove('d-none');
+          if (namesBox) namesBox.classList.add('d-none');
+          if (coiBox) coiBox.classList.add('d-none');
+        } else {
+          if (fatherBox) fatherBox.classList.add('d-none');
+          if (namesBox) namesBox.classList.remove('d-none');
+          if (coiBox) coiBox.classList.remove('d-none');
+        }
+      };
+
+      window.handleDealerOwnerChange = function (val) {
+        const tenantNoc = document.getElementById('docCard_docB_3');
+        if (tenantNoc) {
+          if (val === 'Yes') {
+            tenantNoc.classList.add('opacity-50');
+            const statusEl = tenantNoc.querySelector('.doc-mand-badge');
+            if (statusEl) statusEl.innerHTML = `<span class="badge bg-secondary">Not Applicable (Owner)</span>`;
+          } else {
+            tenantNoc.classList.remove('opacity-50');
+            const statusEl = tenantNoc.querySelector('.doc-mand-badge');
+            if (statusEl) statusEl.innerHTML = `<span class="badge bg-danger">Mandatory for Tenant</span>`;
+          }
+        }
+      };
+
+      window.handleSameAddressChange = function (chk) {
+        const resAddr = document.getElementById('fieldC_resAddress');
+        const permAddr = document.getElementById('fieldC_permAddress');
+        if (chk.checked && resAddr && permAddr) {
+          permAddr.value = resAddr.value;
+        }
+      };
+
+      window.toggleOtherActivityInput = function (chk) {
+        const txt = document.getElementById('actOtherText');
+        if (txt) {
+          if (chk.checked) txt.classList.remove('d-none');
+          else txt.classList.add('d-none');
+        }
+      };
+
+      window.handleDeclarationChange = function (chk) {
+        const btn = document.getElementById('btnSubmitOrPay');
+        if (chk.checked) {
+          btn.classList.remove('disabled');
+        } else {
+          btn.classList.add('disabled');
+        }
+      };
+
+      // ------------------------------------------------------------------
+      // DOCUMENT RENDERERS
+      // ------------------------------------------------------------------
+      function renderDocumentsGridA() {
+        const grid = document.getElementById('docsGridA');
+        if (!grid) return;
+        let html = '';
+        DOCS_A.forEach(d => {
+          html += `
+            <div class="col-md-6" id="docCard_${d.id}">
+              <div class="p-3 rounded border bg-light h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <span class="small fw-bold text-dark">${d.name}</span>
+                    <span class="doc-mand-badge">${d.mandatory ? '<span class="text-danger small">*</span>' : '<span class="badge bg-secondary-subtle text-secondary small">Optional</span>'}</span>
+                  </div>
+                  <div class="file-dropzone-box py-2 px-2 mt-2" onclick="document.getElementById('input_${d.id}').click()">
+                    <i class="bi bi-cloud-arrow-up text-primary fs-4 d-block mb-1"></i>
+                    <span class="small text-muted" id="label_${d.id}">Click or Drag file to upload</span>
+                  </div>
+                  <input type="file" id="input_${d.id}" class="d-none" ${d.isMulti ? 'multiple' : ''} onchange="handleFileChange(this, '${d.id}')">
+                </div>
+                <div class="mt-2 text-end d-none" id="preview_${d.id}">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached</span>
+                  <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeAttachedDoc('${d.id}')" style="font-size: 0.75rem;">Remove</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        grid.innerHTML = html;
+      }
+
+      function renderDocumentsGridB() {
+        const grid = document.getElementById('docsGridB');
+        if (!grid) return;
+        let html = '';
+        DOCS_B.forEach(d => {
+          html += `
+            <div class="col-md-6" id="docCard_${d.id}">
+              <div class="p-3 rounded border bg-light h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <span class="small fw-bold text-dark">${d.name}</span>
+                    <span class="doc-mand-badge">${d.isConditional ? '<span class="badge bg-danger">Mandatory for Tenant</span>' : '<span class="text-danger small">*</span>'}</span>
+                  </div>
+                  <div class="file-dropzone-box py-2 px-2 mt-2" onclick="document.getElementById('input_${d.id}').click()">
+                    <i class="bi bi-cloud-arrow-up text-warning-emphasis fs-4 d-block mb-1"></i>
+                    <span class="small text-muted" id="label_${d.id}">Click or Drag file to upload</span>
+                  </div>
+                  <input type="file" id="input_${d.id}" class="d-none" onchange="handleFileChange(this, '${d.id}')">
+                </div>
+                <div class="mt-2 text-end d-none" id="preview_${d.id}">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached</span>
+                  <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeAttachedDoc('${d.id}')" style="font-size: 0.75rem;">Remove</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        grid.innerHTML = html;
+      }
+
+      function renderDocumentsGridC() {
+        const grid = document.getElementById('docsGridC');
+        if (!grid) return;
+        let html = '';
+        DOCS_C.forEach(d => {
+          html += `
+            <div class="col-md-6" id="docCard_${d.id}">
+              <div class="p-3 rounded border bg-light h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <span class="small fw-bold text-dark">${d.name}</span>
+                    <span class="doc-mand-badge">${d.mandatory ? '<span class="text-danger small">*</span>' : '<span class="badge bg-secondary-subtle text-secondary small">Optional</span>'}</span>
+                  </div>
+                  <div class="file-dropzone-box py-2 px-2 mt-2" onclick="document.getElementById('input_${d.id}').click()">
+                    <i class="bi bi-cloud-arrow-up text-success fs-4 d-block mb-1"></i>
+                    <span class="small text-muted" id="label_${d.id}">Click or Drag file to upload</span>
+                  </div>
+                  <input type="file" id="input_${d.id}" class="d-none" onchange="handleFileChange(this, '${d.id}')">
+                </div>
+                <div class="mt-2 text-end d-none" id="preview_${d.id}">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached</span>
+                  <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeAttachedDoc('${d.id}')" style="font-size: 0.75rem;">Remove</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        grid.innerHTML = html;
+      }
+
+      window.handleFileChange = function (input, docId) {
+        if (input.files && input.files[0]) {
+          const f = input.files[0];
+          document.getElementById(`label_${docId}`).textContent = `${f.name} (${(f.size/1024).toFixed(1)} KB)`;
+          document.getElementById(`preview_${docId}`).classList.remove('d-none');
+        }
+      };
+
+      window.removeAttachedDoc = function (docId) {
+        const inp = document.getElementById(`input_${docId}`);
+        if (inp) inp.value = '';
+        document.getElementById(`label_${docId}`).textContent = 'Click or Drag file to upload';
+        document.getElementById(`preview_${docId}`).classList.add('d-none');
+      };
+
+      window.previewImage = function (input, boxId) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById(boxId).innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">`;
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      };
+
+      // ------------------------------------------------------------------
+      // DYNAMIC APPLICATION SUMMARY GENERATION
+      // ------------------------------------------------------------------
+      function renderDynamicSummary() {
+        const container = document.getElementById('dynamicSummaryContent');
+        if (!container) return;
+
+        let html = '';
+
+        if (activeConfig === 'A') {
+          html = `
+            <!-- Form A Summary -->
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-person text-primary me-1"></i> 1. Applicant Details</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepA(1)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">Applicant Name:</div><div class="col-sm-8 fw-semibold text-dark">${document.getElementById('fieldA_applicantName').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Residential Proof:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_residentialProof').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Address Details:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_address').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">District &bull; Contact:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_district').value || 'N/A'} &bull; ${document.getElementById('fieldA_phone').value || 'N/A'} &bull; ${document.getElementById('fieldA_email').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Website:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_website').value || 'None'}</div>
+                  <div class="col-sm-4 text-muted">Qualifications:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_eduQualification').value || 'N/A'} (Academic) &bull; ${document.getElementById('fieldA_techQualification').value || 'N/A'} (Technical)</div>
+                  <div class="col-sm-4 text-muted">Tourism Training:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_training').value || 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-building text-primary me-1"></i> 2. Organisation &amp; Activity</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepA(2)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">Name of Firm:</div><div class="col-sm-8 fw-bold text-dark">${document.getElementById('fieldA_firmName').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Constitution &bull; Ownership:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_constitution').value || 'N/A'} &bull; ${document.getElementById('fieldA_ownership').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Partners / Directors:</div><div class="col-sm-8 text-dark">${partnersA.map(p => `${p.name} (${p.role})`).join(', ')}</div>
+                  <div class="col-sm-4 text-muted">Office Location &amp; Standard:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_officeAddress').value || 'N/A'} &bull; ${document.getElementById('fieldA_officeSizeStandard').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Affiliation &bull; Category:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_association').value || 'None'} &bull; <span class="badge bg-primary-subtle text-primary">${document.getElementById('fieldA_categoryApplied').value}</span></div>
+                  <div class="col-sm-4 text-muted">Activities &bull; Summary:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_activitiesSummary').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Insurances (Company / Guest):</div><div class="col-sm-8 text-dark">Company Liability: ${document.querySelector('input[name="fieldA_insuranceCompany"]:checked').value} &bull; Guest Coverage: ${document.querySelector('input[name="fieldA_insuranceGuest"]:checked').value}</div>
+                  <div class="col-sm-4 text-muted">Eco Practices:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_ecoPractices').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Equipment &amp; Facilities:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_officeEquipment').value || 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-people text-primary me-1"></i> 3. Staff Qualification (${staffA.length} Employees)</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepA(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <ul class="mb-0 ps-3">
+                  ${staffA.map(s => `<li><strong>${s.name || 'Staff Member'}</strong> &bull; ${s.academic} &bull; ${s.technical} (${s.exp})</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-paperclip text-primary me-1"></i> 4. Uploaded Documents (13 Items)</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepA(4)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  ${DOCS_A.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge bg-light text-secondary border">Uploaded / Attached</span></div>`).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (activeConfig === 'B') {
+          html = `
+            <!-- Form B Summary -->
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-shop text-warning-emphasis me-1"></i> 1. Applicant &amp; Premises</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(1)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">Premises Name:</div><div class="col-sm-8 fw-bold text-dark">${document.getElementById('fieldB_premisesName').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Address of Premises:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_premisesAddress').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Persons Concerned:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_personsConcerned').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">COI / Domicile:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_coi').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">District &bull; Tourist Area:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_district').value || 'N/A'} &bull; ${document.getElementById('fieldB_touristArea').value || 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-briefcase text-warning-emphasis me-1"></i> 2. Ownership &amp; Constitution</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(2)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">Proprietor Name(s):</div><div class="col-sm-8 fw-bold text-dark">${document.getElementById('fieldB_proprietor').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Constitution:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_constitutionType').value || 'N/A'}</div>
+                  ${document.getElementById('fieldB_constitutionType').value === 'Proprietorship' ? `<div class="col-sm-4 text-muted">Father's Name:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_fatherName').value || 'N/A'}</div>` : ''}
+                  ${document.getElementById('fieldB_constitutionType').value !== 'Proprietorship' ? `<div class="col-sm-4 text-muted">Partners / Directors:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_partnerNames').value || 'N/A'} &bull; COI: ${document.getElementById('fieldB_partnerCoi').value || 'N/A'}</div>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-people text-warning-emphasis me-1"></i> 3. Staff &amp; Business</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">English Fluency:</div><div class="col-sm-8 text-dark">${document.querySelector('input[name="fieldB_englishFluent"]:checked').value}</div>
+                  <div class="col-sm-4 text-muted">Foreign Languages:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_foreignLanguages').value || 'None'}</div>
+                  <div class="col-sm-4 text-muted">Shop Act License No:</div><div class="col-sm-8 font-monospace text-dark">${document.getElementById('fieldB_shopActLicense').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Contact Details:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_phone').value || 'N/A'} &bull; ${document.getElementById('fieldB_email').value || 'N/A'} &bull; ${document.getElementById('fieldB_website').value || 'None'}</div>
+                  <div class="col-sm-12 pt-2 border-top">
+                    <strong class="text-dark">DETAILS OF EMPLOYED PERSONS:</strong>
+                    <ul class="mb-0 ps-3 mt-1">
+                      ${employeesB.map(e => `<li>${e.name || 'Employee'} &bull; Edu: ${e.edu} &bull; Tech: ${e.tech}</li>`).join('')}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-paperclip text-warning-emphasis me-1"></i> 4. Premises &amp; Documents</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(4)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="mb-2">Owner of building/shop: <strong>${document.querySelector('input[name="fieldB_ownerBuilding"]:checked').value}</strong></div>
+                <div class="row g-2">
+                  ${DOCS_B.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge bg-light text-secondary border">Attached</span></div>`).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (activeConfig === 'C') {
+          html = `
+            <!-- Form C Summary -->
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-person text-success me-1"></i> 1. Applicant Details</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepC(1)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">Name of Applicant:</div><div class="col-sm-8 fw-bold text-dark">${document.getElementById('fieldC_applicantName').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Date of Birth &bull; COI:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_dob').value || 'N/A'} &bull; ${document.getElementById('fieldC_coi').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Telephone / District:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_phone').value || 'N/A'} &bull; ${document.getElementById('fieldC_district').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Residential Address:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_resAddress').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Permanent Address:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_permAddress').value || 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-camera text-success me-1"></i> 2. Qualification &amp; Experience</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepC(2)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted">Educational Qualification:</div><div class="col-sm-8 fw-semibold text-dark">${document.getElementById('fieldC_eduQualification').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Photography Course:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_photoCourse').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Photography Experience:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_experience').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Competent License:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldC_license').value || 'None'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border shadow-xs bg-white rounded-3 mb-3">
+              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                <strong class="text-dark"><i class="bi bi-paperclip text-success me-1"></i> 3. Documents</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepC(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
+              </div>
+              <div class="card-body p-3 small">
+                <div class="row g-2">
+                  ${DOCS_C.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge bg-light text-secondary border">${d.mandatory ? 'Attached' : 'Optional / Attached'}</span></div>`).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+      }
+
+      // ------------------------------------------------------------------
+      // FINAL SUBMISSION EXECUTION
+      // ------------------------------------------------------------------
+      window.executeFinalSubmission = function () {
+        let code = 'TO';
+        let entName = 'Registered Entity';
+
+        if (activeType === 'tour-operator') {
+          code = 'TO';
+          entName = document.getElementById('fieldA_firmName').value || document.getElementById('fieldA_applicantName').value || 'Sikkim Tour Operator';
+        } else if (activeType === 'travel-agent') {
+          code = 'TA';
+          entName = document.getElementById('fieldA_firmName').value || document.getElementById('fieldA_applicantName').value || 'Sikkim Travel Desk';
+        } else if (activeType === 'dealer') {
+          code = 'DLR';
+          entName = document.getElementById('fieldB_premisesName').value || document.getElementById('fieldB_proprietor').value || 'Outdoor Equipment Hub';
+        } else if (activeType === 'outdoor-photographer') {
+          code = 'PHO';
+          entName = document.getElementById('fieldC_applicantName').value || 'Professional Photographer';
+        }
+
+        const finalArn = generateArn(code);
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        document.getElementById('ackArnValue').textContent = finalArn;
+        document.getElementById('ackCategoryBadge').textContent = document.getElementById('formHeaderTitle').textContent;
+        document.getElementById('ackEnterpriseName').textContent = entName;
+        document.getElementById('ackSubmissionTimestamp').textContent = dateStr;
+
+        // Populate doc list in ack
+        let docListHtml = '';
+        let targetDocs = (activeConfig === 'A') ? DOCS_A : ((activeConfig === 'B') ? DOCS_B : DOCS_C);
+        targetDocs.forEach(d => {
+          docListHtml += `<li><i class="bi bi-check2 text-success me-1"></i> ${d.name}</li>`;
+        });
+        document.getElementById('ackDocsList').innerHTML = docListHtml;
+
+        // Save submitted record to localStorage
+        try {
+          const submittedRecord = {
+            refNo: finalArn,
+            category: activeType,
+            categoryName: document.getElementById('formHeaderTitle').textContent,
+            businessName: entName,
+            applicantName: entName,
+            submittedDate: dateStr,
+            status: "SUBMITTED",
+            processingStage: "Awaiting Level 0 TO Scrutiny",
+            assignedRole: "TO",
+            district: "Gangtok"
+          };
+          const existing = JSON.parse(localStorage.getItem('tourism_business_submitted') || '[]');
+          existing.unshift(submittedRecord);
+          localStorage.setItem('tourism_business_submitted', JSON.stringify(existing));
+        } catch (e) {
+          console.warn("Storage save failed:", e);
+        }
+
+        // Jump to Ack step
+        const ackStep = (activeConfig === 'C') ? 6 : 7;
+        goToStep(ackStep);
+      };
+
+      // ------------------------------------------------------------------
+      // DRAFT PERSISTENCE (LOCALSTORAGE)
+      // ------------------------------------------------------------------
+      function saveCurrentDraftState() {
+        const draftObj = {
+          draftId: activeDraftId,
+          type: activeType,
+          config: activeConfig,
+          step: currentStep,
+          timestamp: new Date().toISOString()
+        };
+        try {
+          localStorage.setItem('tourism_business_active_draft', JSON.stringify(draftObj));
+        } catch (e) {}
+      }
+
+      window.saveCurrentDraftManual = function () {
+        saveCurrentDraftState();
+        alert(`Application Draft saved successfully!
+Draft ID: ${activeDraftId}
+You can safely resume this application at any time from your citizen dashboard.`);
+      };
+
+      function loadDraft(draftId) {
+        // Mock draft loader
+        try {
+          const raw = localStorage.getItem('tourism_business_active_draft');
+          if (raw) {
+            const d = JSON.parse(raw);
+            if (d.type) activeType = d.type;
+          }
+        } catch (e) {}
+      }
+
+      function prepopulateDefaults() {
+        // Prepopulate realistic demo values for easy evaluator testing
+        if (document.getElementById('fieldA_applicantName')) document.getElementById('fieldA_applicantName').value = 'Tenzing Norbu Lepcha';
+        if (document.getElementById('fieldA_residentialProof')) document.getElementById('fieldA_residentialProof').value = 'COI/GTK/2012/8841';
+        if (document.getElementById('fieldA_address')) document.getElementById('fieldA_address').value = 'Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101';
+        if (document.getElementById('fieldA_phone')) document.getElementById('fieldA_phone').value = '9832045612';
+        if (document.getElementById('fieldA_email')) document.getElementById('fieldA_email').value = 'tenzing.lepcha@example.in';
+        if (document.getElementById('fieldA_eduQualification')) document.getElementById('fieldA_eduQualification').value = 'Graduate in Arts (BA)';
+        if (document.getElementById('fieldA_techQualification')) document.getElementById('fieldA_techQualification').value = 'Post Graduate Diploma in Tourism & Travel Management';
+        if (document.getElementById('fieldA_training')) document.getElementById('fieldA_training').value = 'Certificate in Adventure Tourism & Safety Operations, Sikkim Tourism Development';
+        if (document.getElementById('fieldA_firmName')) document.getElementById('fieldA_firmName').value = 'Singalila Eco-Tours Sikkim';
+        if (document.getElementById('fieldA_officeAddress')) document.getElementById('fieldA_officeAddress').value = 'Shop #4, Ridge View Complex, MG Marg, Gangtok, Sikkim';
+        if (document.getElementById('fieldA_officeSizeStandard')) document.getElementById('fieldA_officeSizeStandard').value = '350 sq.ft commercial office with client consultation lounge and digital ticketing counter';
+        if (document.getElementById('fieldA_association')) document.getElementById('fieldA_association').value = 'Travel Agents Association of Sikkim (TAAS) & SATO';
+        if (document.getElementById('fieldA_activitiesSummary')) document.getElementById('fieldA_activitiesSummary').value = 'Specialized in guided eco-treks along Singalila Ridge, Goecha La circuits, and nature tourism packages.';
+        if (document.getElementById('fieldA_experienceDetails')) document.getElementById('fieldA_experienceDetails').value = 'Over 8 years experience in organising high-altitude trekking and corporate tourist groups in Sikkim.';
+        if (document.getElementById('fieldA_ecoPractices')) document.getElementById('fieldA_ecoPractices').value = 'Strict zero-plastic policy, Leave-No-Trace trail ethics, and solar-powered camp logistics.';
+        if (document.getElementById('fieldA_officeEquipment')) document.getElementById('fieldA_officeEquipment').value = '4 workstations, client lounge, high-speed fiber internet, and fire extinguisher.';
+
+        // Dealer Defaults
+        if (document.getElementById('fieldB_premisesName')) document.getElementById('fieldB_premisesName').value = 'Kanchenjunga Gear & Trekking Store';
+        if (document.getElementById('fieldB_premisesAddress')) document.getElementById('fieldB_premisesAddress').value = 'Shop #14, Super Market Complex, Gangtok, Sikkim – 737101';
+        if (document.getElementById('fieldB_personsConcerned')) document.getElementById('fieldB_personsConcerned').value = 'Tenzing Norbu Lepcha, Resident of Ridge Park, Gangtok';
+        if (document.getElementById('fieldB_coi')) document.getElementById('fieldB_coi').value = 'COI/GTK/2014/9912';
+        if (document.getElementById('fieldB_proprietor')) document.getElementById('fieldB_proprietor').value = 'Tenzing Norbu Lepcha';
+        if (document.getElementById('fieldB_fatherName')) document.getElementById('fieldB_fatherName').value = 'Late Dorjee Tshering Lepcha';
+        if (document.getElementById('fieldB_shopActLicense')) document.getElementById('fieldB_shopActLicense').value = 'GMC/SHOP/2026/4412';
+        if (document.getElementById('fieldB_phone')) document.getElementById('fieldB_phone').value = '9832045612';
+        if (document.getElementById('fieldB_email')) document.getElementById('fieldB_email').value = 'contact@kanchenjungagear.in';
+
+        // Photographer Defaults
+        if (document.getElementById('fieldC_applicantName')) document.getElementById('fieldC_applicantName').value = 'Tenzing Norbu Lepcha';
+        if (document.getElementById('fieldC_dob')) document.getElementById('fieldC_dob').value = '1992-05-14';
+        if (document.getElementById('fieldC_coi')) document.getElementById('fieldC_coi').value = 'COI/GTK/2012/8841';
+        if (document.getElementById('fieldC_phone')) document.getElementById('fieldC_phone').value = '9832045612';
+        if (document.getElementById('fieldC_resAddress')) document.getElementById('fieldC_resAddress').value = 'Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101';
+        if (document.getElementById('fieldC_permAddress')) document.getElementById('fieldC_permAddress').value = 'Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101';
+        if (document.getElementById('fieldC_photoCourse')) document.getElementById('fieldC_photoCourse').value = 'Diploma in Outdoor & Landscape Photography, Himalayan Institute';
+        if (document.getElementById('fieldC_experience')) document.getElementById('fieldC_experience').value = '6 years commercial landscape and cultural documentation across Sikkim Himalayas.';
+      }
+
+    })();
+  </script>
+</body>
+</html>

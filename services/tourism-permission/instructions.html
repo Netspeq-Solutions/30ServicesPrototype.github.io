@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructions for Tourism Permission Application &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    .instruction-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .instruction-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #094738;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-right: 0.75rem;
+    }
+    .fee-badge {
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+    }
+    .agreement-container {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .agreement-container.checked {
+      border-color: #094738;
+      background: #f0fdf4;
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link for Accessibility -->
+  <a class="gov-skip-link" href="#main-instructions-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Accessibility Toolbar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success text-white fw-bold px-2 py-1">
+          <i class="bi bi-shield-lock-fill me-1"></i> Citizen Workspace
+        </span>
+        <span class="small text-white-50 d-none d-sm-inline">Mandatory Pre-Application Instructions</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="decrease" title="Decrease font size">A-</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="reset" title="Reset font size">A</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="increase" title="Increase font size">A+</button>
+        </div>
+        <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast">
+          <i class="bi bi-circle-half me-1"></i>Contrast
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 54px; width: auto;">
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 1px;">Government of Sikkim</span>
+            <h1 class="h5 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
+            <span class="small text-muted">Online Tourism Permission Application System</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="dashboard.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Instructions Content -->
+  <main id="main-instructions-content" class="flex-grow-1 py-4">
+    <div class="container-xl" style="max-width: 960px;">
+
+      <!-- Breadcrumbs -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Citizen Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Application Instructions</li>
+        </ol>
+      </nav>
+
+      <!-- Page Heading & Guidance -->
+      <div class="bg-white p-4 rounded-3 border shadow-xs mb-4">
+        <div class="d-flex align-items-start gap-3">
+          <div class="gov-icon-circle bg-success-subtle text-success d-none d-sm-inline-flex">
+            <i class="bi bi-file-earmark-text"></i>
+          </div>
+          <div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold px-2 py-1 mb-2">
+              Mandatory Step Before Applying
+            </span>
+            <h2 class="h3 fw-bold text-dark mb-1">Instructions for Tourism Permission Application</h2>
+            <p class="text-muted mb-0">
+              Please read the following instructions carefully before proceeding with your application.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions Section A -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center mb-3">
+          <span class="instruction-step-num">A</span>
+          <h3 class="h5 fw-bold text-dark mb-0">Select the Correct Application Category</h3>
+        </div>
+        <p class="text-muted small mb-3">
+          The applicant must select the category that matches the proposed tourism activity. Ensure you apply under the appropriate category to avoid delays or returned applications.
+        </p>
+        <div class="row row-cols-1 row-cols-md-2 g-2">
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-person-walking text-success fs-5"></i>
+              <div>
+                <strong>Trekking</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">Permit for high-altitude trekking routes &amp; trails</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-snow text-primary fs-5"></i>
+              <div>
+                <strong>Expedition</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">Mountaineering peaks &amp; restricted alpine zones (Requires Liaison Officer)</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-calendar-event text-warning fs-5"></i>
+              <div>
+                <strong>Events, Fairs, Melas, Rallies &amp; Marathons</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">Public gatherings, cultural rallies, marathon events</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-camera-video text-danger fs-5"></i>
+              <div>
+                <strong>Drone</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">Aerial filming, videography &amp; drone operations</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-water text-info fs-5"></i>
+              <div>
+                <strong>Adventure Activities</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">River rafting, paragliding, rock climbing, mountain biking</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-three-dots text-secondary fs-5"></i>
+              <div>
+                <strong>Any Other</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">Other tourism permissions requiring departmental clearance</div>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
+              <i class="bi bi-broadcast-pin text-primary fs-5"></i>
+              <div>
+                <strong>Satellite Phone Usage Permission</strong>
+                <div class="text-muted" style="font-size: 0.75rem;">Statutory telecommunication clearance in high altitude / remote zones</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions Section B -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center mb-3">
+          <span class="instruction-step-num">B</span>
+          <h3 class="h5 fw-bold text-dark mb-0">Provide Correct Applicant Information</h3>
+        </div>
+        <p class="text-muted small mb-0">
+          Applicants should provide accurate personal and contact information. Your full name, mobile number, email address, residential address, and identity proof must correspond with official government records. All official notifications and permission status updates will be communicated through these credentials.
+        </p>
+      </div>
+
+      <!-- Instructions Section C -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center mb-3">
+          <span class="instruction-step-num">C</span>
+          <h3 class="h5 fw-bold text-dark mb-0">Provide Activity Details</h3>
+        </div>
+        <p class="text-muted small mb-0">
+          Applicants should provide clear details about the proposed activity, including its purpose and relevant information. This includes dates of activity, proposed itinerary or venue, route details, number of participants, guide or tour operator details, and safety arrangements.
+        </p>
+      </div>
+
+      <!-- Instructions Section D -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center mb-3">
+          <span class="instruction-step-num">D</span>
+          <h3 class="h5 fw-bold text-dark mb-0">Supporting Documents</h3>
+        </div>
+        <p class="text-muted small mb-3">
+          The application may require supporting documents depending on the activity nature and venue:
+        </p>
+        <div class="row g-2 mb-3">
+          <div class="col-sm-6 col-md-3">
+            <div class="p-2 border rounded bg-light text-center small">
+              <i class="bi bi-fire text-danger d-block fs-4 mb-1"></i>
+              <strong>Fire NOC</strong>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <div class="p-2 border rounded bg-light text-center small">
+              <i class="bi bi-tree text-success d-block fs-4 mb-1"></i>
+              <strong>Environment NOC</strong>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <div class="p-2 border rounded bg-light text-center small">
+              <i class="bi bi-geo-alt text-warning-emphasis d-block fs-4 mb-1"></i>
+              <strong>Land NOC</strong>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <div class="p-2 border rounded bg-light text-center small">
+              <i class="bi bi-file-earmark-check text-primary d-block fs-4 mb-1"></i>
+              <strong>Any Other NOC</strong>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-warning border-0 small py-2 px-3 mb-0 d-flex align-items-start gap-2">
+          <i class="bi bi-exclamation-triangle-fill text-warning flex-shrink-0 mt-1"></i>
+          <div>
+            <strong>Important Note on Documents:</strong> The exact document requirements depend on the application category and applicable departmental guidelines. <em>Not all documents are mandatory for every category.</em> Clear guidance will be provided during the category-specific form submission.
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions Section E -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center mb-3">
+          <span class="instruction-step-num">E</span>
+          <h3 class="h5 fw-bold text-dark mb-0">Application Fee Structure</h3>
+        </div>
+        <p class="text-muted small mb-3">
+          The statutory fee applicable for each Tourism Permission category is as follows:
+        </p>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm align-middle small mb-2">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" style="width: 50%;">Application Category</th>
+                <th scope="col" class="text-end" style="width: 25%;">Applicable Fee</th>
+                <th scope="col" style="width: 25%;">Special Requirement</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fw-semibold">Trekking</td>
+                <td class="text-end"><span class="fee-badge bg-primary-subtle text-primary">₹100</span></td>
+                <td class="text-muted">Standard trail permit</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Expedition</td>
+                <td class="text-end"><span class="fee-badge bg-primary-subtle text-primary">₹100</span></td>
+                <td class="text-dark fw-semibold"><i class="bi bi-person-badge text-warning me-1"></i> Requires Liaison Officer</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Events, Fairs, Melas, Rallies and Marathons</td>
+                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
+                <td class="text-muted">NOC verification</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Drone</td>
+                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
+                <td class="text-muted">Airspace security clearance</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Adventure Activities</td>
+                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
+                <td class="text-muted">Safety audit check</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Any Other</td>
+                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
+                <td class="text-muted">General assessment</td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">Satellite Phone Usage Permission</td>
+                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
+                <td class="text-muted">Provisional free fee (Prototype)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted small mb-0 fst-italic">
+          *Note: Only <strong>Expedition</strong> requires Departmental Liaison Officer selection during the application process.
+        </p>
+      </div>
+
+      <!-- Instructions Section F & G -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="instruction-card h-100 mb-0">
+            <div class="d-flex align-items-center mb-2">
+              <span class="instruction-step-num">F</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Application Review</h3>
+            </div>
+            <p class="text-muted small mb-0">
+              Applications will be processed through the concerned departmental authorities (District DTO verification and Headquarters review). Applicants should track their application status regularly using the online tracker.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="instruction-card h-100 mb-0">
+            <div class="d-flex align-items-center mb-2">
+              <span class="instruction-step-num">G</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Communication</h3>
+            </div>
+            <p class="text-muted small mb-0">
+              Applicants should provide valid contact information to receive application-related communication, clarification queries, or verification remarks.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mandatory Applicant Declaration & Agreement -->
+      <div class="agreement-container shadow-xs mb-4" id="agreementBox">
+        <div class="form-check d-flex align-items-start gap-2 mb-0">
+          <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="chkAgreement" style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
+          <label class="form-check-label text-dark fw-semibold" for="chkAgreement" style="cursor: pointer; line-height: 1.5;">
+            I have read and understood the instructions for submitting a Tourism Permission application. I agree to provide accurate information and the applicable supporting documents.
+          </label>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-4">
+        <a href="dashboard.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold">
+          <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+        <a href="apply.html" class="btn btn-sm btn-success px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs disabled" id="btnAgreeProceed">
+          <span>Agree and Proceed</span>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Stage 03 Placeholder Modal -->
+  <div class="modal fade" id="stage3Modal" tabindex="-1" aria-labelledby="stage3ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-success text-white py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-info-circle-fill fs-5"></i>
+            <h5 class="modal-title fw-bold text-white mb-0" id="stage3ModalLabel">Application Submission – Stage 03</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <div class="p-3 bg-light rounded-circle d-inline-flex mb-3 text-success">
+            <i class="bi bi-check-circle-fill" style="font-size: 3rem;"></i>
+          </div>
+          <h4 class="h5 fw-bold text-dark mb-2">Instructions Acknowledged</h4>
+          <p class="text-muted small mb-3">
+            The application submission process will be available in the next implementation stage.
+          </p>
+          <div class="alert alert-info border-0 small text-start py-2 px-3 mb-0">
+            <i class="bi bi-gear-wide-connected me-1"></i>
+            <strong>Implementation Boundary:</strong> In accordance with the Stage 02 Master Workflow, the multi-step application form with dynamic validations and document uploads belongs to <strong>Stage 03</strong>.
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <a href="dashboard.html" class="btn btn-success btn-sm px-3">Return to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+    <div class="container-xl">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Interactive Controller -->
+  <script>
+    (function () {
+      'use strict';
+      var chkAgreement = document.getElementById('chkAgreement');
+      var btnAgreeProceed = document.getElementById('btnAgreeProceed');
+      var agreementBox = document.getElementById('agreementBox');
+
+      if (chkAgreement && btnAgreeProceed) {
+        chkAgreement.addEventListener('change', function () {
+          if (this.checked) {
+            btnAgreeProceed.classList.remove('disabled');
+            agreementBox.classList.add('checked');
+          } else {
+            btnAgreeProceed.classList.add('disabled');
+            agreementBox.classList.remove('checked');
+          }
+        });
+      }
+
+      // Font Resizer & Contrast Controls
+      var html = document.documentElement;
+      var body = document.body;
+      document.querySelectorAll('[data-font-action]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var action = this.getAttribute('data-font-action');
+          if (action === 'increase') html.setAttribute('data-font-size', 'large');
+          else if (action === 'decrease') html.setAttribute('data-font-size', 'small');
+          else html.setAttribute('data-font-size', 'normal');
+        });
+      });
+      var contrastBtn = document.getElementById('btn-contrast-toggle');
+      if (contrastBtn) {
+        contrastBtn.addEventListener('click', function () {
+          var isHc = html.classList.toggle('high-contrast');
+          body.classList.toggle('high-contrast', isHc);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+

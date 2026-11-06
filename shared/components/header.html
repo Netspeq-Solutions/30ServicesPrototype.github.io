@@ -1,0 +1,102 @@
+<!-- GIGW 3.0 Top Tricolor Stripe -->
+<div class="gov-top-stripe" role="presentation"></div>
+
+<!-- GIGW 3.0 Accessibility & Utility Toolbar -->
+<aside class="gov-utility-bar" aria-label="Accessibility and Utility Controls">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center gap-3">
+      <a href="#main-content" class="text-white-50 small"><i class="bi bi-arrow-down-short"></i> Skip to main content</a>
+      <span class="text-white-50">|</span>
+      <span class="text-white-50 small"><i class="bi bi-geo-alt"></i> Government of Sikkim</span>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <!-- Theme Switcher Preview -->
+      <label for="gov-theme-select" class="visually-hidden">Select Theme</label>
+      <select id="gov-theme-select" class="form-select form-select-sm py-0 px-2 bg-dark text-white border-secondary" style="font-size: 0.75rem; width: auto;" title="Switch Department Theme">
+        <option value="default">Theme: Default Slate</option>
+        <option value="forest-green">Theme: Forest & Revenue</option>
+        <option value="saffron-maroon">Theme: Tourism & Culture</option>
+        <option value="royal-navy">Theme: IT & Science</option>
+        <option value="teal">Theme: Urban Development</option>
+      </select>
+
+      <!-- Font Resize Controls -->
+      <div class="btn-group btn-group-sm" role="group" aria-label="Font Size Adjustment">
+        <button type="button" class="font-resize-btn" id="btn-font-decrease" title="Decrease Font Size (A-)">A-</button>
+        <button type="button" class="font-resize-btn" id="btn-font-reset" title="Reset Standard Font Size (A)">A</button>
+        <button type="button" class="font-resize-btn" id="btn-font-increase" title="Increase Font Size (A+)">A+</button>
+      </div>
+
+      <!-- Contrast Toggle -->
+      <button type="button" class="contrast-toggle-btn" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+        <i class="bi bi-circle-half"></i> <span class="d-none d-sm-inline">Contrast</span>
+      </button>
+
+      <!-- Language Selector Placeholder -->
+      <span class="badge bg-secondary text-white py-1 px-2" style="font-size: 0.75rem;">English</span>
+    </div>
+  </div>
+</aside>
+
+<!-- Government Department Brand Header -->
+<header class="gov-header" role="banner">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <!-- Sikkim State Official Logo -->
+        <div class="gov-emblem-container">
+          <img src="/shared/assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo" class="gov-emblem" width="68" height="64">
+        </div>
+
+        <div class="gov-title-group">
+          <span class="gov-title-sikkim">Government of Sikkim</span>
+          <h1 class="gov-dept-name" id="portal-dept-title">Single Window Citizen Service Portal</h1>
+          <span class="gov-portal-tagline">Integrated e-Governance & Public Service Delivery Architecture</span>
+        </div>
+      </div>
+
+      <!-- Quick Action / User Profile Preview -->
+      <div class="d-none d-md-flex align-items-center gap-2">
+        <div class="text-end">
+          <div class="small fw-semibold text-secondary">Helpline / Support</div>
+          <div class="fw-bold text-dark"><i class="bi bi-telephone-fill text-success"></i> 1800-345-3211</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Navigation Bar -->
+<nav class="navbar navbar-expand-lg gov-navbar" aria-label="Main Navigation">
+  <div class="container">
+    <button class="navbar-toggler text-white border-light my-2" type="button" data-bs-toggle="collapse" data-bs-target="#govMainNavbar" aria-controls="govMainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list fs-2 text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="govMainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/framework-demo.html"><i class="bi bi-house-door-fill me-1"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/shared/templates/public-portal-template.html"><i class="bi bi-grid-fill me-1"></i> Public Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/shared/templates/citizen-dashboard-template.html"><i class="bi bi-speedometer2 me-1"></i> Citizen Workspace</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/shared/templates/application-tracking-template.html"><i class="bi bi-search me-1"></i> Track Status</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/shared/templates/officer-dashboard-template.html"><i class="bi bi-shield-check me-1"></i> Officer Desk</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 py-2 py-lg-0">
+        <a href="/shared/templates/citizen-dashboard-template.html" class="btn btn-sm btn-light fw-bold text-primary">
+          <i class="bi bi-person-circle me-1"></i> Citizen Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+

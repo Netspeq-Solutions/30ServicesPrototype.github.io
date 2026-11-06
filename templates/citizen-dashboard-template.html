@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Dashboard - Government of Sikkim</title>
+
+  <!-- Bootstrap 5.3 & Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../common/css/themes.css">
+  <link rel="stylesheet" href="../common/css/components.css">
+  <link rel="stylesheet" href="../common/css/responsive.css">
+</head>
+<body data-theme="default">
+
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="gov-top-stripe" role="presentation"></div>
+
+  <!-- Utility Bar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap">
+      <div class="d-flex align-items-center gap-2">
+        <span class="small"><i class="bi bi-person-circle"></i> Citizen Workspace</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <select id="gov-theme-select" class="form-select form-select-sm py-0 px-2 bg-dark text-white border-secondary" style="font-size: 0.75rem;">
+          <option value="default">Theme: Default Slate</option>
+          <option value="forest-green">Theme: Forest & Revenue</option>
+          <option value="saffron-maroon">Theme: Tourism & Culture</option>
+          <option value="royal-navy">Theme: IT & Science</option>
+          <option value="teal">Theme: Urban Development</option>
+        </select>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="font-resize-btn" id="btn-font-decrease">A-</button>
+          <button type="button" class="font-resize-btn" id="btn-font-reset">A</button>
+          <button type="button" class="font-resize-btn" id="btn-font-increase">A+</button>
+        </div>
+        <button type="button" class="contrast-toggle-btn" id="btn-contrast-toggle"><i class="bi bi-circle-half"></i> Contrast</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="gov-header py-2" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle Workspace Menu">
+            <i class="bi bi-layout-sidebar"></i>
+          </button>
+          <div class="gov-emblem-container">
+            <img src="../common/assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo" class="gov-emblem" width="56" height="52" style="height: 52px; width: auto;">
+          </div>
+          <div class="gov-title-group">
+            <span class="gov-title-sikkim">Government of Sikkim</span>
+            <div class="fw-bold fs-5 text-dark">Citizen e-Services Portal</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="citizen-name-display">Tenzing N. Lepcha</div>
+            <div class="text-muted" style="font-size: 0.75rem;">Gangtok District | CIT-SK-882109</div>
+          </div>
+          <a href="../../framework-demo.html" class="btn btn-sm btn-outline-danger" title="Sign Out"><i class="bi bi-power"></i></a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container (Sidebar + Content) -->
+  <div class="gov-workspace-layout">
+    
+    <!-- Sidebar -->
+    <aside class="gov-sidebar" aria-label="Citizen Navigation">
+      <ul class="gov-sidebar-nav">
+        <li>
+          <a href="citizen-dashboard-template.html" class="gov-sidebar-link active">
+            <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="application-form-template.html" class="gov-sidebar-link">
+            <i class="bi bi-plus-circle-fill text-success"></i> <span>Apply New Service</span>
+          </a>
+        </li>
+        <li>
+          <a href="application-list-template.html" class="gov-sidebar-link">
+            <i class="bi bi-journal-text"></i> <span>My Applications</span>
+          </a>
+        </li>
+        <li>
+          <a href="application-tracking-template.html" class="gov-sidebar-link">
+            <i class="bi bi-search"></i> <span>Track Application</span>
+          </a>
+        </li>
+        <li class="my-2 border-top border-light"></li>
+        <li>
+          <a href="#digilocker" class="gov-sidebar-link">
+            <i class="bi bi-folder-check"></i> <span>Document Vault</span>
+          </a>
+        </li>
+        <li>
+          <a href="#profile" class="gov-sidebar-link">
+            <i class="bi bi-person-vcard"></i> <span>Citizen Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="#helpdesk" class="gov-sidebar-link">
+            <i class="bi bi-chat-dots"></i> <span>Grievance / Helpdesk</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main id="main-content" class="gov-workspace-content">
+      
+      <!-- Welcome Banner -->
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="h4 fw-bold mb-1">Citizen Services Overview</h2>
+          <p class="text-muted small mb-0">Welcome back. View the status of your applications and certificates.</p>
+        </div>
+        <div>
+          <a href="application-form-template.html" class="btn btn-gov-primary">
+            <i class="bi bi-plus-lg"></i> Apply for a Service
+          </a>
+        </div>
+      </div>
+
+      <!-- Metric Stat Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number">4</div>
+              <div class="gov-stat-label">Total Applied</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-primary-subtle text-primary">
+              <i class="bi bi-file-earmark-text"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number text-warning">1</div>
+              <div class="gov-stat-label">Under Review</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-warning-subtle text-warning">
+              <i class="bi bi-hourglass-split"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number text-success">2</div>
+              <div class="gov-stat-label">Approved & Issued</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-success-subtle text-success">
+              <i class="bi bi-check-circle"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number text-danger">1</div>
+              <div class="gov-stat-label">Action Required</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-danger-subtle text-danger">
+              <i class="bi bi-exclamation-triangle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Required Callout Banner -->
+      <div class="gov-callout gov-callout-warning d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-bell-fill fs-3 text-warning"></i>
+          <div>
+            <div class="fw-bold">Applicant Clarification Needed</div>
+            <div class="small text-muted">Sub-Divisional Magistrate requested updated Land Revenue Parcha copy for Application <strong>SK-2026-LRD-00412</strong>.</div>
+          </div>
+        </div>
+        <a href="application-tracking-template.html" class="btn btn-sm btn-gov-secondary">Respond Now <i class="bi bi-arrow-right"></i></a>
+      </div>
+
+      <!-- Recent Applications Table Section -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h3 class="h6 fw-bold mb-0"><i class="bi bi-clock-history me-1"></i> Recent Applications</h3>
+          <a href="application-list-template.html" class="small fw-semibold text-primary text-decoration-none">View All Applications</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="gov-table-responsive">
+            <table class="gov-table mb-0">
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Service Name</th>
+                  <th>Department</th>
+                  <th>Applied On</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="fw-bold font-monospace text-primary">SK-2026-LRD-00412</span></td>
+                  <td>Certificate of Identification (COI)</td>
+                  <td class="small text-muted">Land Revenue & Disaster Mgmt</td>
+                  <td>28 Oct 2026</td>
+                  <td><span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span></td>
+                  <td>
+                    <a href="application-tracking-template.html" class="btn btn-sm btn-outline-primary py-1 px-2" title="Track Status"><i class="bi bi-eye"></i> Track</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="fw-bold font-monospace text-primary">SK-2026-TCD-00892</span></td>
+                  <td>Homestay Registration Certificate</td>
+                  <td class="small text-muted">Tourism & Civil Aviation</td>
+                  <td>15 Oct 2026</td>
+                  <td><span class="gov-badge gov-badge-approved"><i class="bi bi-check-circle"></i> Approved</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-success py-1 px-2" title="Download Certificate" onclick="GovApp.showNotification('Certificate downloaded successfully.', 'success');"><i class="bi bi-download"></i> Certificate</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="fw-bold font-monospace text-primary">SK-2026-FED-00109</span></td>
+                  <td>Tree Felling Permission</td>
+                  <td class="small text-muted">Forest & Environment Dept</td>
+                  <td>02 Nov 2026</td>
+                  <td><span class="gov-badge gov-badge-submitted"><i class="bi bi-clock"></i> Submitted</span></td>
+                  <td>
+                    <a href="application-tracking-template.html" class="btn btn-sm btn-outline-primary py-1 px-2"><i class="bi bi-eye"></i> Track</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Apply Services Cards -->
+      <h3 class="h6 fw-bold mb-3"><i class="bi bi-stars me-1 text-warning"></i> Popular Services Available for Online Application</h3>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="p-3 bg-white rounded border shadow-xs h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="fw-bold text-dark">Non-Forest Land Verification</div>
+              <div class="text-muted small mt-1">Forest & Environment Department</div>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+              <span class="small text-muted">SLA: 21 Days</span>
+              <a href="application-form-template.html" class="btn btn-sm btn-outline-primary">Apply</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 bg-white rounded border shadow-xs h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="fw-bold text-dark">Trade License Grant & Renewal</div>
+              <div class="text-muted small mt-1">Urban Development Department</div>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+              <span class="small text-muted">SLA: 7 Days</span>
+              <a href="application-form-template.html" class="btn btn-sm btn-outline-primary">Apply</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 bg-white rounded border shadow-xs h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="fw-bold text-dark">Residential Income Certificate</div>
+              <div class="text-muted small mt-1">District Collectorate / Sub-Division</div>
+            </div>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+              <span class="small text-muted">SLA: 10 Days</span>
+              <a href="application-form-template.html" class="btn btn-sm btn-outline-primary">Apply</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="gov-footer" role="contentinfo">
+    <div class="container-fluid px-lg-4 py-3 text-center small text-white-50">
+      © 2026 Government of Sikkim. Single Window Prototype Framework.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../common/js/common.js"></script>
+  <script src="../common/js/navigation.js"></script>
+  <script src="../common/js/mock-data.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,243 @@
+{
+  "serviceId": "tourism-business-registration",
+  "serviceName": "Tourism Business & Outdoor Photography Registration",
+  "serviceShortName": "Tourism Business Registration",
+  "department": "Tourism & Civil Aviation Department",
+  "government": "Government of Sikkim",
+  "theme": "alpine-blue",
+  "portalUrl": "index.html",
+  "sikkimGoLoginUrl": "https://sikkimgo.gov.in/auth/login",
+  "contact": {
+    "office": "Paryatan Bhawan, Tadong, Gangtok, Sikkim – 737102",
+    "helpline": "03592-209090 / 1800-345-3256",
+    "email": "secy-tourism@sikkim.gov.in",
+    "workingHours": "10:00 AM – 04:30 PM (Monday to Friday, except State Holidays)"
+  },
+  "userHierarchy": [
+    {
+      "level": "Citizen",
+      "designation": "Citizen",
+      "abbreviation": "CITIZEN",
+      "role": "Citizen",
+      "description": "Submits and tracks applications",
+      "landingUrl": "dashboard.html"
+    },
+    {
+      "level": "Level 0",
+      "designation": "Tourism Officer",
+      "abbreviation": "TO",
+      "role": "TO",
+      "description": "Department officer at Level 0",
+      "landingUrl": "dashboard-to.html"
+    },
+    {
+      "level": "Level 1",
+      "designation": "Inspecting Authority",
+      "abbreviation": "IA",
+      "role": "IA",
+      "description": "Inspecting authority at Level 1",
+      "landingUrl": "dashboard-ia.html"
+    },
+    {
+      "level": "Level 2",
+      "designation": "District Tourism Officer",
+      "abbreviation": "DTO",
+      "role": "DTO",
+      "description": "District Tourism Officer at Level 2",
+      "landingUrl": "dashboard-dto.html"
+    }
+  ],
+  "registrationTypes": [
+    {
+      "id": "travel-agent",
+      "code": "TA",
+      "title": "Travel Agent Registration",
+      "shortTitle": "Travel Agent",
+      "categoryNumber": 1,
+      "icon": "bi-compass",
+      "badge": "Agency Registration",
+      "description": "For applicants seeking official statutory registration to establish and operate as an authorized Travel Agent in Sikkim.",
+      "targetAudience": "Enterprises, partnership firms, and resident individual travel professionals.",
+      "eligibility": "Resident citizen or registered commercial entity in Sikkim with an established place of business, valid local trade license, and compliance with Tourism Department norms.",
+      "documents": [
+        "Certificate of Identification (COI) / Sikkim Subject Certificate / Aadhaar Card",
+        "Valid Local Municipal / GPU Trade License",
+        "Business Premises Ownership Proof or Registered Lease Agreement",
+        "PAN Card & GST Registration Certificate (where applicable)",
+        "Bank Account Statement / Solvency Certificate"
+      ],
+      "fee": "Subject to Departmental Notification*",
+      "timeline": "Pending Official Confirmation*"
+    },
+    {
+      "id": "tour-operator",
+      "code": "TO",
+      "title": "Tour Operator Registration",
+      "shortTitle": "Tour Operator",
+      "categoryNumber": 2,
+      "icon": "bi-geo-alt",
+      "badge": "Operations Registration",
+      "description": "For tourism enterprises and individuals seeking statutory registration to organize, conduct, and promote commercial tour packages across Sikkim.",
+      "targetAudience": "Tour operating firms, adventure tour organizers, and commercial package providers.",
+      "eligibility": "Operating agency in Sikkim possessing adequate operational infrastructure, qualified tour managers, approved itineraries, and vehicle/transport compliance.",
+      "documents": [
+        "Identity Credentials of Proprietor / Partners / Directors",
+        "Firm Registration Certificate / Partnership Deed / Incorporation Certificate",
+        "Proof of Registered Office Address in Sikkim",
+        "List of Qualified Tour Managers / Guides & Staff Credentials",
+        "Details of Fleet / Transport Tie-ups & Comprehensive Itineraries"
+      ],
+      "fee": "Subject to Departmental Notification*",
+      "timeline": "Pending Official Confirmation*"
+    },
+    {
+      "id": "dealer",
+      "code": "DL",
+      "title": "Dealer Registration",
+      "shortTitle": "Dealer",
+      "categoryNumber": 3,
+      "icon": "bi-shop",
+      "badge": "Inspection Required",
+      "description": "For businesses seeking statutory registration as an authorized Tourism Equipment, Handicraft, or Commercial Service Dealer under departmental requirements.",
+      "targetAudience": "Commercial dealers of mountaineering gear, trekking equipment, indigenous crafts, and rental businesses.",
+      "eligibility": "Commercial shop or office premises in Sikkim with valid Shop Act license, verified equipment stock, and mandatory physical inspection by a designated Tourism Officer.",
+      "documents": [
+        "Shop & Commercial Establishment Act Registration (Shop Act)",
+        "Commercial Premises Ownership Deed or Registered Rent Agreement",
+        "Conditional House-Owner NOC (for rented premises)",
+        "Equipment Inventory / Stock Register & Catalog",
+        "Staff Details & Organization Constitution",
+        "Premises Parking & Safety Compliance Undertaking"
+      ],
+      "fee": "Subject to Departmental Notification*",
+      "timeline": "Pending Official Confirmation*",
+      "requiresInspection": true
+    },
+    {
+      "id": "outdoor-photographer",
+      "code": "OP",
+      "title": "Outdoor Photographer Registration",
+      "shortTitle": "Outdoor Photographer",
+      "categoryNumber": 4,
+      "icon": "bi-camera",
+      "badge": "Professional Registration",
+      "description": "For professionals and cinematographers seeking statutory registration to provide outdoor photography and filming services in designated tourism zones.",
+      "targetAudience": "Individual outdoor photographers, drone cinematographers, and documentary creators.",
+      "eligibility": "Individual applicant of minimum 18 years age with minimum Class X educational qualification, verified professional photography credentials/training, and recommendation.",
+      "documents": [
+        "Proof of Identity & Age (Aadhaar / Voter ID / Passport)",
+        "Class X Educational Qualification Certificate (Mandatory Minimum)",
+        "Certificate / Diploma in Photography / Cinematography or Verified Training Record",
+        "Portfolio of Work & Experience Credentials",
+        "Professional Recommendation Letter",
+        "Equipment Declaration & GST Registration (where applicable)"
+      ],
+      "fee": "Subject to Departmental Notification*",
+      "timeline": "Pending Official Confirmation*",
+      "requiresInspection": false
+    }
+  ],
+  "highlights": [
+    {
+      "icon": "bi-grid-fill",
+      "title": "Four Registration Types",
+      "description": "Distinct statutory paths for Travel Agents, Tour Operators, Dealers, and Photographers."
+    },
+    {
+      "icon": "bi-laptop",
+      "title": "Online Application",
+      "description": "Complete 100% digital submission via the Sikkim GO unified citizen portal."
+    },
+    {
+      "icon": "bi-patch-check",
+      "title": "Department Verification",
+      "description": "Systematic scrutiny, document verification, and officer review."
+    },
+    {
+      "icon": "bi-qr-code",
+      "title": "Registration Certificate",
+      "description": "Official QR-code verified statutory registration certificate upon approval."
+    }
+  ],
+  "districtHelpdesks": [
+    {
+      "district": "Gangtok (Headquarters)",
+      "office": "Paryatan Bhawan, Tadong, Gangtok – 737102",
+      "phone": "03592-209090",
+      "email": "secy-tourism@sikkim.gov.in"
+    },
+    {
+      "district": "Namchi District Office",
+      "office": "DAC Complex, Namchi, South Sikkim – 737126",
+      "phone": "03595-254210",
+      "email": "tourism-namchi@sikkim.gov.in"
+    },
+    {
+      "district": "Gyalshing District Office",
+      "office": "DAC Complex, Gyalshing, West Sikkim – 737111",
+      "phone": "03595-250810",
+      "email": "tourism-gyalshing@sikkim.gov.in"
+    },
+    {
+      "district": "Mangan District Office",
+      "office": "DAC Complex, Mangan, North Sikkim – 737116",
+      "phone": "03592-234205",
+      "email": "tourism-mangan@sikkim.gov.in"
+    },
+    {
+      "district": "Pakyong District Office",
+      "office": "DAC Complex, Pakyong, Sikkim – 737106",
+      "phone": "03592-258014",
+      "email": "tourism-pakyong@sikkim.gov.in"
+    },
+    {
+      "district": "Soreng District Office",
+      "office": "DAC Complex, Soreng, Sikkim – 737121",
+      "phone": "03595-257002",
+      "email": "tourism-soreng@sikkim.gov.in"
+    }
+  ],
+  "faqs": [
+    {
+      "q": "What is the Tourism Business & Outdoor Photography Registration Service?",
+      "a": "It is a unified, single-window online service established by the Tourism & Civil Aviation Department, Government of Sikkim, through which applicants can apply for statutory registration as Travel Agents, Tour Operators, Dealers, or Outdoor Photographers."
+    },
+    {
+      "q": "Which registration types are available under this service?",
+      "a": "There are four distinct registration categories: (1) Travel Agent Registration, (2) Tour Operator Registration, (3) Dealer Registration, and (4) Outdoor Photographer Registration. Applicants must select the specific category applicable to their business or professional activity."
+    },
+    {
+      "q": "How do I select the correct registration type?",
+      "a": "Review the category descriptions and prerequisites on this portal. If you arrange passenger tickets and travel itineraries, choose Travel Agent. If you conduct and organize guided group tours, choose Tour Operator. If you sell or rent trekking, mountaineering or adventure equipment, choose Dealer. If you provide commercial photography or cinematography services, choose Outdoor Photographer."
+    },
+    {
+      "q": "What documents are required to apply?",
+      "a": "Supporting documents differ by registration type. All applicants require identity and address proof. Commercial entities require trade licenses, Shop Act registration, and premise lease/ownership documents. Outdoor photographers require minimum Class X educational proof, photography training/credentials, and recommendations. Please consult the checklist section for detailed requirements."
+    },
+    {
+      "q": "Are the registration fees and timelines the same for all registration types?",
+      "a": "Statutory fees and service delivery timelines are determined by the department in accordance with official state notifications and gazette orders. The applicable fee schedules and statutory processing timelines are currently pending official gazette confirmation."
+    },
+    {
+      "q": "What special requirements apply to Dealer Registration?",
+      "a": "Dealer applications require valid Shop Act registration, verified business premises, stock inventory, and a mandatory on-site physical inspection by an authorized Inspecting Officer prior to departmental approval."
+    },
+    {
+      "q": "What qualifications are required for Outdoor Photographer Registration?",
+      "a": "Applicants must be at least 18 years old, possess a mandatory minimum Class X educational certificate, and furnish verified certificates of training, experience portfolio, and professional recommendations in photography or cinematography."
+    },
+    {
+      "q": "How can I submit an application?",
+      "a": "Click on 'Apply for Registration' or 'Login via Sikkim GO' on this portal. Once signed in via Sikkim GO, select your required registration type, complete the guided multi-step form, upload your supporting documents, and submit."
+    },
+    {
+      "q": "How can I track my application status?",
+      "a": "After submission, an Application Reference Number (ARN) will be issued. You can track real-time verification and scrutiny status directly through your citizen dashboard by logging in via Sikkim GO."
+    },
+    {
+      "q": "How can I contact the department for assistance?",
+      "a": "You can contact the Tourism & Civil Aviation Department Headquarters at Paryatan Bhawan, Tadong, Gangtok (Phone: 03592-209090 / 1800-345-3256, Email: secy-tourism@sikkim.gov.in) or visit your respective District Administrative Centre."
+    }
+  ]
+}
+

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Framework Showcase & Design System Demo - Government of Sikkim</title>
+
+  <!-- Bootstrap 5.3 & Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared Custom CSS -->
+  <link rel="stylesheet" href="shared/css/gigw-template.css">
+  <link rel="stylesheet" href="shared/css/themes.css">
+  <link rel="stylesheet" href="shared/css/components.css">
+  <link rel="stylesheet" href="shared/css/responsive.css">
+</head>
+<body data-theme="default">
+
+  <!-- GIGW 3.0 Skip to main content -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Top Tricolor Stripe -->
+  <div class="gov-top-stripe" role="presentation"></div>
+
+  <!-- Accessibility & Utility Toolbar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+      <div class="d-flex align-items-center gap-3">
+        <span class="small"><i class="bi bi-geo-alt"></i> Government of Sikkim</span>
+        <span class="text-white-50">|</span>
+        <a href="#main-content" class="small"><i class="bi bi-arrow-down-short"></i> Skip to Content</a>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <label for="gov-theme-select" class="visually-hidden">Switch Departmental Theme</label>
+        <select id="gov-theme-select" class="form-select form-select-sm py-0 px-2 bg-dark text-white border-secondary" style="font-size: 0.75rem;">
+          <option value="default">Theme: Default Slate</option>
+          <option value="forest-green">Theme: Forest & Revenue</option>
+          <option value="saffron-maroon">Theme: Tourism & Culture</option>
+          <option value="royal-navy">Theme: IT & Science</option>
+          <option value="teal">Theme: Urban Development</option>
+        </select>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Font Resizing">
+          <button type="button" class="font-resize-btn" id="btn-font-decrease" title="Decrease Font">A-</button>
+          <button type="button" class="font-resize-btn" id="btn-font-reset" title="Normal Font">A</button>
+          <button type="button" class="font-resize-btn" id="btn-font-increase" title="Increase Font">A+</button>
+        </div>
+        <button type="button" class="contrast-toggle-btn" id="btn-contrast-toggle"><i class="bi bi-circle-half"></i> Contrast</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Department Header -->
+  <header class="gov-header" role="banner">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="gov-emblem-container">
+            <img src="shared/assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo" class="gov-emblem" width="68" height="64">
+          </div>
+          <div class="gov-title-group">
+            <span class="gov-title-sikkim">Government of Sikkim</span>
+            <h1 class="gov-dept-name">G2C Prototype Framework Demonstration</h1>
+            <span class="gov-portal-tagline">Standardized UI Components, Theme Architecture & Base Templates</span>
+          </div>
+        </div>
+        <div class="d-none d-md-block text-end">
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+            <i class="bi bi-check2-circle me-1"></i> GIGW 3.0 Ready
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg gov-navbar" aria-label="Primary Navigation">
+    <div class="container">
+      <button class="navbar-toggler text-white border-light my-2" type="button" data-bs-toggle="collapse" data-bs-target="#demoNav">
+        <i class="bi bi-list fs-2 text-white"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="demoNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="framework-demo.html"><i class="bi bi-grid-fill me-1"></i> Component Showcase</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-file-earmark-code me-1"></i> 7 Base Templates
+            </a>
+            <ul class="dropdown-menu shadow">
+              <li><a class="dropdown-item" href="shared/templates/public-portal-template.html"><i class="bi bi-globe me-2"></i> 1. Public Service Portal</a></li>
+              <li><a class="dropdown-item" href="shared/templates/citizen-dashboard-template.html"><i class="bi bi-speedometer2 me-2"></i> 2. Citizen Dashboard</a></li>
+              <li><a class="dropdown-item" href="shared/templates/application-list-template.html"><i class="bi bi-card-checklist me-2"></i> 3. Application List</a></li>
+              <li><a class="dropdown-item" href="shared/templates/application-form-template.html"><i class="bi bi-file-earmark-plus me-2"></i> 4. Multi-Step Form</a></li>
+              <li><a class="dropdown-item" href="shared/templates/application-tracking-template.html"><i class="bi bi-search me-2"></i> 5. Application Tracking</a></li>
+              <li><a class="dropdown-item" href="shared/templates/officer-dashboard-template.html"><i class="bi bi-shield-check me-2"></i> 6. Officer Dashboard</a></li>
+              <li><a class="dropdown-item" href="shared/templates/officer-review-template.html"><i class="bi bi-clipboard-check me-2"></i> 7. Officer Scrutiny & Review</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="#buttons"><i class="bi bi-hand-index-thumb me-1"></i> Buttons</a></li>
+          <li class="nav-item"><a class="nav-link" href="#forms"><i class="bi bi-input-cursor-text me-1"></i> Forms</a></li>
+          <li class="nav-item"><a class="nav-link" href="#cards"><i class="bi bi-layout-three-columns me-1"></i> Cards</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tables"><i class="bi bi-table me-1"></i> Tables</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-light fw-bold text-primary" onclick="GovApp.showNotification('Framework version 1.0.0 ready for service prototype development.', 'info');">
+            <i class="bi bi-bell-fill"></i> Test Toast
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <nav class="gov-breadcrumb-wrapper" aria-label="Breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="framework-demo.html">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Framework Component Showcase</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Page Banner -->
+  <div class="gov-page-banner py-4">
+    <div class="container">
+      <h2 class="h3 fw-bold mb-1">Standardized UI Component Library</h2>
+      <p class="small mb-0 opacity-90">Demonstrates consistent typography, GIGW 3.0 accessibility features, departmental theming, and responsive design widgets.</p>
+    </div>
+  </div>
+
+  <!-- Main Showcase Container -->
+  <main id="main-content" class="container py-4">
+    
+    <!-- Quick Links to the 7 Reusable Templates -->
+    <section class="card border-0 shadow-sm mb-5 bg-light-subtle border-start border-4 border-primary">
+      <div class="card-body p-4">
+        <h3 class="h5 fw-bold text-dark mb-2"><i class="bi bi-collection-play-fill text-primary me-2"></i> 7 Reusable HTML Page Templates</h3>
+        <p class="small text-muted mb-3">These templates form the starting point for developing all 30 G2C services without backend dependencies:</p>
+        <div class="row g-2 mb-3">
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/public-portal-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 1. Public Portal Template</a></div>
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/citizen-dashboard-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 2. Citizen Dashboard</a></div>
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/application-list-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 3. Application List</a></div>
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/application-form-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 4. Multi-Step Form</a></div>
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/application-tracking-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 5. Application Tracking</a></div>
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/officer-dashboard-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 6. Officer Dashboard</a></div>
+          <div class="col-md-4 col-sm-6"><a href="shared/templates/officer-review-template.html" class="btn btn-sm btn-outline-primary w-100 text-start"><i class="bi bi-box-arrow-up-right me-1"></i> 7. Officer Scrutiny & Review</a></div>
+        </div>
+
+        <!-- Active Service Prototypes Strip -->
+        <div class="pt-3 border-top d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold px-2 py-1">
+              <i class="bi bi-check-circle-fill me-1"></i> Active Service Prototypes (2)
+            </span>
+            <span class="small text-muted">Tourism Permission &bull; Tourism Business &amp; Outdoor Photography Registration</span>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="services/tourism-permission/index.html" class="btn btn-sm btn-success fw-semibold">
+              <i class="bi bi-arrow-right-circle me-1"></i> Tourism Permission
+            </a>
+            <a href="services/tourism-business-registration/index.html" class="btn btn-sm btn-primary fw-semibold">
+              <i class="bi bi-arrow-right-circle me-1"></i> Tourism Business Registration
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: Typography & Headings -->
+    <section class="mb-5" id="typography">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-fonts text-primary me-2"></i> 1. Typography & Hierarchy</h3>
+      <div class="p-4 bg-white rounded border">
+        <h1 class="display-6 fw-bold">Heading Level 1 (Display-6) - 1.75rem</h1>
+        <h2 class="h3 fw-bold">Heading Level 2 (H3) - 1.45rem</h2>
+        <h3 class="h4 fw-bold">Heading Level 3 (H4) - 1.25rem</h3>
+        <h4 class="h5 fw-bold">Heading Level 4 (H5) - 1.10rem</h4>
+        <h5 class="h6 fw-bold">Heading Level 5 (H6) - 1.00rem</h5>
+        <p class="mt-3 mb-1">Standard Body Text: Governed by <code>--gov-font-family</code> (Noto Sans). High legibility for bilingual content and public readability.</p>
+        <p class="text-muted small mb-0">Small / Helper Text: Used for metadata, statutory citations, and input instructions.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Buttons & Actions -->
+    <section class="mb-5" id="buttons">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-hand-index-thumb text-primary me-2"></i> 2. Buttons & Actions</h3>
+      <div class="p-4 bg-white rounded border">
+        <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+          <button type="button" class="btn btn-gov-primary"><i class="bi bi-check2-circle"></i> Gov Primary</button>
+          <button type="button" class="btn btn-gov-secondary"><i class="bi bi-send"></i> Gov Secondary</button>
+          <button type="button" class="btn btn-gov-outline">Gov Outline</button>
+          <button type="button" class="btn btn-success"><i class="bi bi-patch-check"></i> Approve / Sanction</button>
+          <button type="button" class="btn btn-warning text-dark"><i class="bi bi-question-circle"></i> Query</button>
+          <button type="button" class="btn btn-danger"><i class="bi bi-x-circle"></i> Reject</button>
+          <button type="button" class="btn btn-outline-secondary" disabled>Disabled State</button>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <button type="button" class="btn btn-sm btn-gov-primary">Small Button</button>
+          <button type="button" class="btn btn-gov-primary">Regular Button</button>
+          <button type="button" class="btn btn-lg btn-gov-primary">Large Button</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Badges & Status Indicators -->
+    <section class="mb-5" id="badges">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-tags text-primary me-2"></i> 3. Status Badges</h3>
+      <div class="p-4 bg-white rounded border d-flex flex-wrap gap-3 align-items-center">
+        <span class="gov-badge gov-badge-draft"><i class="bi bi-pencil"></i> Draft</span>
+        <span class="gov-badge gov-badge-submitted"><i class="bi bi-clock"></i> Submitted</span>
+        <span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span>
+        <span class="gov-badge gov-badge-approved"><i class="bi bi-check-circle"></i> Approved</span>
+        <span class="gov-badge gov-badge-rejected"><i class="bi bi-x-circle"></i> Rejected</span>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Form Fields & Controls -->
+    <section class="mb-5" id="forms">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-input-cursor-text text-primary me-2"></i> 4. Form Fields & Validation Controls</h3>
+      <div class="form-section-card">
+        <div class="form-section-header">
+          <h4>Sample Form Grid</h4>
+          <span class="small text-muted">Client-side validated</span>
+        </div>
+        <div class="form-section-body">
+          <form class="needs-gov-validation" novalidate onsubmit="event.preventDefault();">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="demoName" class="form-label required">Applicant Full Name</label>
+                <input type="text" class="form-control" id="demoName" required placeholder="Enter full name">
+                <div class="invalid-feedback">Mandatory field.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="demoEmail" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="demoEmail" data-validate="email" placeholder="name@domain.com">
+                <div class="invalid-feedback">Invalid email address.</div>
+              </div>
+              <div class="col-md-4">
+                <label for="demoMobile" class="form-label required">Indian Mobile Number</label>
+                <input type="tel" class="form-control" id="demoMobile" data-validate="mobile" required placeholder="10-digit number">
+                <div class="invalid-feedback">Enter valid 10-digit Indian mobile.</div>
+              </div>
+              <div class="col-md-4">
+                <label for="demoDistrict" class="form-label required">District Select</label>
+                <select class="form-select" id="demoDistrict" required>
+                  <option value="">Select District</option>
+                  <option value="Gangtok">Gangtok</option>
+                  <option value="Namchi">Namchi</option>
+                  <option value="Gyalshing">Gyalshing</option>
+                  <option value="Mangan">Mangan</option>
+                  <option value="Pakyong">Pakyong</option>
+                  <option value="Soreng">Soreng</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="demoPin" class="form-label required">Postal PIN Code</label>
+                <input type="text" class="form-control" id="demoPin" data-validate="pincode" required placeholder="6-digit PIN">
+              </div>
+
+              <!-- Checkbox & Radios -->
+              <div class="col-md-6 mt-3">
+                <label class="form-label d-block required">Checkboxes Selection</label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="checkA" checked>
+                  <label class="form-check-label" for="checkA">Option A</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox" id="checkB">
+                  <label class="form-check-label" for="checkB">Option B</label>
+                </div>
+              </div>
+
+              <div class="col-md-6 mt-3">
+                <label class="form-label d-block required">Radio Selection</label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="demoRadio" id="radio1" checked>
+                  <label class="form-check-label" for="radio1">Citizen</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="demoRadio" id="radio2">
+                  <label class="form-check-label" for="radio2">Business / Commercial</label>
+                </div>
+              </div>
+
+              <!-- Form Action Buttons for Validation Testing -->
+              <div class="col-12 mt-4 pt-3 border-top d-flex gap-2">
+                <button type="submit" class="btn btn-gov-primary"><i class="bi bi-check2-circle"></i> Validate Form</button>
+                <button type="reset" class="btn btn-outline-secondary">Reset Fields</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: File Upload Dropzone -->
+    <section class="mb-5" id="uploads">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> 5. File Upload Dropzone</h3>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="file-dropzone">
+            <i class="bi bi-cloud-upload"></i>
+            <div class="fw-semibold">Drag & Drop or Click to Upload Supporting Document</div>
+            <div class="small text-muted">Permitted Formats: PDF, JPG, PNG (Max: 2048 KB)</div>
+            <input type="file" class="d-none dropzone-input" accept=".pdf,.jpg,.jpeg,.png">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded border h-100">
+            <div class="fw-bold mb-2">Simulated Uploaded Document Preview:</div>
+            <div class="file-preview-item">
+              <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-file-earmark-pdf text-danger fs-3"></i>
+                <div>
+                  <div class="fw-semibold">certificate_of_identification.pdf</div>
+                  <div class="text-muted small">840 KB (Valid format)</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-danger" onclick="GovApp.showNotification('File removed', 'info');"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: Cards & Metric Tiles -->
+    <section class="mb-5" id="cards">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-layout-three-columns text-primary me-2"></i> 6. Cards & KPI Metrics</h3>
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number">128</div>
+              <div class="gov-stat-label">Total Submissions</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-primary-subtle text-primary"><i class="bi bi-folder"></i></div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number text-warning">14</div>
+              <div class="gov-stat-label">Under Scrutiny</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-warning-subtle text-warning"><i class="bi bi-hourglass-split"></i></div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number text-success">109</div>
+              <div class="gov-stat-label">Disposed / Issued</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-success-subtle text-success"><i class="bi bi-check2"></i></div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-stat-card">
+            <div>
+              <div class="gov-stat-number text-danger">5</div>
+              <div class="gov-stat-label">Rejected / Invalid</div>
+            </div>
+            <div class="gov-stat-icon-wrapper bg-danger-subtle text-danger"><i class="bi bi-x-lg"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: Tables -->
+    <section class="mb-5" id="tables">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-table text-primary me-2"></i> 7. Standardized Data Tables</h3>
+      <div class="gov-table-responsive">
+        <table class="gov-table">
+          <thead>
+            <tr>
+              <th>Ref No.</th>
+              <th>Service Name</th>
+              <th>Applicant</th>
+              <th>Submitted Date</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="font-monospace fw-bold text-primary">SK-2026-LRD-00412</span></td>
+              <td>Certificate of Identification</td>
+              <td>Tenzing Lepcha</td>
+              <td>28 Oct 2026</td>
+              <td><span class="gov-badge gov-badge-review">Under Review</span></td>
+              <td class="text-end"><button class="btn btn-sm btn-outline-primary" onclick="GovApp.showNotification('View details triggered', 'info');">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="font-monospace fw-bold text-primary">SK-2026-TCD-00892</span></td>
+              <td>Homestay Registration</td>
+              <td>Pemba Tshering</td>
+              <td>15 Oct 2026</td>
+              <td><span class="gov-badge gov-badge-approved">Approved</span></td>
+              <td class="text-end"><button class="btn btn-sm btn-outline-success" onclick="GovApp.showNotification('Download triggered', 'success');">Download</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 8: Alerts & Callouts -->
+    <section class="mb-5" id="alerts">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-exclamation-triangle text-primary me-2"></i> 8. Alerts & Callout Banners</h3>
+      <div class="gov-callout mb-3">
+        <strong>Information Notice:</strong> Standard GIGW informational callout banner with primary accent.
+      </div>
+      <div class="gov-callout gov-callout-warning mb-3">
+        <strong>Statutory Warning:</strong> Incomplete submissions will be held for 15 days before automatic disposal.
+      </div>
+      <div class="gov-callout gov-callout-danger mb-3">
+        <strong>Important Notice:</strong> Uploading fraudulent documentation constitutes an offense under the Sikkim Public Services Act.
+      </div>
+    </section>
+
+    <!-- SECTION 9: Modals -->
+    <section class="mb-5" id="modals">
+      <h3 class="h5 fw-bold border-bottom pb-2 mb-3 text-dark"><i class="bi bi-window text-primary me-2"></i> 9. Modal Dialogs</h3>
+      <button type="button" class="btn btn-gov-primary" data-bs-toggle="modal" data-bs-target="#demoModal">
+        <i class="bi bi-window"></i> Open Standard Modal
+      </button>
+
+      <!-- Modal Dialog -->
+      <div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="demoModalLabel">Official Confirmation Dialog</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you wish to submit this official application? Once submitted, form fields cannot be edited until an officer raises an inquiry.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-gov-primary" data-bs-dismiss="modal" onclick="GovApp.showNotification('Application confirmed!', 'success');">Confirm & Proceed</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="gov-footer" role="contentinfo">
+    <div class="container py-3 d-flex justify-content-between align-items-center flex-wrap gap-2 small text-white-50">
+      <div class="d-flex align-items-center gap-2">
+        <img src="shared/assets/images/sikkim-government-logo-light.png" alt="Government of Sikkim" style="height: 32px; width: auto;">
+        <span>© 2026 Government of Sikkim. Standardized Prototype Framework Showcase.</span>
+      </div>
+      <div>
+        <span>GIGW 3.0 / WCAG 2.1 Level AA</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="shared/js/common.js"></script>
+  <script src="shared/js/navigation.js"></script>
+  <script src="shared/js/form-validation.js"></script>
+  <script src="shared/js/file-upload.js"></script>
+  <script src="shared/js/mock-data.js"></script>
+</body>
+</html>
+

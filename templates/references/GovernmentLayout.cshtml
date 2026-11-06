@@ -1,0 +1,502 @@
+@using Microsoft.Extensions.Options
+@using TEMPLATE.Web.Configuration
+@inject IOptionsSnapshot<GovernmentPortalTheme> PortalTheme
+@{
+    var theme = PortalTheme.Value;
+    var activeTheme = theme.GetTheme();
+    var activeSlug = theme.GetThemeSlug();
+    var lang = theme.DefaultLanguage;
+}
+<!DOCTYPE html>
+<html lang="@lang" data-font-size="normal">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="@activeTheme.PrimaryHex" />
+    <meta name="description" content="@theme.ServiceName - @theme.DepartmentName, @theme.GovernmentName. Official G2C Service Delivery Gateway." />
+    <title>@ViewData["Title"] | @theme.DepartmentName | @theme.GovernmentName</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Font Awesome Icons -->
+    <link href="~/font-awesome/css/all.min.css" rel="stylesheet" />
+    <!-- GIGW 3.0 Standardized Portal Stylesheet & Departmental Themes -->
+    <link rel="stylesheet" href="~/css/gigw-template.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/lib/toastr/toastr.min.css" rel="stylesheet" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body data-theme="@activeSlug" class="d-flex flex-column min-vh-100">
+    <!-- GIGW 3.0 Skip Links for Accessibility -->
+    <a class="gov-skip-link" href="#how-to-apply">Skip to Main Content</a>
+    <a class="gov-skip-link" href="#govNavbar">Skip to Navigation</a>
+
+    <!-- Top Indian Flag Ribbon (GIGW Official Website Header Element) -->
+    <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+    <!-- Top Accessibility & Utility Bar (GIGW 3.0 Mandatory) -->
+    <header class="gov-top-bar" role="region" aria-label="Accessibility and Utility Controls">
+        <div class="container-xl">
+            <div class="d-flex align-items-center justify-content-between gap-2 py-0">
+                <!-- Left: Official Government Identification with Official Badge -->
+                <div class="d-flex align-items-center gap-2">
+                    <span class="gov-official-badge"><i class="fas fa-shield-alt text-primary" aria-hidden="true"></i> OFFICIAL</span>
+                    <span class="fw-semibold">@theme.GovernmentName</span>
+                    <span class="text-white-50 d-none d-sm-inline">|</span>
+                    <span class="text-white-50 d-none d-sm-inline">@theme.GovernmentNameNepali</span>
+                </div>
+
+                <!-- Right: Accessibility Toolbar -->
+                <div class="d-flex align-items-center gap-2">
+                    <!-- India.gov.in Standard: Visible Skip to Main Content Link -->
+                    <a href="#how-to-apply" class="gov-top-link d-inline-flex align-items-center gap-1" title="Skip to Main Content (Application Instructions)" aria-label="Skip to main content and application instructions">
+                        <i class="fas fa-arrow-down small" aria-hidden="true"></i>
+                        <span>Skip to Main Content</span>
+                    </a>
+
+                    <span class="text-white-50 d-none d-md-inline">|</span>
+
+                    <!-- Screen Reader Access Link -->
+                    <a href="#screenReaderModal" data-bs-toggle="modal" class="gov-top-link d-none d-md-inline-flex align-items-center gap-1" aria-label="Screen Reader Access information" title="Screen Reader Access">
+                        <i class="fas fa-volume-up small" aria-hidden="true"></i>
+                        <span>Screen Reader</span>
+                    </a>
+
+                    <span class="text-white-50 d-none d-sm-inline">|</span>
+
+                    <!-- Font Sizing Controls (GIGW 3.0 Standard) -->
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+                        <button type="button" class="btn btn-outline-gov-light" data-font-action="decrease" title="Decrease font size" aria-label="Decrease text size">A-</button>
+                        <button type="button" class="btn btn-outline-gov-light active" data-font-action="reset" title="Normal font size" aria-label="Reset text size to default">A</button>
+                        <button type="button" class="btn btn-outline-gov-light" data-font-action="increase" title="Increase font size" aria-label="Increase text size">A+</button>
+                    </div>
+
+                    <!-- High Contrast Toggle (Icon Only) -->
+                    <button type="button" class="btn btn-outline-gov-light btn-sm" id="highContrastToggle" aria-pressed="false" title="Toggle High Contrast Mode" aria-label="Toggle High Contrast Mode">
+                        <i class="fas fa-adjust" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Government of Sikkim & Department Header (Spacious Reference Layout) -->
+    <div class="gov-header" role="banner">
+        <div class="container-xl">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <!-- Left: Official Department & Service Identity with Clean Spacing -->
+                <div class="d-flex align-items-center gap-3">
+                    <a asp-controller="Home" asp-action="Index" class="d-inline-block text-decoration-none" title="Return to @theme.DepartmentName Home">
+                        <img src="@Url.Content(theme.LogoDarkPath)" alt="Official Emblem of the Government of Sikkim" class="gov-header-emblem" />
+                    </a>
+                    <div>
+                        <div class="gov-header-dept-eyebrow">@theme.DepartmentName</div>
+                        <h1 class="gov-header-title">@theme.ServiceName</h1>
+                        <div class="gov-header-subtitle">Unified Citizen Services &amp; Digital Governance Gateway &bull; Government of Sikkim</div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Helpline & Action Buttons (Sikkim GO SSO + Services) -->
+                <div class="d-flex flex-column align-items-end gap-2">
+                    <!-- Top Sub-row: Subtle Helpline Pill -->
+                    <div>
+                        <a href="tel:@theme.HelplinePhone" class="gov-helpline-pill" title="Citizen Helpline: @theme.HelplinePhone">
+                            <i class="fas fa-headset" aria-hidden="true"></i>
+                            <span>Helpline: <strong>@theme.HelplinePhone</strong></span>
+                        </a>
+                    </div>
+
+                    <!-- Bottom Sub-row: Sikkim GO (SSO) & Services Buttons (Design Reference Image 3) -->
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="@theme.SikkimGoLoginUrl" class="btn btn-header-sso" target="_blank" rel="noopener noreferrer" title="Citizen Login via Sikkim GO (SSO)">
+                            <i class="fas fa-user-circle" aria-hidden="true"></i>
+                            <span>Sikkim GO (SSO)</span>
+                        </a>
+                        <a href="#service-overview" class="btn btn-header-services" title="Explore Citizen Services">
+                            <i class="fas fa-th-large" aria-hidden="true"></i>
+                            <span>Services</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="gov-navbar navbar navbar-expand-lg" id="govNavbar" aria-label="Main Navigation">
+        <div class="container-xl">
+            <button class="navbar-toggler text-white border-white py-2" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav" aria-controls="portalNav" aria-expanded="false" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars me-1" aria-hidden="true"></i> Menu
+            </button>
+            <div class="collapse navbar-collapse" id="portalNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home me-1" aria-hidden="true"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#service-overview">Service Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#eligibility-criteria">Eligibility &amp; Checklist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-to-apply">How to Apply</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#downloads-resources">Notifications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#faq-section">FAQs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#help-contacts">Helpline</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area with Accessibility Landmark -->
+    <main id="main-content" tabindex="-1" class="flex-grow-1">
+        @RenderBody()
+    </main>
+
+    <!-- GIGW 3.0 Mandatory Compliance Footer -->
+    <footer class="gov-footer" role="contentinfo" aria-label="Government Portal Footer">
+        <div class="container-xl">
+            <div class="row g-4">
+                <!-- Col 1: Department Information & Contact -->
+                <div class="col-lg-3 col-md-6">
+                    <h3 class="footer-heading">@theme.DepartmentName</h3>
+                    <p class="small text-white-50 mb-2">@theme.GovernmentName</p>
+                    <p class="small text-white-50 mb-3">
+                        <i class="fas fa-map-marker-alt me-2 text-warning" aria-hidden="true"></i>
+                        @theme.OfficeAddress
+                    </p>
+                    <p class="small text-white-50 mb-2">
+                        <i class="fas fa-phone-alt me-2 text-warning" aria-hidden="true"></i>
+                        @theme.HelplinePhone
+                    </p>
+                    <p class="small text-white-50 mb-0">
+                        <i class="fas fa-envelope me-2 text-warning" aria-hidden="true"></i>
+                        <a href="mailto:@theme.OfficialEmail" class="text-white-50">@theme.OfficialEmail</a>
+                    </p>
+                </div>
+
+                <!-- Col 2: Citizen Quick Services -->
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="footer-heading">Citizen Services</h4>
+                    <ul class="gov-footer-list small">
+                        <li><a href="@theme.SikkimGoLoginUrl"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Apply for New Registration</a></li>
+                        <li><a href="@theme.SikkimGoLoginUrl"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>License Renewal Application</a></li>
+                        <li><a href="#downloads-resources"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Official Forms &amp; Checklist</a></li>
+                        <li><a href="#fees-timelines"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Service Fee Structure</a></li>
+                        <li><a href="#faq-section"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Citizen FAQ &amp; Guidance</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: GIGW 3.0 Mandatory Website Policies -->
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="footer-heading">Website Policies</h4>
+                    <ul class="gov-footer-list small">
+                        <li><a href="#termsModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Terms &amp; Conditions</a></li>
+                        <li><a href="#privacyModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Privacy Policy</a></li>
+                        <li><a href="#hyperlinkModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Hyperlinking Policy</a></li>
+                        <li><a href="#copyrightModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Copyright Policy</a></li>
+                        <li><a href="#disclaimerModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Disclaimer &amp; Disclaimer Notice</a></li>
+                        <li><a href="#accessibilityModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Accessibility Statement</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Government Links & Compliance Seal -->
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="footer-heading">National &amp; State Portals</h4>
+                    <ul class="gov-footer-list small mb-3">
+                        <li><a href="https://sikkim.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>State Portal of Sikkim</a></li>
+                        <li><a href="https://sikkimgo.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>Sikkim GO Citizen Gateway</a></li>
+                        <li><a href="https://www.india.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>National Portal of India</a></li>
+                        <li><a href="https://samadhan.sikkim.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>Samadhan Grievance Redressal</a></li>
+                    </ul>
+
+                    <!-- GIGW 3.0 Compliance Badge -->
+                    <div class="gov-badge-gigw mb-2">
+                        <i class="fas fa-check-circle text-success" aria-hidden="true"></i>
+                        <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="gov-footer-divider" />
+
+            <!-- Sub-footer: Attributions, WIM, Last Updated, Visitor Count -->
+            <div class="row align-items-center g-3 small">
+                <div class="col-lg-7">
+                    <p class="mb-1 text-white-50">
+                        Content owned, maintained &amp; updated by <strong>@theme.DepartmentName</strong>, @theme.GovernmentName.
+                    </p>
+                    <p class="mb-1 text-white-50">
+                        Designed, Developed and Hosted by <strong>Department of Information Technology &amp; Communications (DITEC)</strong> / <strong>National Informatics Centre (NIC)</strong>.
+                    </p>
+                    <p class="mb-0 text-white-50">
+                        <strong>Web Information Manager:</strong> @theme.WebInformationManager.
+                    </p>
+                </div>
+                <div class="col-lg-5 text-lg-end">
+                    <div class="d-inline-flex flex-column align-items-lg-end gap-1">
+                        <span class="text-white-50">Last Reviewed &amp; Updated: <strong>16 October 2026</strong></span>
+                        <div class="badge bg-dark-subtle text-white border border-secondary px-3 py-1">
+                            <i class="fas fa-users me-1 text-info" aria-hidden="true"></i> Visitor Count: <strong>1,48,290</strong>
+                        </div>
+                        <span class="text-white-50">&copy; @DateTime.UtcNow.Year @theme.GovernmentName. All Rights Reserved.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================================================================
+         MODALS: Screen Reader Info, Policy Modals, Developer Theme Switcher
+         ====================================================================== -->
+
+    <!-- Screen Reader Access Modal -->
+    <div class="modal fade" id="screenReaderModal" tabindex="-1" aria-labelledby="screenReaderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="screenReaderModalLabel"><i class="fas fa-volume-up me-2" aria-hidden="true"></i>Screen Reader Access</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This portal complies with the Guidelines for Indian Government Websites (GIGW 3.0) and World Wide Web Consortium (W3C) Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.</p>
+                    <p class="fw-bold mb-2">Compatible Screen Readers:</p>
+                    <ul>
+                        <li><strong>Non Visual Desktop Access (NVDA)</strong> - Free / Open Source (Windows)</li>
+                        <li><strong>JAWS (Job Access With Speech)</strong> - Windows</li>
+                        <li><strong>VoiceOver</strong> - macOS and iOS</li>
+                        <li><strong>TalkBack</strong> - Android Devices</li>
+                        <li><strong>Narrator</strong> - Windows Built-in</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Developer Multi-Theme Switcher Modal (Allows live preview of 8 Sikkim Department Themes) -->
+    <div class="modal fade" id="themeSwitcherModal" tabindex="-1" aria-labelledby="themeSwitcherModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title" id="themeSwitcherModalLabel">
+                        <i class="fas fa-palette me-2 text-warning" aria-hidden="true"></i>
+                        Departmental Theme Switcher (30 Sikkim G2C Web Applications)
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">
+                        All 30 Government of Sikkim citizen-centric portals follow this identical GIGW 3.0 master template. Developers can select any approved theme below or set <code>"DefaultTheme": "Theme Name"</code> in <code>appsettings.json</code>.
+                    </p>
+                    <div class="row g-3">
+                        @foreach (var kvp in theme.Themes)
+                        {
+                            var t = kvp.Value;
+                            var isSelected = string.Equals(kvp.Key, theme.DefaultTheme, StringComparison.OrdinalIgnoreCase);
+                            <div class="col-md-6">
+                                <div class="card h-100 border p-3 theme-card @(isSelected ? "border-primary shadow-sm bg-light" : "")" style="cursor: pointer;" onclick="switchThemeLive('@t.Slug', '@t.Name')">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <span class="theme-swatch" style="background-color: @t.PrimaryHex;"></span>
+                                            <strong class="text-dark">@t.Name</strong>
+                                        </div>
+                                        <span class="badge" style="background-color: @t.AccentHex;">@t.Slug</span>
+                                    </div>
+                                    <p class="small text-muted mb-2">@t.Description</p>
+                                    <div class="small fw-semibold text-secondary">
+                                        <i class="fas fa-building me-1"></i> Best for: @t.RecommendedDepartments
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span class="small text-muted me-auto">Active Theme: <strong id="activeThemeDisplay">@theme.DefaultTheme</strong></span>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accessibility Statement Modal -->
+    <div class="modal fade" id="accessibilityModal" tabindex="-1" aria-labelledby="accessibilityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accessibilityModalLabel">Accessibility Statement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body small">
+                    <p>The Government of Sikkim is committed to ensuring that its portals and services are accessible to all citizens, including individuals with visual, auditory, cognitive, or physical impairments.</p>
+                    <p>This website follows the Guidelines for Indian Government Websites (GIGW 3.0) and adheres to WCAG 2.1 Level AA criteria. Features include:</p>
+                    <ul>
+                        <li>Skip to Main Content &amp; Skip to Navigation keyboard links</li>
+                        <li>High Contrast color scheme for low-vision readability</li>
+                        <li>Font size scaling without breaking page layout</li>
+                        <li>Descriptive text equivalents (alt attributes) for visual elements</li>
+                        <li>Logical heading hierarchy and landmark HTML5 semantics</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Policy Modals Placeholder Container -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body small">This portal does not automatically capture personal information without citizen consent. Information collected is used solely for the fulfillment of the requested public service in accordance with the Sikkim Information Technology &amp; Data Protection Rules.</div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="termsModalLabel">Terms &amp; Conditions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body small">This portal is designed, developed, and maintained by DITEC / NIC for @theme.DepartmentName, Government of Sikkim. Citizens agree to provide accurate information when submitting statutory applications.</div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="hyperlinkModal" tabindex="-1" aria-labelledby="hyperlinkModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="hyperlinkModalLabel">Hyperlinking Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body small">Prior permission is required before hyperlinks are directed from any website to this portal. External links provided on this portal are for citizen convenience only; Government of Sikkim is not responsible for the contents or reliability of external websites.</div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="copyrightModal" tabindex="-1" aria-labelledby="copyrightModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="copyrightModalLabel">Copyright Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body small">Material featured on this portal may be reproduced free of charge after obtaining permission from the @theme.DepartmentName, provided the material is reproduced accurately and not used in a derogatory or misleading context.</div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="disclaimerModalLabel">Disclaimer</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body small">While every effort has been made to ensure accuracy and currency of the content on this website, the same should not be construed as a statement of law or used for any legal purposes. In case of any ambiguity, users are advised to verify with the department or relevant official gazette.</div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Accessible GIGW 3.0 Toolbar & Live Theme Switcher Script -->
+    <script>
+        (function () {
+            'use strict';
+            var html = document.documentElement;
+            var body = document.body;
+
+            // 1. Text Size Controller
+            var fontSizeButtons = document.querySelectorAll('[data-font-action]');
+            var currentSize = localStorage.getItem('gov_font_size') || 'normal';
+            html.setAttribute('data-font-size', currentSize);
+
+            fontSizeButtons.forEach(function (btn) {
+                var action = btn.getAttribute('data-font-action');
+                if ((action === 'reset' && currentSize === 'normal') ||
+                    (action === 'increase' && currentSize === 'large') ||
+                    (action === 'decrease' && currentSize === 'small')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+
+                btn.addEventListener('click', function () {
+                    var newSize = 'normal';
+                    if (action === 'increase') newSize = 'large';
+                    else if (action === 'decrease') newSize = 'small';
+                    else if (action === 'reset') newSize = 'normal';
+
+                    html.setAttribute('data-font-size', newSize);
+                    localStorage.setItem('gov_font_size', newSize);
+
+                    fontSizeButtons.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                });
+            });
+
+            // 2. High Contrast Controller
+            var hcBtn = document.getElementById('highContrastToggle');
+            var savedContrast = localStorage.getItem('gov_contrast') === 'high';
+            if (savedContrast) {
+                html.classList.add('high-contrast');
+                body.classList.add('high-contrast');
+                if (hcBtn) hcBtn.setAttribute('aria-pressed', 'true');
+            }
+
+            if (hcBtn) {
+                hcBtn.addEventListener('click', function () {
+                    var isHc = html.classList.toggle('high-contrast');
+                    body.classList.toggle('high-contrast', isHc);
+                    hcBtn.setAttribute('aria-pressed', String(isHc));
+                    localStorage.setItem('gov_contrast', isHc ? 'high' : 'normal');
+                });
+            }
+
+            // 3. Skip to Main Content / Instructions Controller (India.gov.in standard)
+            var skipLinks = document.querySelectorAll('a[href="#how-to-apply"], .gov-skip-link[href="#how-to-apply"]');
+            skipLinks.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    var target = document.getElementById('how-to-apply') || document.getElementById('main-content');
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        target.setAttribute('tabindex', '-1');
+                        target.focus({ preventScroll: true });
+                        target.classList.add('gov-skip-highlight');
+                        setTimeout(function () {
+                            target.classList.remove('gov-skip-highlight');
+                        }, 1800);
+                    }
+                });
+            });
+
+            // Clear any legacy client-side theme override so appsettings.json is the authoritative source of truth
+            localStorage.removeItem('gov_theme_slug');
+            localStorage.removeItem('gov_theme_name');
+        })();
+
+        // Live Theme Switcher function (accessible globally)
+        function switchThemeLive(themeSlug, themeName) {
+            document.body.setAttribute('data-theme', themeSlug);
+            if (window.toastr) {
+                toastr.success('Previewing ' + (themeName || themeSlug) + ' theme', 'Template Theme Updated');
+            }
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

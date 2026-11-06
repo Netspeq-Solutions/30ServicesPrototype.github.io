@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourism Permission Letter &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    body {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-family: 'Noto Sans', sans-serif;
+    }
+    .gov-doc-container {
+      max-width: 860px;
+      margin: 1.5rem auto 3rem auto;
+    }
+    .gov-doc-page {
+      background: #ffffff;
+      padding: 3.5rem 4rem;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+      border-radius: 4px;
+      line-height: 1.6;
+    }
+    .gov-doc-watermark {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px;
+      height: 380px;
+      opacity: 0.045;
+      pointer-events: none;
+      background-image: url('../../common/assets/images/sikkim-government-logo-dark.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      z-index: 0;
+    }
+    .gov-doc-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .gov-doc-header-border {
+      border-bottom: 2px solid #0b4d75;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .gov-doc-meta-table td, .gov-doc-meta-table th {
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8125rem;
+    }
+    .qr-matrix-svg {
+      width: 95px;
+      height: 95px;
+      display: block;
+      margin: 0 auto;
+    }
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+      body {
+        background: #ffffff !important;
+        font-size: 10.5pt !important;
+      }
+      .gov-doc-container {
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      .gov-doc-page {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="default">
+
+  <!-- Top Action & Navigation Bar (No-Print) -->
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top shadow-sm py-2 no-print" aria-label="Document Controls">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light d-inline-flex align-items-center gap-1" onclick="handleBackNav()">
+          <i class="bi bi-arrow-left"></i>
+          <span id="backNavText">Back</span>
+        </button>
+        <span class="navbar-text small text-white-50 ms-2 d-none d-md-inline">
+          <i class="bi bi-file-earmark-check text-success me-1"></i> Stage 06 Official Document Deliverable
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small" id="docStatusPill">
+          <i class="bi bi-patch-check-fill me-1"></i> Sanctioned by District DTO
+        </span>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-xs" onclick="window.print()">
+          <i class="bi bi-printer-fill"></i>
+          <span>Print / Save as PDF</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Document Viewer Canvas -->
+  <main class="gov-doc-container">
+    
+    <!-- A4 Document Sheet -->
+    <article class="gov-doc-page" id="printablePermissionDocument">
+      
+      <!-- Subtle Emblem Watermark -->
+      <div class="gov-doc-watermark" aria-hidden="true"></div>
+
+      <div class="gov-doc-inner">
+
+        <!-- 1. Government Letterhead & Header -->
+        <header class="text-center gov-doc-header-border">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" style="height: 64px; width: auto; margin-bottom: 0.5rem;">
+          <div class="text-uppercase fw-bold text-dark fs-6" style="letter-spacing: 1.5px;">Government of Sikkim</div>
+          <h1 class="h5 fw-bold text-dark mb-0 text-uppercase" style="letter-spacing: 0.5px;">Tourism &amp; Civil Aviation Department</h1>
+          <div class="small fw-semibold text-secondary" id="docOfficeLocation">Office of the District Tourism Officer, Gangtok Circle, Sikkim</div>
+          <div class="small text-muted" style="font-size: 0.75rem;">Directorate of Tourism &bull; Paryatan Bhawan Complex, Government of Sikkim</div>
+          
+          <div class="d-flex justify-content-center mt-3">
+            <span class="badge bg-dark text-white px-3 py-1.5 text-uppercase fw-bold" style="font-size: 0.8125rem; letter-spacing: 1px;">
+              TOURISM PERMISSION LETTER
+            </span>
+          </div>
+          <div class="text-muted text-uppercase fw-semibold mt-1" style="font-size: 0.6875rem; letter-spacing: 0.5px;">
+            Statutory Activity Clearance &bull; Issued under Sikkim Tourism Framework
+          </div>
+        </header>
+
+        <!-- 2. Document Reference & Metadata Bar -->
+        <div class="p-2 bg-light rounded border mb-3 small">
+          <div class="row g-2 align-items-center">
+            <div class="col-sm-5">
+              <span class="text-muted d-block" style="font-size: 0.725rem;">Permission Reference No:</span>
+              <strong class="font-monospace text-primary fs-6" id="docPermissionRef">SK-TOUR-2026-TRE-00215</strong>
+            </div>
+            <div class="col-sm-4">
+              <span class="text-muted d-block" style="font-size: 0.725rem;">Application Reference (ARN):</span>
+              <strong class="font-monospace text-dark" id="docArnRef">SK-TP-2026-APP-00215</strong>
+            </div>
+            <div class="col-sm-3 text-sm-end">
+              <span class="text-muted d-block" style="font-size: 0.725rem;">Date of Sanction:</span>
+              <strong class="text-dark" id="docSanctionDate">28 Oct 2026</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Salutation & Grant Notice -->
+        <div class="mb-3 small">
+          <p class="mb-2">
+            To,<br>
+            <strong class="text-dark fs-6" id="docApplicantName">Passang Doma Bhutia</strong><br>
+            <span class="text-secondary" id="docApplicantAddress">Below Enchey Monastery, Gangtok, Sikkim - 737101</span><br>
+            <span class="text-muted">Contact: <span id="docApplicantPhone">9832109876</span> &bull; Email: <span id="docApplicantEmail">passang.doma@sikkim.org</span></span>
+          </p>
+          <p class="mb-0 text-justify" style="line-height: 1.55;">
+            With reference to the online application submitted under ARN <strong class="font-monospace" id="docArnRefInline">SK-TP-2026-APP-00215</strong>, permission is hereby accorded by the <strong>Tourism &amp; Civil Aviation Department, Government of Sikkim</strong> to the applicant / organization detailed herein, to conduct the designated tourism activity strictly in accordance with the particulars, route schedule, and statutory conditions specified below:
+          </p>
+        </div>
+
+        <!-- 4. Approved Permission Details Table -->
+        <section class="mb-3">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            I. Approved Particulars of Activity
+          </h2>
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm align-middle mb-0 gov-doc-meta-table">
+              <tbody>
+                <tr>
+                  <th style="width: 28%;" class="bg-light">Permission Category</th>
+                  <td style="width: 72%;"><strong class="text-dark" id="docCategory">Trekking</strong></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Activity Title / Subject</th>
+                  <td><strong class="text-dark" id="docActivityTitle">Green Lake Reconnaissance Trek (4 Pax)</strong></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Approved Scope &amp; Route</th>
+                  <td class="text-secondary" id="docActivityDescription">4-person scientific and botanical reconnaissance trek along Green Lake trail in North Sikkim under authorized ecological research guidelines.</td>
+                </tr>
+                <!-- Conditional: Liaison Officer for Mountaineering Expeditions Only -->
+                <tr id="docLoRow" class="d-none">
+                  <th class="bg-light text-primary">Departmental Liaison Officer</th>
+                  <td>
+                    <strong class="text-dark" id="docLoName">Norbu Tenzing Lepcha</strong> 
+                    <span class="badge bg-primary-subtle text-primary border ms-1">Statutory Expedition Escort</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Jurisdiction Circle</th>
+                  <td><span class="badge bg-light text-dark border" id="docDistrictJurisdiction"><i class="bi bi-geo-alt me-1 text-primary"></i>Gangtok Circle</span></td>
+                </tr>
+                <tr>
+                  <th class="bg-light">Statutory Fee Status</th>
+                  <td id="docFeeStatus"><span class="badge bg-success-subtle text-success border">Paid (₹100) &bull; Verified Online</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Departmental Review & Sanctioning Authority -->
+        <section class="mb-3">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            II. Statutory Sanctioning Authority
+          </h2>
+          <div class="p-2 bg-light rounded border small">
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size: 0.725rem;">Final Approval Granted By:</span>
+                <strong class="text-dark" id="docApprovingOfficerName">Karma Lhendup Bhutia</strong>
+                <div class="text-muted" style="font-size: 0.725rem;" id="docApprovingDesignation">District Tourism Officer (DTO)</div>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size: 0.725rem;">Sanctioning Office:</span>
+                <strong class="text-dark" id="docApprovingOffice">District Tourism Office, Gangtok Circle</strong>
+                <div class="text-muted" style="font-size: 0.725rem;">Tourism &amp; Civil Aviation Department, Government of Sikkim</div>
+              </div>
+            </div>
+            <div class="mt-2 pt-2 border-top text-secondary fst-italic" style="font-size: 0.725rem;">
+              <i class="bi bi-info-circle me-1 text-primary"></i>
+              <span id="docHqConcurrenceNote">Inter-departmental state security concurrence validated via Paryatan Bhawan e-Office. Respective DTO is the statutory final sanctioning authority.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. General Statutory Conditions -->
+        <section class="mb-4">
+          <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">
+            III. Mandatory Terms &amp; Conditions
+          </h2>
+          <ol class="small text-secondary ps-3 mb-0" style="font-size: 0.75rem; line-height: 1.5;">
+            <li class="mb-1">This permission is strictly valid for the stated leader, participants, and specified route/activity within the stated district circle.</li>
+            <li class="mb-1">All participants must carry authentic identity credentials. The permittee must register at the designated Police Checkpost and Forest Range Office prior to entry.</li>
+            <li class="mb-1">Strict compliance with the Sikkim Anti-Littering Act, wildlife conservation protocols, and designated eco-fragile trail codes of conduct is mandatory. Non-biodegradable waste must be brought back.</li>
+            <li class="mb-1">In the event of inclement weather, natural landslides, or administrative alerts, field directives issued by local administration or Police authorities must be obeyed immediately.</li>
+            <li><em>Note: Prototype demonstration document. All statutory terms and conditions are subject to departmental verification upon production deployment.</em></li>
+          </ol>
+        </section>
+
+        <!-- 7. Authentication, Signature Placeholder & QR Code -->
+        <div class="row g-3 align-items-center pt-2 border-top">
+          
+          <!-- Verification QR Code -->
+          <div class="col-sm-4">
+            <div class="gov-doc-qr-box">
+              <div id="qrCodeContainer">
+                <!-- Programmatically rendered SVG QR matrix -->
+              </div>
+              <div class="text-muted fw-semibold mt-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                SCAN TO VERIFY RECORD
+              </div>
+              <div class="font-monospace text-primary fw-bold" style="font-size: 0.6875rem;" id="docQrRefText">
+                SK-TOUR-2026-TRE-00215
+              </div>
+              <div class="text-muted mt-0" style="font-size: 0.58rem;">
+                Visual prototype verification marker
+              </div>
+            </div>
+          </div>
+
+          <!-- Digital Signature Stamp -->
+          <div class="col-sm-8">
+            <div class="gov-doc-signature-box d-flex flex-column justify-content-center">
+              <div class="d-inline-flex align-items-center justify-content-center gap-1 text-success fw-bold small mb-1">
+                <i class="bi bi-patch-check-fill fs-5"></i>
+                <span>DIGITALLY SANCTIONED &amp; APPROVED</span>
+              </div>
+              <div class="fw-bold text-dark fs-6" id="docSignerName">Karma Lhendup Bhutia</div>
+              <div class="text-muted small" id="docSignerDesignation">District Tourism Officer (DTO)</div>
+              <div class="text-muted" style="font-size: 0.725rem;" id="docSignerCircle">District Tourism Office, Gangtok Circle</div>
+              <div class="text-secondary" style="font-size: 0.6875rem;">Tourism &amp; Civil Aviation Department &bull; Government of Sikkim</div>
+              <div class="text-muted font-monospace mt-1" style="font-size: 0.65rem;" id="docSignTimestamp">
+                Timestamp: 28 Oct 2026, 03:00 PM IST &bull; e-Sign Prototype Token
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 8. Footer Notice -->
+        <footer class="gov-doc-footer-notice">
+          <div>Prepared for departmental processing under the Tourism Permission Service &bull; Government of Sikkim.</div>
+          <div class="text-muted" style="font-size: 0.65rem;">This document is generated by the Sikkim Government Services Prototype Framework for administrative demonstration and client review.</div>
+        </footer>
+
+      </div>
+    </article>
+  </main>
+
+  <!-- Workflow Engine & Scripts -->
+  <script src="workflow-engine.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // Parse Query Parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const arn = urlParams.get('arn') || 'SK-TP-2026-APP-00215';
+      const role = urlParams.get('role') || 'citizen';
+
+      // Load Application
+      let app = null;
+      if (typeof WorkflowEngine !== 'undefined') {
+        app = WorkflowEngine.getApplication(arn);
+      }
+
+      // Fallback demo data if opened directly without seed
+      if (!app) {
+        app = {
+          refNo: arn,
+          applicantName: 'Passang Doma Bhutia',
+          phone: '9832109876',
+          email: 'passang.doma@sikkim.org',
+          address: 'Below Enchey Monastery, Gangtok, Sikkim - 737101',
+          category: 'Trekking',
+          categoryKey: 'trekking',
+          activityTitle: 'Green Lake Reconnaissance Trek (4 Pax)',
+          activityDescription: '4-person scientific and botanical reconnaissance trek along Green Lake trail in North Sikkim under authorized ecological research guidelines.',
+          district: 'Gangtok',
+          dtoOffice: 'District Tourism Office, Gangtok Circle',
+          status: 'Approved',
+          currentStage: 'Approved – Permission Letter Issued',
+          permissionNumber: 'SK-TOUR-2026-TRE-00215',
+          approvalDate: '28 Oct 2026',
+          approvingOfficer: 'Karma Lhendup Bhutia',
+          approvingDesignation: 'District Tourism Officer (DTO)',
+          approvingOffice: 'District Tourism Office, Gangtok Circle, Government of Sikkim',
+          isPaid: true,
+          fee: '₹100',
+          liaisonOfficer: null,
+          requiresHqVerification: true
+        };
+      }
+
+      // Populate Document Fields
+      const permNo = app.permissionNumber || `SK-TOUR-2026-${(app.categoryKey || 'TP').toUpperCase().slice(0, 3)}-${app.refNo.split('-').pop()}`;
+      const appDate = app.approvalDate || '28 Oct 2026';
+      const dName = app.approvingOfficer || 'Karma Lhendup Bhutia';
+      const dDesig = app.approvingDesignation || 'District Tourism Officer (DTO)';
+      const dOffice = app.approvingOffice || (app.dtoOffice || `District Tourism Office, ${app.district} Circle`);
+
+      document.getElementById('docPermissionRef').textContent = permNo;
+      document.getElementById('docArnRef').textContent = app.refNo;
+      document.getElementById('docArnRefInline').textContent = app.refNo;
+      document.getElementById('docSanctionDate').textContent = appDate;
+      document.getElementById('docApplicantName').textContent = app.applicantName;
+      document.getElementById('docApplicantAddress').textContent = app.address || `${app.district} District, Sikkim`;
+      document.getElementById('docApplicantPhone').textContent = app.phone || '9800123456';
+      document.getElementById('docApplicantEmail').textContent = app.email || 'citizen@sikkim.gov.in';
+
+      document.getElementById('docOfficeLocation').textContent = `Office of the District Tourism Officer, ${app.district} Circle, Sikkim`;
+      document.getElementById('docCategory').textContent = app.category;
+      document.getElementById('docActivityTitle').textContent = app.activityTitle;
+      document.getElementById('docActivityDescription').textContent = app.activityDescription;
+      document.getElementById('docDistrictJurisdiction').innerHTML = `<i class="bi bi-geo-alt me-1 text-primary"></i>${app.district} Circle`;
+
+      // Liaison Officer Row
+      const loRow = document.getElementById('docLoRow');
+      if (app.categoryKey === 'expedition' && app.liaisonOfficer) {
+        loRow.classList.remove('d-none');
+        document.getElementById('docLoName').textContent = app.liaisonOfficer;
+      } else {
+        loRow.classList.add('d-none');
+      }
+
+      // Fee Status
+      if (app.isPaid) {
+        document.getElementById('docFeeStatus').innerHTML = `<span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i> Paid (${app.fee || '₹100'}) &bull; Verified</span>`;
+      } else {
+        document.getElementById('docFeeStatus').innerHTML = `<span class="badge bg-light text-secondary border"><i class="bi bi-dash-circle me-1"></i> Fee Exempt / Free Category</span>`;
+      }
+
+      // Sanction Authority & Signature Box
+      document.getElementById('docApprovingOfficerName').textContent = dName;
+      document.getElementById('docApprovingDesignation').textContent = dDesig;
+      document.getElementById('docApprovingOffice').textContent = dOffice;
+
+      document.getElementById('docSignerName').textContent = dName;
+      document.getElementById('docSignerDesignation').textContent = dDesig;
+      document.getElementById('docSignerCircle').textContent = dOffice;
+      document.getElementById('docSignTimestamp').textContent = `Timestamp: ${appDate}, 03:00 PM IST &bull; e-Sign Prototype Token`;
+      document.getElementById('docQrRefText').textContent = permNo;
+
+      // Status Pill
+      if (app.status === 'Approved' || app.currentStage.includes('Approved')) {
+        document.getElementById('docStatusPill').innerHTML = `<i class="bi bi-patch-check-fill me-1"></i> Sanctioned by ${app.district} DTO`;
+      } else {
+        document.getElementById('docStatusPill').className = 'badge bg-warning-subtle text-warning border px-2 py-1 small';
+        document.getElementById('docStatusPill').innerHTML = `<i class="bi bi-clock-history me-1"></i> Stage: ${app.currentStage}`;
+      }
+
+      // Back navigation button behavior
+      const backNavText = document.getElementById('backNavText');
+      if (role === 'dto') {
+        backNavText.textContent = 'Back to DTO Desk';
+      } else if (role === 'hq') {
+        backNavText.textContent = 'Back to HQ Desk';
+      } else {
+        backNavText.textContent = 'Back to Citizen Dashboard';
+      }
+
+      window.handleBackNav = function () {
+        if (role === 'dto') {
+          window.location.href = `dashboard-dto.html?district=${encodeURIComponent(app.district)}`;
+        } else if (role === 'hq') {
+          window.location.href = 'dashboard-hq.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      };
+
+      // Generate sharp SVG QR Code Matrix
+      renderSvgQrMatrix('qrCodeContainer', permNo);
+
+      function renderSvgQrMatrix(containerId, text) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // Render clean, professional SVG QR pattern with finder squares
+        const svg = `
+          <svg class="qr-matrix-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" fill="#ffffff"/>
+            <!-- Top-Left Finder -->
+            <rect x="5" y="5" width="28" height="28" fill="#0f172a" rx="2"/>
+            <rect x="9" y="9" width="20" height="20" fill="#ffffff" rx="1"/>
+            <rect x="13" y="13" width="12" height="12" fill="#0b4d75" rx="1"/>
+            
+            <!-- Top-Right Finder -->
+            <rect x="67" y="5" width="28" height="28" fill="#0f172a" rx="2"/>
+            <rect x="71" y="9" width="20" height="20" fill="#ffffff" rx="1"/>
+            <rect x="75" y="13" width="12" height="12" fill="#0b4d75" rx="1"/>
+            
+            <!-- Bottom-Left Finder -->
+            <rect x="5" y="67" width="28" height="28" fill="#0f172a" rx="2"/>
+            <rect x="9" y="71" width="20" height="20" fill="#ffffff" rx="1"/>
+            <rect x="13" y="75" width="12" height="12" fill="#0b4d75" rx="1"/>
+            
+            <!-- Timing & Grid Patterns -->
+            <rect x="37" y="10" width="4" height="4" fill="#0f172a"/>
+            <rect x="45" y="10" width="4" height="4" fill="#0f172a"/>
+            <rect x="53" y="10" width="4" height="4" fill="#0f172a"/>
+            <rect x="10" y="37" width="4" height="4" fill="#0f172a"/>
+            <rect x="10" y="45" width="4" height="4" fill="#0f172a"/>
+            <rect x="10" y="53" width="4" height="4" fill="#0f172a"/>
+            
+            <!-- Central Data Matrix Mock Modules -->
+            <rect x="37" y="37" width="6" height="6" fill="#0b4d75"/>
+            <rect x="47" y="37" width="6" height="6" fill="#0f172a"/>
+            <rect x="57" y="37" width="6" height="6" fill="#0b4d75"/>
+            <rect x="37" y="47" width="6" height="6" fill="#0f172a"/>
+            <rect x="47" y="47" width="6" height="6" fill="#0b4d75"/>
+            <rect x="57" y="47" width="6" height="6" fill="#0f172a"/>
+            <rect x="37" y="57" width="6" height="6" fill="#0b4d75"/>
+            <rect x="47" y="57" width="6" height="6" fill="#0f172a"/>
+            <rect x="57" y="57" width="6" height="6" fill="#0b4d75"/>
+            
+            <!-- Additional Data Bits -->
+            <rect x="67" y="37" width="5" height="5" fill="#0f172a"/>
+            <rect x="76" y="40" width="5" height="5" fill="#0b4d75"/>
+            <rect x="85" y="37" width="5" height="5" fill="#0f172a"/>
+            <rect x="67" y="50" width="5" height="5" fill="#0b4d75"/>
+            <rect x="76" y="53" width="5" height="5" fill="#0f172a"/>
+            <rect x="85" y="48" width="5" height="5" fill="#0b4d75"/>
+            <rect x="67" y="67" width="6" height="6" fill="#0b4d75"/>
+            <rect x="77" y="70" width="5" height="5" fill="#0f172a"/>
+            <rect x="86" y="67" width="5" height="5" fill="#0b4d75"/>
+            <rect x="67" y="80" width="5" height="5" fill="#0f172a"/>
+            <rect x="76" y="85" width="5" height="5" fill="#0b4d75"/>
+            <rect x="85" y="80" width="5" height="5" fill="#0f172a"/>
+            
+            <rect x="37" y="67" width="5" height="5" fill="#0f172a"/>
+            <rect x="45" y="75" width="5" height="5" fill="#0b4d75"/>
+            <rect x="53" y="67" width="5" height="5" fill="#0f172a"/>
+            <rect x="37" y="82" width="5" height="5" fill="#0b4d75"/>
+            <rect x="45" y="88" width="5" height="5" fill="#0f172a"/>
+            <rect x="53" y="82" width="5" height="5" fill="#0b4d75"/>
+          </svg>
+        `;
+        container.innerHTML = svg;
+      }
+
+    })();
+  </script>
+</body>
+</html>
+

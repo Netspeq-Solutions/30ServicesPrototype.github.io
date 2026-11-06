@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24476B">
+  <title>District Tourism Officer (Level 2) Desk &bull; Tourism Business &amp; Outdoor Photography Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .officer-sidebar {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      flex-shrink: 0 !important;
+      background: #ffffff;
+      border-right: 1px solid var(--gov-border, #D5E0EB);
+      min-height: calc(100vh - 120px);
+    }
+    .officer-stat-card {
+      background: #ffffff;
+      border: 1px solid var(--gov-border, #D5E0EB);
+      border-radius: var(--gov-radius-lg, 10px);
+      padding: 1.15rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      height: 100%;
+    }
+    .officer-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(36, 71, 107, 0.08);
+      border-color: var(--gov-primary, #24476B);
+    }
+    .officer-stat-card.active-kpi {
+      border: 2px solid var(--gov-primary, #24476B) !important;
+      background-color: var(--gov-primary-light, #F7F9FC) !important;
+    }
+    .officer-stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--gov-primary, #24476B);
+    }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Navigation -->
+  <a class="gov-skip-link" href="#main-dto-content">Skip to Main Content</a>
+
+  <!-- Tricolor Flag Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Top Reviewer Controller Bar (Stage 04 Standard) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Controller" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-info text-white fw-bold px-2 py-1">
+            <i class="bi bi-shield-check me-1"></i> LEVEL 2: DTO FINAL SANCTION DESK
+          </span>
+          <span class="fw-semibold text-white">Jurisdiction:</span>
+          <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 250px; font-size: 0.8rem;" onchange="changeDistrictQueue(this.value)">
+            <option value="ALL">All Districts (Statewide DTO Overview)</option>
+            <option value="Gangtok" selected>Gangtok District Circle (Capital)</option>
+            <option value="Namchi">Namchi District Circle (South)</option>
+            <option value="Gyalshing">Gyalshing District Circle (West)</option>
+            <option value="Mangan">Mangan District Circle (North)</option>
+            <option value="Pakyong">Pakyong District Circle</option>
+            <option value="Soreng">Soreng District Circle</option>
+          </select>
+
+          <!-- Quick Scenario / Application Switcher -->
+          <span class="text-white-50 ms-1 d-none d-md-inline">&bull; Quick Review:</span>
+          <select id="quickArnJumpSelect" class="form-select form-select-sm py-0 px-2 border-0 bg-light text-dark fw-semibold shadow-xs d-none d-md-inline-block" style="max-width: 320px; font-size: 0.775rem;" onchange="openDtoSanctionModal(this.value)">
+            <option value="">-- Jump to Specific Application --</option>
+            <option value="SK-TBR-2026-TA-00101">[New TA] SK-TBR-00101 &bull; Travel Agent</option>
+            <option value="SK-TBR-2026-TO-00145">[TO Review] SK-TBR-00145 &bull; Tour Operator</option>
+            <option value="SK-TBR-2026-DLR-00305">[Dealer IA] SK-TBR-00305 &bull; Equipment Store</option>
+            <option value="SK-TBR-2026-DLR-00322">[Sanction Ready] SK-TBR-00322 &bull; Himalayan Ridge</option>
+            <option value="SK-TBR-2026-TO-00198">[Approved] SK-TBR-00198 &bull; Singalila Eco-Tours</option>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle Contrast" onclick="document.body.classList.toggle('high-contrast')">
+            <i class="bi bi-circle-half me-1"></i>Contrast
+          </button>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger py-0 px-2 text-white border-white-50" title="Switch Role">
+            <i class="bi bi-people-fill me-1"></i>Switch Role
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header bg-white py-2 border-bottom shadow-xs no-print" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block flex-shrink-0" title="Portal Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Sikkim Emblem" class="gov-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-title-sikkim text-uppercase small text-muted fw-bold">Government of Sikkim</div>
+            <div class="gov-title-dept text-dark fw-bold">Tourism &amp; Civil Aviation Department</div>
+            <div class="small text-secondary fw-semibold">Level 2: District Tourism Officer (DTO) Final Sanction Desk</div>
+          </div>
+        </div>
+
+        <!-- Officer Identity & Switcher -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="dtoOfficerName">Karma Lhendup Bhutia</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-success-subtle text-success border border-success-subtle">Level 2: DTO</span>
+              <span id="dtoDistrictLabel">Gangtok Circle</span>
+            </div>
+          </div>
+          <div class="d-flex gap-1.5">
+            <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Switch Role</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container: Sidebar + Content -->
+  <div class="d-flex flex-column flex-lg-row flex-grow-1 w-100 overflow-hidden officer-workspace-container">
+    
+    <!-- Officer Sidebar Nav (260px Desktop) -->
+    <aside class="officer-sidebar p-3 border-end bg-white" aria-label="DTO Work Queues">
+      <div class="mb-3 pb-2 border-bottom">
+        <label for="districtFilter" class="form-label small fw-bold text-dark mb-1">
+          <i class="bi bi-geo-alt-fill text-danger me-1"></i> Active District Circle:
+        </label>
+        <select class="form-select form-select-sm" id="districtFilter" onchange="changeDistrictQueue(this.value)">
+          <option value="Gangtok" selected>Gangtok Circle (HQ)</option>
+          <option value="Namchi">Namchi Circle</option>
+          <option value="Gyalshing">Gyalshing Circle</option>
+          <option value="Mangan">Mangan Circle</option>
+          <option value="Pakyong">Pakyong Circle</option>
+          <option value="Soreng">Soreng Circle</option>
+          <option value="ALL">All Circles (Statewide)</option>
+        </select>
+      </div>
+
+      <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        Level 2 Sanction Queues
+      </div>
+
+      <nav class="nav flex-column gap-1 mb-4">
+        <a href="javascript:void(0)" class="officer-nav-link active" onclick="filterQueue('PENDING', this)">
+          <i class="bi bi-hourglass-split text-primary"></i>
+          <span>Ready for Sanction</span>
+          <span class="badge bg-primary text-white" id="badgePending">2</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('DEALER_INSPECTED', this)">
+          <i class="bi bi-shield-check text-warning"></i>
+          <span>Dealers (IA Inspected)</span>
+          <span class="badge bg-warning text-dark" id="badgeDealers">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('APPROVED', this)">
+          <i class="bi bi-patch-check-fill text-success"></i>
+          <span>Approved Certificates</span>
+          <span class="badge bg-success text-white" id="badgeApproved">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('RETURNED', this)">
+          <i class="bi bi-arrow-repeat text-danger"></i>
+          <span>Returned / Queries</span>
+          <span class="badge bg-danger text-white" id="badgeReturned">0</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('ALL', this)">
+          <i class="bi bi-folder2 text-secondary"></i>
+          <span>All Circle Dossiers</span>
+          <span class="badge bg-secondary text-white" id="badgeAll">6</span>
+        </a>
+      </nav>
+
+      <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        Role Hierarchy Navigation
+      </div>
+      <nav class="nav flex-column gap-1 small">
+        <a href="dashboard-to.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-shield text-info"></i>
+          <span>Level 0 (TO Desk)</span>
+        </a>
+        <a href="dashboard-ia.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-building-check text-warning"></i>
+          <span>Level 1 (IA Desk)</span>
+        </a>
+        <a href="dashboard.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-person text-secondary"></i>
+          <span>Citizen Workspace</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main DTO Content Area -->
+    <main id="main-dto-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0" role="main">
+      
+      <!-- Top Workspace Bar -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <h1 class="h5 fw-bold text-dark mb-0">Level 2 District Tourism Officer Desk &bull; <span id="queueHeadingDistrict">Gangtok Circle</span></h1>
+          <p class="text-muted small mb-0">Statutory review, multi-tier scrutiny appraisal &amp; final 3-year Registration Certificate sanction.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" onclick="refreshQueue()">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span>Refresh Queue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPI Cards -->
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card active-kpi" onclick="filterQueue('PENDING')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Ready for Sanction</span>
+              <i class="bi bi-hourglass-split text-primary fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-primary" id="kpiDtoPending">2</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">TO / IA clearance complete</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('DEALER_INSPECTED')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Dealers Inspected</span>
+              <i class="bi bi-shield-check text-warning fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-warning" id="kpiDtoDealers">1</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">IA field report attached</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('APPROVED')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Certificates Issued</span>
+              <i class="bi bi-patch-check-fill text-success fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-success" id="kpiDtoApproved">1</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Active 3-year statutory registrations</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('ALL')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Total Circle Dossiers</span>
+              <i class="bi bi-folder2 text-secondary fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-dark" id="kpiDtoTotal">6</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Statewide / Circle submissions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actionable Applications Card -->
+      <div class="card border shadow-xs bg-white rounded-3 mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-award-fill text-primary"></i>
+            <h2 class="h6 fw-bold text-dark mb-0" id="queueTableTitle">Applications Awaiting DTO Statutory Sanction</h2>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <select class="form-select form-select-sm" id="categoryFilter" onchange="applyFilters()" style="width: 170px;">
+              <option value="ALL" selected>All Categories</option>
+              <option value="travel-agent">Travel Agent (TA)</option>
+              <option value="tour-operator">Tour Operator (TO)</option>
+              <option value="dealer">Dealer (DLR)</option>
+              <option value="outdoor-photographer">Photographer (PHO)</option>
+            </select>
+            <input type="text" id="queueSearch" class="form-control form-control-sm" placeholder="Search ARN, Firm or Applicant..." onkeyup="applyFilters()" style="width: 220px;">
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="dtoQueueTable">
+              <thead class="table-light small">
+                <tr>
+                  <th scope="col" style="width: 18%;">APPLICATION ID</th>
+                  <th scope="col" style="width: 16%;">CATEGORY</th>
+                  <th scope="col" style="width: 24%;">ENTERPRISE / APPLICANT</th>
+                  <th scope="col" style="width: 18%;">SCRUTINY &amp; FIELD STATUS</th>
+                  <th scope="col" style="width: 12%;">SUBMITTED DATE</th>
+                  <th scope="col" class="text-end" style="width: 12%;">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="dtoQueueTableBody">
+                <!-- Dynamically rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal 1: DTO Review & Statutory Sanction Modal -->
+  <div class="modal fade" id="dtoSanctionModal" tabindex="-1" aria-labelledby="dtoSanctionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-award-fill text-warning fs-5"></i>
+            <h5 class="modal-title fw-bold mb-0" id="dtoSanctionModalLabel">Level 2 Statutory Sanction &bull; Final Decision</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          
+          <!-- Application Particulars Card -->
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <div class="row g-2 small">
+              <div class="col-sm-6">
+                <span class="text-muted">Application ID:</span>
+                <strong class="d-block text-primary font-monospace" id="modalDtoArn">SK-TBR-2026-DLR-00322</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted">Enterprise / Registered Firm:</span>
+                <strong class="d-block text-dark" id="modalDtoFirm">Himalayan Ridge Equipment Store</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted">Category:</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" id="modalDtoCategory">Dealer Registration</span>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted">Trade License / Registration:</span>
+                <strong class="d-block text-dark" id="modalDtoTrade">GMC/TL/2026/5541 (Valid till 31 Mar 2027)</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-tier Clearance Trail -->
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <h3 class="h6 fw-bold text-dark mb-2">
+              <i class="bi bi-shield-check text-success me-1"></i> Departmental Scrutiny Trail:
+            </h3>
+            
+            <div class="p-2.5 rounded bg-light border mb-2 small">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-bold text-dark"><i class="bi bi-check-circle-fill text-success me-1"></i>Level 0: TO Scrutiny Clearance</span>
+                <span class="badge bg-success text-white">Verified</span>
+              </div>
+              <div class="text-secondary" id="modalDtoToNotes">
+                Municipal Trade License verified with Urban Development Department database. Business registration and applicant identity confirmed valid.
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded bg-light border small" id="modalDtoIaSection">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-bold text-dark"><i class="bi bi-check-circle-fill text-success me-1"></i>Level 1: IA Physical Inspection Report</span>
+                <span class="badge bg-success text-white" id="modalDtoIaBadge">Report Attached</span>
+              </div>
+              <div class="text-secondary" id="modalDtoIaNotes">
+                Physical shop premises (340 sq.ft) verified on-site. Mountaineering equipment and UIAA safety gear stock verified in excellent order. Fire safety apparatus operational. Recommended for 3-year statutory certificate.
+              </div>
+            </div>
+          </div>
+
+          <!-- Fee Reconciliation -->
+          <div class="p-3 bg-white rounded-3 border mb-3 small d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-muted">Statutory 3-Year Registration Fee:</span>
+              <strong class="d-block text-dark" id="modalDtoFee">&#8377;5,000 (Equipment Dealer &bull; Paid Online)</strong>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+              <i class="bi bi-check2-circle me-1"></i>Payment Reconciled
+            </span>
+          </div>
+
+          <!-- DTO Sanction Remarks -->
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <label for="dtoRemarks" class="form-label small fw-bold text-dark mb-1">
+              District Tourism Officer (DTO) Sanction Remarks:
+            </label>
+            <textarea id="dtoRemarks" class="form-control form-control-sm" rows="2">Satisfactory credentials, TO verification, and Level 1 IA on-site inspection report verified. Recommended statutory sanction granted for 3-year validity.</textarea>
+          </div>
+
+          <!-- Sanction Decision Options -->
+          <div class="p-3 bg-white rounded-3 border">
+            <label class="form-label small fw-bold text-dark mb-2">Sanction Decision:</label>
+            <div class="d-flex flex-wrap gap-4 small">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="dtoSanctionRadio" id="radioApprove" value="APPROVE" checked>
+                <label class="form-check-label fw-bold text-success" for="radioApprove">
+                  <i class="bi bi-check-circle-fill me-1"></i> Grant Statutory Approval &amp; Issue Certificate
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="dtoSanctionRadio" id="radioReturn" value="RETURN">
+                <label class="form-check-label fw-bold text-warning-emphasis" for="radioReturn">
+                  <i class="bi bi-arrow-repeat me-1"></i> Return for Query / Clarification
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="dtoSanctionRadio" id="radioReject" value="REJECT">
+                <label class="form-check-label fw-bold text-danger" for="radioReject">
+                  <i class="bi bi-x-circle me-1"></i> Reject Application
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer bg-white d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-sm btn-gov-primary d-inline-flex align-items-center gap-1.5 fw-semibold" onclick="submitDtoDecision()">
+            <i class="bi bi-award"></i>
+            <span>Confirm Statutory Decision</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Official Statutory Certificate Preview Modal -->
+  <div class="modal fade" id="dtoCertificateModal" tabindex="-1" aria-labelledby="dtoCertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-award-fill text-warning fs-5"></i>
+            <h5 class="modal-title fw-bold mb-0" id="dtoCertModalLabel">Issued Registration Certificate Preview</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <!-- Certificate Ornamental Frame -->
+          <div class="bg-white p-4 p-md-5 rounded border shadow-sm mx-auto" style="border: 3px double #24476B !important; background-color: #FFFDF9 !important; max-width: 720px;">
+            <div class="text-center pb-3 border-bottom mb-4">
+              <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Sikkim" style="height: 56px; width: auto;" class="mb-2">
+              <div class="h6 text-uppercase fw-bold text-dark mb-0" style="letter-spacing: 1px;">Government of Sikkim</div>
+              <div class="h5 fw-bold text-primary mb-1" style="color: #24476B !important;">Tourism &amp; Civil Aviation Department</div>
+              <div class="text-muted small">Paryatan Bhawan, Tadong, Gangtok &ndash; 737102</div>
+              <div class="mt-2 py-1 px-3 d-inline-block rounded bg-primary-subtle border border-primary-subtle text-primary fw-bold text-uppercase small" style="letter-spacing: 0.5px;">
+                Form 3 &bull; Statutory Certificate of Registration
+              </div>
+            </div>
+
+            <!-- Certificate Particulars -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 text-muted small">
+              <div>Registration No: <strong class="text-dark font-monospace" id="dtoCertNo">SK-TCD-REG-2026-TO-00198</strong></div>
+              <div>Issue Date: <strong class="text-dark" id="dtoCertDate">15 Oct 2026</strong></div>
+            </div>
+
+            <div class="py-2 text-secondary lh-lg" style="font-size: 0.925rem;">
+              <p class="mb-2">
+                This is to certify that the business enterprise named below has been duly registered under the 
+                <strong>Sikkim Registration of Tourist Trade Rules</strong>:
+              </p>
+              
+              <div class="p-3 my-3 rounded bg-light border">
+                <div class="row g-2">
+                  <div class="col-sm-4 text-muted small">Enterprise / Firm:</div>
+                  <div class="col-sm-8 fw-bold text-dark fs-6" id="dtoCertName">Singalila Eco-Tours Sikkim</div>
+
+                  <div class="col-sm-4 text-muted small">Proprietor / Signatory:</div>
+                  <div class="col-sm-8 text-dark fw-semibold" id="dtoCertApplicant">Tenzing Norbu Lepcha</div>
+
+                  <div class="col-sm-4 text-muted small">Registration Category:</div>
+                  <div class="col-sm-8">
+                    <span class="badge bg-primary px-2.5 py-1 text-white fw-bold" id="dtoCertCategory">Tour Operator</span>
+                  </div>
+
+                  <div class="col-sm-4 text-muted small">Registered Address:</div>
+                  <div class="col-sm-8 text-dark" id="dtoCertAddress">MG Marg, Gangtok Circle, Sikkim &ndash; 737101</div>
+
+                  <div class="col-sm-4 text-muted small">Statutory Validity:</div>
+                  <div class="col-sm-8 text-success fw-bold" id="dtoCertValidity">15 Oct 2026 to 14 Oct 2029 (3 Years)</div>
+                </div>
+              </div>
+
+              <div class="small text-muted mt-2 mb-4">
+                <strong>Conditions:</strong> (1) Valid for three (3) calendar years from date of issue. (2) Non-transferable. (3) Must be displayed prominently at the principal business premises. (4) Subject to annual trade license renewal and compliance with Sikkim tourism guidelines.
+              </div>
+            </div>
+
+            <!-- Certificate Footer: QR + Signatory -->
+            <div class="pt-3 border-top d-flex justify-content-between align-items-end flex-wrap gap-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="p-1 bg-white border rounded">
+                  <i class="bi bi-qr-code text-dark" style="font-size: 42px;"></i>
+                </div>
+                <div class="small text-muted" style="font-size: 0.72rem; line-height: 1.2;">
+                  <span class="fw-bold d-block text-dark">Scan to Verify</span>
+                  Digitally issued via Sikkim GO<br>
+                  Statutory Seal Verified
+                </div>
+              </div>
+
+              <div class="text-end">
+                <div class="font-monospace text-primary fw-bold small" style="letter-spacing: 0.5px;">[DIGITALLY SIGNED]</div>
+                <div class="fw-bold text-dark small mt-0.5" id="dtoCertSignatory">District Tourism Officer (DTO)</div>
+                <div class="text-muted" style="font-size: 0.72rem;">Gangtok Circle &bull; Govt. of Sikkim</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1" onclick="window.print()">
+              <i class="bi bi-printer"></i>
+              <span>Print Certificate</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1.5 fw-semibold" onclick="alert('Downloading Digitally Signed Certificate PDF...')">
+              <i class="bi bi-download"></i>
+              <span>Download PDF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Framework JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/theme-switcher.js"></script>
+  <script src="../../common/js/accessibility.js"></script>
+
+  <!-- Service Mock Data -->
+  <script src="citizen-data.js"></script>
+
+  <script>
+    let currentDistrict = 'Gangtok';
+    let currentFilterQueue = 'PENDING';
+
+    function changeDistrictQueue(district) {
+      currentDistrict = district;
+      localStorage.setItem('tb_active_district', district);
+      
+      const distInfo = TourismBusinessData.getDistrictOfficers(district === 'ALL' ? 'Gangtok' : district);
+      document.getElementById('dtoOfficerName').textContent = distInfo.officers.dto;
+      document.getElementById('dtoDistrictLabel').textContent = district === 'ALL' ? 'Statewide (All Circles)' : (district + ' Circle');
+      document.getElementById('queueHeadingDistrict').textContent = district === 'ALL' ? 'Statewide' : (district + ' Circle');
+
+      applyFilters();
+    }
+
+    function filterQueue(queueType, el) {
+      currentFilterQueue = queueType;
+      if (el) {
+        document.querySelectorAll('.officer-nav-link').forEach(l => l.classList.remove('active'));
+        el.classList.add('active');
+      }
+      document.querySelectorAll('.officer-stat-card').forEach(c => c.classList.remove('active-kpi'));
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const search = (document.getElementById('queueSearch').value || '').trim().toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+
+      let list = TourismBusinessData.allApplications;
+      if (currentDistrict !== 'ALL') {
+        list = list.filter(a => a.district === currentDistrict);
+      }
+
+      // Counts
+      const pendingCount = list.filter(a => a.assignedRole === 'DTO' && a.status === 'UNDER_REVIEW').length;
+      const dealerInspectedCount = list.filter(a => a.category === 'dealer' && a.inspectionStatus && a.inspectionStatus.includes('Completed')).length;
+      const approvedCount = list.filter(a => a.status === 'APPROVED').length;
+      const returnedCount = list.filter(a => a.status === 'RETURNED').length;
+
+      document.getElementById('badgePending').textContent = pendingCount;
+      document.getElementById('badgeDealers').textContent = dealerInspectedCount;
+      document.getElementById('badgeApproved').textContent = approvedCount;
+      document.getElementById('badgeReturned').textContent = returnedCount;
+      document.getElementById('badgeAll').textContent = list.length;
+
+      document.getElementById('kpiDtoPending').textContent = pendingCount;
+      document.getElementById('kpiDtoDealers').textContent = dealerInspectedCount;
+      document.getElementById('kpiDtoApproved').textContent = approvedCount;
+      document.getElementById('kpiDtoTotal').textContent = list.length;
+
+      // Filter by Queue
+      if (currentFilterQueue === 'PENDING') {
+        list = list.filter(a => a.assignedRole === 'DTO' && a.status === 'UNDER_REVIEW');
+        document.getElementById('queueTableTitle').textContent = 'Applications Awaiting DTO Statutory Sanction';
+      } else if (currentFilterQueue === 'DEALER_INSPECTED') {
+        list = list.filter(a => a.category === 'dealer' && a.inspectionStatus && a.inspectionStatus.includes('Completed'));
+        document.getElementById('queueTableTitle').textContent = 'Dealer Applications with Level 1 IA Physical Inspection Report';
+      } else if (currentFilterQueue === 'APPROVED') {
+        list = list.filter(a => a.status === 'APPROVED');
+        document.getElementById('queueTableTitle').textContent = 'Approved Registrations & Issued Certificates';
+      } else if (currentFilterQueue === 'RETURNED') {
+        list = list.filter(a => a.status === 'RETURNED');
+        document.getElementById('queueTableTitle').textContent = 'Returned Dossiers / Pending Clarifications';
+      } else {
+        document.getElementById('queueTableTitle').textContent = 'All District Registration Applications';
+      }
+
+      // Filter by category
+      if (cat !== 'ALL') {
+        list = list.filter(a => a.category === cat);
+      }
+
+      // Search
+      if (search) {
+        list = list.filter(a => a.refNo.toLowerCase().includes(search) || (a.businessName && a.businessName.toLowerCase().includes(search)) || (a.applicantName && a.applicantName.toLowerCase().includes(search)));
+      }
+
+      renderTable(list);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('dtoQueueTableBody');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted small">No applications match the active queue and filter criteria.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      list.forEach(app => {
+        let badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
+        if (app.category === 'dealer') badgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
+        else if (app.category === 'outdoor-photographer') badgeClass = 'bg-success-subtle text-success border border-success-subtle';
+
+        let scrutinyStatus = `<div class="small fw-semibold text-primary"><i class="bi bi-shield-check me-1"></i>TO Scrutiny Passed</div>`;
+        if (app.category === 'dealer') {
+          if (app.inspectionStatus && app.inspectionStatus.includes('Completed')) {
+            scrutinyStatus = `<div class="small fw-semibold text-success"><i class="bi bi-check2-all me-1"></i>IA Inspected &bull; Report OK</div>`;
+          } else {
+            scrutinyStatus = `<div class="small text-warning-emphasis"><i class="bi bi-clock me-1"></i>IA Inspection in Progress</div>`;
+          }
+        }
+
+        let actionCell = '';
+        if (app.status === 'APPROVED') {
+          actionCell = `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button type="button" class="btn btn-sm btn-success py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" onclick="openDtoCertModal('${app.refNo}')">
+                <i class="bi bi-file-earmark-check-fill"></i>
+                <span>Certificate</span>
+              </button>
+            </div>
+          `;
+        } else {
+          actionCell = `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button type="button" class="btn btn-sm btn-gov-primary py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" onclick="openDtoSanctionModal('${app.refNo}')">
+                <i class="bi bi-award"></i>
+                <span>Sanction</span>
+              </button>
+            </div>
+          `;
+        }
+
+        html += `
+          <tr>
+            <td>
+              <span class="font-monospace fw-bold text-primary">${app.refNo}</span>
+              <div class="small text-muted" style="font-size: 0.72rem;"><i class="bi bi-geo-alt"></i> ${app.district} Circle</div>
+            </td>
+            <td>
+              <span class="badge ${badgeClass}">${app.categoryName}</span>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${app.businessName}</div>
+              <div class="small text-muted">${app.applicantName || 'Applicant'} &bull; Ph: ${app.applicantContact || 'N/A'}</div>
+            </td>
+            <td class="small">${scrutinyStatus}</td>
+            <td class="small text-secondary text-nowrap">${app.submittedDate}</td>
+            <td class="text-end text-nowrap">${actionCell}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function openDtoSanctionModal(refNo) {
+      const app = TourismBusinessData.allApplications.find(a => a.refNo === refNo);
+      if (app) {
+        document.getElementById('modalDtoArn').textContent = app.refNo;
+        document.getElementById('modalDtoFirm').textContent = app.businessName;
+        document.getElementById('modalDtoCategory').textContent = app.categoryName;
+        document.getElementById('modalDtoTrade').textContent = (app.tradeLicenseNo || 'Verified') + ' (Valid till 31 Mar 2027)';
+        
+        if (app.toRemarks) {
+          document.getElementById('modalDtoToNotes').textContent = app.toRemarks;
+        }
+
+        const iaSec = document.getElementById('modalDtoIaSection');
+        if (app.category === 'dealer') {
+          iaSec.classList.remove('d-none');
+          if (app.inspectionFindings) {
+            document.getElementById('modalDtoIaNotes').textContent = app.inspectionFindings;
+          }
+        } else {
+          iaSec.classList.add('d-none');
+        }
+
+        if (app.category === 'travel-agent') {
+          document.getElementById('modalDtoFee').innerHTML = '&#8377;3,000 (Travel Agent &bull; Paid Online)';
+        } else if (app.category === 'tour-operator') {
+          document.getElementById('modalDtoFee').innerHTML = '&#8377;5,000 (Tour Operator &bull; Paid Online)';
+        } else if (app.category === 'dealer') {
+          document.getElementById('modalDtoFee').innerHTML = '&#8377;5,000 (Equipment Dealer &bull; Paid Online)';
+        } else {
+          document.getElementById('modalDtoFee').innerHTML = '&#8377;1,000 (Outdoor Photographer &bull; Paid Online)';
+        }
+      }
+      const modal = new bootstrap.Modal(document.getElementById('dtoSanctionModal'));
+      modal.show();
+    }
+
+    function openDtoCertModal(refNo) {
+      const app = TourismBusinessData.allApplications.find(a => a.refNo === refNo);
+      if (app) {
+        document.getElementById('dtoCertNo').textContent = app.certificateNo || ("SK-TCD-REG-2026-" + refNo.substring(12));
+        document.getElementById('dtoCertName').textContent = app.businessName || 'Registered Enterprise';
+        document.getElementById('dtoCertApplicant').textContent = app.applicantName || 'Applicant Signatory';
+        document.getElementById('dtoCertCategory').textContent = app.categoryName || 'Tour Operator';
+        document.getElementById('dtoCertAddress').textContent = (app.shopAddress || 'MG Marg') + ', ' + app.district + ' Circle, Sikkim';
+        document.getElementById('dtoCertValidity').textContent = app.validUntil ? ('15 Oct 2026 to ' + app.validUntil + ' (3 Years)') : '15 Oct 2026 to 14 Oct 2029 (3 Years)';
+        document.getElementById('dtoCertDate').textContent = app.submittedDate ? app.submittedDate.split(',')[0] : '15 Oct 2026';
+      }
+      const modal = new bootstrap.Modal(document.getElementById('dtoCertificateModal'));
+      modal.show();
+    }
+
+    function submitDtoDecision() {
+      const decision = document.querySelector('input[name="dtoSanctionRadio"]:checked').value;
+      if (decision === 'APPROVE') {
+        alert("Statutory Sanction Granted! 3-Year Registration Certificate generated and issued digitally to the applicant.");
+      } else if (decision === 'RETURN') {
+        alert("Dossier returned to citizen / Level 0 TO with query remarks.");
+      } else {
+        alert("Application rejected as per statutory guidelines.");
+      }
+      const modal = bootstrap.Modal.getInstance(document.getElementById('dtoSanctionModal'));
+      if (modal) modal.hide();
+      applyFilters();
+    }
+
+    function refreshQueue() {
+      applyFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const savedDist = localStorage.getItem('tb_active_district') || 'Gangtok';
+      document.getElementById('districtFilter').value = savedDist;
+      changeDistrictQueue(savedDist);
+    });
+  </script>
+</body>
+</html>
+

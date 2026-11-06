@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply for Tourism Permission &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    /* Stepper Styling */
+    .gov-stepper-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .gov-stepper-list {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      justify-content: space-between;
+      position: relative;
+    }
+    .gov-stepper-list::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      right: 30px;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .gov-stepper-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      cursor: pointer;
+    }
+    .gov-stepper-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      color: #64748b;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      transition: all 0.25s ease;
+      font-size: 1rem;
+    }
+    .gov-stepper-title {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #64748b;
+      max-width: 130px;
+      line-height: 1.25;
+    }
+    .gov-stepper-step.active .gov-stepper-bubble {
+      background: #094738;
+      border-color: #094738;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(9, 71, 56, 0.15);
+    }
+    .gov-stepper-step.active .gov-stepper-title {
+      color: #094738;
+      font-weight: 700;
+    }
+    .gov-stepper-step.completed .gov-stepper-bubble {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+    .gov-stepper-step.completed .gov-stepper-title {
+      color: #10b981;
+    }
+
+    /* Category Cards */
+    .category-radio-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #ffffff;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .category-radio-card:hover {
+      border-color: #094738;
+      background: #f8fbf9;
+      transform: translateY(-2px);
+    }
+    .category-radio-card.selected {
+      border-color: #094738;
+      background: #f0fdf4;
+      box-shadow: 0 0 0 1px #094738;
+    }
+
+    /* File Dropzone */
+    .file-dropzone-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: #f8fafc;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .file-dropzone-box:hover, .file-dropzone-box.dragover {
+      border-color: #094738;
+      background: #f0fdf4;
+    }
+
+    .form-step-section {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .review-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .cursor-pointer { cursor: pointer; }
+
+    @media (max-width: 768px) {
+      .gov-stepper-title { display: none; }
+      .gov-stepper-list::before { top: 21px; }
+      .form-step-section { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Accessibility Skip Link -->
+  <a class="gov-skip-link" href="#main-form-content">Skip to Main Content</a>
+
+  <!-- Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Reviewer Controller Bar (Testing & Pre-population) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Controls" style="background: #063026; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+          <i class="bi bi-flask-fill me-1"></i> STAGE 03 FORM
+        </span>
+        <span class="fw-semibold text-white d-none d-sm-inline">Quick Scenario Preset:</span>
+        <select id="quickScenarioPreset" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 280px; font-size: 0.8rem;">
+          <option value="">-- Choose Category Preset --</option>
+          <option value="trekking">Trekking (Paid ₹100 &bull; DTO Verification)</option>
+          <option value="expedition">Expedition (Paid ₹100 &bull; Liaison Officer)</option>
+          <option value="drone">Drone (Free &bull; Airspace Security)</option>
+          <option value="events">Events &amp; Fairs (Free &bull; Multi-NOC)</option>
+          <option value="satellite-phone">Satellite Phone (Free &bull; Provisional)</option>
+          <option value="other">Any Other (Free &bull; General Activity)</option>
+        </select>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-light-subtle text-white-50 border border-secondary small d-none d-md-inline-block">
+          <i class="bi bi-shield-check text-warning me-1"></i> Draft Persistence Active (localStorage)
+        </span>
+        <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="saveDraftManual()">
+          <i class="bi bi-save me-1"></i> Save Draft
+        </button>
+        <a href="dashboard.html" class="btn btn-sm btn-outline-warning py-0 px-2">
+          <i class="bi bi-x-circle me-1"></i> Exit to Dashboard
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 54px; width: auto;">
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 1px;">Government of Sikkim</span>
+            <h1 class="h5 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
+            <span class="small text-muted">Tourism Permission Application Portal</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="dashboard.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1">
+            <i class="bi bi-house"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="main-form-content" class="flex-grow-1 py-4">
+    <div class="container-xl" style="max-width: 1040px;">
+
+      <!-- Stepper Navigation Header -->
+      <nav aria-label="Application Progress" class="gov-stepper-container">
+        <ol class="gov-stepper-list" id="formStepperList">
+          <li class="gov-stepper-step active" id="step-node-1" onclick="navigateToStepIfPermitted(1)">
+            <div class="gov-stepper-bubble">1</div>
+            <div class="gov-stepper-title">Applicant Details</div>
+          </li>
+          <li class="gov-stepper-step" id="step-node-2" onclick="navigateToStepIfPermitted(2)">
+            <div class="gov-stepper-bubble">2</div>
+            <div class="gov-stepper-title">Supporting Documents</div>
+          </li>
+          <li class="gov-stepper-step" id="step-node-3" onclick="navigateToStepIfPermitted(3)">
+            <div class="gov-stepper-bubble">3</div>
+            <div class="gov-stepper-title">Summary &amp; Declaration</div>
+          </li>
+          <li class="gov-stepper-step" id="step-node-4" onclick="navigateToStepIfPermitted(4)">
+            <div class="gov-stepper-bubble">4</div>
+            <div class="gov-stepper-title" id="stepperPaymentTitle">Payment (₹100)</div>
+          </li>
+          <li class="gov-stepper-step" id="step-node-5">
+            <div class="gov-stepper-bubble">5</div>
+            <div class="gov-stepper-title">Acknowledgement</div>
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Global Alerts Container -->
+      <div id="formAlertContainer"></div>
+
+      <!-- Multi-step Form Content -->
+      <form id="tourismPermissionForm" novalidate onsubmit="return false;">
+
+        <!-- ==============================================================
+             STEP 1: APPLICANT DETAILS & CATEGORY SELECTION
+             ============================================================== -->
+        <section class="form-step-section" id="step-content-1">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 border-bottom pb-3">
+            <div>
+              <h2 class="h4 fw-bold text-dark mb-1">
+                <i class="bi bi-person-fill text-success me-2"></i>Step 1: Applicant Details &amp; Activity Details
+              </h2>
+              <p class="text-muted small mb-0">Provide applicant contact details and choose your tourism permission category.</p>
+            </div>
+            <span class="text-muted small">Fields with <span class="text-danger fw-bold">*</span> are mandatory</span>
+          </div>
+
+          <!-- A. Applicant Contact Information (Top Section) -->
+          <div class="mb-4">
+            <h3 class="h6 fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill me-1 text-primary"></i> A. Applicant Contact Information</h3>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="fullName" class="form-label fw-semibold">Full Name of Applicant <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="fullName" name="fullName" required placeholder="Enter full legal name">
+                <div class="invalid-feedback">Full name is required.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="emailAddress" class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="emailAddress" name="emailAddress" required placeholder="name@example.com">
+                <div class="invalid-feedback">A valid email address is required.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="phoneNumber" class="form-label fw-semibold">Phone Number (Mobile) <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required placeholder="10-digit mobile number" maxlength="10">
+                <div class="invalid-feedback">10-digit valid phone number is required.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="districtSelect" class="form-label fw-semibold">Jurisdiction District <span class="text-danger">*</span></label>
+                <select class="form-select" id="districtSelect" name="district" required onchange="updateDistrictRoutingInfo()">
+                  <option value="">-- Select District --</option>
+                  <option value="Gangtok" selected>Gangtok District</option>
+                  <option value="Mangan">Mangan District</option>
+                  <option value="Namchi">Namchi District</option>
+                  <option value="Gyalshing">Gyalshing District</option>
+                  <option value="Pakyong">Pakyong District</option>
+                  <option value="Soreng">Soreng District</option>
+                </select>
+                <div class="invalid-feedback">Please select a district.</div>
+                <div class="form-text small" id="districtRoutingText">
+                  <i class="bi bi-geo-alt text-primary me-1"></i> Routed to: <strong>District Tourism Office, Gangtok Circle</strong>
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="address" class="form-label fw-semibold">Residential / Registered Office Address in Sikkim <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="address" name="address" rows="2" required placeholder="Street / Ward / Village / District Address"></textarea>
+                <div class="invalid-feedback">Address is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- B. Activity Details (Includes Select Permission Category) -->
+          <div class="mb-4 pt-3 border-top">
+            <h3 class="h6 fw-bold text-dark mb-3"><i class="bi bi-file-earmark-text me-1 text-primary"></i> B. Activity Details</h3>
+            <div class="row g-3">
+              <!-- Subject / Title -->
+              <div class="col-12">
+                <label for="subjectTitle" class="form-label fw-semibold">Subject / Title of Permission Request <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="subjectTitle" name="subjectTitle" required placeholder="e.g. Request for Trekking Permission on Singalila Ridge Trail for 8 Pax">
+                <div class="invalid-feedback">Subject/Title is required.</div>
+              </div>
+
+              <!-- Permission Category Selection Dropdown (Under Activity Details) -->
+              <div class="col-12">
+                <div class="p-3 bg-light rounded-3 border">
+                  <div class="row g-3 align-items-center">
+                    <div class="col-md-7">
+                      <label for="categorySelect" class="form-label fw-bold text-dark mb-1">
+                        Select Permission Category <span class="text-danger">*</span>
+                      </label>
+                      <p class="text-muted small mb-2">Choose the category matching your proposed activity in Sikkim:</p>
+                      <div class="input-group">
+                        <span class="input-group-text bg-white text-primary"><i class="bi bi-tag-fill"></i></span>
+                        <select class="form-select" id="categorySelect" name="appCategory" required onchange="handleCategoryDropdownChange(this.value)">
+                          <option value="">-- Choose Permission Category --</option>
+                          <option value="trekking" selected>Trekking (₹100 Fee)</option>
+                          <option value="expedition">Expedition (₹100 Fee • Requires Liaison Officer)</option>
+                          <option value="events">Events, Fairs, Melas, Rallies and Marathons (Free)</option>
+                          <option value="drone">Drone Operations (Free)</option>
+                          <option value="adventure">Adventure Activities (Free)</option>
+                          <option value="satellite-phone">Satellite Phone Usage Permission (Free / Provisional)</option>
+                          <option value="other">Any Other (Free)</option>
+                        </select>
+                      </div>
+                      <div class="invalid-feedback d-block d-none" id="categorySelectFeedback">Please select a permission category.</div>
+                    </div>
+                    <div class="col-md-5">
+                      <div class="p-2 bg-white rounded-2 border" id="categoryInfoBox">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                          <span class="small text-muted">Statutory Fee:</span>
+                          <span class="badge bg-primary-subtle text-primary border fw-semibold" id="categoryFeeBadge">₹100 Fee</span>
+                        </div>
+                        <div class="small text-muted" id="categoryDescText" style="font-size: 0.775rem;">Permits for high-altitude trekking routes &amp; wilderness trails.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Conditional Free Text Field: Appears only when 'Any Other' is selected -->
+                  <div id="customCategoryBlock" class="mt-3 pt-3 border-top d-none">
+                    <label for="customCategoryInput" class="form-label fw-bold small text-dark mb-1">
+                      <i class="bi bi-pencil-fill text-warning me-1"></i> Specify Other Category / Activity Name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="customCategoryInput" name="customCategoryName" placeholder="e.g. Mountain Biking Expedition, Film Shooting Permit, Heli-Tourism, Paragliding Championship...">
+                    <div class="invalid-feedback" id="customCategoryFeedback">Please specify the name of your other tourism category / activity.</div>
+                    <div class="form-text small text-muted">Enter the specific name or nature of your activity so the department can evaluate the proper guidelines and NOC requirements.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detailed Description -->
+              <div class="col-12">
+                <label for="activityDescription" class="form-label fw-semibold">Detailed Description of Activity <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="activityDescription" name="activityDescription" rows="4" required placeholder="Provide details about the proposed activity, purpose and other relevant information."></textarea>
+                <div class="form-text small">Include itinerary, proposed dates, route, group size, guide details, and safety arrangements.</div>
+                <div class="invalid-feedback">Detailed description is required.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- C. Conditional Field: Expedition Liaison Officer -->
+          <div id="lo-selection-block" class="mb-4 pt-3 border-top d-none">
+            <div class="p-3 bg-light rounded-3 border border-warning-subtle">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-person-badge-fill text-warning fs-5"></i>
+                <h3 class="h6 fw-bold text-dark mb-0">Select Liaison Officer (LO) <span class="text-danger">*</span></h3>
+              </div>
+              <p class="text-muted small mb-2">
+                Under Sikkim Mountaineering regulations, an authorized Departmental Liaison Officer must accompany high-altitude peak expeditions:
+              </p>
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <select class="form-select" id="liaisonOfficerSelect" name="liaisonOfficer">
+                    <option value="">-- Choose Liaison Officer --</option>
+                    <option value="Tashi">Tashi (Alpine Expeditions Leader)</option>
+                    <option value="Roshni">Roshni (Alpine Logistics &amp; Safety Specialist)</option>
+                    <option value="Ganesh">Ganesh (Restricted High Altitude Clearance Officer)</option>
+                  </select>
+                  <div class="invalid-feedback" id="loFeedback">Liaison Officer selection is mandatory for Expedition category.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 1 Actions Bar -->
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="saveDraftManual()">
+              <i class="bi bi-save me-1"></i> Save as Draft
+            </button>
+            <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold" onclick="handleStep1Next()">
+              <span>Next: Supporting Documents</span>
+              <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             STEP 2: SUPPORTING DOCUMENTS (Flexible Multi-Upload)
+             ============================================================== -->
+        <section class="form-step-section d-none" id="step-content-2">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 border-bottom pb-3">
+            <div>
+              <h2 class="h4 fw-bold text-dark mb-1">
+                <i class="bi bi-file-earmark-arrow-up text-primary me-2"></i>Step 2: Upload Supporting Documents
+              </h2>
+              <p class="text-muted small mb-0">Add supporting clearances, NOCs, or route maps applicable to your activity.</p>
+            </div>
+            <span class="badge bg-light text-muted border">Optional / Flexible Step</span>
+          </div>
+
+          <div class="alert alert-info border-0 shadow-xs small py-2 px-3 mb-4 d-flex align-items-start gap-2 rounded-2">
+            <i class="bi bi-info-circle-fill text-primary mt-1 flex-shrink-0"></i>
+            <div>
+              <strong>Flexible Document Upload:</strong> Specific statutory requirements depend on your activity category. You may attach relevant NOCs (e.g. <em>Fire NOC, Environment NOC, Land NOC, Police Clearance, Roster, or Any Other Supporting Document</em>). Uploaded documents are saved with your application draft.
+            </div>
+          </div>
+
+          <!-- Document Upload Input Box -->
+          <div class="card border-0 bg-light p-3 rounded-3 mb-4">
+            <h3 class="h6 fw-bold text-dark mb-3"><i class="bi bi-plus-circle me-1 text-success"></i> Add a Document Entry</h3>
+            <div class="row g-3">
+              <div class="col-md-5">
+                <label for="newDocNameInput" class="form-label small fw-semibold">Document Name / Type</label>
+                <input type="text" class="form-control form-control-sm" id="newDocNameInput" list="docNameSuggestions" placeholder="e.g. Fire Safety NOC">
+                <datalist id="docNameSuggestions">
+                  <option value="Fire Safety NOC">
+                  <option value="Environment Clearance NOC">
+                  <option value="Land Authorization NOC">
+                  <option value="Police Verification Certificate">
+                  <option value="Expedition Team Roster &amp; ID Proofs">
+                  <option value="DGCA Drone Flight Clearance">
+                  <option value="Any Other Supporting Document">
+                </datalist>
+              </div>
+              <div class="col-md-5">
+                <label for="newDocFileInput" class="form-label small fw-semibold">Choose File (PDF, JPG, PNG)</label>
+                <input type="file" class="form-control form-control-sm" id="newDocFileInput" accept=".pdf,.jpg,.jpeg,.png">
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-sm btn-primary w-100 py-1" onclick="addDocumentFromInput()">
+                  <i class="bi bi-upload me-1"></i> Attach
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Uploaded Documents List Container -->
+          <div class="mb-4">
+            <h3 class="h6 fw-bold text-dark mb-2">Attached Supporting Documents (<span id="docCountBadge">0</span>)</h3>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover align-middle mb-0 small">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" style="width: 5%;">#</th>
+                    <th scope="col" style="width: 35%;">Document Name</th>
+                    <th scope="col" style="width: 35%;">Selected File</th>
+                    <th scope="col" style="width: 15%;">Status</th>
+                    <th scope="col" class="text-end" style="width: 10%;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="uploadedDocsTableBody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State for Docs -->
+            <div id="noDocsEmptyState" class="text-center py-4 bg-light rounded-3 border mt-2">
+              <i class="bi bi-file-earmark-x text-muted fs-3 d-block mb-1"></i>
+              <span class="small text-muted">No documents attached yet. You can attach supporting NOCs or proceed directly to review.</span>
+            </div>
+          </div>
+
+          <!-- Step 2 Actions Bar -->
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="goToStep(1)">
+              <i class="bi bi-arrow-left me-1"></i> Back to Step 1
+            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="saveDraftManual()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold" onclick="handleStep2Next()">
+                <span>Next: Summary &amp; Declaration</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             STEP 3: APPLICATION SUMMARY AND DECLARATION
+             ============================================================== -->
+        <section class="form-step-section d-none" id="step-content-3">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 border-bottom pb-3">
+            <div>
+              <h2 class="h4 fw-bold text-dark mb-1">
+                <i class="bi bi-clipboard-check text-success me-2"></i>Step 3: Review Application Summary &amp; Declaration
+              </h2>
+              <p class="text-muted small mb-0">Please verify all information carefully before continuing. You can edit any section.</p>
+            </div>
+            <span class="badge bg-primary-subtle text-primary border px-2 py-1">Final Review</span>
+          </div>
+
+          <!-- Summary Section A: Applicant Information -->
+          <div class="card border-0 bg-light p-3 rounded-3 mb-3">
+            <div class="review-section-header">
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-person me-1 text-primary"></i> A. Applicant Contact Information</h3>
+              <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStep(1)">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+              </button>
+            </div>
+            <div class="row g-2 small">
+              <div class="col-md-4">
+                <span class="text-muted d-block">Applicant Name:</span>
+                <strong class="text-dark" id="sumFullName">-</strong>
+              </div>
+              <div class="col-md-4">
+                <span class="text-muted d-block">Email Address:</span>
+                <strong class="text-dark" id="sumEmail">-</strong>
+              </div>
+              <div class="col-md-4">
+                <span class="text-muted d-block">Mobile Contact:</span>
+                <strong class="text-dark" id="sumPhone">-</strong>
+              </div>
+              <div class="col-12 mt-1">
+                <span class="text-muted d-block">Registered Address in Sikkim:</span>
+                <span class="text-dark" id="sumAddress">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Section B: Activity & Category Details -->
+          <div class="card border-0 bg-light p-3 rounded-3 mb-3">
+            <div class="review-section-header">
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-file-earmark-text me-1 text-primary"></i> B. Activity &amp; Category Details</h3>
+              <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStep(1)">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+              </button>
+            </div>
+            <div class="row g-2 small">
+              <div class="col-md-6">
+                <span class="text-muted d-block">Selected Permission Category:</span>
+                <strong class="text-dark fs-6" id="sumCategory">Trekking</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Jurisdiction District &amp; Responsible Desk:</span>
+                <strong class="text-dark" id="sumDistrict">Gangtok District &bull; District Tourism Office, Gangtok Circle</strong>
+              </div>
+              <div class="col-12 mt-2">
+                <span class="text-muted d-block">Subject / Title:</span>
+                <strong class="text-dark" id="sumSubject">Scenic Eco-Trek</strong>
+              </div>
+              <div class="col-12 mt-1">
+                <span class="text-muted d-block">Activity Description:</span>
+                <p class="mb-0 text-secondary" id="sumDescription" style="white-space: pre-wrap;">-</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Section C: Liaison Officer (Only for Expedition) -->
+          <div class="card border-0 bg-light p-3 rounded-3 mb-3 d-none" id="sumLoCard">
+            <div class="review-section-header">
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-person-badge me-1 text-warning"></i> C. Departmental Liaison Officer</h3>
+              <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStep(1)">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+              </button>
+            </div>
+            <div class="row g-2 small">
+              <div class="col-md-6">
+                <span class="text-muted d-block">Assigned Liaison Officer:</span>
+                <strong class="text-primary fs-6" id="sumLoName">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Role:</span>
+                <span class="text-muted">High Altitude Alpine Safety &amp; State Coordination</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Section D: Supporting Documents -->
+          <div class="card border-0 bg-light p-3 rounded-3 mb-3">
+            <div class="review-section-header">
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-paperclip me-1 text-primary"></i> D. Attached Supporting Documents</h3>
+              <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStep(2)">
+                <i class="bi bi-pencil-square me-1"></i> Edit
+              </button>
+            </div>
+            <div id="sumDocsContainer" class="small">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Summary Section E: Fee & Payment Requirement -->
+          <div class="card border-0 bg-light p-3 rounded-3 mb-4">
+            <div class="review-section-header">
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-receipt me-1 text-primary"></i> E. Statutory Fee &amp; Payment Status</h3>
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 small">
+              <div>
+                <span class="text-muted d-block">Applicable Statutory Fee:</span>
+                <strong class="fs-5" id="sumFeeAmount">₹100</strong>
+              </div>
+              <div class="text-end" id="sumPaymentStatusBadge">
+                <span class="badge bg-warning text-dark border"><i class="bi bi-hourglass-split me-1"></i> Payment Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statutory Applicant Declaration Checkbox -->
+          <div class="card border-success border-2 p-3 rounded-3 mb-4 bg-white shadow-xs" id="declarationCard">
+            <div class="form-check d-flex align-items-start gap-2 mb-0">
+              <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="declarationCheckbox" style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
+              <label class="form-check-label text-dark small fw-semibold" for="declarationCheckbox" style="cursor: pointer; line-height: 1.5;">
+                I hereby declare that the information provided in this application is true and correct to the best of my knowledge. I understand that the application will be reviewed by the concerned department and that I may be required to provide additional information or supporting documents if necessary.
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 3 Actions Bar -->
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="goToStep(2)">
+              <i class="bi bi-arrow-left me-1"></i> Back to Step 2
+            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="saveDraftManual()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold" id="btnStep3SubmitOrPay" disabled onclick="handleStep3Next()">
+                <span id="step3NextBtnLabel">Proceed to Payment (₹100)</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             STEP 4: CONDITIONAL PAYMENT (Trekking & Expedition only)
+             ============================================================== -->
+        <section class="form-step-section d-none" id="step-content-4">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 border-bottom pb-3">
+            <div>
+              <h2 class="h4 fw-bold text-dark mb-1">
+                <i class="bi bi-credit-card-2-front text-primary me-2"></i>Step 4: Statutory Application Payment Gateway
+              </h2>
+              <p class="text-muted small mb-0">Simulated integrated Cyber Treasury / Sikkim GO Payment Gateway.</p>
+            </div>
+            <span class="badge bg-warning text-dark border px-2 py-1">Payment Required</span>
+          </div>
+
+          <!-- Payment Details Card -->
+          <div class="row g-4 mb-4">
+            <div class="col-lg-7">
+              <div class="card border p-4 rounded-3 h-100 bg-white">
+                <h3 class="h6 fw-bold text-dark mb-3">Select Payment Method (Simulation)</h3>
+                
+                <div class="mb-3">
+                  <label class="card p-3 border rounded-3 mb-2 cursor-pointer">
+                    <div class="form-check d-flex align-items-center gap-2 mb-0">
+                      <input class="form-check-input" type="radio" name="payMethod" id="payUpi" value="UPI" checked>
+                      <label class="form-check-label fw-semibold text-dark" for="payUpi">
+                        <i class="bi bi-phone text-success me-1"></i> UPI (Google Pay, PhonePe, Paytm, BHIM)
+                      </label>
+                    </div>
+                  </label>
+                  <label class="card p-3 border rounded-3 mb-2 cursor-pointer">
+                    <div class="form-check d-flex align-items-center gap-2 mb-0">
+                      <input class="form-check-input" type="radio" name="payMethod" id="payNet" value="NetBanking">
+                      <label class="form-check-label fw-semibold text-dark" for="payNet">
+                        <i class="bi bi-bank text-primary me-1"></i> Net Banking (SBI, HDFC, Sikkim State Co-op)
+                      </label>
+                    </div>
+                  </label>
+                  <label class="card p-3 border rounded-3 cursor-pointer">
+                    <div class="form-check d-flex align-items-center gap-2 mb-0">
+                      <input class="form-check-input" type="radio" name="payMethod" id="payCard" value="Card">
+                      <label class="form-check-label fw-semibold text-dark" for="payCard">
+                        <i class="bi bi-credit-card text-secondary me-1"></i> Debit / Credit Card
+                      </label>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Simulation Action Buttons -->
+                <div class="bg-light p-3 rounded-3 border">
+                  <label class="form-label small fw-bold text-dark d-block mb-2">Simulate Transaction Outcome:</label>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-success btn-sm px-3 fw-semibold" onclick="simulatePayment('success')">
+                      <i class="bi bi-check-circle-fill me-1"></i> Simulate Payment Success
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm px-3 fw-semibold" onclick="simulatePayment('failure')">
+                      <i class="bi bi-x-circle-fill me-1"></i> Simulate Payment Failure
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" onclick="simulatePayment('cancel')">
+                      <i class="bi bi-slash-circle me-1"></i> Simulate Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fee Summary Card -->
+            <div class="col-lg-5">
+              <div class="card border-0 bg-light p-4 rounded-3 h-100">
+                <h3 class="h6 fw-bold text-dark mb-3 border-bottom pb-2">Fee Summary Breakdown</h3>
+                
+                <ul class="list-unstyled small mb-4">
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Application Draft Ref:</span>
+                    <strong class="font-monospace text-primary" id="payDraftRef">SK-TP-2026-DFT-0041</strong>
+                  </li>
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Application Category:</span>
+                    <strong class="text-dark" id="payCategoryName">Trekking</strong>
+                  </li>
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Statutory Government Fee:</span>
+                    <span class="text-dark">₹100.00</span>
+                  </li>
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">User Portal Convenience Fee:</span>
+                    <span class="text-success">₹0.00 (Waived)</span>
+                  </li>
+                  <li class="d-flex justify-content-between py-2 border-top mt-2 fs-6">
+                    <strong class="text-dark">Total Amount Payable:</strong>
+                    <strong class="text-success fs-5">₹100.00</strong>
+                  </li>
+                </ul>
+
+                <!-- Payment Status Notice Area -->
+                <div id="paymentResultAlert" class="alert alert-warning small py-2 px-3 mb-0">
+                  <i class="bi bi-info-circle me-1"></i> Payment of ₹100 is pending. Please simulate a payment outcome to proceed.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 Actions Bar -->
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="goToStep(3)">
+              <i class="bi bi-arrow-left me-1"></i> Back to Summary
+            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="saveDraftManual()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold" id="btnFinalSubmitAfterPayment" disabled onclick="handleFinalSubmission()">
+                <span>Complete Final Submission</span>
+                <i class="bi bi-check-circle ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================================
+             STEP 5: APPLICATION ACKNOWLEDGEMENT
+             ============================================================== -->
+        <section class="form-step-section d-none" id="step-content-5">
+          <div class="text-center py-3 mb-4">
+            <div class="gov-icon-circle gov-icon-circle-lg bg-success text-white mx-auto mb-3 shadow-sm">
+              <i class="bi bi-check-lg" style="font-size: 2.5rem;"></i>
+            </div>
+            <h2 class="h3 fw-bold text-dark mb-2">Application Submitted Successfully!</h2>
+            <p class="text-muted mx-auto mb-0" style="max-width: 620px;">
+              Your Tourism Permission application has been submitted successfully. Please keep the Application ID for future reference and use the dashboard to track its progress.
+            </p>
+          </div>
+
+          <!-- Official Acknowledgement Slip Box -->
+          <div class="card border p-4 rounded-3 mb-4 bg-white shadow-xs" id="ackSlipPrintable">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 border-bottom pb-3 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Sikkim Emblem" style="height: 48px; width: auto;">
+                <div>
+                  <span class="small text-uppercase fw-bold text-muted d-block" style="letter-spacing: 0.5px;">Government of Sikkim</span>
+                  <div class="fw-bold text-dark">Tourism &amp; Civil Aviation Department</div>
+                  <span class="small text-muted">Statutory Tourism Permission Acknowledgement Slip</span>
+                </div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                  <i class="bi bi-check-circle-fill me-1"></i> SUBMITTED
+                </span>
+                <div class="small text-muted mt-1" id="ackDateDisplay">-</div>
+              </div>
+            </div>
+
+            <!-- Application Reference Callout -->
+            <div class="p-3 bg-light rounded-3 mb-4 text-center border">
+              <span class="text-muted small d-block">Official Application Reference Number (ARN):</span>
+              <span class="fs-4 fw-bold font-monospace text-primary d-inline-block mt-1" id="ackArnDisplay">SK-TP-2026-APP-81923</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2 py-0 px-2" onclick="copyArnToClipboard()" title="Copy ARN">
+                <i class="bi bi-copy"></i> Copy
+              </button>
+            </div>
+
+            <!-- Slip Field Grid -->
+            <div class="row g-3 small">
+              <div class="col-md-6">
+                <span class="text-muted d-block">Applicant Name:</span>
+                <strong class="text-dark" id="ackNameDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Permission Category:</span>
+                <strong class="text-dark" id="ackCatDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Designated District Desk:</span>
+                <strong class="text-dark" id="ackDistrictDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Payment Status:</span>
+                <strong class="text-success" id="ackPaymentDisplay">Paid (₹100) &bull; Ref: TXN-SK-2026-XXXX</strong>
+              </div>
+              <div class="col-12 mt-2">
+                <span class="text-muted d-block">Subject / Title:</span>
+                <span class="text-dark fw-semibold" id="ackSubjectDisplay">-</span>
+              </div>
+            </div>
+
+            <div class="alert alert-light border small mt-4 mb-0">
+              <i class="bi bi-info-circle text-primary me-1"></i>
+              <strong>What Happens Next:</strong> Your application has been transmitted to the designated District Tourism Officer for verification. You can track live verifications and decisions on your Citizen Dashboard.
+            </div>
+          </div>
+
+          <!-- Acknowledgement Actions -->
+          <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> Print Slip
+            </button>
+            <a href="dashboard.html" class="btn btn-gov-primary px-4 py-2 fw-semibold" id="ackBtnDashboard">
+              <i class="bi bi-speedometer2 me-1"></i> Go to Citizen Dashboard
+            </a>
+            <a href="dashboard.html?view=tracking" class="btn btn-outline-primary px-4 py-2 fw-semibold" id="ackBtnTrack">
+              <i class="bi bi-geo-alt me-1"></i> Track Application
+            </a>
+          </div>
+        </section>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+    <div class="container-xl">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Load Department Mock Data -->
+  <script src="citizen-data.js"></script>
+
+  <!-- ======================================================================
+       STAGE 03 APPLICATION FORM & DRAFT ENGINE (Vanilla JavaScript ES6+)
+       ====================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Storage Keys
+      const DRAFTS_KEY = 'tourism_permission_drafts';
+      const SUBMITTED_KEY = 'tourism_permission_submitted';
+
+      // Application State
+      let currentStep = 1;
+      let activeDraftId = '';
+      let isPaidCategory = true;
+      let paymentComplete = false;
+      let attachedDocs = [];
+      let maxVisitedStep = 1;
+
+      // On DOM Ready
+      document.addEventListener('DOMContentLoaded', function () {
+        initDraftLifecycle();
+        initCategoryListeners();
+        initDeclarationListener();
+        initPresetListener();
+      });
+
+      // ------------------------------------------------------------------
+      // 1. DRAFT LIFECYCLE & RESUME LOGIC
+      // ------------------------------------------------------------------
+      function initDraftLifecycle() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const reqDraftId = urlParams.get('draftId');
+        const reqStep = urlParams.get('step');
+
+        if (reqDraftId) {
+          const loaded = loadDraftById(reqDraftId);
+          if (loaded) {
+            activeDraftId = reqDraftId;
+            const dRefEl = document.getElementById('headerDraftRef'); if (dRefEl) dRefEl.textContent = activeDraftId;
+            restoreFormFromData(loaded);
+            
+            // Determine Resume Step according to table in Section 4 & 19
+            const resumeStep = reqStep ? parseInt(reqStep) : calculateResumeStep(loaded);
+            goToStep(resumeStep);
+            showFormToast(`Resumed draft application ${activeDraftId}`, 'info');
+            return;
+          }
+        }
+
+        // Fresh Start: Generate Unique Draft ID
+        activeDraftId = generateDraftId();
+        const dRefEl = document.getElementById('headerDraftRef'); if (dRefEl) dRefEl.textContent = activeDraftId;
+
+        // Pre-fill sensible defaults for reviewer evaluation
+        prepopulateDefaults();
+        saveCurrentDraftState();
+      }
+
+      function generateDraftId() {
+        const rnd = Math.floor(1000 + Math.random() * 9000);
+        return `SK-TP-2026-DFT-${rnd}`;
+      }
+
+      function generateArn() {
+        const rnd = Math.floor(10000 + Math.random() * 90000);
+        return `SK-TP-2026-APP-${rnd}`;
+      }
+
+      function calculateResumeStep(draft) {
+        // Table from specification:
+        // Completed applicant details only -> Supporting Documents (Step 2)
+        // Completed applicant details & docs -> Summary (Step 3)
+        // Reached summary but did not accept declaration -> Summary / Declaration (Step 3)
+        // Completed declaration but unpaid (Trekking/Expedition) -> Payment (Step 4)
+        // Payment failed or cancelled -> Payment (Step 4)
+        // Payment successful but final submission pending -> Final Submission (Step 4 / 3)
+        // Free category with declaration accepted but not submitted -> Summary / Final Submit (Step 3)
+
+        if (draft.applicationStatus === 'SUBMITTED') {
+          return 5;
+        }
+
+        if (draft.isPaid && !draft.paymentComplete && draft.declarationAccepted) {
+          return 4;
+        }
+
+        if (draft.isPaid && draft.paymentComplete) {
+          return 4;
+        }
+
+        if (draft.declarationAccepted) {
+          return 3;
+        }
+
+        if (draft.docs && draft.docs.length > 0) {
+          return 3;
+        }
+
+        if (draft.fullName && draft.subjectTitle) {
+          return 2;
+        }
+
+        return 1;
+      }
+
+      function prepopulateDefaults() {
+        document.getElementById('fullName').value = 'Tenzing Norbu Lepcha';
+        document.getElementById('emailAddress').value = 'tenzing.lepcha@example.in';
+        document.getElementById('phoneNumber').value = '9800123456';
+        document.getElementById('districtSelect').value = 'Gangtok';
+        document.getElementById('address').value = 'Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101';
+        document.getElementById('subjectTitle').value = 'Request for Singalila Ridge Scenic Trekking Route Clearance';
+        document.getElementById('activityDescription').value = 'Proposed 6-day eco-trekking expedition along the approved Singalila Ridge trail with certified local guides and 8 participants. Strict waste management protocols compliant with Forest Department guidelines will be maintained.';
+        updateDistrictRoutingInfo();
+      }
+
+      // ------------------------------------------------------------------
+      // 2. CATEGORY SELECTION & CONDITIONAL EXPEDITION LO FIELD
+      // ------------------------------------------------------------------
+      function handleCategoryDropdownChange(catId) {
+        selectCategory(catId);
+      };
+
+      function selectCategory(catId) {
+        const categorySelect = document.getElementById('categorySelect');
+        if (categorySelect && categorySelect.value !== catId) {
+          categorySelect.value = catId;
+        }
+
+        const loBlock = document.getElementById('lo-selection-block');
+        const loSelect = document.getElementById('liaisonOfficerSelect');
+        const customBlock = document.getElementById('customCategoryBlock');
+        const customInput = document.getElementById('customCategoryInput');
+        const paymentNodeTitle = document.getElementById('stepperPaymentTitle');
+        const step3NextBtnLabel = document.getElementById('step3NextBtnLabel');
+        const feeBadge = document.getElementById('categoryFeeBadge');
+        const descText = document.getElementById('categoryDescText');
+
+        // 1. Handle "Any Other" custom text field visibility
+        if (catId === 'other') {
+          if (customBlock) customBlock.classList.remove('d-none');
+          if (customInput) customInput.focus();
+        } else {
+          if (customBlock) {
+            customBlock.classList.add('d-none');
+            if (customInput) {
+              customInput.classList.remove('is-invalid');
+            }
+          }
+        }
+
+        // 2. Handle Expedition Liaison Officer visibility
+        if (catId === 'expedition') {
+          loBlock.classList.remove('d-none');
+          loSelect.required = true;
+          isPaidCategory = true;
+          paymentNodeTitle.textContent = 'Payment (₹100)';
+          step3NextBtnLabel.textContent = 'Proceed to Payment (₹100)';
+          if (feeBadge) {
+            feeBadge.className = 'badge bg-primary-subtle text-primary border fw-semibold';
+            feeBadge.textContent = '₹100 Fee';
+          }
+          if (descText) descText.textContent = 'Mountaineering peaks & restricted alpine zones (Requires Liaison Officer).';
+        } else {
+          loBlock.classList.add('d-none');
+          loSelect.required = false;
+          loSelect.value = ''; // Ensure previous LO is cleared immediately!
+          loSelect.classList.remove('is-invalid');
+
+          if (catId === 'trekking') {
+            isPaidCategory = true;
+            paymentNodeTitle.textContent = 'Payment (₹100)';
+            step3NextBtnLabel.textContent = 'Proceed to Payment (₹100)';
+            if (feeBadge) {
+              feeBadge.className = 'badge bg-primary-subtle text-primary border fw-semibold';
+              feeBadge.textContent = '₹100 Fee';
+            }
+            if (descText) descText.textContent = 'Permits for high-altitude trekking routes & wilderness trails.';
+          } else {
+            // Free Categories (Events, Drone, Adventure, Other, Satellite Phone)
+            isPaidCategory = false;
+            paymentNodeTitle.textContent = 'Payment (Free / Skip)';
+            step3NextBtnLabel.textContent = 'Submit Application Online';
+            if (feeBadge) {
+              feeBadge.className = 'badge bg-success-subtle text-success border fw-semibold';
+              feeBadge.textContent = (catId === 'satellite-phone') ? 'Free (Provisional)' : 'Free';
+            }
+            if (descText) {
+              if (catId === 'events') descText.textContent = 'Public gatherings, cultural rallies, marathon events.';
+              else if (catId === 'drone') descText.textContent = 'Aerial filming, videography & drone operations.';
+              else if (catId === 'adventure') descText.textContent = 'River rafting, paragliding, rock climbing, biking.';
+              else if (catId === 'satellite-phone') descText.textContent = 'Statutory telecommunication clearance in remote wilderness zones.';
+              else if (catId === 'other') descText.textContent = 'Other tourism permissions requiring departmental clearance.';
+              else descText.textContent = 'Select a category to view guidelines & statutory fee.';
+            }
+          }
+        }
+
+        saveCurrentDraftState();
+      };
+
+      function initCategoryListeners() {
+        const catSelect = document.getElementById('categorySelect');
+        if (catSelect) {
+          catSelect.addEventListener('change', function () {
+            selectCategory(this.value);
+          });
+        }
+      }
+
+      function updateDistrictRoutingInfo() {
+        const dist = document.getElementById('districtSelect').value;
+        const textEl = document.getElementById('districtRoutingText');
+        if (TourismCitizenData.districtDtoMapping[dist]) {
+          const info = TourismCitizenData.districtDtoMapping[dist];
+          textEl.innerHTML = `<i class="bi bi-geo-alt text-primary me-1"></i> Routed to: <strong>${info.dtoOffice}</strong> (${info.address})`;
+        } else {
+          textEl.innerHTML = `<i class="bi bi-geo-alt text-muted me-1"></i> Routed to: <strong>Concerned District Tourism Office</strong>`;
+        }
+      };
+
+      // Quick Reviewer Preset Selector
+      function initPresetListener() {
+        const preset = document.getElementById('quickScenarioPreset');
+        if (!preset) return;
+        preset.addEventListener('change', function () {
+          if (!this.value) return;
+          selectCategory(this.value);
+          if (this.value === 'expedition') {
+            document.getElementById('liaisonOfficerSelect').value = 'Tashi';
+            document.getElementById('subjectTitle').value = 'High Altitude Mt. Kabru Dome Peak Mountaineering Expedition';
+            document.getElementById('districtSelect').value = 'Gyalshing';
+          } else if (this.value === 'drone') {
+            document.getElementById('subjectTitle').value = 'Tourism Documentary Aerial Drone Shoot – Enchey & Tashi View Point';
+            document.getElementById('districtSelect').value = 'Gangtok';
+          } else if (this.value === 'events') {
+            document.getElementById('subjectTitle').value = 'Namchi Winter Marathon & Eco-Cultural Tourism Fair 2026';
+            document.getElementById('districtSelect').value = 'Namchi';
+          } else if (this.value === 'satellite-phone') {
+            document.getElementById('subjectTitle').value = 'Emergency Satellite Phone Usage Clearance for High Altitude Reconnaissance';
+            document.getElementById('districtSelect').value = 'Mangan';
+          } else if (this.value === 'other') {
+            if (document.getElementById('customCategoryInput')) {
+              document.getElementById('customCategoryInput').value = 'Mountain Biking & Wilderness Camping Tour';
+            }
+            document.getElementById('subjectTitle').value = 'Permit for Mountain Biking Expedition Across North Sikkim';
+            document.getElementById('districtSelect').value = 'Mangan';
+          }
+          updateDistrictRoutingInfo();
+          showFormToast(`Applied ${this.options[this.selectedIndex].text}`, 'info');
+        });
+      }
+
+      // ------------------------------------------------------------------
+      // 3. STEP NAVIGATION & STEPPER SYNCHRONIZATION
+      // ------------------------------------------------------------------
+      function goToStep(targetStep) {
+        // Hide all step sections
+        for (let i = 1; i <= 5; i++) {
+          const sec = document.getElementById(`step-content-${i}`);
+          if (sec) sec.classList.add('d-none');
+        }
+
+        // Show target step
+        const targetSec = document.getElementById(`step-content-${targetStep}`);
+        if (targetSec) targetSec.classList.remove('d-none');
+
+        // Update Stepper Nodes
+        for (let i = 1; i <= 5; i++) {
+          const node = document.getElementById(`step-node-${i}`);
+          if (!node) continue;
+          node.classList.remove('active', 'completed');
+          if (i < targetStep) {
+            node.classList.add('completed');
+          } else if (i === targetStep) {
+            node.classList.add('active');
+          }
+        }
+
+        currentStep = targetStep;
+        if (currentStep > maxVisitedStep) {
+          maxVisitedStep = currentStep;
+        }
+
+        saveCurrentDraftState();
+        window.scrollTo({ top: 80, behavior: 'smooth' });
+      };
+
+      function navigateToStepIfPermitted(targetStep) {
+        if (targetStep <= maxVisitedStep) {
+          goToStep(targetStep);
+        } else {
+          showFormToast('Please complete the current step before advancing.', 'warning');
+        }
+      };
+
+      // ------------------------------------------------------------------
+      // 4. STEP 1 VALIDATION & SUBMISSION
+      // ------------------------------------------------------------------
+      function handleStep1Next() {
+        const fullName = document.getElementById('fullName');
+        const email = document.getElementById('emailAddress');
+        const phone = document.getElementById('phoneNumber');
+        const district = document.getElementById('districtSelect');
+        const address = document.getElementById('address');
+        const subject = document.getElementById('subjectTitle');
+        const desc = document.getElementById('activityDescription');
+        const loSelect = document.getElementById('liaisonOfficerSelect');
+
+        let isValid = true;
+
+        [fullName, email, phone, district, address, subject, desc].forEach(input => {
+          if (!input.value.trim()) {
+            input.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            input.classList.remove('is-invalid');
+          }
+        });
+
+        // Email basic check
+        if (email.value.trim() && !email.value.includes('@')) {
+          email.classList.add('is-invalid');
+          isValid = false;
+        }
+
+        // Category select check
+        const categorySelect = document.getElementById('categorySelect');
+        const selectedCat = getSelectedCategory();
+        if (categorySelect && !categorySelect.value) {
+          categorySelect.classList.add('is-invalid');
+          const feedback = document.getElementById('categorySelectFeedback');
+          if (feedback) feedback.classList.remove('d-none');
+          isValid = false;
+        } else if (categorySelect) {
+          categorySelect.classList.remove('is-invalid');
+          const feedback = document.getElementById('categorySelectFeedback');
+          if (feedback) feedback.classList.add('d-none');
+        }
+
+        // 'Any Other' free text validation check
+        if (selectedCat === 'other') {
+          const customCatInput = document.getElementById('customCategoryInput');
+          if (customCatInput && !customCatInput.value.trim()) {
+            customCatInput.classList.add('is-invalid');
+            isValid = false;
+          } else if (customCatInput) {
+            customCatInput.classList.remove('is-invalid');
+          }
+        }
+
+        // Expedition LO check
+        if (selectedCat === 'expedition') {
+          if (!loSelect.value) {
+            loSelect.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            loSelect.classList.remove('is-invalid');
+          }
+        }
+
+        if (!isValid) {
+          showFormToast('Please fill all mandatory fields correctly.', 'danger');
+          return;
+        }
+
+        saveCurrentDraftState();
+        goToStep(2);
+      };
+
+      // ------------------------------------------------------------------
+      // 5. STEP 2: SUPPORTING DOCUMENTS (Flexible Upload)
+      // ------------------------------------------------------------------
+      function addDocumentFromInput() {
+        const nameInput = document.getElementById('newDocNameInput');
+        const fileInput = document.getElementById('newDocFileInput');
+
+        const docName = nameInput.value.trim() || 'Supporting Clearance Document';
+        const file = fileInput.files[0];
+        const fileName = file ? file.name : `Scanned_Copy_${Date.now().toString().slice(-4)}.pdf`;
+        const fileSize = file ? `${(file.size / 1024).toFixed(1)} KB` : '420 KB';
+
+        attachedDocs.push({
+          id: 'doc_' + Date.now(),
+          name: docName,
+          fileName: fileName,
+          size: fileSize,
+          uploadDate: new Date().toLocaleDateString('en-GB')
+        });
+
+        nameInput.value = '';
+        fileInput.value = '';
+        renderAttachedDocsTable();
+        saveCurrentDraftState();
+        showFormToast(`Attached ${docName}`, 'success');
+      };
+
+      function removeDocument(docId) {
+        attachedDocs = attachedDocs.filter(d => d.id !== docId);
+        renderAttachedDocsTable();
+        saveCurrentDraftState();
+      };
+
+      function renderAttachedDocsTable() {
+        const tbody = document.getElementById('uploadedDocsTableBody');
+        const emptyState = document.getElementById('noDocsEmptyState');
+        const countBadge = document.getElementById('docCountBadge');
+
+        tbody.innerHTML = '';
+        countBadge.textContent = attachedDocs.length;
+
+        if (attachedDocs.length === 0) {
+          emptyState.classList.remove('d-none');
+          return;
+        }
+
+        emptyState.classList.add('d-none');
+
+        attachedDocs.forEach((doc, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td><strong class="text-dark">${doc.name}</strong></td>
+            <td>
+              <span class="font-monospace text-primary"><i class="bi bi-file-earmark-pdf me-1"></i>${doc.fileName}</span>
+              <span class="text-muted" style="font-size: 0.725rem;">(${doc.size})</span>
+            </td>
+            <td><span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle me-1"></i> Attached</span></td>
+            <td class="text-end">
+              <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="removeDocument('${doc.id}')" title="Remove Document">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function handleStep2Next() {
+        populateSummaryView();
+        saveCurrentDraftState();
+        goToStep(3);
+      };
+
+      // ------------------------------------------------------------------
+      // 6. STEP 3: SUMMARY & DECLARATION
+      // ------------------------------------------------------------------
+      function populateSummaryView() {
+        const selectedCat = getSelectedCategory();
+        const catObj = TourismCitizenData.categories.find(c => c.id === selectedCat) || { name: 'Trekking', fee: '₹100', feeAmount: 100 };
+        const dist = document.getElementById('districtSelect').value;
+        const distInfo = TourismCitizenData.districtDtoMapping[dist] || { dtoOffice: 'District Tourism Office' };
+
+        let catDisplayName = `${catObj.name} (${catObj.fee})`;
+
+        if (selectedCat === 'other') {
+
+          const customName = getCustomCategoryName();
+
+          catDisplayName = customName ? `Any Other: ${customName} (${catObj.fee})` : `Any Other (${catObj.fee})`;
+
+        }
+
+        document.getElementById('sumCategory').textContent = catDisplayName;
+        document.getElementById('sumDistrict').textContent = `${dist} District • ${distInfo.dtoOffice}`;
+        document.getElementById('sumSubject').textContent = document.getElementById('subjectTitle').value;
+        document.getElementById('sumDescription').textContent = document.getElementById('activityDescription').value;
+
+        document.getElementById('sumFullName').textContent = document.getElementById('fullName').value;
+        document.getElementById('sumEmail').textContent = document.getElementById('emailAddress').value;
+        document.getElementById('sumPhone').textContent = document.getElementById('phoneNumber').value;
+        document.getElementById('sumAddress').textContent = document.getElementById('address').value;
+
+        // Liaison Officer (Expedition Only)
+        const loCard = document.getElementById('sumLoCard');
+        if (selectedCat === 'expedition') {
+          loCard.classList.remove('d-none');
+          document.getElementById('sumLoName').textContent = document.getElementById('liaisonOfficerSelect').value || 'Tashi';
+        } else {
+          loCard.classList.add('d-none');
+        }
+
+        // Supporting Docs in Summary
+        const sumDocsContainer = document.getElementById('sumDocsContainer');
+        if (attachedDocs.length === 0) {
+          sumDocsContainer.innerHTML = '<span class="text-muted fst-italic">No supporting documents attached.</span>';
+        } else {
+          let docsHtml = '<ul class="list-group list-group-flush">';
+          attachedDocs.forEach(d => {
+            docsHtml += `
+              <li class="list-group-item bg-transparent px-0 py-1 d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-paperclip me-1 text-primary"></i><strong>${d.name}:</strong> ${d.fileName}</span>
+                <span class="badge bg-light text-success border">Attached</span>
+              </li>
+            `;
+          });
+          docsHtml += '</ul>';
+          sumDocsContainer.innerHTML = docsHtml;
+        }
+
+        // Fee Summary
+        document.getElementById('sumFeeAmount').textContent = catObj.fee;
+        const statusBadge = document.getElementById('sumPaymentStatusBadge');
+        if (catObj.feeAmount > 0) {
+          if (paymentComplete) {
+            statusBadge.innerHTML = '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Paid (₹100)</span>';
+          } else {
+            statusBadge.innerHTML = '<span class="badge bg-warning text-dark border"><i class="bi bi-hourglass-split me-1"></i> Payment Pending</span>';
+          }
+        } else {
+          statusBadge.innerHTML = '<span class="badge bg-light text-secondary border"><i class="bi bi-dash-circle me-1"></i> Not Applicable (Free)</span>';
+        }
+      }
+
+      function initDeclarationListener() {
+        const chk = document.getElementById('declarationCheckbox');
+        const btn = document.getElementById('btnStep3SubmitOrPay');
+        chk.addEventListener('change', function () {
+          btn.disabled = !this.checked;
+        });
+      }
+
+      function handleStep3Next() {
+        const selectedCat = getSelectedCategory();
+        saveCurrentDraftState();
+
+        if (selectedCat === 'trekking' || selectedCat === 'expedition') {
+          // Requires Payment Step
+          populatePaymentStep();
+          goToStep(4);
+        } else {
+          // Free Category: Skip Payment and perform Final Submission directly
+          handleFinalSubmission();
+        }
+      };
+
+      // ------------------------------------------------------------------
+      // 7. STEP 4: CONDITIONAL PAYMENT ENGINE (Simulation)
+      // ------------------------------------------------------------------
+      function populatePaymentStep() {
+        const selectedCat = getSelectedCategory();
+        const catObj = TourismCitizenData.categories.find(c => c.id === selectedCat) || { name: 'Trekking' };
+        document.getElementById('payDraftRef').textContent = activeDraftId;
+        document.getElementById('payCategoryName').textContent = catObj.name;
+
+        const alertEl = document.getElementById('paymentResultAlert');
+        const submitBtn = document.getElementById('btnFinalSubmitAfterPayment');
+
+        if (paymentComplete) {
+          alertEl.className = 'alert alert-success small py-2 px-3 mb-0';
+          alertEl.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Payment of ₹100.00 confirmed! Transaction Ref: <strong>${window.activeTxnRef || 'TXN-SK-2026-90412'}</strong>`;
+          submitBtn.disabled = false;
+        } else {
+          alertEl.className = 'alert alert-warning small py-2 px-3 mb-0';
+          alertEl.innerHTML = `<i class="bi bi-info-circle me-1"></i> Payment of ₹100 is pending. Please simulate a payment outcome to proceed.`;
+          submitBtn.disabled = true;
+        }
+      }
+
+      function simulatePayment(outcome) {
+        const alertEl = document.getElementById('paymentResultAlert');
+        const submitBtn = document.getElementById('btnFinalSubmitAfterPayment');
+
+        if (outcome === 'success') {
+          paymentComplete = true;
+          window.activeTxnRef = `TXN-SK-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+          alertEl.className = 'alert alert-success small py-2 px-3 mb-0';
+          alertEl.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> <strong>Payment Successful!</strong> Amount of ₹100.00 received. Transaction Ref: <strong>${window.activeTxnRef}</strong>`;
+          submitBtn.disabled = false;
+          saveCurrentDraftState();
+          showFormToast('Payment simulated successfully! Click Complete Final Submission.', 'success');
+        } else if (outcome === 'failure') {
+          paymentComplete = false;
+          alertEl.className = 'alert alert-danger small py-2 px-3 mb-0';
+          alertEl.innerHTML = `<i class="bi bi-x-circle-fill me-1"></i> <strong>Payment Failed:</strong> Bank gateway timeout or insufficient funds. Your draft data is safely saved. Please retry.`;
+          submitBtn.disabled = true;
+          saveCurrentDraftState();
+          showFormToast('Payment failed. Application remains in draft.', 'danger');
+        } else if (outcome === 'cancel') {
+          paymentComplete = false;
+          alertEl.className = 'alert alert-secondary small py-2 px-3 mb-0';
+          alertEl.innerHTML = `<i class="bi bi-slash-circle me-1"></i> Payment cancelled by user. You can resume payment anytime from the dashboard.`;
+          submitBtn.disabled = true;
+          saveCurrentDraftState();
+          showFormToast('Payment cancelled. Application preserved as draft.', 'warning');
+        }
+      };
+
+      // ------------------------------------------------------------------
+      // 8. FINAL APPLICATION SUBMISSION & ACKNOWLEDGEMENT
+      // ------------------------------------------------------------------
+      function handleFinalSubmission() {
+        const selectedCat = getSelectedCategory();
+        const catObj = TourismCitizenData.categories.find(c => c.id === selectedCat) || { name: 'Trekking', fee: '₹100', feeAmount: 100 };
+        const dist = document.getElementById('districtSelect').value;
+        const distInfo = TourismCitizenData.districtDtoMapping[dist] || { dtoOffice: 'District Tourism Office' };
+
+        const generatedArn = generateArn();
+        const subDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        const subTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+        const customCat = (selectedCat === 'other') ? getCustomCategoryName() : '';
+        const finalCategoryName = (selectedCat === 'other' && customCat) ? `Any Other: ${customCat}` : catObj.name;
+
+        const submissionRecord = {
+          refNo: generatedArn,
+          draftId: activeDraftId,
+          category: finalCategoryName,
+          categoryKey: selectedCat,
+          customCategoryName: customCat,
+          activityTitle: document.getElementById('subjectTitle').value,
+          description: document.getElementById('activityDescription').value,
+          district: dist,
+          dtoOffice: distInfo.dtoOffice,
+          applicantName: document.getElementById('fullName').value,
+          email: document.getElementById('emailAddress').value,
+          phone: document.getElementById('phoneNumber').value,
+          address: document.getElementById('address').value,
+          liaisonOfficer: selectedCat === 'expedition' ? document.getElementById('liaisonOfficerSelect').value : null,
+          documents: attachedDocs,
+          fee: catObj.fee,
+          feeAmount: catObj.feeAmount,
+          isPaid: catObj.feeAmount > 0,
+          paymentStatus: catObj.feeAmount > 0 ? 'PAID' : 'NOT_APPLICABLE',
+          paymentTxnRef: window.activeTxnRef || (catObj.feeAmount > 0 ? 'TXN-SK-2026-90142' : 'N/A'),
+          submissionDate: `${subDate}, ${subTime}`,
+          status: 'SUBMITTED',
+          statusLabel: 'Pending DTO Verification',
+          currentStage: 1
+        };
+
+        // Save into Submitted Repository in localStorage
+        saveSubmittedRecord(submissionRecord);
+        // Remove draft from draft list
+        removeDraftRecord(activeDraftId);
+
+        // Populate Acknowledgement Slip
+        document.getElementById('ackArnDisplay').textContent = generatedArn;
+        document.getElementById('ackDateDisplay').textContent = `${subDate}, ${subTime}`;
+        document.getElementById('ackNameDisplay').textContent = submissionRecord.applicantName;
+        document.getElementById('ackCatDisplay').textContent = submissionRecord.category;
+        document.getElementById('ackDistrictDisplay').textContent = `${dist} District (${distInfo.dtoOffice})`;
+        document.getElementById('ackSubjectDisplay').textContent = submissionRecord.activityTitle;
+
+        if (submissionRecord.isPaid) {
+          document.getElementById('ackPaymentDisplay').innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Paid (₹100) &bull; Ref: ${submissionRecord.paymentTxnRef}</span>`;
+        } else {
+          document.getElementById('ackPaymentDisplay').innerHTML = `<span class="text-secondary"><i class="bi bi-dash-circle me-1"></i> Payment Not Applicable (Free Category)</span>`;
+        }
+
+        // Direct Tracker link in acknowledgement
+        document.getElementById('ackBtnTrack').href = `dashboard.html?view=tracking&arn=${generatedArn}`;
+
+        // Advance to Step 5
+        goToStep(5);
+        showFormToast('Application submitted successfully!', 'success');
+      };
+
+      function copyArnToClipboard() {
+        const arn = document.getElementById('ackArnDisplay').textContent;
+        navigator.clipboard.writeText(arn).then(() => {
+          showFormToast('Application ID copied to clipboard!', 'info');
+        });
+      };
+
+      // ------------------------------------------------------------------
+      // 9. LOCALSTORAGE PERSISTENCE ENGINE
+      // ------------------------------------------------------------------
+      function saveCurrentDraftState() {
+        const selectedCat = getSelectedCategory();
+        const catObj = TourismCitizenData.categories.find(c => c.id === selectedCat) || { name: 'Trekking', fee: '₹100', feeAmount: 100 };
+        const dist = document.getElementById('districtSelect') ? document.getElementById('districtSelect').value : 'Gangtok';
+
+        const customCat = (selectedCat === 'other') ? getCustomCategoryName() : '';
+        const finalCategoryName = (selectedCat === 'other' && customCat) ? `Any Other: ${customCat}` : catObj.name;
+
+        const draftData = {
+          draftId: activeDraftId,
+          categoryKey: selectedCat,
+          categoryName: finalCategoryName,
+          customCategoryName: customCat,
+          fee: catObj.fee,
+          feeAmount: catObj.feeAmount,
+          isPaid: catObj.feeAmount > 0,
+          fullName: document.getElementById('fullName') ? document.getElementById('fullName').value : '',
+          email: document.getElementById('emailAddress') ? document.getElementById('emailAddress').value : '',
+          phone: document.getElementById('phoneNumber') ? document.getElementById('phoneNumber').value : '',
+          district: dist,
+          address: document.getElementById('address') ? document.getElementById('address').value : '',
+          subjectTitle: document.getElementById('subjectTitle') ? document.getElementById('subjectTitle').value : '',
+          activityDescription: document.getElementById('activityDescription') ? document.getElementById('activityDescription').value : '',
+          liaisonOfficer: selectedCat === 'expedition' && document.getElementById('liaisonOfficerSelect') ? document.getElementById('liaisonOfficerSelect').value : null,
+          docs: attachedDocs,
+          currentStep: currentStep,
+          maxVisitedStep: maxVisitedStep,
+          declarationAccepted: document.getElementById('declarationCheckbox') ? document.getElementById('declarationCheckbox').checked : false,
+          paymentComplete: paymentComplete,
+          paymentTxnRef: window.activeTxnRef || null,
+          applicationStatus: (catObj.feeAmount > 0 && !paymentComplete && document.getElementById('declarationCheckbox') && document.getElementById('declarationCheckbox').checked) ? 'PAYMENT_PENDING' : 'DRAFT',
+          lastUpdated: new Date().toLocaleString('en-GB')
+        };
+
+        const existingDrafts = getStoredDrafts();
+        const idx = existingDrafts.findIndex(d => d.draftId === activeDraftId);
+        if (idx >= 0) {
+          existingDrafts[idx] = draftData;
+        } else {
+          existingDrafts.unshift(draftData);
+        }
+
+        try {
+          localStorage.setItem(DRAFTS_KEY, JSON.stringify(existingDrafts));
+        } catch (e) {
+          console.warn('localStorage save failed', e);
+        }
+      }
+
+      function saveDraftManual() {
+        saveCurrentDraftState();
+        showFormToast(`Draft ${activeDraftId} saved successfully. You can resume anytime from your dashboard.`, 'success');
+      };
+
+      function restoreFormFromData(d) {
+        if (d.categoryKey) selectCategory(d.categoryKey);
+        if (d.customCategoryName && document.getElementById('customCategoryInput')) {
+          document.getElementById('customCategoryInput').value = d.customCategoryName;
+        }
+        if (d.fullName) document.getElementById('fullName').value = d.fullName;
+        if (d.email) document.getElementById('emailAddress').value = d.email;
+        if (d.phone) document.getElementById('phoneNumber').value = d.phone;
+        if (d.district) {
+          document.getElementById('districtSelect').value = d.district;
+          updateDistrictRoutingInfo();
+        }
+        if (d.address) document.getElementById('address').value = d.address;
+        if (d.subjectTitle) document.getElementById('subjectTitle').value = d.subjectTitle;
+        if (d.activityDescription) document.getElementById('activityDescription').value = d.activityDescription;
+        if (d.liaisonOfficer && document.getElementById('liaisonOfficerSelect')) {
+          document.getElementById('liaisonOfficerSelect').value = d.liaisonOfficer;
+        }
+
+        if (d.docs && Array.isArray(d.docs)) {
+          attachedDocs = d.docs;
+          renderAttachedDocsTable();
+        }
+
+        if (d.declarationAccepted && document.getElementById('declarationCheckbox')) {
+          document.getElementById('declarationCheckbox').checked = true;
+          document.getElementById('btnStep3SubmitOrPay').disabled = false;
+        }
+
+        if (d.paymentComplete) {
+          paymentComplete = true;
+          window.activeTxnRef = d.paymentTxnRef;
+        }
+
+        if (d.maxVisitedStep) {
+          maxVisitedStep = d.maxVisitedStep;
+        }
+      }
+
+      function getStoredDrafts() {
+        try {
+          const raw = localStorage.getItem(DRAFTS_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function loadDraftById(id) {
+        const drafts = getStoredDrafts();
+        const found = drafts.find(d => d.draftId === id);
+        if (found) return found;
+
+        if (id === 'SK-TP-2026-DFT-0012') {
+          return {
+            draftId: 'SK-TP-2026-DFT-0012',
+            categoryKey: 'trekking',
+            categoryName: 'Trekking',
+            fee: '₹100',
+            feeAmount: 100,
+            isPaid: true,
+            fullName: 'Karma Tshering Lepcha',
+            email: 'karma.lepcha@trek-sikkim.in',
+            phone: '9733054128',
+            district: 'Gyalshing',
+            address: 'Upper Dzongu, Mangan District, Sikkim - 737116',
+            subjectTitle: 'Dzongri – Goecha La High Altitude Trek (6 Pax)',
+            activityDescription: 'High altitude trekking expedition with 6 domestic trekkers and 2 certified local guides. Yuksam to Goecha La viewpoint via Dzongri, complying with KNP regulations.',
+            liaisonOfficer: null,
+            docs: [
+              { id: 1, type: 'Route Map', typeName: 'Route Map / Trail Itinerary', name: 'Yuksam_Goechala_Trail_Route.pdf', size: '1.4 MB', date: '02 Nov 2026' },
+              { id: 2, type: 'ID Proof', typeName: 'Leader Government ID', name: 'Karma_Lepcha_VoterID.pdf', size: '820 KB', date: '02 Nov 2026' }
+            ],
+            currentStep: 3,
+            maxVisitedStep: 3,
+            declarationAccepted: false,
+            paymentComplete: false,
+            applicationStatus: 'DRAFT',
+            lastUpdated: '03 Nov 2026, 04:30 PM'
+          };
+        }
+        return null;
+      }
+
+      function removeDraftRecord(id) {
+        const drafts = getStoredDrafts().filter(d => d.draftId !== id);
+        try {
+          localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
+        } catch (e) {}
+      }
+
+      function saveSubmittedRecord(rec) {
+        try {
+          const raw = localStorage.getItem(SUBMITTED_KEY);
+          const submittedList = raw ? JSON.parse(raw) : [];
+          submittedList.unshift(rec);
+          localStorage.setItem(SUBMITTED_KEY, JSON.stringify(submittedList));
+        } catch (e) {}
+      }
+
+      function getSelectedCategory() {
+        const select = document.getElementById('categorySelect');
+        if (select && select.value) {
+          return select.value;
+        }
+        const checked = document.querySelector('input[name="appCategory"]:checked');
+        return checked ? checked.value : 'trekking';
+      }
+
+      function getCustomCategoryName() {
+        const input = document.getElementById('customCategoryInput');
+        return input ? input.value.trim() : '';
+      }
+
+      function showFormToast(msg, type) {
+        const container = document.getElementById('formAlertContainer');
+        if (!container) return;
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show shadow-sm small py-2 px-3 mb-3`;
+        alert.innerHTML = `
+          <span>${msg}</span>
+          <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        container.appendChild(alert);
+        setTimeout(() => {
+          if (alert && alert.parentNode) {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 250);
+          }
+        }, 4000);
+      }
+
+
+      // Expose to window for HTML handlers and navigation
+      window.handleCategoryDropdownChange = handleCategoryDropdownChange;
+      window.selectCategory = selectCategory;
+      window.updateDistrictRoutingInfo = updateDistrictRoutingInfo;
+      window.goToStep = goToStep;
+      window.navigateToStepIfPermitted = navigateToStepIfPermitted;
+      window.handleStep1Next = handleStep1Next;
+      window.addDocumentFromInput = addDocumentFromInput;
+      window.removeDocument = removeDocument;
+      window.handleStep2Next = handleStep2Next;
+      window.handleStep3Next = handleStep3Next;
+      window.simulatePayment = simulatePayment;
+      window.handleFinalSubmission = handleFinalSubmission;
+      window.copyArnToClipboard = copyArnToClipboard;
+      window.saveDraftManual = saveDraftManual;
+
+    })();
+  </script>
+</body>
+</html>

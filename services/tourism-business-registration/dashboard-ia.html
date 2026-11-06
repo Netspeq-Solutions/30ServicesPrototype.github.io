@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24476B">
+  <title>Inspecting Authority (Level 1) Desk &bull; Tourism Business &amp; Outdoor Photography Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .officer-sidebar {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      flex-shrink: 0 !important;
+      background: #ffffff;
+      border-right: 1px solid var(--gov-border, #D5E0EB);
+      min-height: calc(100vh - 120px);
+    }
+    .officer-stat-card {
+      background: #ffffff;
+      border: 1px solid var(--gov-border, #D5E0EB);
+      border-radius: var(--gov-radius-lg, 10px);
+      padding: 1.15rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      height: 100%;
+    }
+    .officer-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(36, 71, 107, 0.08);
+      border-color: var(--gov-primary, #24476B);
+    }
+    .officer-stat-card.active-kpi {
+      border: 2px solid var(--gov-primary, #24476B) !important;
+      background-color: var(--gov-primary-light, #F7F9FC) !important;
+    }
+    .officer-stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--gov-primary, #24476B);
+    }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Navigation -->
+  <a class="gov-skip-link" href="#main-ia-content">Skip to Main Content</a>
+
+  <!-- Tricolor Flag Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Top Reviewer Controller Bar (Stage 04 Standard) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Controller" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-shield-check me-1"></i> LEVEL 1: IA FIELD INSPECTION DESK
+          </span>
+          <span class="fw-semibold text-white">Jurisdiction:</span>
+          <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 250px; font-size: 0.8rem;" onchange="changeDistrictQueue(this.value)">
+            <option value="ALL">All Circles (Statewide Overview)</option>
+            <option value="Gangtok" selected>Gangtok Circle (HQ)</option>
+            <option value="Namchi">Namchi Circle</option>
+            <option value="Gyalshing">Gyalshing Circle</option>
+            <option value="Mangan">Mangan Circle</option>
+            <option value="Pakyong">Pakyong Circle</option>
+            <option value="Soreng">Soreng Circle</option>
+          </select>
+
+          <!-- Quick Scenario / Application Switcher -->
+          <span class="text-white-50 ms-1 d-none d-md-inline">&bull; Quick Review:</span>
+          <select id="quickArnJumpSelect" class="form-select form-select-sm py-0 px-2 border-0 bg-light text-dark fw-semibold shadow-xs d-none d-md-inline-block" style="max-width: 320px; font-size: 0.775rem;" onchange="openIaModal(this.value)">
+            <option value="">-- Jump to Specific Application --</option>
+            <option value="SK-TBR-2026-DLR-00305">[Dealer Pending] SK-TBR-00305 &bull; Kanchenjunga Gear</option>
+            <option value="SK-TBR-2026-DLR-00309">[Dealer Pending] SK-TBR-00309 &bull; Alpine Edge</option>
+            <option value="SK-TBR-2026-DLR-00322">[Dealer Inspected] SK-TBR-00322 &bull; Himalayan Ridge</option>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle Contrast" onclick="document.body.classList.toggle('high-contrast')">
+            <i class="bi bi-circle-half me-1"></i>Contrast
+          </button>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger py-0 px-2 text-white border-white-50" title="Switch Role">
+            <i class="bi bi-people-fill me-1"></i>Switch Role
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header bg-white py-2 border-bottom shadow-xs no-print" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block flex-shrink-0" title="Portal Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Sikkim Emblem" class="gov-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-title-sikkim text-uppercase small text-muted fw-bold">Government of Sikkim</div>
+            <div class="gov-title-dept text-dark fw-bold">Tourism &amp; Civil Aviation Department</div>
+            <div class="small text-secondary fw-semibold">Level 1: Inspecting Authority (IA) Field Verification Desk</div>
+          </div>
+        </div>
+
+        <!-- Officer Identity & Switcher -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="iaOfficerName">Tashi Wangdi Lepcha</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Level 1: IA</span>
+              <span id="iaDistrictLabel">Gangtok Circle</span>
+            </div>
+          </div>
+          <div class="d-flex gap-1.5">
+            <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Switch Role</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container: Sidebar + Content -->
+  <div class="d-flex flex-column flex-lg-row flex-grow-1 w-100 overflow-hidden officer-workspace-container">
+    
+    <!-- Officer Sidebar Nav (260px Desktop) -->
+    <aside class="officer-sidebar p-3 border-end bg-white" aria-label="IA Work Queues">
+      <div class="mb-3 pb-2 border-bottom">
+        <label for="districtFilter" class="form-label small fw-bold text-dark mb-1">
+          <i class="bi bi-geo-alt-fill text-danger me-1"></i> Active District Circle:
+        </label>
+        <select class="form-select form-select-sm" id="districtFilter" onchange="changeDistrictQueue(this.value)">
+          <option value="Gangtok" selected>Gangtok Circle (HQ)</option>
+          <option value="Namchi">Namchi Circle</option>
+          <option value="Gyalshing">Gyalshing Circle</option>
+          <option value="Mangan">Mangan Circle</option>
+          <option value="Pakyong">Pakyong Circle</option>
+          <option value="Soreng">Soreng Circle</option>
+          <option value="ALL">All Circles (Statewide)</option>
+        </select>
+      </div>
+
+      <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        Level 1 Work Queues
+      </div>
+
+      <nav class="nav flex-column gap-1 mb-4">
+        <a href="javascript:void(0)" class="officer-nav-link active" onclick="filterQueue('PENDING', this)">
+          <i class="bi bi-clipboard-check text-warning"></i>
+          <span>Pending Inspection</span>
+          <span class="badge bg-warning text-dark" id="badgePending">2</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('SCHEDULED', this)">
+          <i class="bi bi-calendar-event text-info"></i>
+          <span>Visits Scheduled</span>
+          <span class="badge bg-info text-white" id="badgeScheduled">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('COMPLETED', this)">
+          <i class="bi bi-check-circle-fill text-success"></i>
+          <span>Reports Submitted</span>
+          <span class="badge bg-success text-white" id="badgeCompleted">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('ALL', this)">
+          <i class="bi bi-folder2 text-secondary"></i>
+          <span>All Inspections</span>
+          <span class="badge bg-secondary text-white" id="badgeAll">4</span>
+        </a>
+      </nav>
+
+      <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        Role Hierarchy Navigation
+      </div>
+      <nav class="nav flex-column gap-1 small">
+        <a href="dashboard-to.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-shield-check text-primary"></i>
+          <span>Level 0 (TO Desk)</span>
+        </a>
+        <a href="dashboard-dto.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-award text-success"></i>
+          <span>Level 2 (DTO Desk)</span>
+        </a>
+        <a href="dashboard.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-person text-secondary"></i>
+          <span>Citizen Workspace</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main IA Content Area -->
+    <main id="main-ia-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0" role="main">
+      
+      <!-- Top Workspace Bar -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <h1 class="h5 fw-bold text-dark mb-0">Level 1 Field Inspection Desk &bull; <span id="queueHeadingDistrict">Gangtok Circle</span></h1>
+          <p class="text-muted small mb-0">On-site commercial premises physical verification, mountaineering stock inspection &amp; safety compliance for Equipment Dealers.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" onclick="refreshQueue()">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span>Refresh Queue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPI Cards -->
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card active-kpi" onclick="filterQueue('PENDING')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Pending Inspection</span>
+              <i class="bi bi-clipboard-x text-warning fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-warning" id="kpiIaPending">2</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Dealers awaiting site visit</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('SCHEDULED')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Visits Scheduled</span>
+              <i class="bi bi-calendar-event text-info fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-info" id="kpiIaScheduled">1</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Inspection date confirmed</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('COMPLETED')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Reports Submitted</span>
+              <i class="bi bi-check-circle-fill text-success fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-success" id="kpiIaCompleted">1</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Forwarded to Level 2 DTO</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('ALL')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Total Dealers</span>
+              <i class="bi bi-folder2 text-secondary fs-5"></i>
+            </div>
+            <div class="officer-stat-number text-dark" id="kpiIaTotal">4</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">In selected circle</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actionable Applications Card -->
+      <div class="card border shadow-xs bg-white rounded-3 mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-cart-check-fill text-warning"></i>
+            <h2 class="h6 fw-bold text-dark mb-0" id="queueTableTitle">Dealer Applications Awaiting On-Site Inspection</h2>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <input type="text" id="queueSearch" class="form-control form-control-sm" placeholder="Search ARN, Firm or Address..." onkeyup="applyFilters()" style="width: 240px;">
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="iaQueueTable">
+              <thead class="table-light small">
+                <tr>
+                  <th scope="col" style="width: 18%;">APPLICATION ID</th>
+                  <th scope="col" style="width: 25%;">ENTERPRISE &amp; PREMISES ADDRESS</th>
+                  <th scope="col" style="width: 23%;">PREMISES AREA &amp; STOCK DETAILS</th>
+                  <th scope="col" style="width: 14%;">INSPECTION DATE</th>
+                  <th scope="col" style="width: 10%;">STATUS</th>
+                  <th scope="col" class="text-end" style="width: 10%;">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="iaQueueTableBody">
+                <!-- Dynamically rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Level 1 On-Site Inspection & Technical Report -->
+  <div class="modal fade" id="iaInspectionModal" tabindex="-1" aria-labelledby="iaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-clipboard2-check-fill text-warning"></i>
+            <h5 class="modal-title fw-bold mb-0" id="iaModalLabel">Level 1 On-Site Physical Inspection &bull; Dealer Registration</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          
+          <!-- Dossier Summary Card -->
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <div class="row g-2 small">
+              <div class="col-sm-6">
+                <span class="text-muted">Application ID:</span>
+                <strong class="d-block text-primary font-monospace" id="modalIaArn">SK-TBR-2026-DLR-00305</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted">Enterprise / Shop Name:</span>
+                <strong class="d-block text-dark" id="modalIaFirm">Kanchenjunga Gear &amp; Trekking Store</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted">Shop Location:</span>
+                <span class="d-block text-dark" id="modalIaAddress">Shop #14, Super Market Complex, Gangtok</span>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted">Applicant / Contact:</span>
+                <span class="d-block text-dark" id="modalIaApplicant">Tenzing Norbu Lepcha &bull; 9832045612</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mandatory Physical Checklist -->
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <h3 class="h6 fw-bold text-dark mb-2">
+              <i class="bi bi-check2-square text-primary me-1"></i> Mandatory On-Site Verification Criteria:
+            </h3>
+            <div class="list-group list-group-flush small">
+              <label class="list-group-item d-flex align-items-center gap-2 border-0 px-0 py-1.5">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="chkPremises" checked>
+                <span>Commercial shop area verified (minimum <strong>200 sq.ft</strong> standard satisfied).</span>
+              </label>
+              <label class="list-group-item d-flex align-items-center gap-2 border-0 px-0 py-1.5">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="chkTradeLicense" checked>
+                <span>Valid Municipal / GPU Trade License prominently displayed on premises.</span>
+              </label>
+              <label class="list-group-item d-flex align-items-center gap-2 border-0 px-0 py-1.5">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="chkEquipmentStock" checked>
+                <span>Mountaineering / trekking gear stock physically inspected (tents, ropes, ice axes, rucksacks).</span>
+              </label>
+              <label class="list-group-item d-flex align-items-center gap-2 border-0 px-0 py-1.5">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="chkSafetyStandards" checked>
+                <span>Safety certifications (UIAA / CE / BIS marks) verified on technical climbing hardware.</span>
+              </label>
+              <label class="list-group-item d-flex align-items-center gap-2 border-0 px-0 py-1.5">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="chkFireSafety" checked>
+                <span>Operational fire extinguisher (ABC type) &amp; emergency first-aid kit maintained on site.</span>
+              </label>
+              <label class="list-group-item d-flex align-items-center gap-2 border-0 px-0 py-1.5">
+                <input class="form-check-input flex-shrink-0" type="checkbox" id="chkPriceList" checked>
+                <span>Published price schedule and consumer warranty policy displayed.</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Technical Observations & Report -->
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <label for="iaObservations" class="form-label small fw-bold text-dark mb-1">
+              Inspecting Authority Findings &amp; Technical Observations:
+            </label>
+            <textarea id="iaObservations" class="form-control form-control-sm" rows="3">On-site physical inspection conducted. Shop floor area measured at 260 sq.ft. Physical inventory of 12 climbing tents, 30 pairs of crampons, 25 ice axes, and UIAA certified safety ropes verified in good condition. Fire extinguisher valid till Oct 2027. Recommended for approval.</textarea>
+          </div>
+
+          <!-- IA Recommendation -->
+          <div class="p-3 bg-white rounded-3 border">
+            <label class="form-label small fw-bold text-dark mb-2">Level 1 Recommendation to Level 2 DTO:</label>
+            <div class="d-flex flex-wrap gap-4 small">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="iaDecisionRadio" id="radioRecommend" value="RECOMMEND" checked>
+                <label class="form-check-label fw-bold text-success" for="radioRecommend">
+                  <i class="bi bi-check-circle me-1"></i> Satisfactory &ndash; Recommend for DTO Approval
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="iaDecisionRadio" id="radioDeficient" value="DEFICIENT">
+                <label class="form-check-label fw-bold text-danger" for="radioDeficient">
+                  <i class="bi bi-x-circle me-1"></i> Deficiencies Found &ndash; Return to Applicant
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer bg-white d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-sm btn-gov-primary d-inline-flex align-items-center gap-1.5 fw-semibold" onclick="submitIaReport()">
+            <i class="bi bi-send-check"></i>
+            <span>Submit Inspection Report to DTO</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Framework JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/theme-switcher.js"></script>
+  <script src="../../common/js/accessibility.js"></script>
+
+  <!-- Service Mock Data -->
+  <script src="citizen-data.js"></script>
+
+  <script>
+    let currentDistrict = 'Gangtok';
+    let currentFilterQueue = 'PENDING';
+
+    function changeDistrictQueue(district) {
+      currentDistrict = district;
+      localStorage.setItem('tb_active_district', district);
+      
+      const distInfo = TourismBusinessData.getDistrictOfficers(district === 'ALL' ? 'Gangtok' : district);
+      document.getElementById('iaOfficerName').textContent = distInfo.officers.ia;
+      document.getElementById('iaDistrictLabel').textContent = district === 'ALL' ? 'Statewide (All Circles)' : (district + ' Circle');
+      document.getElementById('queueHeadingDistrict').textContent = district === 'ALL' ? 'Statewide' : (district + ' Circle');
+
+      applyFilters();
+    }
+
+    function filterQueue(queueType, el) {
+      currentFilterQueue = queueType;
+      if (el) {
+        document.querySelectorAll('.officer-nav-link').forEach(l => l.classList.remove('active'));
+        el.classList.add('active');
+      }
+      document.querySelectorAll('.officer-stat-card').forEach(c => c.classList.remove('active-kpi'));
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const search = (document.getElementById('queueSearch').value || '').trim().toLowerCase();
+      
+      // Filter for Dealer applications relevant to IA
+      let list = TourismBusinessData.allApplications.filter(a => a.category === 'dealer');
+      if (currentDistrict !== 'ALL') {
+        list = list.filter(a => a.district === currentDistrict);
+      }
+
+      // Counts
+      const pendingCount = list.filter(a => a.assignedRole === 'IA' && a.inspectionStatus !== 'Inspection Completed • Recommended for Approval').length;
+      const scheduledCount = list.filter(a => a.inspectionDate && a.inspectionStatus !== 'Inspection Completed • Recommended for Approval').length;
+      const completedCount = list.filter(a => a.inspectionStatus === 'Inspection Completed • Recommended for Approval' || a.assignedRole === 'DTO').length;
+
+      document.getElementById('badgePending').textContent = pendingCount;
+      document.getElementById('badgeScheduled').textContent = scheduledCount;
+      document.getElementById('badgeCompleted').textContent = completedCount;
+      document.getElementById('badgeAll').textContent = list.length;
+
+      document.getElementById('kpiIaPending').textContent = pendingCount;
+      document.getElementById('kpiIaScheduled').textContent = scheduledCount;
+      document.getElementById('kpiIaCompleted').textContent = completedCount;
+      document.getElementById('kpiIaTotal').textContent = list.length;
+
+      // Filter by Queue
+      if (currentFilterQueue === 'PENDING') {
+        list = list.filter(a => a.assignedRole === 'IA' && a.inspectionStatus !== 'Inspection Completed • Recommended for Approval');
+        document.getElementById('queueTableTitle').textContent = 'Dealer Applications Awaiting On-Site Inspection';
+      } else if (currentFilterQueue === 'SCHEDULED') {
+        list = list.filter(a => a.inspectionDate && a.inspectionStatus !== 'Inspection Completed • Recommended for Approval');
+        document.getElementById('queueTableTitle').textContent = 'Scheduled Dealer Field Inspections';
+      } else if (currentFilterQueue === 'COMPLETED') {
+        list = list.filter(a => a.inspectionStatus === 'Inspection Completed • Recommended for Approval' || a.assignedRole === 'DTO');
+        document.getElementById('queueTableTitle').textContent = 'Inspection Reports Submitted to Level 2 DTO';
+      } else {
+        document.getElementById('queueTableTitle').textContent = 'All Dealer Registration Applications';
+      }
+
+      // Search
+      if (search) {
+        list = list.filter(a => a.refNo.toLowerCase().includes(search) || (a.businessName && a.businessName.toLowerCase().includes(search)) || (a.shopAddress && a.shopAddress.toLowerCase().includes(search)));
+      }
+
+      renderTable(list);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('iaQueueTableBody');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted small">No dealer inspection records match the active criteria in this circle.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      list.forEach(app => {
+        let isDone = (app.inspectionStatus === 'Inspection Completed • Recommended for Approval' || app.assignedRole === 'DTO');
+        let statusPill = isDone 
+          ? `<span class="badge bg-success text-white py-1 px-2"><i class="bi bi-check-circle me-1"></i>Report Submitted</span>`
+          : `<span class="badge bg-warning text-dark py-1 px-2"><i class="bi bi-clock me-1"></i>Pending Visit</span>`;
+
+        let actionBtn = isDone
+          ? `<button type="button" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" onclick="openIaModal('${app.refNo}')"><i class="bi bi-file-text"></i><span>View Report</span></button>`
+          : `<button type="button" class="btn btn-sm btn-gov-primary py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" onclick="openIaModal('${app.refNo}')"><i class="bi bi-clipboard2-check"></i><span>Inspect</span></button>`;
+
+        html += `
+          <tr>
+            <td>
+              <span class="font-monospace fw-bold text-primary">${app.refNo}</span>
+              <div class="small text-muted" style="font-size: 0.72rem;"><i class="bi bi-geo-alt"></i> ${app.district} Circle</div>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${app.businessName}</div>
+              <div class="small text-secondary"><i class="bi bi-shop me-1"></i>${app.shopAddress || 'Gangtok Market'}</div>
+            </td>
+            <td>
+              <div class="small fw-semibold text-dark">Floor: ${app.premisesArea || '250 sq.ft'}</div>
+              <div class="small text-muted text-truncate" style="max-width: 250px;">${app.stockDetails || 'Mountaineering gear & accessories'}</div>
+            </td>
+            <td class="small text-secondary text-nowrap">${app.inspectionDate || 'To be scheduled'}</td>
+            <td class="small">${statusPill}</td>
+            <td class="text-end text-nowrap">${actionBtn}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function openIaModal(refNo) {
+      const app = TourismBusinessData.allApplications.find(a => a.refNo === refNo);
+      if (app) {
+        document.getElementById('modalIaArn').textContent = app.refNo;
+        document.getElementById('modalIaFirm').textContent = app.businessName;
+        document.getElementById('modalIaAddress').textContent = (app.shopAddress || 'MG Marg') + ', ' + app.district + ' Circle';
+        document.getElementById('modalIaApplicant').textContent = (app.applicantName || 'Applicant') + ' &bull; ' + (app.applicantContact || '9832000000');
+        if (app.inspectionFindings) {
+          document.getElementById('iaObservations').value = app.inspectionFindings;
+        }
+      }
+      const modal = new bootstrap.Modal(document.getElementById('iaInspectionModal'));
+      modal.show();
+    }
+
+    function submitIaReport() {
+      const isRecommend = document.getElementById('radioRecommend').checked;
+      if (isRecommend) {
+        alert("Level 1 IA Physical Inspection Report successfully submitted to Level 2 District Tourism Officer (DTO) with recommendation for approval.");
+      } else {
+        alert("Physical deficiencies recorded. Report returned to Level 0 TO and Citizen for rectification.");
+      }
+      const modal = bootstrap.Modal.getInstance(document.getElementById('iaInspectionModal'));
+      if (modal) modal.hide();
+      applyFilters();
+    }
+
+    function refreshQueue() {
+      applyFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const savedDist = localStorage.getItem('tb_active_district') || 'Gangtok';
+      document.getElementById('districtFilter').value = savedDist;
+      changeDistrictQueue(savedDist);
+    });
+  </script>
+</body>
+</html>
+

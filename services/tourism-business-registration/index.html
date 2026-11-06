@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24476B">
+  <meta name="description" content="Tourism Business & Outdoor Photography Registration - Tourism & Civil Aviation Department, Government of Sikkim. Unified single-window citizen portal for Travel Agent, Tour Operator, Dealer, and Outdoor Photographer registrations.">
+  <title>Tourism Business &amp; Outdoor Photography Registration | Tourism &amp; Civil Aviation Department | Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Framework Standard CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    /* Mandatory Viewport & Zero Horizontal Overflow Guardrails */
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Service Specific Alpine Blue Customizations */
+    .reg-option-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      border: 1.5px solid var(--gov-border);
+      border-radius: var(--gov-radius-lg, 10px);
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .reg-option-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gov-primary) !important;
+      box-shadow: 0 10px 24px rgba(36, 71, 107, 0.12) !important;
+    }
+    .reg-icon-box {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      background: var(--gov-primary-light, #F7F9FC);
+      color: var(--gov-primary, #24476B);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      border: 1px solid var(--gov-border);
+      transition: all 0.2s ease;
+    }
+    .reg-option-card:hover .reg-icon-box {
+      background: var(--gov-primary);
+      color: #ffffff;
+      border-color: var(--gov-primary);
+    }
+    .hero-bg-alpine {
+      background: linear-gradient(135deg, #18334F 0%, #24476B 60%, #345c85 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg-alpine::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 85% 20%, rgba(76, 120, 168, 0.25) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .cursor-pointer { cursor: pointer; }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100">
+
+  <!-- ======================================================================
+       GIGW 3.0 ACCESSIBILITY SKIP LINKS
+       ====================================================================== -->
+  <a class="gov-skip-link" href="#registration-options">Skip to Main Content</a>
+  <a class="gov-skip-link" href="#govNavbar">Skip to Navigation</a>
+
+  <!-- ======================================================================
+       1. TOP INDIAN TRICOLOR FLAG STRIPE
+       ====================================================================== -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- ======================================================================
+       2. TOP ACCESSIBILITY & UTILITY BAR (GIGW 3.0 MANDATORY)
+       ====================================================================== -->
+  <header class="gov-top-bar" role="region" aria-label="Accessibility and Utility Controls">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between gap-2 py-0">
+        <!-- Left: Official Government Identification with Badge -->
+        <div class="d-flex align-items-center gap-2">
+          <span class="gov-official-badge">
+            <i class="fas fa-shield-alt text-warning" aria-hidden="true"></i> OFFICIAL
+          </span>
+          <span class="fw-semibold">Government of Sikkim</span>
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+          <span class="text-white-50 d-none d-sm-inline">सिक्किम सरकार</span>
+        </div>
+
+        <!-- Right: Accessibility Toolbar -->
+        <div class="d-flex align-items-center gap-2">
+          <!-- Skip to Main Content Link -->
+          <a href="#registration-options" class="gov-top-link d-inline-flex align-items-center gap-1" title="Skip to Registration Options" aria-label="Skip to registration options">
+            <i class="fas fa-arrow-down small" aria-hidden="true"></i>
+            <span>Skip to Main Content</span>
+          </a>
+
+          <span class="text-white-50 d-none d-md-inline">|</span>
+
+          <!-- Screen Reader Access Link -->
+          <a href="#screenReaderModal" data-bs-toggle="modal" class="gov-top-link d-none d-md-inline-flex align-items-center gap-1" aria-label="Screen Reader Access information" title="Screen Reader Access">
+            <i class="fas fa-volume-up small" aria-hidden="true"></i>
+            <span>Screen Reader</span>
+          </a>
+
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+
+          <!-- Font Sizing Controls (GIGW 3.0 Standard) -->
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size" aria-label="Decrease text size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" id="btn-font-reset" data-font-action="reset" title="Normal font size" aria-label="Reset text size to default">A</button>
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-increase" data-font-action="increase" title="Increase font size" aria-label="Increase text size">A+</button>
+          </div>
+
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+
+          <!-- High Contrast Mode Toggle -->
+          <button type="button" class="btn btn-sm btn-outline-gov-light" id="btn-contrast-toggle" title="Toggle High Contrast Mode" aria-label="Toggle High Contrast Mode" aria-pressed="false">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+            <span class="d-none d-lg-inline ms-1">Contrast</span>
+          </button>
+
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+
+          <!-- Bilingual Language Selector (English / Nepali) -->
+          <div class="dropdown d-inline-block">
+            <button class="btn btn-sm btn-outline-gov-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Select Language">
+              <i class="fas fa-language" aria-hidden="true"></i>
+              <span id="currentLanguageLabel">English</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="languageDropdown">
+              <li><button class="dropdown-item active" type="button" onclick="setPortalLanguage('en')">English (Official)</button></li>
+              <li><button class="dropdown-item" type="button" onclick="setPortalLanguage('ne')">नेपाली (Nepali)</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       3. GOVERNMENT BRANDING HEADER (GIGW 3.0 COMPLIANT)
+       ====================================================================== -->
+  <div class="gov-header" role="banner">
+    <div class="container-xl">
+      <div class="row align-items-center py-2 gy-2">
+        <!-- Official Sikkim Government Emblem and Department Title -->
+        <div class="col-lg-8 col-md-8 col-12">
+          <div class="d-flex align-items-center gap-3">
+            <a href="index.html" class="d-inline-block flex-shrink-0" title="Government of Sikkim - Home">
+              <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Official Emblem of Government of Sikkim" class="gov-emblem" style="height: 52px; width: auto;">
+            </a>
+            <div class="gov-title-group">
+              <div class="gov-title-sikkim text-uppercase">Government of Sikkim</div>
+              <div class="gov-title-dept text-dark fw-bold">Tourism &amp; Civil Aviation Department</div>
+              <div class="gov-title-service text-secondary fw-semibold small">
+                Tourism Business &amp; Outdoor Photography Registration
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Helpline & Action Buttons (Sikkim GO SSO + Services) -->
+        <div class="col-lg-4 col-md-4 col-12 text-md-end text-start">
+          <div class="d-inline-flex flex-column align-items-md-end align-items-start gap-2">
+            <!-- Top Sub-row: Subtle Helpline Pill -->
+            <div>
+              <a href="tel:03592209090" class="gov-helpline-pill" title="Citizen Helpline: 03592-209090 / 1800-345-3256">
+                <i class="fas fa-headset text-success" aria-hidden="true"></i>
+                <span>Helpline: <strong>03592-209090 / 1800-345-3256</strong></span>
+              </a>
+            </div>
+
+            <!-- Bottom Sub-row: Sikkim GO (SSO) & Services Buttons -->
+            <div class="d-flex align-items-center gap-2">
+              <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-header-sso" title="Citizen Login via Sikkim GO (SSO)">
+                <i class="fas fa-user-circle" aria-hidden="true"></i>
+                <span>Sikkim GO (SSO)</span>
+              </a>
+              <a href="#registration-options" class="btn btn-header-services" title="Explore Registration Services">
+                <i class="fas fa-th-large" aria-hidden="true"></i>
+                <span>Services</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       4. PRIMARY NAVIGATION NAVBAR (MANDATORY TOURISM PERMISSION COMMON MENU)
+       ====================================================================== -->
+  <nav class="gov-navbar navbar navbar-expand-lg sticky-top shadow-xs" id="govNavbar" aria-label="Main Navigation">
+    <div class="container-xl">
+      <button class="navbar-toggler text-white border-white py-2" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav" aria-controls="portalNav" aria-expanded="false" aria-label="Toggle navigation menu">
+        <i class="fas fa-bars me-1" aria-hidden="true"></i> Menu
+      </button>
+
+      <div class="collapse navbar-collapse" id="portalNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html">
+              <i class="fas fa-home me-1" aria-hidden="true"></i> Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#service-overview">Service Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#eligibility-criteria">Eligibility &amp; Checklist</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#how-to-apply">How to Apply</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#downloads-resources">Notifications</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#faq-section">FAQs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#help-contacts">Helpline</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       MAIN CONTENT CONTAINER
+       ====================================================================== -->
+  <main id="main-content" class="flex-grow-1" tabindex="-1">
+
+    <!-- ====================================================================
+         SECTION 2 – HERO BANNER SECTION (ALPINE BLUE THEME)
+         ==================================================================== -->
+    <section id="hero" class="gov-hero-section hero-bg-alpine text-white py-5" aria-labelledby="hero-heading">
+      <div class="container-xl py-lg-4">
+        <div class="row align-items-center g-4 g-lg-5">
+          <!-- Left: Hero Text & Call to Actions -->
+          <div class="col-lg-7">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-20 text-white small mb-3">
+              <i class="fas fa-shield-alt text-warning"></i>
+              <span>Tourism &amp; Civil Aviation Department &bull; Government of Sikkim</span>
+            </div>
+            <h1 id="hero-heading" class="gov-hero-title fw-bold text-white mb-3" style="font-size: 2.35rem; line-height: 1.25;">
+              Register Your Tourism Business in Sikkim
+            </h1>
+            <p class="lead text-white-50 mb-4" style="font-size: 1.1rem; line-height: 1.7;">
+              Apply online for Travel Agent, Tour Operator, Dealer or Outdoor Photographer registration through the Tourism &amp; Civil Aviation Department, Government of Sikkim.
+            </p>
+
+            <!-- Action Buttons (Mandatory Prominent Sikkim GO Login CTA) -->
+            <div class="d-flex flex-wrap gap-3 mb-4">
+              <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-gov-accent btn-lg d-inline-flex align-items-center gap-2 shadow-sm" style="background-color: var(--gov-accent, #d97706); border-color: var(--gov-accent, #d97706); color: #ffffff;" title="Proceed to Login via Sikkim GO">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                <span>Login via Sikkim GO</span>
+              </a>
+              <a href="#registration-options" class="btn btn-outline-light btn-lg d-inline-flex align-items-center gap-2" title="View 4 Registration Categories">
+                <i class="fas fa-th-large" aria-hidden="true"></i>
+                <span>Explore Registration Services</span>
+              </a>
+            </div>
+
+            <!-- Trust Indicator Metadata -->
+            <div class="d-flex align-items-center gap-4 text-white-50 small border-top border-white border-opacity-15 pt-3">
+              <div><i class="fas fa-check-circle text-success me-1"></i> 100% Online Application</div>
+              <div><i class="fas fa-qrcode text-warning me-1"></i> QR-Verified Certificates</div>
+              <div><i class="fas fa-user-shield text-info me-1"></i> Sikkim GO Single Sign-On</div>
+            </div>
+          </div>
+
+          <!-- Right: Vector Graphic Illustration Card -->
+          <div class="col-lg-5 text-center">
+            <div class="gov-hero-preview-card shadow-lg rounded-4 overflow-hidden bg-white text-dark text-start">
+              <!-- Himalayan Mountain Sky Header -->
+              <div style="background: linear-gradient(180deg, #18334F 0%, #24476B 60%, #4C78A8 100%); padding: 24px 16px 12px; position: relative;">
+                <!-- Decorative Tibetan/Himalayan prayer flags -->
+                <div class="d-flex justify-content-between mb-2 opacity-75" style="font-size: 0.65rem;">
+                  <span class="badge bg-primary">BLUE</span>
+                  <span class="badge bg-light text-dark">WHITE</span>
+                  <span class="badge bg-danger">RED</span>
+                  <span class="badge bg-success">GREEN</span>
+                  <span class="badge bg-warning text-dark">YELLOW</span>
+                </div>
+                <!-- Mountain Silhouettes in SVG -->
+                <svg viewBox="0 0 400 110" class="w-100" style="display: block; margin-bottom: -15px;" aria-hidden="true">
+                  <polygon points="50,110 120,35 190,110" fill="#ffffff" opacity="0.95" />
+                  <polygon points="110,45 120,35 130,45 120,55" fill="#e2e8f0" />
+                  <polygon points="140,110 220,15 300,110" fill="#f8fafc" opacity="0.98" />
+                  <polygon points="205,30 220,15 235,30 220,45" fill="#e2e8f0" />
+                  <polygon points="260,110 330,45 400,110" fill="#ffffff" opacity="0.9" />
+                  <polygon points="0,110 70,65 140,110" fill="#cbd5e1" opacity="0.8" />
+                </svg>
+              </div>
+
+              <!-- Foreground Verification Modal Preview -->
+              <div class="p-4 bg-white">
+                <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                  <div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+                      <i class="fas fa-check-circle me-1"></i> Official Department Portal
+                    </span>
+                  </div>
+                  <small class="text-muted fw-semibold">SK-REG-2026</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="bg-primary-subtle text-primary p-3 rounded-3 text-center" style="min-width: 56px;">
+                    <i class="fas fa-id-badge fs-2" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold mb-1 text-dark">Registration Gateway</h6>
+                    <p class="small text-muted mb-0">Tourism &amp; Civil Aviation Department, Government of Sikkim</p>
+                  </div>
+                </div>
+
+                <div class="bg-light p-3 rounded-2 small text-secondary mb-3">
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span>Application Mode:</span>
+                    <strong class="text-dark">100% Digital / Online</strong>
+                  </div>
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span>Registration Types:</span>
+                    <strong class="text-dark">4 Specialized Categories</strong>
+                  </div>
+                  <div class="d-flex justify-content-between py-1">
+                    <span>Official Issuance:</span>
+                    <strong class="text-success"><i class="fas fa-shield-alt me-1"></i> QR-Coded Certificate</strong>
+                  </div>
+                </div>
+
+                <div class="d-grid">
+                  <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-sm btn-gov-primary fw-semibold py-2">
+                    <i class="fas fa-external-link-alt me-1"></i> Sign In to Apply via Sikkim GO
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3 – SERVICE HIGHLIGHTS (FLOATING METRICS STRIP)
+         ==================================================================== -->
+    <div class="gov-metrics-strip">
+      <div class="container-xl">
+        <div class="gov-metrics-bar shadow-sm">
+          <div class="row g-3 text-center text-sm-start">
+            <!-- Highlight 1: Four Registration Types -->
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-th-large text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Four Registration Types</div>
+                  <div class="gov-metric-label">Travel Agent, Tour Operator, Dealer, Photographer</div>
+                </div>
+              </div>
+            </div>
+            <!-- Highlight 2: Online Application -->
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-laptop text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Online Application</div>
+                  <div class="gov-metric-label">Apply seamlessly via Sikkim GO portal</div>
+                </div>
+              </div>
+            </div>
+            <!-- Highlight 3: Department Verification -->
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-user-check text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Department Verification</div>
+                  <div class="gov-metric-label">Application review by competent authorities</div>
+                </div>
+              </div>
+            </div>
+            <!-- Highlight 4: Registration Certificate -->
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-certificate text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Registration Certificate</div>
+                  <div class="gov-metric-label">Issued officially upon required approval</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 4 – REGISTRATION OPTIONS (CORE SECTION)
+         ==================================================================== -->
+    <section id="registration-options" class="py-5 bg-white" aria-labelledby="reg-options-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center mb-5">
+          <div class="gov-section-eyebrow text-uppercase fw-bold" style="color: var(--gov-primary, #24476B); letter-spacing: 1px;">
+            Registration Categories
+          </div>
+          <h2 id="reg-options-heading" class="gov-section-title fw-bold text-dark mb-2">
+            Select Your Business Registration Type
+          </h2>
+          <p class="text-muted mx-auto" style="max-width: 720px;">
+            The portal provides four distinct statutory registration options. Review the category guidelines and prerequisites below before beginning your application.
+          </p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+          <!-- Option A: Travel Agent Registration -->
+          <div class="col">
+            <div class="reg-option-card p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="reg-icon-box">
+                  <i class="bi bi-compass"></i>
+                </div>
+                <span class="badge bg-light text-secondary border small">Type 1</span>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-2">Travel Agent Registration</h3>
+              <p class="small text-muted flex-grow-1 mb-3">
+                For applicants seeking registration to operate as an authorized Travel Agent in Sikkim, facilitating ticketing, itinerary planning, and transport booking.
+              </p>
+              <div class="bg-light p-2.5 rounded-2 small text-secondary mb-3">
+                <div class="d-flex align-items-center gap-1.5 text-truncate">
+                  <i class="bi bi-building text-primary"></i>
+                  <span>Agency &bull; Resident / Commercial</span>
+                </div>
+              </div>
+              <div class="mt-auto pt-3 border-top d-flex gap-2">
+                <a href="#service-overview" class="btn btn-sm btn-outline-secondary flex-grow-1 py-1.5">
+                  <i class="bi bi-info-circle me-1"></i> Requirements
+                </a>
+                <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-sm btn-gov-primary flex-grow-1 py-1.5 fw-semibold">
+                  <span>Apply</span> <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option B: Tour Operator Registration -->
+          <div class="col">
+            <div class="reg-option-card p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="reg-icon-box">
+                  <i class="bi bi-geo-alt"></i>
+                </div>
+                <span class="badge bg-light text-secondary border small">Type 2</span>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-2">Tour Operator Registration</h3>
+              <p class="small text-muted flex-grow-1 mb-3">
+                For applicants seeking registration to operate as a Tour Operator in Sikkim, managing guided tours, package excursions, and tourist logistics.
+              </p>
+              <div class="bg-light p-2.5 rounded-2 small text-secondary mb-3">
+                <div class="d-flex align-items-center gap-1.5 text-truncate">
+                  <i class="bi bi-map text-primary"></i>
+                  <span>Tour Firm &bull; Packaged Itineraries</span>
+                </div>
+              </div>
+              <div class="mt-auto pt-3 border-top d-flex gap-2">
+                <a href="#service-overview" class="btn btn-sm btn-outline-secondary flex-grow-1 py-1.5">
+                  <i class="bi bi-info-circle me-1"></i> Requirements
+                </a>
+                <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-sm btn-gov-primary flex-grow-1 py-1.5 fw-semibold">
+                  <span>Apply</span> <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option C: Dealer Registration -->
+          <div class="col">
+            <div class="reg-option-card p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="reg-icon-box">
+                  <i class="bi bi-shop"></i>
+                </div>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle small">Inspection Req.</span>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-2">Dealer Registration</h3>
+              <p class="small text-muted flex-grow-1 mb-3">
+                For applicants seeking registration as a Dealer under applicable Tourism Department requirements for adventure equipment, gear rental, and indigenous goods.
+              </p>
+              <div class="bg-light p-2.5 rounded-2 small text-secondary mb-3">
+                <div class="d-flex align-items-center gap-1.5 text-truncate">
+                  <i class="bi bi-search text-warning"></i>
+                  <span>Commercial Shop &bull; Field Inspection</span>
+                </div>
+              </div>
+              <div class="mt-auto pt-3 border-top d-flex gap-2">
+                <a href="#service-overview" class="btn btn-sm btn-outline-secondary flex-grow-1 py-1.5">
+                  <i class="bi bi-info-circle me-1"></i> Requirements
+                </a>
+                <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-sm btn-gov-primary flex-grow-1 py-1.5 fw-semibold">
+                  <span>Apply</span> <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option D: Outdoor Photographer Registration -->
+          <div class="col">
+            <div class="reg-option-card p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="reg-icon-box">
+                  <i class="bi bi-camera"></i>
+                </div>
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle small">Type 4</span>
+              </div>
+              <h3 class="h5 fw-bold text-dark mb-2">Outdoor Photographer</h3>
+              <p class="small text-muted flex-grow-1 mb-3">
+                For applicants seeking registration to provide commercial outdoor photography and cinematography services in designated tourist spots and heritage routes.
+              </p>
+              <div class="bg-light p-2.5 rounded-2 small text-secondary mb-3">
+                <div class="d-flex align-items-center gap-1.5 text-truncate">
+                  <i class="bi bi-person-badge text-info"></i>
+                  <span>Individual &bull; Class X Min. &bull; Portfolio</span>
+                </div>
+              </div>
+              <div class="mt-auto pt-3 border-top d-flex gap-2">
+                <a href="#service-overview" class="btn btn-sm btn-outline-secondary flex-grow-1 py-1.5">
+                  <i class="bi bi-info-circle me-1"></i> Requirements
+                </a>
+                <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-sm btn-gov-primary flex-grow-1 py-1.5 fw-semibold">
+                  <span>Apply</span> <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-light border mt-4 p-3 rounded-3 d-flex align-items-center gap-3">
+          <i class="bi bi-info-circle-fill text-primary fs-4 flex-shrink-0"></i>
+          <div class="small text-secondary">
+            <strong>Important Application Notice:</strong> These are four distinct registration application types under the Tourism &amp; Civil Aviation Department. Each type requires specific credentials, documentation, and verification workflows. Please ensure you choose the category corresponding to your business activities.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 5 – CITIZEN QUICK ACCESS TILES
+         ==================================================================== -->
+    <section class="py-5 bg-light" aria-labelledby="quick-access-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center mb-4">
+          <div class="gov-section-eyebrow text-uppercase fw-bold text-primary">CITIZEN QUICK ACCESS</div>
+          <h2 id="quick-access-heading" class="gov-section-title fw-bold text-dark">What would you like to do today?</h2>
+          <p class="text-muted">Direct shortcuts to key portal services and citizen assistance</p>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+          <!-- Action 1 -->
+          <div class="col">
+            <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="card h-100 text-decoration-none border p-3 rounded-3 text-center bg-white shadow-xs hover-shadow">
+              <div class="gov-action-icon mx-auto mb-2 text-primary" style="width: 48px; height: 48px; font-size: 1.4rem;">
+                <i class="fas fa-file-signature"></i>
+              </div>
+              <h3 class="h6 fw-bold text-dark mb-1">Apply for Registration</h3>
+              <span class="small text-muted d-block">Start New Application</span>
+            </a>
+          </div>
+          <!-- Action 2 -->
+          <div class="col">
+            <a href="#downloads-resources" class="card h-100 text-decoration-none border p-3 rounded-3 text-center bg-white shadow-xs hover-shadow">
+              <div class="gov-action-icon mx-auto mb-2 text-primary" style="width: 48px; height: 48px; font-size: 1.4rem;">
+                <i class="fas fa-book-reader"></i>
+              </div>
+              <h3 class="h6 fw-bold text-dark mb-1">Registration Guidelines</h3>
+              <span class="small text-muted d-block">Review Official Norms</span>
+            </a>
+          </div>
+          <!-- Action 3 -->
+          <div class="col">
+            <a href="#service-overview" class="card h-100 text-decoration-none border p-3 rounded-3 text-center bg-white shadow-xs hover-shadow">
+              <div class="gov-action-icon mx-auto mb-2 text-primary" style="width: 48px; height: 48px; font-size: 1.4rem;">
+                <i class="fas fa-clipboard-check"></i>
+              </div>
+              <h3 class="h6 fw-bold text-dark mb-1">Required Documents</h3>
+              <span class="small text-muted d-block">Checklist &amp; Criteria</span>
+            </a>
+          </div>
+          <!-- Action 4 -->
+          <div class="col">
+            <a href="#trackStatusModal" data-bs-toggle="modal" class="card h-100 text-decoration-none border p-3 rounded-3 text-center bg-white shadow-xs hover-shadow">
+              <div class="gov-action-icon mx-auto mb-2 text-primary" style="width: 48px; height: 48px; font-size: 1.4rem;">
+                <i class="fas fa-search-location"></i>
+              </div>
+              <h3 class="h6 fw-bold text-dark mb-1">Track Application</h3>
+              <span class="small text-muted d-block">Check Review Status</span>
+            </a>
+          </div>
+          <!-- Action 5 -->
+          <div class="col">
+            <a href="#help-contacts" class="card h-100 text-decoration-none border p-3 rounded-3 text-center bg-white shadow-xs hover-shadow">
+              <div class="gov-action-icon mx-auto mb-2 text-primary" style="width: 48px; height: 48px; font-size: 1.4rem;">
+                <i class="fas fa-headset"></i>
+              </div>
+              <h3 class="h6 fw-bold text-dark mb-1">Contact Support</h3>
+              <span class="small text-muted d-block">District Helpdesks</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 6 – SERVICE OVERVIEW & KEY INFORMATION
+         ==================================================================== -->
+    <section id="service-overview" class="py-5 bg-white" aria-labelledby="service-overview-heading">
+      <div class="container-xl">
+        <div class="gov-section-header mb-4">
+          <div class="gov-section-eyebrow text-uppercase fw-bold text-primary">Service Specifications</div>
+          <h2 id="service-overview-heading" class="gov-section-title fw-bold text-dark">Official Guidelines &amp; Requirements</h2>
+          <p class="text-muted">Category-specific guidelines for tourism operators, businesses, and professionals in Sikkim</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="eligibility-criteria">
+          <!-- Card A: Eligibility -->
+          <div class="col">
+            <div class="gov-card p-4 h-100 d-flex flex-column border rounded-3 bg-white shadow-xs">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 50px; height: 50px; font-size: 1.4rem;">
+                  <i class="fas fa-user-check text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle small mb-1">Prerequisites</span>
+                  <h3 class="h6 fw-bold mb-0">Who Can Apply</h3>
+                </div>
+              </div>
+              <div class="alert alert-info py-2 px-3 small mb-3">
+                <i class="fas fa-info-circle me-1"></i>
+                Eligibility requirements depend on the selected registration type and applicable departmental guidelines. Please refer to the official requirements before applying.
+              </div>
+              <ul class="small text-secondary mb-3 ps-3 flex-grow-1">
+                <li class="mb-2"><strong>Travel Agents:</strong> Resident citizens or registered commercial entities with an established office and local trade license.</li>
+                <li class="mb-2"><strong>Tour Operators:</strong> Operating travel firms possessing registered business premises, fleet tie-ups, and qualified tour managers.</li>
+                <li class="mb-2"><strong>Dealers:</strong> Commercial shop/office premises with Shop Act registration and verified equipment stock. Subject to mandatory physical inspection.</li>
+                <li><strong>Outdoor Photographers:</strong> Individual applicants (18+ years) with minimum Class X educational certificate, verified training credentials, and portfolio.</li>
+              </ul>
+              <div class="mt-auto pt-2 border-top">
+                <span class="small text-muted"><i class="fas fa-check text-success me-1"></i> Categorized criteria per registration type.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card B: Documents Checklist -->
+          <div class="col">
+            <div class="gov-card p-4 h-100 d-flex flex-column border rounded-3 bg-white shadow-xs">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 50px; height: 50px; font-size: 1.4rem;">
+                  <i class="fas fa-folder-open text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle small mb-1">Checklist</span>
+                  <h3 class="h6 fw-bold mb-0">Required Documents</h3>
+                </div>
+              </div>
+              <div class="alert alert-warning py-2 px-3 small mb-3">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                Supporting documents differ according to the selected registration type. Confirmed and pending requirements are distinguished below.
+              </div>
+              <ul class="small text-secondary mb-3 ps-3 flex-grow-1">
+                <li class="mb-2"><strong>Identity &amp; Address Credentials:</strong> Aadhaar / Voter ID / COI / Sikkim Subject Certificate (All Types).</li>
+                <li class="mb-2"><strong>Business Proof (TA/TO):</strong> Municipal Trade License, Firm Registration, Bank Solvency Certificate.</li>
+                <li class="mb-2"><strong>Commercial Premises Proof (Dealers):</strong> Shop Act Registration, Rent Agreement, Conditional House-Owner NOC.</li>
+                <li><strong>Qualifications (Photographers):</strong> Class X Certificate (Mandatory), Photography Diploma/Training proof, Recommendation Letter.</li>
+              </ul>
+              <div class="mt-auto pt-2 border-top">
+                <span class="small text-muted"><i class="fas fa-file-pdf text-danger me-1"></i> Prepare supporting documents in clear PDF or JPEG format.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card C: Fees & Timeline -->
+          <div class="col" id="fees-timelines">
+            <div class="gov-card p-4 h-100 d-flex flex-column border rounded-3 bg-white shadow-xs">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 50px; height: 50px; font-size: 1.4rem;">
+                  <i class="fas fa-receipt text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small mb-1">Statutory Fees</span>
+                  <h3 class="h6 fw-bold mb-0">Fees &amp; Timelines</h3>
+                </div>
+              </div>
+              <div class="table-responsive small mb-2 flex-grow-1">
+                <table class="table table-sm table-bordered align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Registration Type</th>
+                      <th>Prescribed Fee</th>
+                      <th>Timeline</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="fw-semibold">Travel Agent</td>
+                      <td class="text-muted small">Pending Gazette*</td>
+                      <td class="text-muted small">Pending Confirmation*</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Tour Operator</td>
+                      <td class="text-muted small">Pending Gazette*</td>
+                      <td class="text-muted small">Pending Confirmation*</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Dealer</td>
+                      <td class="text-muted small">Pending Gazette*</td>
+                      <td class="text-muted small">Pending Confirmation*</td>
+                    </tr>
+                    <tr>
+                      <td class="fw-semibold">Outdoor Photographer</td>
+                      <td class="text-muted small">Pending Gazette*</td>
+                      <td class="text-muted small">Pending Confirmation*</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="small text-muted mb-3" style="font-size: 0.75rem;">
+                * Official statutory registration fees and service delivery timelines are determined by the Tourism &amp; Civil Aviation Department and remain pending official gazette publication.
+              </p>
+              <div class="mt-auto pt-2 border-top">
+                <span class="small text-muted"><i class="fas fa-shield-alt text-success me-1"></i> Prescribed statutory government rates only.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 7 – HOW TO APPLY (5-STEP VISUAL STEPPER)
+         ==================================================================== -->
+    <section id="how-to-apply" tabindex="-1" class="py-5 bg-light" aria-labelledby="steps-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center mb-4">
+          <div class="gov-section-eyebrow text-uppercase fw-bold text-primary">Application Process</div>
+          <h2 id="steps-heading" class="gov-section-title fw-bold text-dark">How to Apply (5 Easy Steps)</h2>
+          <p class="text-muted">A streamlined, transparent single-window registration process</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-5 g-3">
+          <!-- Step 1 -->
+          <div class="col">
+            <div class="gov-step-card h-100 bg-white p-3 rounded-3 border text-center shadow-xs">
+              <div class="gov-step-number mx-auto mb-2" style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: var(--gov-primary, #24476B); color: #fff; font-weight: bold;">1</div>
+              <h3 class="h6 fw-bold mb-2 text-dark">Explore Options</h3>
+              <p class="small text-muted mb-0">
+                Identify whether your business falls under Travel Agent, Tour Operator, Dealer, or Photographer.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="col">
+            <div class="gov-step-card h-100 bg-white p-3 rounded-3 border text-center shadow-xs">
+              <div class="gov-step-number mx-auto mb-2" style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: var(--gov-primary, #24476B); color: #fff; font-weight: bold;">2</div>
+              <h3 class="h6 fw-bold mb-2 text-dark">Citizen Login</h3>
+              <p class="small text-muted mb-0">
+                Sign in securely via the official Sikkim GO Single Sign-On (SSO) gateway using mobile OTP.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="col">
+            <div class="gov-step-card h-100 bg-white p-3 rounded-3 border text-center shadow-xs">
+              <div class="gov-step-number mx-auto mb-2" style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: var(--gov-primary, #24476B); color: #fff; font-weight: bold;">3</div>
+              <h3 class="h6 fw-bold mb-2 text-dark">Select Category</h3>
+              <p class="small text-muted mb-0">
+                Choose the designated registration form and enter business, premises, and applicant particulars.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="col">
+            <div class="gov-step-card h-100 bg-white p-3 rounded-3 border text-center shadow-xs">
+              <div class="gov-step-number mx-auto mb-2" style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: var(--gov-primary, #24476B); color: #fff; font-weight: bold;">4</div>
+              <h3 class="h6 fw-bold mb-2 text-dark">Upload Documents</h3>
+              <p class="small text-muted mb-0">
+                Upload applicable identity documents, premise proofs, trade licenses, or photography credentials.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="col">
+            <div class="gov-step-card h-100 bg-white p-3 rounded-3 border text-center shadow-xs">
+              <div class="gov-step-number mx-auto mb-2" style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: var(--gov-primary, #24476B); color: #fff; font-weight: bold;">5</div>
+              <h3 class="h6 fw-bold mb-2 text-dark">Submit &amp; Track</h3>
+              <p class="small text-muted mb-0">
+                Submit for departmental scrutiny/inspection and receive your official QR-verified registration certificate.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-4 pt-2">
+          <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-gov-primary btn-lg px-4 shadow-xs">
+            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i> Start Application Now
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 8 – NOTIFICATIONS & RESOURCES
+         ==================================================================== -->
+    <section id="downloads-resources" class="py-5 bg-white" aria-labelledby="resources-heading">
+      <div class="container-xl">
+        <div class="gov-section-header mb-4">
+          <div class="gov-section-eyebrow text-uppercase fw-bold text-primary">Official Notices &amp; Forms</div>
+          <h2 id="resources-heading" class="gov-section-title fw-bold text-dark">Notifications &amp; Resources</h2>
+          <p class="text-muted">Access current departmental notifications, guidelines, circulars, and application formats</p>
+        </div>
+
+        <!-- Official Publications Placeholder (As mandated by instructions) -->
+        <div class="card border p-4 text-center rounded-3 bg-light shadow-xs">
+          <div class="my-3">
+            <div class="gov-action-icon mx-auto mb-3" style="width: 58px; height: 58px; font-size: 1.6rem;">
+              <i class="fas fa-file-invoice text-primary" aria-hidden="true"></i>
+            </div>
+            <h3 class="h5 fw-bold text-dark mb-2">Departmental Notifications &amp; Guidelines Under Publication</h3>
+            <p class="text-muted mx-auto mb-4" style="max-width: 680px; font-size: 0.95rem;">
+              Official departmental notifications, guidelines, standard operating procedures (SOPs), inspection checklists, and gazette orders for the Tourism Business &amp; Outdoor Photography Registration Service will be published here upon formal release by the Tourism &amp; Civil Aviation Department, Government of Sikkim.
+            </p>
+            <div class="d-inline-flex flex-wrap align-items-center justify-content-center gap-2">
+              <span class="badge bg-white text-secondary border px-3 py-2">
+                <i class="fas fa-clock me-1 text-warning"></i> Publication in Progress
+              </span>
+              <span class="badge bg-white text-secondary border px-3 py-2">
+                <i class="fas fa-shield-alt me-1 text-primary"></i> Tourism &amp; Civil Aviation Department
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 9 – FREQUENTLY ASKED QUESTIONS (FAQ ACCORDION)
+         ==================================================================== -->
+    <section id="faq-section" class="py-5 bg-light" aria-labelledby="faq-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center mb-4">
+          <div class="gov-section-eyebrow text-uppercase fw-bold text-primary">Citizen Helpdesk</div>
+          <h2 id="faq-heading" class="gov-section-title fw-bold text-dark">Frequently Asked Questions</h2>
+          <p class="text-muted">Common questions about tourism business and photographer registration in Sikkim</p>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="col-lg-9">
+            <div class="accordion" id="portalFaqAccordion">
+              <!-- FAQ 1 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    What is the Tourism Business &amp; Outdoor Photography Registration Service?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    It is a unified, single-window online service established by the Tourism &amp; Civil Aviation Department, Government of Sikkim, through which applicants can apply for statutory registration as Travel Agents, Tour Operators, Dealers, or Outdoor Photographers.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 2 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Which registration types are available under this service?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    There are four distinct registration categories: (1) Travel Agent Registration, (2) Tour Operator Registration, (3) Dealer Registration, and (4) Outdoor Photographer Registration. Applicants must select the specific category applicable to their business or professional activity.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 3 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    How do I select the correct registration type?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Review the category descriptions and prerequisites on this portal. If you arrange passenger tickets and travel itineraries, choose Travel Agent. If you conduct and organize guided group tours, choose Tour Operator. If you sell or rent trekking, mountaineering or adventure equipment, choose Dealer. If you provide commercial photography or cinematography services, choose Outdoor Photographer.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 4 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    What documents are required to apply?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Supporting documents differ by registration type. All applicants require identity and address proof. Commercial entities require trade licenses, Shop Act registration, and premise lease/ownership documents. Outdoor photographers require minimum Class X educational proof, photography training/credentials, and recommendations. Please consult the checklist section for detailed requirements.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 5 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqFiveHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive" aria-expanded="false" aria-controls="faqFive">
+                    Are the registration fees and timelines the same for all registration types?
+                  </button>
+                </h3>
+                <div id="faqFive" class="accordion-collapse collapse" aria-labelledby="faqFiveHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Statutory fees and service delivery timelines are determined by the department in accordance with official state notifications and gazette orders. The applicable fee schedules and statutory processing timelines are currently pending official gazette confirmation.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 6 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqSixHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqSix" aria-expanded="false" aria-controls="faqSix">
+                    What special requirements apply to Dealer Registration?
+                  </button>
+                </h3>
+                <div id="faqSix" class="accordion-collapse collapse" aria-labelledby="faqSixHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Dealer applications require valid Shop Act registration, verified business premises, stock inventory, and a mandatory on-site physical inspection by an authorized Inspecting Officer prior to departmental approval.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 7 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqSevenHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqSeven" aria-expanded="false" aria-controls="faqSeven">
+                    What qualifications are required for Outdoor Photographer Registration?
+                  </button>
+                </h3>
+                <div id="faqSeven" class="accordion-collapse collapse" aria-labelledby="faqSevenHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Applicants must be at least 18 years old, possess a mandatory minimum Class X educational certificate, and furnish verified certificates of training, experience portfolio, and professional recommendations in photography or cinematography.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 8 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqEightHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqEight" aria-expanded="false" aria-controls="faqEight">
+                    How can I submit an application?
+                  </button>
+                </h3>
+                <div id="faqEight" class="accordion-collapse collapse" aria-labelledby="faqEightHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Click on 'Apply for Registration' or 'Login via Sikkim GO' on this portal. Once signed in via Sikkim GO, select your required registration type, complete the guided multi-step form, upload your supporting documents, and submit.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 9 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqNineHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqNine" aria-expanded="false" aria-controls="faqNine">
+                    How can I track my application status?
+                  </button>
+                </h3>
+                <div id="faqNine" class="accordion-collapse collapse" aria-labelledby="faqNineHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    After submission, an Application Reference Number (ARN) will be issued. You can track real-time verification and scrutiny status directly through your citizen dashboard by logging in via Sikkim GO.
+                  </div>
+                </div>
+              </div>
+
+              <!-- FAQ 10 -->
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden shadow-xs">
+                <h3 class="accordion-header" id="faqTenHeading">
+                  <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faqTen" aria-expanded="false" aria-controls="faqTen">
+                    How can I contact the department for assistance?
+                  </button>
+                </h3>
+                <div id="faqTen" class="accordion-collapse collapse" aria-labelledby="faqTenHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    You can contact the Tourism &amp; Civil Aviation Department Headquarters at Paryatan Bhawan, Tadong, Gangtok (Phone: 03592-209090 / 1800-345-3256, Email: secy-tourism@sikkim.gov.in) or visit your respective District Administrative Centre.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 10 – DISTRICT HELPDESKS & SUPPORT CENTERS
+         ==================================================================== -->
+    <section id="help-contacts" class="py-5 bg-white" aria-labelledby="contacts-heading">
+      <div class="container-xl">
+        <div class="gov-section-header mb-4">
+          <div class="gov-section-eyebrow text-uppercase fw-bold text-primary">District Facilitation</div>
+          <h2 id="contacts-heading" class="gov-section-title fw-bold text-dark">District Helpdesks &amp; Support Centers</h2>
+          <p class="text-muted">Need in-person assistance? Visit your nearest District Administrative Centre</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+          <!-- District 1 -->
+          <div class="col">
+            <div class="card h-100 border p-3.5 rounded-3 bg-white shadow-xs">
+              <div class="fw-bold text-dark mb-1"><i class="fas fa-building text-primary me-2"></i>Gangtok (Headquarters)</div>
+              <div class="small text-muted mb-2">Paryatan Bhawan, Tadong, Gangtok – 737102</div>
+              <div class="small text-secondary mb-1"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-209090</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> secy-tourism@sikkim.gov.in</div>
+            </div>
+          </div>
+          <!-- District 2 -->
+          <div class="col">
+            <div class="card h-100 border p-3.5 rounded-3 bg-white shadow-xs">
+              <div class="fw-bold text-dark mb-1"><i class="fas fa-building text-primary me-2"></i>Namchi District Office</div>
+              <div class="small text-muted mb-2">DAC Complex, Namchi, South Sikkim – 737126</div>
+              <div class="small text-secondary mb-1"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-254210</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-namchi@sikkim.gov.in</div>
+            </div>
+          </div>
+          <!-- District 3 -->
+          <div class="col">
+            <div class="card h-100 border p-3.5 rounded-3 bg-white shadow-xs">
+              <div class="fw-bold text-dark mb-1"><i class="fas fa-building text-primary me-2"></i>Gyalshing District Office</div>
+              <div class="small text-muted mb-2">DAC Complex, Gyalshing, West Sikkim – 737111</div>
+              <div class="small text-secondary mb-1"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-250810</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-gyalshing@sikkim.gov.in</div>
+            </div>
+          </div>
+          <!-- District 4 -->
+          <div class="col">
+            <div class="card h-100 border p-3.5 rounded-3 bg-white shadow-xs">
+              <div class="fw-bold text-dark mb-1"><i class="fas fa-building text-primary me-2"></i>Mangan District Office</div>
+              <div class="small text-muted mb-2">DAC Complex, Mangan, North Sikkim – 737116</div>
+              <div class="small text-secondary mb-1"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-234205</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-mangan@sikkim.gov.in</div>
+            </div>
+          </div>
+          <!-- District 5 -->
+          <div class="col">
+            <div class="card h-100 border p-3.5 rounded-3 bg-white shadow-xs">
+              <div class="fw-bold text-dark mb-1"><i class="fas fa-building text-primary me-2"></i>Soreng District Office</div>
+              <div class="small text-muted mb-2">DAC Complex, Soreng, Sikkim – 737121</div>
+              <div class="small text-secondary mb-1"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-257002</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-soreng@sikkim.gov.in</div>
+            </div>
+          </div>
+          <!-- District 6 -->
+          <div class="col">
+            <div class="card h-100 border p-3.5 rounded-3 bg-white shadow-xs">
+              <div class="fw-bold text-dark mb-1"><i class="fas fa-building text-primary me-2"></i>Pakyong District Office</div>
+              <div class="small text-muted mb-2">DAC Complex, Pakyong, Sikkim – 737106</div>
+              <div class="small text-secondary mb-1"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-258014</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-pakyong@sikkim.gov.in</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       SECTION 11 – COMMON GOVERNMENT FOOTER (GIGW 3.0 MANDATORY COMPLIANCE)
+       ====================================================================== -->
+  <footer class="gov-footer" role="contentinfo" aria-label="Government Portal Footer">
+    <!-- Top Footer Links Section -->
+    <div class="gov-footer-links py-5">
+      <div class="container-xl">
+        <div class="row g-4">
+          <!-- Column 1: Government Identity & Department Info -->
+          <div class="col-lg-4 col-md-6">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="../../common/assets/images/sikkim-government-logo-light.png" alt="Official Seal of Sikkim" class="gov-emblem" style="height: 52px; width: auto;" onerror="this.src='../../common/assets/images/sikkim-government-logo-dark.png'">
+              <div>
+                <div class="text-uppercase fw-bold text-white small" style="letter-spacing: 0.5px;">Government of Sikkim</div>
+                <div class="fw-bold fs-6 text-white">Tourism &amp; Civil Aviation Department</div>
+              </div>
+            </div>
+            <p class="small text-white-50 mb-3" style="line-height: 1.6;">
+              Official unified online registration gateway for Travel Agents, Tour Operators, Equipment Dealers, and Outdoor Photographers under the Tourism &amp; Civil Aviation Department.
+            </p>
+            <div class="small text-white-50">
+              <i class="fas fa-map-marker-alt me-1 text-warning"></i> Paryatan Bhawan, Tadong, Gangtok – 737102<br>
+              <i class="fas fa-phone-alt me-1 text-warning"></i> Helpline: 03592-209090 / 1800-345-3256<br>
+              <i class="fas fa-envelope me-1 text-warning"></i> secy-tourism@sikkim.gov.in
+            </div>
+          </div>
+
+          <!-- Column 2: Quick Links & Services -->
+          <div class="col-lg-2 col-md-6 col-6">
+            <h4 class="footer-heading">Services</h4>
+            <ul class="gov-footer-list">
+              <li><a href="#registration-options">Travel Agent</a></li>
+              <li><a href="#registration-options">Tour Operator</a></li>
+              <li><a href="#registration-options">Dealer Registration</a></li>
+              <li><a href="#registration-options">Outdoor Photographer</a></li>
+              <li><a href="#sikkimGoLoginModal" data-bs-toggle="modal">Citizen Login</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Important Policies & Compliance -->
+          <div class="col-lg-3 col-md-6 col-6">
+            <h4 class="footer-heading">Website Policies</h4>
+            <ul class="gov-footer-list">
+              <li><a href="#termsModal" data-bs-toggle="modal">Terms &amp; Conditions</a></li>
+              <li><a href="#privacyModal" data-bs-toggle="modal">Privacy Policy</a></li>
+              <li><a href="#hyperlinkModal" data-bs-toggle="modal">Hyperlinking Policy</a></li>
+              <li><a href="#copyrightModal" data-bs-toggle="modal">Copyright Policy</a></li>
+              <li><a href="#disclaimerModal" data-bs-toggle="modal">Disclaimer</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: National Portals & Information Manager -->
+          <div class="col-lg-3 col-md-6">
+            <h4 class="footer-heading">Portals &amp; Contacts</h4>
+            <ul class="gov-footer-list mb-3">
+              <li><a href="https://sikkim.gov.in" target="_blank" rel="noopener noreferrer">State Portal of Sikkim <i class="fas fa-external-link-alt small ms-1"></i></a></li>
+              <li><a href="https://india.gov.in" target="_blank" rel="noopener noreferrer">National Portal of India <i class="fas fa-external-link-alt small ms-1"></i></a></li>
+              <li><a href="https://digitalindia.gov.in" target="_blank" rel="noopener noreferrer">Digital India Portal <i class="fas fa-external-link-alt small ms-1"></i></a></li>
+            </ul>
+            <div class="bg-white bg-opacity-10 p-2.5 rounded-2 small text-white-50">
+              <strong class="text-white d-block">Web Information Manager (WIM)</strong>
+              <span>Additional Secretary, Tourism &amp; Civil Aviation Dept.</span><br>
+              <i class="fas fa-envelope text-warning me-1"></i> wim-tourism@sikkim.gov.in
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Copyright & Hosting Strip -->
+    <div class="gov-footer-bottom py-3 border-top border-white border-opacity-10">
+      <div class="container-xl">
+        <div class="row align-items-center g-2 small text-white-50">
+          <div class="col-md-7 text-center text-md-start">
+            <div>
+              &copy; 2026 <strong>Tourism &amp; Civil Aviation Department, Government of Sikkim</strong>. All rights reserved.
+            </div>
+            <div class="text-white-50" style="font-size: 0.75rem;">
+              Portal designed, developed and hosted by <strong>National Informatics Centre (NIC) Sikkim State Centre</strong>.
+            </div>
+          </div>
+          <div class="col-md-5 text-center text-md-end">
+            <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-20 px-2 py-1">
+              GIGW 3.0 &bull; WCAG 2.1 AA Compliant
+            </span>
+            <div class="small text-white-50 mt-1" style="font-size: 0.725rem;">
+              Last Reviewed / Updated: 06 November 2026
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       MODALS: SIKKIM GO LOGIN & UTILITIES
+       ====================================================================== -->
+
+  <!-- Modal 1: Sikkim GO Citizen Login Entry Point -->
+  <div class="modal fade" id="sikkimGoLoginModal" tabindex="-1" aria-labelledby="sikkimGoLoginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-shield-alt fs-5 text-warning"></i>
+            <h5 class="modal-title fw-bold mb-0" id="sikkimGoLoginModalLabel">Sikkim GO Citizen Authentication</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <div class="mb-3">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem" style="height: 52px; width: auto;" class="mb-2">
+            <h6 class="fw-bold text-dark mb-1">State Unified Single Sign-On (SSO)</h6>
+            <p class="small text-muted mb-0">Government of Sikkim Citizen Authentication Gateway</p>
+          </div>
+
+          <div class="alert alert-light border text-start small mb-4">
+            <div class="d-flex gap-2 mb-2">
+              <i class="fas fa-info-circle text-primary mt-1"></i>
+              <div>
+                <strong>Notice for Applicants:</strong> You are accessing the official single-window registration system for:
+                <ul class="mb-0 ps-3 mt-1 text-secondary">
+                  <li>Travel Agent Registration</li>
+                  <li>Tour Operator Registration</li>
+                  <li>Dealer Registration</li>
+                  <li>Outdoor Photographer Registration</li>
+                </ul>
+              </div>
+            </div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <i class="fas fa-lock me-1 text-success"></i> 256-bit encrypted secure state government gateway.
+            </div>
+          </div>
+
+          <div class="d-flex flex-column gap-2">
+            <a href="dashboard.html" class="btn btn-gov-primary py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-2">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>Launch Citizen Workspace (Demonstration)</span>
+            </a>
+            <div class="d-flex gap-2">
+              <a href="role-select.html" class="btn btn-outline-primary btn-sm flex-grow-1 py-1.5 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5">
+                <i class="bi bi-people-fill"></i>
+                <span>Role Selection (Citizen / TO / IA / DTO)</span>
+              </a>
+              <a href="https://sikkimgo.gov.in/auth/login" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5">
+                <i class="fas fa-external-link-alt"></i>
+                <span>Sikkim GO (Live)</span>
+              </a>
+            </div>
+            <button type="button" class="btn btn-light btn-sm text-muted mt-1" data-bs-dismiss="modal">
+              Cancel &bull; Return to Portal
+            </button>
+          </div>
+
+          <div class="mt-3 text-muted small" style="font-size: 0.725rem;">
+            New applicant? You can register your account on Sikkim GO using your mobile number and OTP.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Screen Reader Access Modal -->
+  <div class="modal fade" id="screenReaderModal" tabindex="-1" aria-labelledby="screenReaderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold" id="screenReaderModalLabel"><i class="fas fa-volume-up me-2"></i>Screen Reader Access</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 small">
+          <p class="text-secondary">
+            This portal complies with the Guidelines for Indian Government Websites (GIGW 3.0) and World Wide Web Consortium (W3C) Web Content Accessibility Guidelines (WCAG) 2.1 level AA.
+          </p>
+          <p class="text-secondary">
+            Users with visual impairments can access this website using commercially available and open-source screen readers such as NVDA, JAWS, Narrator, and TalkBack.
+          </p>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle">
+              <thead class="table-light">
+                <tr><th>Screen Reader</th><th>Website</th><th>Free / Commercial</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>NVDA</td><td><a href="https://www.nvaccess.org/" target="_blank" rel="noopener noreferrer">nvaccess.org</a></td><td>Free</td></tr>
+                <tr><td>JAWS</td><td><a href="https://www.freedomscientific.com/" target="_blank" rel="noopener noreferrer">freedomscientific.com</a></td><td>Commercial</td></tr>
+                <tr><td>Narrator</td><td>Built into Windows 10/11</td><td>Free</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Application Status Tracking Modal -->
+  <div class="modal fade" id="trackStatusModal" tabindex="-1" aria-labelledby="trackStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold" id="trackStatusModalLabel"><i class="fas fa-search me-2"></i>Track Registration Application</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="small text-muted mb-3">
+            Real-time scrutiny status, officer verification remarks, and approved certificate downloads are accessible through your authenticated citizen dashboard.
+          </p>
+          <div class="mb-3">
+            <label for="trackArnInput" class="form-label small fw-bold text-dark">Enter Application Reference Number (ARN):</label>
+            <input type="text" id="trackArnInput" class="form-control" placeholder="e.g. SK-TR-2026-APP-00123">
+          </div>
+          <div class="alert alert-info py-2 px-3 small">
+            <i class="fas fa-info-circle me-1"></i> Please log in via Sikkim GO to view the comprehensive multi-stage audit timeline and download your certificate.
+          </div>
+          <div class="d-grid mt-3">
+            <a href="#sikkimGoLoginModal" data-bs-toggle="modal" data-bs-target="#sikkimGoLoginModal" class="btn btn-gov-primary btn-sm py-2">
+              <i class="fas fa-lock me-1"></i> Sign In to View Live Application Journey
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policy Modals -->
+  <!-- Terms Modal -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold">Terms &amp; Conditions</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 small text-secondary">
+          <p>This portal is managed by the Tourism &amp; Civil Aviation Department, Government of Sikkim. Though all efforts have been made to ensure the accuracy and currency of the content, the same should not be construed as a statement of law or used for any legal purposes.</p>
+          <p>Applicants submitting registrations for Travel Agent, Tour Operator, Dealer, or Outdoor Photographer activities must ensure all particulars and documents submitted are authentic, valid, and compliant with relevant state tourism regulations.</p>
+        </div>
+        <div class="modal-footer bg-light"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold">Privacy Policy</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 small text-secondary">
+          <p>As a general rule, this portal does not automatically capture any specific personal information from you that allows us to identify you individually. Any personal information gathered (such as name, address, contact details) is submitted voluntarily through Sikkim GO for official registration processing only and will not be shared with any unauthorized third party.</p>
+        </div>
+        <div class="modal-footer bg-light"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hyperlink Policy Modal -->
+  <div class="modal fade" id="hyperlinkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold">Hyperlinking Policy</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 small text-secondary">
+          <p>We do not object to you linking directly to the information hosted on this portal and no prior permission is required for the same. However, we do not permit our pages to be loaded into frames on your site.</p>
+        </div>
+        <div class="modal-footer bg-light"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright Policy Modal -->
+  <div class="modal fade" id="copyrightModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold">Copyright Policy</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 small text-secondary">
+          <p>Material featured on this portal may be reproduced free of charge after obtaining formal permission from the Tourism &amp; Civil Aviation Department, Government of Sikkim. However, the material must be reproduced accurately and not used in a derogatory manner or in a misleading context.</p>
+        </div>
+        <div class="modal-footer bg-light"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disclaimer Modal -->
+  <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <h5 class="modal-title fw-bold">Disclaimer</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 small text-secondary">
+          <p>The information contained in this website is for official public guidance only. While every attempt is made to keep the information current and accurate, the Department makes no representations or warranties of any kind regarding completeness or suitability for any specific purpose.</p>
+        </div>
+        <div class="modal-footer bg-light"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3 JS Bundle (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Interactive Accessibility & Language Scripts -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Accessibility: Font Size Controls (GIGW 3.0 standard)
+      const htmlEl = document.documentElement;
+      const fontBtns = {
+        decrease: document.getElementById('btn-font-decrease'),
+        reset: document.getElementById('btn-font-reset'),
+        increase: document.getElementById('btn-font-increase')
+      };
+
+      function updateActiveFontBtn(action) {
+        Object.values(fontBtns).forEach(btn => btn && btn.classList.remove('active'));
+        if (fontBtns[action]) fontBtns[action].classList.add('active');
+      }
+
+      if (fontBtns.decrease) {
+        fontBtns.decrease.addEventListener('click', function () {
+          htmlEl.setAttribute('data-font-size', 'small');
+          updateActiveFontBtn('decrease');
+        });
+      }
+      if (fontBtns.reset) {
+        fontBtns.reset.addEventListener('click', function () {
+          htmlEl.setAttribute('data-font-size', 'normal');
+          updateActiveFontBtn('reset');
+        });
+      }
+      if (fontBtns.increase) {
+        fontBtns.increase.addEventListener('click', function () {
+          htmlEl.setAttribute('data-font-size', 'large');
+          updateActiveFontBtn('increase');
+        });
+      }
+
+      // 2. Accessibility: Contrast Mode Toggler
+      const contrastBtn = document.getElementById('btn-contrast-toggle');
+      if (contrastBtn) {
+        contrastBtn.addEventListener('click', function () {
+          const isHigh = htmlEl.getAttribute('data-contrast') === 'high';
+          if (isHigh) {
+            htmlEl.removeAttribute('data-contrast');
+            document.body.classList.remove('contrast-high');
+            this.setAttribute('aria-pressed', 'false');
+          } else {
+            htmlEl.setAttribute('data-contrast', 'high');
+            document.body.classList.add('contrast-high');
+            this.setAttribute('aria-pressed', 'true');
+          }
+        });
+      }
+
+      // 3. Language Switcher (Mock demonstration)
+      window.setPortalLanguage = function (lang) {
+        const langLabel = document.getElementById('currentLanguageLabel');
+        if (lang === 'ne') {
+          if (langLabel) langLabel.textContent = 'नेपाली';
+          document.querySelectorAll('.dropdown-item').forEach(el => {
+            el.classList.toggle('active', el.textContent.includes('नेपाली'));
+          });
+        } else {
+          if (langLabel) langLabel.textContent = 'English';
+          document.querySelectorAll('.dropdown-item').forEach(el => {
+            el.classList.toggle('active', el.textContent.includes('English'));
+          });
+        }
+      };
+
+    })();
+  </script>
+</body>
+</html>

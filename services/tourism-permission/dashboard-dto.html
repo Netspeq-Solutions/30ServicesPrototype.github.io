@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DTO Admin Workspace &bull; Tourism Permission &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .officer-stat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.15rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      height: 100%;
+    }
+    .officer-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      border-color: #094738;
+    }
+    .officer-stat-card.active-kpi {
+      border: 2px solid #094738 !important;
+      background-color: #f0fdf4 !important;
+      box-shadow: 0 4px 12px rgba(9, 71, 56, 0.12);
+    }
+    .officer-stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .officer-sidebar {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      flex-shrink: 0 !important;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      min-height: calc(100vh - 120px);
+    }
+    .officer-nav-link {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      padding: 0.42rem 0.65rem !important;
+      color: #334155;
+      font-weight: 500;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      font-size: 0.8125rem !important;
+      line-height: 1.25 !important;
+      white-space: nowrap !important;
+    }
+    .officer-nav-link span {
+      white-space: nowrap !important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1 1 auto;
+    }
+    .officer-nav-link i {
+      font-size: 0.95rem !important;
+      width: 1.25rem !important;
+      text-align: center;
+      flex-shrink: 0 !important;
+    }
+    .officer-nav-link .badge {
+      flex-shrink: 0 !important;
+      margin-left: auto !important;
+      font-size: 0.72rem !important;
+      padding: 0.18rem 0.45rem !important;
+      font-weight: 700;
+      border-radius: 10rem;
+      line-height: 1;
+    }
+    .officer-nav-link:hover {
+      background-color: #f1f5f9;
+      color: #094738;
+    }
+    .officer-nav-link.active {
+      background-color: #e8f5e9;
+      color: #094738;
+      font-weight: 700;
+      border-left: 3px solid #094738;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+    .cursor-pointer { cursor: pointer; }
+    .badge-workflow-stage {
+      font-size: 0.725rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Accessibility Skip Link -->
+  <a class="gov-skip-link" href="#main-dto-content">Skip to Main Content</a>
+
+  <!-- Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Reviewer Demonstration Control Bar -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Controller" style="background: #1e293b; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-shield-check me-1"></i> STAGE 04 &bull; DTO ADMIN WORKSPACE
+          </span>
+          <span class="fw-semibold text-white">Jurisdiction:</span>
+          <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 250px; font-size: 0.8rem;">
+            <option value="all">All Districts (Statewide DTO Overview)</option>
+            <option value="Gangtok" selected>Gangtok District Circle (Capital)</option>
+            <option value="Gyalshing">Gyalshing District Circle (West)</option>
+            <option value="Namchi">Namchi District Circle (South)</option>
+            <option value="Mangan">Mangan District Circle (North)</option>
+            <option value="Pakyong">Pakyong District Circle</option>
+            <option value="Soreng">Soreng District Circle</option>
+          </select>
+
+          <!-- Quick Scenario / Application Switcher -->
+          <span class="text-white-50 ms-1 d-none d-md-inline">&bull; Quick Review:</span>
+          <select id="quickArnJumpSelect" class="form-select form-select-sm py-0 px-2 border-0 bg-light text-dark fw-semibold shadow-xs d-none d-md-inline-block" style="max-width: 280px; font-size: 0.775rem;" onchange="jumpToReview(this.value)">
+            <option value="">-- Jump to Specific Application --</option>
+            <option value="SK-TP-2026-APP-00481">[New Trekking] SK-TP-00481 &bull; Stage 2 (Awaiting DTO)</option>
+            <option value="SK-TP-2026-APP-00560">[Direct Approve] SK-TP-00560 &bull; Adventure (Stage 2)</option>
+            <option value="SK-TP-2026-APP-00635">[Reverification] SK-TP-00635 &bull; Events (Stage 7)</option>
+            <option value="SK-TP-2026-APP-00778">[Returned by HQ] SK-TP-00778 &bull; Expedition (Stage 5)</option>
+            <option value="SK-TP-2026-APP-00512">[Awaiting Final Approval] SK-TP-00512 (Stage 11)</option>
+            <option value="SK-TP-2026-APP-00215">[Approved] SK-TP-00215 &bull; Trekking (Stage 12)</option>
+            <option value="SK-TP-2026-APP-00712">[Rejected] SK-TP-00712 &bull; Drone (Stage 13)</option>
+            <option value="SK-TP-2026-APP-00329">[Returned Citizen] SK-TP-00329 &bull; Events (Stage 6)</option>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetPrototypeData()" title="Reset Demo Seed Data" style="font-size: 0.75rem;">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Seed Data
+          </button>
+          <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+            <i class="bi bi-people-fill me-1"></i> Switch Role
+          </a>
+          <button type="button" class="btn btn-outline-light btn-sm py-0 px-2" id="btn-contrast-toggle" title="Toggle Contrast" style="font-size: 0.75rem;">
+            <i class="bi bi-circle-half"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="dto-sidebar-toggle" type="button" aria-label="Toggle Menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim</span>
+            <div class="fw-bold fs-6 text-dark" id="dtoHeaderOfficeTitle">District Tourism Office, Gangtok Circle</div>
+            <span class="small text-muted" style="font-size: 0.75rem;">Tourism Permission &bull; District Verification Desk &amp; Approving Authority</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="dtoOfficerName">Karma Lhendup Bhutia</div>
+            <div class="text-muted" style="font-size: 0.75rem;" id="dtoOfficerDesignation">District Tourism Officer (DTO)</div>
+          </div>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Switch Role / Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- DTO Desk Layout Container -->
+  <div class="d-flex flex-column flex-lg-row flex-grow-1 w-100 overflow-hidden officer-workspace-container">
+    
+    <!-- Officer Desk Sidebar -->
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block flex-shrink-0" id="dtoSidebarNav">
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+        Work Queues (<span id="sidebarDistrictName">Gangtok</span>)
+      </div>
+      <nav class="nav flex-column gap-1 mb-3">
+        <a href="#queue-verification" class="officer-nav-link active" id="navTab-verification" onclick="switchDtoTab('verification', event)">
+          <i class="bi bi-inbox-fill text-warning"></i>
+          <span>Pending Verification</span>
+          <span class="badge bg-warning text-dark ms-auto fw-bold" id="dtoBadgeVerification">0</span>
+        </a>
+        <a href="#queue-forwarded" class="officer-nav-link" id="navTab-forwarded" onclick="switchDtoTab('forwarded', event)">
+          <i class="bi bi-send-check text-primary"></i>
+          <span>Forwarded to HQ</span>
+          <span class="badge bg-primary ms-auto" id="dtoBadgeForwarded">0</span>
+        </a>
+        <a href="#queue-returned-hq" class="officer-nav-link" id="navTab-returnedHq" onclick="switchDtoTab('returnedHq', event)">
+          <i class="bi bi-arrow-down-left-square-fill text-danger"></i>
+          <span>Returned by HQ</span>
+          <span class="badge bg-danger ms-auto fw-bold" id="dtoBadgeReturnedHq">0</span>
+        </a>
+        <a href="#queue-final-approval" class="officer-nav-link" id="navTab-finalApproval" onclick="switchDtoTab('finalApproval', event)">
+          <i class="bi bi-award-fill text-success"></i>
+          <span>Awaiting Final Approval</span>
+          <span class="badge bg-success ms-auto fw-bold" id="dtoBadgeFinalApproval">0</span>
+        </a>
+        <a href="#queue-returned-citizen" class="officer-nav-link" id="navTab-returnedCitizen" onclick="switchDtoTab('returnedCitizen', event)">
+          <i class="bi bi-reply-fill text-secondary"></i>
+          <span>Returned to Citizen</span>
+          <span class="badge bg-secondary ms-auto" id="dtoBadgeReturnedCitizen">0</span>
+        </a>
+        <a href="#queue-approved" class="officer-nav-link" id="navTab-approved" onclick="switchDtoTab('approved', event)">
+          <i class="bi bi-check-circle-fill text-success"></i>
+          <span>Approved Permissions</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle ms-auto" id="dtoBadgeApproved">0</span>
+        </a>
+        <a href="#queue-rejected" class="officer-nav-link" id="navTab-rejected" onclick="switchDtoTab('rejected', event)">
+          <i class="bi bi-x-circle-fill text-dark"></i>
+          <span>Rejected Applications</span>
+          <span class="badge bg-dark ms-auto" id="dtoBadgeRejected">0</span>
+        </a>
+        <a href="#queue-all" class="officer-nav-link" id="navTab-all" onclick="switchDtoTab('all', event)">
+          <i class="bi bi-folder2-open text-muted"></i>
+          <span>All District Applications</span>
+          <span class="badge bg-light text-dark border ms-auto" id="dtoBadgeAll">0</span>
+        </a>
+      </nav>
+
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+        Administration
+      </div>
+      <nav class="nav flex-column gap-1">
+        <a href="reports.html?role=dto&district=Gangtok" class="officer-nav-link" id="navLink-reports">
+          <i class="bi bi-file-earmark-bar-graph-fill text-success"></i>
+          <span>Reports &amp; Analytics</span>
+        </a>
+        <a href="#district-info" class="officer-nav-link" data-bs-toggle="modal" data-bs-target="#dtoProfileModal">
+          <i class="bi bi-building"></i>
+          <span>District Office Info</span>
+        </a>
+        <a href="instructions.html" class="officer-nav-link" target="_blank">
+          <i class="bi bi-file-earmark-ruled"></i>
+          <span>Service Guidelines</span>
+        </a>
+        <a href="role-select.html" class="officer-nav-link text-danger">
+          <i class="bi bi-people"></i>
+          <span>Switch Access Role</span>
+        </a>
+      </nav>
+
+      <!-- District Quick Info Card -->
+      <div class="card border-0 bg-light p-3 rounded-2 mt-4 small">
+        <div class="fw-bold text-dark" id="sidebarOfficeTitle"><i class="bi bi-geo-alt-fill text-primary me-1"></i> Gangtok DTO Office</div>
+        <div class="text-muted mt-1" style="font-size: 0.75rem;" id="sidebarOfficeAddress">M.G. Marg, Gangtok – 737101</div>
+        <div class="text-muted" style="font-size: 0.75rem;" id="sidebarOfficePhone">Phone: 03592-202341</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-dto-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0">
+      
+      <!-- Welcome Officer Card -->
+      <div class="card border-0 bg-white p-4 shadow-xs mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h2 class="h5 fw-bold text-dark mb-0" id="dtoDeskHeading">District Officer Verification Desk &bull; Gangtok Circle</h2>
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">District Level Verification Desk</span>
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">All Workflow States Active</span>
+            </div>
+            <p class="text-muted small mb-0">
+              Review received Tourism Permission requests, verify local clearances, forward to Headquarters or grant direct approval (Adventure / Local), process HQ returns, and issue final approved letters.
+            </p>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="reports.html?role=dto&district=Gangtok" id="btnHeaderReports" class="btn btn-outline-success btn-sm">
+              <i class="bi bi-file-earmark-bar-graph me-1"></i> Reports
+            </a>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="location.reload()">
+              <i class="bi bi-arrow-clockwise me-1"></i> Refresh Queue
+            </button>
+            <a href="role-select.html" class="btn btn-outline-danger btn-sm">
+              <i class="bi bi-people-fill me-1"></i> Switch Role
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standardized Workload Indicators (4 Meaningful Action-Oriented Cards) -->
+      <div class="row g-3 mb-3">
+        <!-- 1. Awaiting DTO Verification (Primary Actionable Queue) -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-kpi-card active" id="kpiCard-verification" onclick="switchDtoTab('verification')" title="Applications awaiting initial verification or reverification">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="gov-kpi-count text-warning" id="statDtoPending">0</span>
+                <h4 class="gov-kpi-label text-warning-emphasis">Awaiting Verification</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-warning-subtle text-warning">
+                <i class="bi bi-hourglass-split"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Initial &amp; reverification queue</div>
+          </div>
+        </div>
+
+        <!-- 2. Returned by HQ to DTO (Urgent Department Action) -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-kpi-card" id="kpiCard-returnedHq" onclick="switchDtoTab('returnedHq')" title="Applications returned by Headquarters requiring DTO action">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="gov-kpi-count text-danger" id="statDtoReturnedHq">0</span>
+                <h4 class="gov-kpi-label text-danger">Returned by HQ</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-danger-subtle text-danger">
+                <i class="bi bi-arrow-down-left-square-fill"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Requires clarification or return to citizen</div>
+          </div>
+        </div>
+
+        <!-- 3. Awaiting Final DTO Approval (Approval Sheet Ready) -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-kpi-card" id="kpiCard-finalApproval" onclick="switchDtoTab('finalApproval')" title="Sanction sheet uploaded by HQ, ready for final DTO approval">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="gov-kpi-count text-success" id="statDtoFinalApproval">0</span>
+                <h4 class="gov-kpi-label text-success">Ready for Approval</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-success-subtle text-success">
+                <i class="bi bi-patch-check-fill"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Approval sheet attached &bull; Ready to issue</div>
+          </div>
+        </div>
+
+        <!-- 4. Total Submissions Registered -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="gov-kpi-card" id="kpiCard-all" onclick="switchDtoTab('all')" title="View all applications in this jurisdiction">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="gov-kpi-count text-dark" id="statDtoReceived">0</span>
+                <h4 class="gov-kpi-label text-secondary">All Applications</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-light text-secondary">
+                <i class="bi bi-inbox"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Total submissions registered</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Metric Bar (Preserves counts cleanly without cluttering the screen) -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 px-3 py-2 bg-white rounded-3 border mb-3 small text-muted">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <span><i class="bi bi-send-check text-primary me-1"></i> Forwarded to HQ: <strong class="text-dark" id="statDtoForwarded">0</strong></span>
+          <span class="text-secondary">&bull;</span>
+          <span><i class="bi bi-reply-fill text-warning-emphasis me-1"></i> With Citizen: <strong class="text-dark" id="statDtoReturnedCitizen">0</strong></span>
+          <span class="text-secondary">&bull;</span>
+          <span><i class="bi bi-check-circle-fill text-success me-1"></i> Issued: <strong class="text-dark" id="statDtoApproved">0</strong></span>
+          <span class="text-secondary">&bull;</span>
+          <span><i class="bi bi-x-circle-fill text-danger me-1"></i> Rejected: <strong class="text-dark" id="statDtoRejected">0</strong></span>
+        </div>
+        <div>
+          <span class="badge bg-light text-secondary border">DTO Jurisdiction View</span>
+        </div>
+      </div>
+
+      <!-- Queue Tasks Card -->
+      <div class="card border-0 shadow-sm bg-white mb-3">
+        <div class="card-header bg-white py-3 border-bottom">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-dark" id="queueCardTitle">
+                <i class="bi bi-list-check me-1 text-primary"></i> Awaiting Verification Queue (Gangtok Circle)
+              </h3>
+              <span class="text-muted small" id="queueCardSubtitle">Select an application to verify credentials, forward to HQ, or issue approval.</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <div class="input-group input-group-sm" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="dtoSearchInput" class="form-control form-control-sm border-start-0" placeholder="Search ID or Name...">
+              </div>
+              <select id="dtoCatFilter" class="form-select form-select-sm" style="max-width: 170px;">
+                <option value="all">All Categories</option>
+                <option value="Trekking">Trekking</option>
+                <option value="Expedition">Expedition</option>
+                <option value="Events">Events &amp; Fairs</option>
+                <option value="Drone">Drone</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Any Other">Any Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <!-- Desktop Table View (Hidden on mobile < 768px) -->
+          <div class="table-responsive gov-table-desktop d-none d-md-block">
+            <table class="gov-table-compact table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 20%;">Application ID</th>
+                  <th scope="col" style="width: 22%;">Applicant</th>
+                  <th scope="col" style="width: 15%;">Category</th>
+                  <th scope="col" style="width: 13%;">Submitted</th>
+                  <th scope="col" style="width: 16%;">Status</th>
+                  <th scope="col" class="text-end" style="width: 14%;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dtoQueueTableBody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards View (Visible on mobile < 768px, hidden on desktop) -->
+          <div class="gov-cards-mobile d-block d-md-none p-3" id="dtoQueueCardsMobile">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <div class="card-footer bg-white py-2 text-muted small d-flex justify-content-between align-items-center border-top">
+          <span id="dtoQueueCountText">Showing 0 applications</span>
+          <span class="badge bg-light text-secondary border">Actionable Work Queue</span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- DTO Profile Modal -->
+  <div class="modal fade" id="dtoProfileModal" tabindex="-1" aria-labelledby="dtoProfLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-dark text-white py-3">
+          <h5 class="modal-title fw-bold mb-0" id="dtoProfLabel"><i class="bi bi-building me-2"></i>District Office Profile</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 small">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="p-3 bg-light rounded-circle text-primary fs-3">
+              <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0 text-dark" id="modalDtoOfficerName">Karma Lhendup Bhutia</h5>
+              <span class="text-muted" id="modalDtoOfficerDesignation">District Tourism Officer (DTO)</span>
+            </div>
+          </div>
+          <ul class="list-group list-group-flush mb-0">
+            <li class="list-group-item px-0 d-flex justify-content-between">
+              <span class="text-muted">District Jurisdiction:</span>
+              <strong class="text-dark" id="modalDtoDistrict">Gangtok Circle</strong>
+            </li>
+            <li class="list-group-item px-0 d-flex justify-content-between">
+              <span class="text-muted">Office Location:</span>
+              <span class="text-dark" id="modalDtoAddress">District Tourism Office, Gangtok Circle, M.G. Marg, Gangtok – 737101</span>
+            </li>
+            <li class="list-group-item px-0 d-flex justify-content-between">
+              <span class="text-muted">Contact Phone:</span>
+              <span class="text-dark" id="modalDtoPhone">03592-202341</span>
+            </li>
+            <li class="list-group-item px-0 d-flex justify-content-between">
+              <span class="text-muted">Official Email:</span>
+              <span class="text-dark" id="modalDtoEmail">dto-gangtok@sikkimtourism.gov.in</span>
+            </li>
+          </ul>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+    <div class="container-fluid px-lg-4">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Central Workflow Engine -->
+  <script src="workflow-engine.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      let currentDistrict = 'Gangtok'; // Default to Gangtok
+      let currentTab = 'verification'; // Default to Pending Verification
+
+      // Read district from query parameter if present
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('district')) {
+        const dParam = urlParams.get('district');
+        if (dParam === 'all' || WorkflowEngine.DISTRICT_OFFICES[dParam]) {
+          currentDistrict = dParam;
+        }
+      }
+      if (urlParams.has('tab')) {
+        currentTab = urlParams.get('tab');
+      }
+
+      const districtSelect = document.getElementById('districtFilterSelect');
+      districtSelect.value = currentDistrict;
+
+      // Jump to review helper
+      window.jumpToReview = function (arn) {
+        if (arn) {
+          window.location.href = `review.html?arn=${encodeURIComponent(arn)}&role=dto`;
+        }
+      };
+
+      // Update office and officer details
+      function updateDistrictContext() {
+        const repSidebarLink = document.getElementById('navLink-reports');
+        if (repSidebarLink) repSidebarLink.href = 'reports.html?role=dto&district=' + encodeURIComponent(currentDistrict);
+        const repHeaderBtn = document.getElementById('btnHeaderReports');
+        if (repHeaderBtn) repHeaderBtn.href = 'reports.html?role=dto&district=' + encodeURIComponent(currentDistrict);
+        const office = WorkflowEngine.DISTRICT_OFFICES[currentDistrict] || WorkflowEngine.DISTRICT_OFFICES['all'];
+
+        if (currentDistrict === 'all') {
+          document.getElementById('dtoHeaderOfficeTitle').textContent = 'District Tourism Offices • All 6 Circles (Statewide Overview)';
+          document.getElementById('dtoOfficerName').textContent = 'Statewide Officer Panel';
+          document.getElementById('dtoOfficerDesignation').textContent = 'Consolidated Circle Verification Panel';
+          document.getElementById('sidebarDistrictName').textContent = 'All 6 Circles';
+          document.getElementById('dtoDeskHeading').innerHTML = 'District Officer Verification Desk &bull; All Circles Consolidated';
+
+          document.getElementById('sidebarOfficeTitle').innerHTML = '<i class="bi bi-geo-alt-fill text-primary me-1"></i> Directorate of Tourism';
+          document.getElementById('sidebarOfficeAddress').textContent = 'Paryatan Bhawan / All District Circles, Sikkim';
+          document.getElementById('sidebarOfficePhone').textContent = 'Toll-Free: 1800-345-3256';
+
+          document.getElementById('modalDtoOfficerName').textContent = 'Statewide District Officer Panel';
+          document.getElementById('modalDtoOfficerDesignation').textContent = 'Consolidated Circle Registry';
+          document.getElementById('modalDtoDistrict').textContent = 'All 6 Autonomous Circles';
+          document.getElementById('modalDtoAddress').textContent = 'Paryatan Bhawan / Respective DAC Complexes';
+          document.getElementById('modalDtoPhone').textContent = '03592-209090';
+          document.getElementById('modalDtoEmail').textContent = 'dto-statewide@sikkimtourism.gov.in';
+        } else {
+          document.getElementById('dtoHeaderOfficeTitle').textContent = office.office.split(',')[0] + ', ' + currentDistrict + ' Circle';
+          document.getElementById('dtoOfficerName').textContent = office.dtoName;
+          document.getElementById('dtoOfficerDesignation').textContent = office.designation;
+          document.getElementById('sidebarDistrictName').textContent = currentDistrict;
+          document.getElementById('dtoDeskHeading').innerHTML = 'District Officer Verification Desk &bull; ' + currentDistrict + ' Circle';
+
+          document.getElementById('sidebarOfficeTitle').innerHTML = '<i class="bi bi-geo-alt-fill text-primary me-1"></i> ' + currentDistrict + ' DTO Office';
+          document.getElementById('sidebarOfficeAddress').textContent = office.office;
+          document.getElementById('sidebarOfficePhone').textContent = 'Phone: ' + office.phone;
+
+          document.getElementById('modalDtoOfficerName').textContent = office.dtoName;
+          document.getElementById('modalDtoOfficerDesignation').textContent = office.designation;
+          document.getElementById('modalDtoDistrict').textContent = currentDistrict + ' Circle';
+          document.getElementById('modalDtoAddress').textContent = office.office;
+          document.getElementById('modalDtoPhone').textContent = office.phone;
+          document.getElementById('modalDtoEmail').textContent = office.email;
+        }
+      }
+
+      // Compute and update 8 KPI metrics
+      function updateMetrics() {
+        const allApps = WorkflowEngine.getAllApplications();
+        const districtApps = (currentDistrict === 'all') ? allApps : allApps.filter(app => (app.district || '').toLowerCase() === currentDistrict.toLowerCase());
+
+        const totalReceived = districtApps.length;
+        const pendingVerification = districtApps.filter(app => 
+          (app.currentStage === WorkflowEngine.STAGES.STAGE_2 || app.currentStage === WorkflowEngine.STAGES.STAGE_7) && app.assignedRole === 'dto'
+        ).length;
+        const forwardedToHq = districtApps.filter(app => 
+          [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(app.currentStage)
+        ).length;
+        const returnedByHq = districtApps.filter(app => 
+          app.currentStage === WorkflowEngine.STAGES.STAGE_5 && app.assignedRole === 'dto'
+        ).length;
+        const finalApproval = districtApps.filter(app => 
+          app.currentStage === WorkflowEngine.STAGES.STAGE_11 && app.assignedRole === 'dto'
+        ).length;
+        const returnedCitizen = districtApps.filter(app => 
+          app.status === WorkflowEngine.STATUSES.RETURNED || app.currentStage === WorkflowEngine.STAGES.STAGE_6
+        ).length;
+        const approved = districtApps.filter(app => 
+          app.status === WorkflowEngine.STATUSES.APPROVED || app.currentStage === WorkflowEngine.STAGES.STAGE_12
+        ).length;
+        const rejected = districtApps.filter(app => 
+          app.status === WorkflowEngine.STATUSES.REJECTED || app.currentStage === WorkflowEngine.STAGES.STAGE_13
+        ).length;
+
+        // KPI Numbers
+        document.getElementById('statDtoReceived').textContent = totalReceived;
+        document.getElementById('statDtoPending').textContent = pendingVerification;
+        document.getElementById('statDtoForwarded').textContent = forwardedToHq;
+        document.getElementById('statDtoReturnedHq').textContent = returnedByHq;
+        document.getElementById('statDtoFinalApproval').textContent = finalApproval;
+        document.getElementById('statDtoReturnedCitizen').textContent = returnedCitizen;
+        document.getElementById('statDtoApproved').textContent = approved;
+        document.getElementById('statDtoRejected').textContent = rejected;
+
+        // Sidebar Badges
+        document.getElementById('dtoBadgeVerification').textContent = pendingVerification;
+        document.getElementById('dtoBadgeForwarded').textContent = forwardedToHq;
+        document.getElementById('dtoBadgeReturnedHq').textContent = returnedByHq;
+        document.getElementById('dtoBadgeFinalApproval').textContent = finalApproval;
+        document.getElementById('dtoBadgeReturnedCitizen').textContent = returnedCitizen;
+        document.getElementById('dtoBadgeApproved').textContent = approved;
+        document.getElementById('dtoBadgeRejected').textContent = rejected;
+        document.getElementById('dtoBadgeAll').textContent = totalReceived;
+
+        // Active KPI border highlight
+        document.querySelectorAll('.gov-kpi-card, .officer-stat-card').forEach(c => { c.classList.remove('active'); c.classList.remove('active-kpi'); });
+        const activeKpi = document.getElementById('kpiCard-' + currentTab);
+        if (activeKpi) { activeKpi.classList.add('active'); activeKpi.classList.add('active-kpi'); }
+      }
+
+      // Get applications for the active tab
+      function getActiveTabApplications() {
+        const allApps = WorkflowEngine.getAllApplications();
+        const districtApps = (currentDistrict === 'all') ? allApps : allApps.filter(app => (app.district || '').toLowerCase() === currentDistrict.toLowerCase());
+
+        switch (currentTab) {
+          case 'verification':
+            return districtApps.filter(app => 
+              (app.currentStage === WorkflowEngine.STAGES.STAGE_2 || app.currentStage === WorkflowEngine.STAGES.STAGE_7) && app.assignedRole === 'dto'
+            );
+          case 'forwarded':
+            return districtApps.filter(app => 
+              [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(app.currentStage)
+            );
+          case 'returnedHq':
+            return districtApps.filter(app => 
+              app.currentStage === WorkflowEngine.STAGES.STAGE_5 && app.assignedRole === 'dto'
+            );
+          case 'finalApproval':
+            return districtApps.filter(app => 
+              app.currentStage === WorkflowEngine.STAGES.STAGE_11 && app.assignedRole === 'dto'
+            );
+          case 'returnedCitizen':
+            return districtApps.filter(app => 
+              app.status === WorkflowEngine.STATUSES.RETURNED || app.currentStage === WorkflowEngine.STAGES.STAGE_6
+            );
+          case 'approved':
+            return districtApps.filter(app => 
+              app.status === WorkflowEngine.STATUSES.APPROVED || app.currentStage === WorkflowEngine.STAGES.STAGE_12
+            );
+          case 'rejected':
+            return districtApps.filter(app => 
+              app.status === WorkflowEngine.STATUSES.REJECTED || app.currentStage === WorkflowEngine.STAGES.STAGE_13
+            );
+          case 'all':
+          default:
+            return districtApps;
+        }
+      }
+
+      // Render Queue Table
+      function renderTable() {
+        let items = getActiveTabApplications();
+
+        // Apply search query filter
+        const query = (document.getElementById('dtoSearchInput').value || '').trim().toLowerCase();
+        if (query) {
+          items = items.filter(a => 
+            (a.refNo && a.refNo.toLowerCase().includes(query)) ||
+            (a.applicantName && a.applicantName.toLowerCase().includes(query)) ||
+            (a.activityTitle && a.activityTitle.toLowerCase().includes(query)) ||
+            (a.district && a.district.toLowerCase().includes(query))
+          );
+        }
+
+        // Apply category filter
+        const catFilter = document.getElementById('dtoCatFilter').value;
+        if (catFilter !== 'all') {
+          items = items.filter(a => (a.category || '').toLowerCase().includes(catFilter.toLowerCase()));
+        }
+
+        const tbody = document.getElementById('dtoQueueTableBody');
+        tbody.innerHTML = '';
+        document.getElementById('dtoQueueCountText').textContent = 'Showing ' + items.length + ' application(s)';
+
+        if (!items || items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted">' +
+            '<i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>' +
+            'No applications currently match this queue.' +
+            '</td></tr>';
+          return;
+        }
+
+                const mobileContainer = document.getElementById('dtoQueueCardsMobile');
+        if (mobileContainer) mobileContainer.innerHTML = '';
+
+        items.forEach(app => {
+          let statusBadgeClass = 'gov-status-pill gov-status-pill-submitted';
+          if (app.status === WorkflowEngine.STATUSES.APPROVED) statusBadgeClass = 'gov-status-pill gov-status-pill-approved';
+          else if (app.status === WorkflowEngine.STATUSES.REJECTED) statusBadgeClass = 'gov-status-pill gov-status-pill-rejected';
+          else if (app.status === WorkflowEngine.STATUSES.RETURNED) statusBadgeClass = 'gov-status-pill gov-status-pill-returned';
+          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_5) statusBadgeClass = 'gov-status-pill gov-status-pill-returned';
+          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11) statusBadgeClass = 'gov-status-pill gov-status-pill-review';
+          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_2) statusBadgeClass = 'gov-status-pill gov-status-pill-submitted';
+          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_7) statusBadgeClass = 'gov-status-pill gov-status-pill-submitted';
+
+          const categoryDisplay = app.customCategoryName ? `${app.category} (${app.customCategoryName})` : app.category;
+          const liaisonBadge = (app.categoryKey === 'expedition' || (app.category || '').toLowerCase().includes('expedition')) ? 
+            '<span class="badge bg-info-subtle text-info border border-info-subtle ms-1" title="Requires Liaison Officer">LO</span>' : '';
+
+          // Determine Contextual Action Button based on Stage
+          let actionBtnHtml = '';
+          let mobileActionLabel = 'View Details';
+          let mobileActionClass = 'btn-outline-primary';
+
+          if (app.currentStage === WorkflowEngine.STAGES.STAGE_2) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Verify</a>`;
+            mobileActionLabel = 'Verify Application';
+            mobileActionClass = 'btn-primary';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_7) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Reverify</a>`;
+            mobileActionLabel = 'Reverify Application';
+            mobileActionClass = 'btn-primary';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_5) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-danger py-1 px-3 fw-bold shadow-xs"><i class="bi bi-exclamation-triangle me-1"></i> Action Return</a>`;
+            mobileActionLabel = 'Process HQ Return';
+            mobileActionClass = 'btn-danger';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-award me-1"></i> Approve</a>`;
+            mobileActionLabel = 'Issue Final Approval';
+            mobileActionClass = 'btn-success';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_12) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Letter</a>`;
+            mobileActionLabel = 'View Permission Letter';
+            mobileActionClass = 'btn-outline-success';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_13) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-danger py-1 px-3 fw-semibold"><i class="bi bi-x-circle me-1"></i> Grounds</a>`;
+            mobileActionLabel = 'View Rejection Grounds';
+            mobileActionClass = 'btn-outline-danger';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_6) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-secondary py-1 px-3"><i class="bi bi-clock-history me-1"></i> Status</a>`;
+            mobileActionLabel = 'Check Correction Status';
+            mobileActionClass = 'btn-outline-secondary';
+          } else {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-primary py-1 px-3"><i class="bi bi-eye me-1"></i> Details</a>`;
+            mobileActionLabel = 'View Details';
+            mobileActionClass = 'btn-outline-primary';
+          }
+
+          // 1. Desktop Row
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
+              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="fw-bold font-monospace text-primary text-decoration-none">
+                ${app.refNo}
+              </a>
+              <div class="text-muted small text-truncate" style="max-width: 180px;">${app.activityTitle}</div>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${app.applicantName}</div>
+              <div class="text-muted" style="font-size: 0.75rem;"><i class="bi bi-telephone me-1"></i>${app.phone || 'N/A'}</div>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark border">${categoryDisplay}</span>
+              ${liaisonBadge}
+            </td>
+            <td>
+              <span class="text-dark small">${app.submissionDate}</span>
+            </td>
+            <td>
+              <span class="${statusBadgeClass}">${app.status}</span>
+              <div class="text-muted small text-truncate" style="font-size: 0.75rem; max-width: 160px;" title="${app.currentStage}">${app.currentStage}</div>
+            </td>
+            <td class="text-end text-nowrap">
+              ${actionBtnHtml}
+            </td>
+          `;
+          tbody.appendChild(tr);
+
+          // 2. Mobile Responsive Card
+          if (mobileContainer) {
+            const card = document.createElement('div');
+            card.className = 'gov-mobile-app-card';
+            card.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="fw-bold font-monospace text-primary text-decoration-none">
+                  ${app.refNo}
+                </a>
+                <span class="${statusBadgeClass}">${app.status}</span>
+              </div>
+              <div class="fw-semibold text-dark mb-1">${app.applicantName}</div>
+              <div class="small text-muted mb-2 text-truncate">${app.activityTitle}</div>
+              <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
+                <span><i class="bi bi-tag me-1"></i>${categoryDisplay} ${liaisonBadge}</span>
+                <span><i class="bi bi-calendar-event me-1"></i>${app.submissionDate}</span>
+              </div>
+              <div class="d-flex justify-content-end mt-2">
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm ${mobileActionClass} px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1">
+                  <span>${mobileActionLabel}</span>
+                  <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            `;
+            mobileContainer.appendChild(card);
+          }
+        });
+      }
+
+      // Update Card Header titles depending on current tab
+      function updateCardHeader() {
+        const titleEl = document.getElementById('queueCardTitle');
+        const subEl = document.getElementById('queueCardSubtitle');
+        const circleLabel = (currentDistrict === 'all') ? 'All Circles' : currentDistrict + ' Circle';
+
+        const tabTitles = {
+          verification: { title: 'Pending Verification Queue', sub: 'Initial submissions and citizen resubmissions awaiting DTO scrutiny, clearance check or forwarding.' },
+          forwarded: { title: 'Forwarded to Headquarters Queue', sub: 'Applications transmitted to Paryatan Bhawan undergoing state inter-departmental review.' },
+          returnedHq: { title: 'Returned by Headquarters Queue (Urgent DTO Action Needed)', sub: 'Applications returned by HQ with policy observations. DTO must review remarks and return to citizen.' },
+          finalApproval: { title: 'Awaiting Final DTO Approval Queue (HQ Approval Sheet Attached)', sub: 'State clearances and Approval Sheet attached by HQ. DTO can issue final approved permission letter.' },
+          returnedCitizen: { title: 'Returned to Citizen for Correction Queue', sub: 'Applications currently with citizens for document re-upload or clarification.' },
+          approved: { title: 'Approved Permissions Repository', sub: 'Sanctioned applications with generated permission letters.' },
+          rejected: { title: 'Rejected Applications Repository', sub: 'Applications rejected with recorded statutory grounds.' },
+          all: { title: 'All District Applications', sub: 'Comprehensive register of all applications in ' + circleLabel + '.' }
+        };
+
+        const activeInfo = tabTitles[currentTab] || tabTitles.all;
+        titleEl.innerHTML = `<i class="bi bi-list-check me-1 text-primary"></i> ${activeInfo.title} (${circleLabel})`;
+        subEl.textContent = activeInfo.sub;
+      }
+
+      // Global Tab Switcher
+      window.switchDtoTab = function (tab, e) {
+        if (e) e.preventDefault();
+        currentTab = tab;
+
+        document.querySelectorAll('.officer-nav-link').forEach(l => l.classList.remove('active'));
+        const navEl = document.getElementById('navTab-' + tab);
+        if (navEl) navEl.classList.add('active');
+
+        document.querySelectorAll('.gov-kpi-card, .officer-stat-card').forEach(c => { c.classList.remove('active'); c.classList.remove('active-kpi'); });
+        const activeKpi = document.getElementById('kpiCard-' + tab);
+        if (activeKpi) { activeKpi.classList.add('active'); activeKpi.classList.add('active-kpi'); }
+
+        updateCardHeader();
+        renderTable();
+      };
+
+      // District Switcher Listener
+      districtSelect.addEventListener('change', function () {
+        currentDistrict = this.value;
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('district', currentDistrict);
+        window.history.replaceState({}, '', newUrl);
+
+        updateDistrictContext();
+        updateMetrics();
+        updateCardHeader();
+        renderTable();
+      });
+
+      // Filter & Search Listeners
+      document.getElementById('dtoSearchInput').addEventListener('input', renderTable);
+      document.getElementById('dtoCatFilter').addEventListener('change', renderTable);
+
+      // Reset Seed Data
+      window.resetPrototypeData = function () {
+        if (confirm('Reset all prototype applications back to default seed state across all 6 districts?')) {
+          WorkflowEngine.resetToSeedData();
+          updateMetrics();
+          renderTable();
+          alert('Prototype data has been restored to default seed state.');
+        }
+      };
+
+      // Accessibility Contrast Toggle
+      const contrastBtn = document.getElementById('btn-contrast-toggle');
+      if (contrastBtn) {
+        contrastBtn.addEventListener('click', function () {
+          document.documentElement.classList.toggle('high-contrast');
+          document.body.classList.toggle('high-contrast');
+        });
+      }
+
+      // Initial Execution
+      updateDistrictContext();
+      updateMetrics();
+      updateCardHeader();
+      renderTable();
+
+    })();
+  </script>
+</body>
+</html>

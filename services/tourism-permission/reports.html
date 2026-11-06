@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports &amp; Analytics &bull; Tourism Permission &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    body {
+      background-color: #f8fafc;
+      font-family: 'Noto Sans', sans-serif;
+      color: #1e293b;
+    }
+    .report-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .report-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+    .report-kpi-card.active-kpi {
+      border: 2px solid #0b4d75 !important;
+      background-color: #f0f7fc !important;
+    }
+    .report-kpi-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .filter-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .table-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .cursor-pointer { cursor: pointer; }
+    
+    /* Print Specific Styling */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 10mm 12mm;
+      }
+      body {
+        background: #ffffff !important;
+        font-size: 8.5pt !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .table-container {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .gov-table-compact {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+      .gov-table-compact th, .gov-table-compact td {
+        padding: 4px 6px !important;
+        border: 1px solid #94a3b8 !important;
+        font-size: 8pt !important;
+      }
+      .report-kpi-card {
+        border: 1px solid #cbd5e1 !important;
+        padding: 0.5rem !important;
+      }
+      .report-kpi-number {
+        font-size: 1.25rem !important;
+      }
+    }
+    @media screen {
+      .print-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100">
+
+  <!-- Accessibility Skip Link (No-Print) -->
+  <a class="gov-skip-link no-print" href="#main-reports-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Stripe (No-Print) -->
+  <div class="gov-flag-stripe no-print" aria-hidden="true"></div>
+
+  <!-- Reviewer Demonstration Control Bar (No-Print) -->
+  <aside class="gov-scenario-bar no-print" aria-label="Reviewer Controller" style="background: #1e293b; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-flask-fill me-1"></i> PROTOTYPE STAGE 07
+          </span>
+          <span class="small text-white-50 d-none d-sm-inline">Reports &amp; Analytics Demonstrator</span>
+          <span class="text-white-50">|</span>
+          <label for="demoRoleSelect" class="small text-white-50 fw-semibold">Demonstration Scope:</label>
+          <select id="demoRoleSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px; font-size: 0.8rem;" onchange="handleRoleSwitch(this.value)">
+            <optgroup label="District-Level DTO Reports (Strict District Isolation)">
+              <option value="dto-Gangtok">DTO: Gangtok Circle (Assigned)</option>
+              <option value="dto-Mangan">DTO: Mangan Circle (Assigned)</option>
+              <option value="dto-Namchi">DTO: Namchi Circle (Assigned)</option>
+              <option value="dto-Gyalshing">DTO: Gyalshing Circle (Assigned)</option>
+              <option value="dto-Pakyong">DTO: Pakyong Circle (Assigned)</option>
+              <option value="dto-Soreng">DTO: Soreng Circle (Assigned)</option>
+            </optgroup>
+            <optgroup label="Statewide Headquarters (Consolidated All 6 Districts)">
+              <option value="hq-all">State Headquarters Admin (Consolidated 6 Districts)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetPrototypeData()" title="Reset applications to clean initial seed dataset">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Data
+          </button>
+          <span class="text-white-50">|</span>
+          <a href="dashboard.html" class="text-white-50 text-decoration-none small" title="Switch to Citizen View">
+            <i class="bi bi-person me-1"></i> Citizen View
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Official Print Letterhead (Print-Only) -->
+  <div class="print-only container-fluid mb-3 pb-2 border-bottom">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem" style="height: 54px;">
+        <div>
+          <h1 class="h5 fw-bold mb-0 text-uppercase" style="letter-spacing: 0.5px;">Government of Sikkim</h1>
+          <div class="small fw-semibold text-secondary">Tourism &amp; Civil Aviation Department &bull; Secretariat, Gangtok</div>
+          <div class="small text-muted" id="printReportTitle">Tourism Permission Operational Report</div>
+        </div>
+      </div>
+      <div class="text-end small">
+        <div>Generated: <strong id="printTimestamp">-</strong></div>
+        <div>Reporting Authority: <strong id="printReportingOfficer">-</strong></div>
+        <div>Scope: <strong id="printScopeBadge">-</strong></div>
+      </div>
+    </div>
+    <div class="mt-2 p-2 bg-light border small" id="printFilterCriteriaNotice">
+      <strong>Active Filter Criteria:</strong> <span id="printFilterCriteriaText">All records in reporting scope</span>
+    </div>
+  </div>
+
+  <!-- Government Department Header (No-Print) -->
+  <header class="bg-white border-bottom shadow-xs py-3 no-print" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 48px; width: auto;">
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim</span>
+            <h1 class="fw-bold fs-5 text-dark mb-0" id="headerReportTitle">Tourism Permission Application Report</h1>
+            <span class="small text-muted" style="font-size: 0.75rem;" id="headerOfficeSubtitle">Tourism &amp; Civil Aviation Department &bull; Operational Workload &amp; Outcomes</span>
+          </div>
+        </div>
+
+        <!-- Top Header Action Controls -->
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="exportReportCsv()" id="btnExportCsv" title="Export filtered records to RFC 4180 CSV">
+            <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+            <span>Export CSV</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-dark px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="printReportDocument()" id="btnPrintReport" title="Print friendly official report layout">
+            <i class="bi bi-printer-fill"></i>
+            <span>Print Report</span>
+          </button>
+          <a href="dashboard-dto.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnBackToDashboard">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Reports Layout -->
+  <main id="main-reports-content" class="flex-grow-1 py-4">
+    <div class="container-fluid px-lg-4">
+
+      <!-- Reporting Scope & Context Bar (No-Print) -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 no-print">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-primary text-white px-2.5 py-1 fw-bold" id="badgeActiveRole">DTO: Gangtok Circle</span>
+          <span class="badge bg-light text-dark border px-2.5 py-1" id="badgeAssignedDistrict"><i class="bi bi-geo-alt me-1"></i>Gangtok District</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1" id="badgeDataSync"><i class="bi bi-check-circle-fill me-1"></i>Live Workflow Sync</span>
+        </div>
+        <div class="small text-muted">
+          Reporting Officer: <strong class="text-dark" id="txtOfficerName">Karma Lhendup Bhutia</strong> (<span id="txtOfficerDesig">District Tourism Officer</span>)
+        </div>
+      </div>
+
+      <!-- Filters Section Card (No-Print) -->
+      <section class="card filter-card shadow-xs mb-4 no-print" aria-label="Report Filter Criteria">
+        <div class="card-header bg-white py-2.5 px-3 d-flex justify-content-between align-items-center border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-funnel-fill text-primary"></i>
+            <h2 class="h6 fw-bold mb-0 text-dark">Report Filters</h2>
+            <span class="badge bg-secondary-subtle text-secondary small py-0.5 px-1.5" id="txtFilteredCountPill">Showing 0 of 0</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 d-md-none" data-bs-toggle="collapse" data-bs-target="#filterCollapseBody" aria-expanded="true">
+            Toggle Filters
+          </button>
+        </div>
+        <div class="collapse show" id="filterCollapseBody">
+          <div class="card-body p-3">
+            <form id="reportFilterForm" onsubmit="event.preventDefault(); applyReportFilters();">
+              <div class="row g-3">
+                
+                <!-- Filter: From Date -->
+                <div class="col-12 col-sm-6 col-md-3 col-xl-2">
+                  <label for="filterFromDate" class="form-label small fw-bold text-muted mb-1">From Date (Submission):</label>
+                  <input type="date" class="form-control form-control-sm" id="filterFromDate">
+                </div>
+
+                <!-- Filter: To Date -->
+                <div class="col-12 col-sm-6 col-md-3 col-xl-2">
+                  <label for="filterToDate" class="form-label small fw-bold text-muted mb-1">To Date (Submission):</label>
+                  <input type="date" class="form-control form-control-sm" id="filterToDate">
+                </div>
+
+                <!-- Filter: Category -->
+                <div class="col-12 col-sm-6 col-md-3 col-xl-2">
+                  <label for="filterCategory" class="form-label small fw-bold text-muted mb-1">Category:</label>
+                  <select class="form-select form-select-sm" id="filterCategory">
+                    <option value="all">All Categories</option>
+                    <option value="trekking">Trekking</option>
+                    <option value="expedition">Expedition</option>
+                    <option value="events">Events, Fairs &amp; Rallies</option>
+                    <option value="drone">Drone Clearance</option>
+                    <option value="adventure">Adventure Activities</option>
+                    <option value="satellite_phone">Satellite Phone Telecomm</option>
+                    <option value="other">Any Other</option>
+                  </select>
+                </div>
+
+                <!-- Filter: Application Status -->
+                <div class="col-12 col-sm-6 col-md-3 col-xl-2">
+                  <label for="filterStatus" class="form-label small fw-bold text-muted mb-1">Current Status:</label>
+                  <select class="form-select form-select-sm" id="filterStatus">
+                    <option value="all">All Statuses</option>
+                    <option value="Submitted">Submitted (Under Process)</option>
+                    <option value="Returned for Correction">Returned for Correction</option>
+                    <option value="Approved">Approved &amp; Issued</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <!-- Filter: District (Role Gated) -->
+                <div class="col-12 col-sm-6 col-md-3 col-xl-2">
+                  <label for="filterDistrict" class="form-label small fw-bold text-muted mb-1">
+                    District Scope:
+                    <span id="districtLockIcon" class="text-danger small" title="Fixed for assigned DTO Circle"><i class="bi bi-lock-fill"></i></span>
+                  </label>
+                  <select class="form-select form-select-sm" id="filterDistrict">
+                    <!-- Populated dynamically: editable for HQ, locked for DTO -->
+                  </select>
+                </div>
+
+                <!-- Filter: Search query -->
+                <div class="col-12 col-sm-6 col-md-3 col-xl-2">
+                  <label for="filterSearch" class="form-label small fw-bold text-muted mb-1">Keyword Search:</label>
+                  <input type="text" class="form-control form-control-sm" id="filterSearch" placeholder="ARN / Name / Keyword">
+                </div>
+
+              </div>
+
+              <!-- Filter Action Buttons -->
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-3 pt-2 border-top">
+                <div class="small text-muted" id="filterCriteriaSummaryText">
+                  <i class="bi bi-info-circle me-1"></i> Filtering by submission dates, category, and status in real-time.
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <button type="submit" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+                    <i class="bi bi-funnel"></i>
+                    <span>Apply Filters</span>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="clearReportFilters()">
+                    <i class="bi bi-x-circle"></i>
+                    <span>Clear Filters</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Summary KPI Indicators (5 Cards) -->
+      <section class="mb-4" aria-label="Summary KPI Indicators">
+        <div class="row g-3">
+          
+          <!-- KPI 1: Total Received -->
+          <div class="col-6 col-lg">
+            <div class="report-kpi-card shadow-xs" onclick="quickFilterByStatus('all')" title="Click to view all records in scope" id="kpiCard-all">
+              <div class="text-uppercase small fw-bold text-muted mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Total Applications</div>
+              <div class="report-kpi-number text-dark" id="kpiTotal">0</div>
+              <div class="small text-muted mt-1" style="font-size: 0.75rem;"><i class="bi bi-inbox me-1"></i>Total in scope</div>
+            </div>
+          </div>
+
+          <!-- KPI 2: Submitted / In Process -->
+          <div class="col-6 col-lg">
+            <div class="report-kpi-card shadow-xs" onclick="quickFilterByStatus('Submitted')" title="Click to filter by Submitted status" id="kpiCard-submitted">
+              <div class="text-uppercase small fw-bold text-info mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Submitted</div>
+              <div class="report-kpi-number text-primary" id="kpiSubmitted">0</div>
+              <div class="small text-muted mt-1" style="font-size: 0.75rem;"><i class="bi bi-hourglass-split me-1"></i>Under Review</div>
+            </div>
+          </div>
+
+          <!-- KPI 3: Returned for Correction -->
+          <div class="col-6 col-lg">
+            <div class="report-kpi-card shadow-xs" onclick="quickFilterByStatus('Returned for Correction')" title="Click to filter by Returned status" id="kpiCard-returned">
+              <div class="text-uppercase small fw-bold text-warning mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Returned for Correction</div>
+              <div class="report-kpi-number text-warning-emphasis" id="kpiReturned">0</div>
+              <div class="small text-muted mt-1" style="font-size: 0.75rem;"><i class="bi bi-reply-fill me-1"></i>Awaiting Citizen Action</div>
+            </div>
+          </div>
+
+          <!-- KPI 4: Approved -->
+          <div class="col-6 col-lg">
+            <div class="report-kpi-card shadow-xs" onclick="quickFilterByStatus('Approved')" title="Click to filter by Approved status" id="kpiCard-approved">
+              <div class="text-uppercase small fw-bold text-success mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Approved &amp; Issued</div>
+              <div class="report-kpi-number text-success" id="kpiApproved">0</div>
+              <div class="small text-muted mt-1" style="font-size: 0.75rem;"><i class="bi bi-patch-check-fill me-1"></i>Sanctions Granted</div>
+            </div>
+          </div>
+
+          <!-- KPI 5: Rejected -->
+          <div class="col-6 col-lg">
+            <div class="report-kpi-card shadow-xs" onclick="quickFilterByStatus('Rejected')" title="Click to filter by Rejected status" id="kpiCard-rejected">
+              <div class="text-uppercase small fw-bold text-danger mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Rejected</div>
+              <div class="report-kpi-number text-danger" id="kpiRejected">0</div>
+              <div class="small text-muted mt-1" style="font-size: 0.75rem;"><i class="bi bi-x-circle-fill me-1"></i>Withheld / Denied</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- HQ-EXCLUSIVE SECTION: DISTRICT-WISE & CATEGORY-WISE AGGREGATION -->
+      <!-- (Rendered only when active role is HQ)                         -->
+      <!-- ============================================================== -->
+      <div id="hqAggregationContainer" class="d-none">
+        
+        <!-- Section C: District-wise Summary Table -->
+        <div class="card border-0 shadow-xs mb-4">
+          <div class="card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-geo-alt-fill text-primary"></i>
+              <h3 class="h6 fw-bold mb-0 text-dark">Statewide District-wise Application Summary</h3>
+            </div>
+            <span class="badge bg-light text-dark border small">All 6 Circles Calculated Dynamically</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="gov-table-compact table-hover align-middle mb-0">
+                <thead class="bg-light">
+                  <tr>
+                    <th style="width: 22%;">District Circle</th>
+                    <th style="width: 24%;">Designated DTO Office</th>
+                    <th class="text-center" style="width: 10%;">Total Received</th>
+                    <th class="text-center" style="width: 9%;">Submitted</th>
+                    <th class="text-center" style="width: 11%;">Returned</th>
+                    <th class="text-center" style="width: 9%;">Approved</th>
+                    <th class="text-center" style="width: 7%;">Rejected</th>
+                    <th class="text-center" style="width: 8%;">Sanction Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="districtSummaryTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+                <tfoot class="bg-light fw-bold border-top" id="districtSummaryTableFoot">
+                  <!-- Injected totals -->
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section D: Category-wise Distribution Breakdown -->
+        <div class="card border-0 shadow-xs mb-4">
+          <div class="card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-tags-fill text-success"></i>
+              <h3 class="h6 fw-bold mb-0 text-dark">Category-wise Application Breakdown</h3>
+            </div>
+            <span class="badge bg-light text-dark border small">7 Prescribed Categories</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="gov-table-compact table-hover align-middle mb-0">
+                <thead class="bg-light">
+                  <tr>
+                    <th style="width: 32%;">Permission Category</th>
+                    <th class="text-center" style="width: 14%;">Applications Received</th>
+                    <th class="text-center" style="width: 14%;">Statewide Share</th>
+                    <th class="text-center" style="width: 12%;">Approved</th>
+                    <th class="text-center" style="width: 14%;">In Processing</th>
+                    <th class="text-end" style="width: 14%;">Fees Collected (₹)</th>
+                  </tr>
+                </thead>
+                <tbody id="categorySummaryTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- SECTION D: DETAILED APPLICATION REPORT TABLE                   -->
+      <!-- ============================================================== -->
+      <section class="table-container shadow-xs mb-4" aria-label="Detailed Application Report Table">
+        <div class="card-header bg-white py-3 px-3 d-flex justify-content-between align-items-center border-bottom flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-table text-primary"></i>
+            <h3 class="h6 fw-bold mb-0 text-dark" id="txtReportTableHeading">Detailed Application Records</h3>
+            <span class="badge bg-light text-dark border small" id="txtTableRecordCount">0 Records</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <input type="text" class="form-control form-control-sm" id="tableQuickSearch" placeholder="Quick filter rows..." style="max-width: 200px;" oninput="handleTableQuickSearch(this.value)">
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="gov-table-compact table-hover align-middle mb-0" id="reportApplicationTable">
+            <thead class="bg-light">
+              <tr>
+                <th style="width: 15%;">Application ID</th>
+                <th style="width: 14%;">Applicant Name</th>
+                <th style="width: 11%;">Category</th>
+                <th style="width: 9%;" id="thDistrictCol">District</th>
+                <th style="width: 18%;">Subject / Activity Title</th>
+                <th style="width: 9%;">Submission Date</th>
+                <th style="width: 9%;">Status</th>
+                <th style="width: 15%;">Current Stage</th>
+                <th style="width: 9%;" id="thApprovalCol">Approval / Permit</th>
+                <th class="text-end no-print" style="width: 7%;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody">
+              <!-- Populated via renderReportTable() -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Empty State -->
+        <div id="tableEmptyState" class="p-5 text-center text-muted small d-none">
+          <i class="bi bi-folder-x fs-1 text-secondary d-block mb-2"></i>
+          <h4 class="h6 fw-bold text-dark">No applications match the selected reporting criteria.</h4>
+          <p class="text-muted mb-0">Try clearing filters or choosing another date range / category.</p>
+          <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="clearReportFilters()">
+            Clear All Filters
+          </button>
+        </div>
+
+        <div class="card-footer bg-white py-2 px-3 d-flex justify-content-between align-items-center text-muted small border-top flex-wrap gap-2" id="tableFooterInfo">
+          <div>
+            Showing <strong id="lblShowingCount" class="text-dark">0</strong> applications in current view &bull;
+            Generated on <span id="lblGeneratedDate">Today</span>
+          </div>
+          <div class="no-print">
+            <button type="button" class="btn btn-sm btn-link text-decoration-none py-0 px-1" onclick="exportReportCsv()">
+              <i class="bi bi-download me-1"></i> Download CSV
+            </button>
+            <span class="text-muted">|</span>
+            <button type="button" class="btn btn-sm btn-link text-decoration-none py-0 px-1" onclick="printReportDocument()">
+              <i class="bi bi-printer me-1"></i> Print View
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Official Footer (No-Print) -->
+  <footer class="gov-footer no-print mt-auto py-3 bg-dark text-white-50" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 small">
+      <div>
+        Government of Sikkim &bull; Tourism &amp; Civil Aviation Department &bull; Reports &amp; Analytics Framework (Stage 07)
+      </div>
+      <div>
+        <a href="instructions.html" class="text-white-50 text-decoration-none me-2">Guidelines</a> &bull;
+        <a href="role-select.html" class="text-white-50 text-decoration-none ms-2">Switch Role</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="workflow-engine.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // State variables
+      let activeRole = 'dto'; // 'dto' or 'hq'
+      let activeDistrict = 'Gangtok'; // 'Gangtok', 'Mangan', etc., or 'all' for HQ
+      let currentFilters = {
+        fromDate: '',
+        toDate: '',
+        category: 'all',
+        status: 'all',
+        stage: 'all',
+        district: 'all',
+        search: ''
+      };
+      let activeReportData = null;
+
+      // Initialize on DOM load
+      document.addEventListener('DOMContentLoaded', function () {
+        parseUrlParams();
+        populateDistrictFilterOptions();
+        initDateDefaults();
+        loadAndRenderReport();
+      });
+
+      // 1. Parse URL Query Parameters
+      function parseUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const r = urlParams.get('role');
+        const d = urlParams.get('district');
+
+        if (r && r.toLowerCase() === 'hq') {
+          activeRole = 'hq';
+          activeDistrict = d || 'all';
+        } else {
+          activeRole = 'dto';
+          activeDistrict = d || 'Gangtok';
+        }
+
+        // Sync demo select dropdown
+        const selectEl = document.getElementById('demoRoleSelect');
+        if (selectEl) {
+          const targetVal = (activeRole === 'hq') ? 'hq-all' : `dto-${activeDistrict}`;
+          selectEl.value = targetVal;
+        }
+
+        // Update Back to Dashboard button URL
+        const backBtn = document.getElementById('btnBackToDashboard');
+        if (backBtn) {
+          if (activeRole === 'hq') {
+            backBtn.href = 'dashboard-hq.html';
+          } else {
+            backBtn.href = `dashboard-dto.html?district=${encodeURIComponent(activeDistrict)}`;
+          }
+        }
+      }
+
+      // 2. Populate District Filter Dropdown based on Role
+      function populateDistrictFilterOptions() {
+        const districtSelect = document.getElementById('filterDistrict');
+        const lockIcon = document.getElementById('districtLockIcon');
+        districtSelect.innerHTML = '';
+
+        const districts = ['Gangtok', 'Mangan', 'Namchi', 'Gyalshing', 'Pakyong', 'Soreng'];
+
+        if (activeRole === 'hq') {
+          // HQ gets full choice across all districts
+          districtSelect.disabled = false;
+          if (lockIcon) lockIcon.classList.add('d-none');
+
+          const optAll = document.createElement('option');
+          optAll.value = 'all';
+          optAll.textContent = 'All Districts (Statewide)';
+          districtSelect.appendChild(optAll);
+
+          districts.forEach(dist => {
+            const opt = document.createElement('option');
+            opt.value = dist;
+            opt.textContent = `${dist} Circle`;
+            if (activeDistrict === dist) opt.selected = true;
+            districtSelect.appendChild(opt);
+          });
+        } else {
+          // DTO is STRICTLY LOCKED to their assigned district
+          districtSelect.disabled = true;
+          if (lockIcon) lockIcon.classList.remove('d-none');
+
+          const opt = document.createElement('option');
+          opt.value = activeDistrict;
+          opt.textContent = `${activeDistrict} Circle (Assigned)`;
+          opt.selected = true;
+          districtSelect.appendChild(opt);
+        }
+      }
+
+      // 3. Set Default Dates (Current year or wide window)
+      function initDateDefaults() {
+        document.getElementById('lblGeneratedDate').textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        document.getElementById('printTimestamp').textContent = new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+      }
+
+      // 4. Role Switching Handler (from Demonstration Control Bar)
+      window.handleRoleSwitch = function (val) {
+        if (val.startsWith('hq')) {
+          window.location.search = '?role=hq&district=all';
+        } else if (val.startsWith('dto-')) {
+          const dist = val.replace('dto-', '');
+          window.location.search = `?role=dto&district=${encodeURIComponent(dist)}`;
+        }
+      };
+
+      // 5. Load and Render Entire Report
+      function loadAndRenderReport() {
+        // Collect current filter inputs
+        currentFilters.fromDate = document.getElementById('filterFromDate').value;
+        currentFilters.toDate = document.getElementById('filterToDate').value;
+        currentFilters.category = document.getElementById('filterCategory').value;
+        currentFilters.status = document.getElementById('filterStatus').value;
+        currentFilters.search = document.getElementById('filterSearch').value;
+
+        if (activeRole === 'hq') {
+          currentFilters.district = document.getElementById('filterDistrict').value || 'all';
+        } else {
+          currentFilters.district = activeDistrict;
+        }
+
+        // Fetch data from WorkflowEngine
+        activeReportData = WorkflowEngine.getReportData(activeRole, (activeRole === 'hq' ? currentFilters.district : activeDistrict), currentFilters);
+
+        // Update Headers & Context
+        renderHeaderContext();
+
+        // Update Summary KPI Cards
+        renderKpiCards(activeReportData.summary);
+
+        // Render HQ Aggregation tables if HQ
+        const hqContainer = document.getElementById('hqAggregationContainer');
+        if (activeRole === 'hq') {
+          hqContainer.classList.remove('d-none');
+          renderDistrictSummary(activeReportData.districtSummary);
+          renderCategorySummary(activeReportData.categorySummary);
+        } else {
+          hqContainer.classList.add('d-none');
+        }
+
+        // Render Detailed Application Table
+        renderReportTable(activeReportData.records);
+
+        // Update Filter Pill count
+        document.getElementById('txtFilteredCountPill').textContent = `Showing ${activeReportData.records.length} records`;
+        document.getElementById('txtTableRecordCount').textContent = `${activeReportData.records.length} Records`;
+        document.getElementById('lblShowingCount').textContent = activeReportData.records.length;
+      }
+
+      // 6. Render Headers and Reporting Metadata
+      function renderHeaderContext() {
+        const titleEl = document.getElementById('headerReportTitle');
+        const subtitleEl = document.getElementById('headerOfficeSubtitle');
+        const badgeRoleEl = document.getElementById('badgeActiveRole');
+        const badgeDistEl = document.getElementById('badgeAssignedDistrict');
+        const officerNameEl = document.getElementById('txtOfficerName');
+        const officerDesigEl = document.getElementById('txtOfficerDesig');
+
+        const printTitleEl = document.getElementById('printReportTitle');
+        const printOfficerEl = document.getElementById('printReportingOfficer');
+        const printScopeEl = document.getElementById('printScopeBadge');
+
+        if (activeRole === 'hq') {
+          const isAll = (currentFilters.district === 'all');
+          const title = isAll ? 'Statewide Tourism Permission Application Report' : `District Application Report: ${currentFilters.district} Circle (HQ Scrutiny)`;
+          titleEl.textContent = title;
+          subtitleEl.textContent = 'Headquarters Administrator Desk &bull; Paryatan Bhawan, Tadong, Gangtok &bull; All 6 Circles Connected';
+          badgeRoleEl.className = 'badge bg-primary text-white px-2.5 py-1 fw-bold';
+          badgeRoleEl.textContent = 'Headquarters Admin';
+          badgeDistEl.innerHTML = `<i class="bi bi-globe-americas me-1"></i>${isAll ? 'Consolidated 6 Districts' : currentFilters.district + ' Circle'}`;
+          
+          officerNameEl.textContent = WorkflowEngine.HQ_OFFICER.name;
+          officerDesigEl.textContent = WorkflowEngine.HQ_OFFICER.designation;
+
+          printTitleEl.textContent = title;
+          printOfficerEl.textContent = `${WorkflowEngine.HQ_OFFICER.name} (${WorkflowEngine.HQ_OFFICER.designation})`;
+          printScopeEl.textContent = isAll ? 'Consolidated Statewide (All 6 Districts)' : `${currentFilters.district} District Circle`;
+        } else {
+          const distInfo = WorkflowEngine.DISTRICT_OFFICES[activeDistrict] || WorkflowEngine.DISTRICT_OFFICES['Gangtok'];
+          titleEl.textContent = `District-wise Tourism Permission Application Report &bull; ${activeDistrict} Circle`;
+          subtitleEl.textContent = `${distInfo.office} &bull; Approving Authority &amp; Verification Desk`;
+          badgeRoleEl.className = 'badge bg-success text-white px-2.5 py-1 fw-bold';
+          badgeRoleEl.textContent = `DTO: ${activeDistrict} Circle`;
+          badgeDistEl.innerHTML = `<i class="bi bi-geo-alt-fill me-1"></i>${activeDistrict} Circle (Fixed)`;
+
+          officerNameEl.textContent = distInfo.dtoName;
+          officerDesigEl.textContent = distInfo.designation;
+
+          printTitleEl.textContent = `District-wise Tourism Permission Application Report &bull; ${activeDistrict} Circle`;
+          printOfficerEl.textContent = `${distInfo.dtoName} (${distInfo.designation})`;
+          printScopeEl.textContent = `${activeDistrict} District Circle Only`;
+        }
+
+        // Print filter notice
+        const criteriaParts = [];
+        if (currentFilters.fromDate) criteriaParts.push(`From: ${currentFilters.fromDate}`);
+        if (currentFilters.toDate) criteriaParts.push(`To: ${currentFilters.toDate}`);
+        if (currentFilters.category !== 'all') criteriaParts.push(`Category: ${currentFilters.category}`);
+        if (currentFilters.status !== 'all') criteriaParts.push(`Status: ${currentFilters.status}`);
+        if (currentFilters.search) criteriaParts.push(`Keyword: "${currentFilters.search}"`);
+
+        document.getElementById('printFilterCriteriaText').textContent = criteriaParts.length > 0 ? criteriaParts.join(' | ') : 'All applications within reporting scope';
+      }
+
+      // 7. Render Summary KPI Cards
+      function renderKpiCards(summary) {
+        document.getElementById('kpiTotal').textContent = summary.total;
+        document.getElementById('kpiSubmitted').textContent = summary.submitted;
+        document.getElementById('kpiReturned').textContent = summary.returned;
+        document.getElementById('kpiApproved').textContent = summary.approved;
+        document.getElementById('kpiRejected').textContent = summary.rejected;
+
+        // Reset active KPI card classes
+        document.querySelectorAll('.report-kpi-card').forEach(c => c.classList.remove('active-kpi'));
+        if (currentFilters.status === 'Submitted') {
+          document.getElementById('kpiCard-submitted').classList.add('active-kpi');
+        } else if (currentFilters.status === 'Returned for Correction') {
+          document.getElementById('kpiCard-returned').classList.add('active-kpi');
+        } else if (currentFilters.status === 'Approved') {
+          document.getElementById('kpiCard-approved').classList.add('active-kpi');
+        } else if (currentFilters.status === 'Rejected') {
+          document.getElementById('kpiCard-rejected').classList.add('active-kpi');
+        } else {
+          document.getElementById('kpiCard-all').classList.add('active-kpi');
+        }
+      }
+
+      // 8. Render District-wise Summary Table (HQ only)
+      function renderDistrictSummary(distSummary) {
+        const tbody = document.getElementById('districtSummaryTableBody');
+        const tfoot = document.getElementById('districtSummaryTableFoot');
+        tbody.innerHTML = '';
+
+        let grandTotal = 0;
+        let grandSub = 0;
+        let grandRet = 0;
+        let grandApprv = 0;
+        let grandRej = 0;
+
+        distSummary.forEach(row => {
+          grandTotal += row.total;
+          grandSub += row.submitted;
+          grandRet += row.returned;
+          grandApprv += row.approved;
+          grandRej += row.rejected;
+
+          const tr = document.createElement('tr');
+          tr.className = (currentFilters.district === row.district) ? 'table-primary' : '';
+          tr.innerHTML = `
+            <td>
+              <strong class="text-dark">${row.district} Circle</strong>
+              ${currentFilters.district === row.district ? '<span class="badge bg-primary ms-1 small">Filtered</span>' : ''}
+            </td>
+            <td><span class="small text-muted">${row.office}</span></td>
+            <td class="text-center fw-bold text-dark">${row.total}</td>
+            <td class="text-center text-primary fw-semibold">${row.submitted}</td>
+            <td class="text-center text-warning-emphasis fw-semibold">${row.returned}</td>
+            <td class="text-center text-success fw-bold">${row.approved}</td>
+            <td class="text-center text-danger fw-semibold">${row.rejected}</td>
+            <td class="text-center">
+              <span class="badge ${row.approvalRate >= 50 ? 'bg-success-subtle text-success' : 'bg-light text-dark'} border">
+                ${row.approvalRate}%
+              </span>
+            </td>
+          `;
+          tr.style.cursor = 'pointer';
+          tr.title = `Click to filter report records to ${row.district} Circle`;
+          tr.onclick = () => {
+            document.getElementById('filterDistrict').value = row.district;
+            applyReportFilters();
+          };
+          tbody.appendChild(tr);
+        });
+
+        const overallRate = grandTotal > 0 ? Math.round((grandApprv / grandTotal) * 100) : 0;
+        tfoot.innerHTML = `
+          <tr>
+            <td><strong>Statewide Total (All Circles)</strong></td>
+            <td><span class="text-muted small">6 District Circles Consolidated</span></td>
+            <td class="text-center fs-6 text-dark">${grandTotal}</td>
+            <td class="text-center text-primary fs-6">${grandSub}</td>
+            <td class="text-center text-warning-emphasis fs-6">${grandRet}</td>
+            <td class="text-center text-success fs-6">${grandApprv}</td>
+            <td class="text-center text-danger fs-6">${grandRej}</td>
+            <td class="text-center"><span class="badge bg-success text-white">${overallRate}%</span></td>
+          </tr>
+        `;
+      }
+
+      // 9. Render Category-wise Summary Table (HQ only)
+      function renderCategorySummary(catSummary) {
+        const tbody = document.getElementById('categorySummaryTableBody');
+        tbody.innerHTML = '';
+
+        catSummary.forEach(cat => {
+          const tr = document.createElement('tr');
+          tr.className = (currentFilters.category === cat.key) ? 'table-success' : '';
+          tr.innerHTML = `
+            <td>
+              <strong class="text-dark">${cat.name}</strong>
+              ${currentFilters.category === cat.key ? '<span class="badge bg-success ms-1 small">Active Filter</span>' : ''}
+            </td>
+            <td class="text-center fw-bold text-dark">${cat.total}</td>
+            <td class="text-center">
+              <div class="d-flex align-items-center justify-content-center gap-1">
+                <span class="small fw-semibold">${cat.sharePercent}%</span>
+              </div>
+            </td>
+            <td class="text-center text-success fw-bold">${cat.approved}</td>
+            <td class="text-center text-primary fw-semibold">${cat.submitted}</td>
+            <td class="text-end font-monospace fw-semibold text-secondary">${cat.feeCollected > 0 ? '₹ ' + cat.feeCollected.toLocaleString('en-IN') : 'Free / Exempt'}</td>
+          `;
+          tr.style.cursor = 'pointer';
+          tr.title = `Click to filter report table to ${cat.name}`;
+          tr.onclick = () => {
+            document.getElementById('filterCategory').value = cat.key;
+            applyReportFilters();
+          };
+          tbody.appendChild(tr);
+        });
+      }
+
+      // 10. Render Detailed Application Report Table
+      function renderReportTable(records) {
+        const tbody = document.getElementById('reportTableBody');
+        const emptyState = document.getElementById('tableEmptyState');
+        tbody.innerHTML = '';
+
+        if (!records || records.length === 0) {
+          emptyState.classList.remove('d-none');
+          return;
+        }
+        emptyState.classList.add('d-none');
+
+        records.forEach(app => {
+          const tr = document.createElement('tr');
+          const isApprv = (app.status === WorkflowEngine.STATUSES.APPROVED);
+          const isRej = (app.status === WorkflowEngine.STATUSES.REJECTED);
+          const isRet = (app.status === WorkflowEngine.STATUSES.RETURNED);
+
+          // Status Badge
+          let statusBadgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
+          if (isApprv) statusBadgeClass = 'bg-success-subtle text-success border border-success-subtle';
+          if (isRej) statusBadgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
+          if (isRet) statusBadgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
+
+          // Approval info column
+          let approvalInfoHtml = '<span class="text-muted small">&mdash;</span>';
+          if (isApprv && app.permissionNumber) {
+            approvalInfoHtml = `
+              <div>
+                <span class="badge bg-success-subtle text-success font-monospace py-0.5 px-1.5" style="font-size: 0.72rem;">
+                  <i class="bi bi-patch-check-fill me-1"></i>${app.permissionNumber}
+                </span>
+                <div class="text-muted small" style="font-size: 0.7rem;">${app.approvalDate || 'Sanctioned'}</div>
+              </div>
+            `;
+          }
+
+          // Category Badge
+          const catName = app.category || 'Trekking';
+
+          tr.innerHTML = `
+            <td>
+              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=${encodeURIComponent(activeRole)}" class="font-monospace fw-bold text-primary text-decoration-none" title="Open Application Review Desk">
+                ${app.refNo}
+              </a>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark small">${app.applicantName}</div>
+              <div class="text-muted small" style="font-size: 0.72rem;">${app.phone || 'Phone N/A'}</div>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark border small">${catName}</span>
+            </td>
+            <td>
+              <span class="small text-dark fw-semibold">${app.district}</span>
+              <div class="text-muted small" style="font-size: 0.7rem;">Circle</div>
+            </td>
+            <td>
+              <div class="small fw-semibold text-dark text-truncate" style="max-width: 240px;" title="${app.activityTitle}">
+                ${app.activityTitle}
+              </div>
+            </td>
+            <td>
+              <span class="small text-muted">${app.submissionDate || 'N/A'}</span>
+            </td>
+            <td>
+              <span class="badge ${statusBadgeClass} small px-2 py-1">
+                ${app.status}
+              </span>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark border small fw-normal">
+                ${app.currentStage || 'Stage In Progress'}
+              </span>
+            </td>
+            <td>${approvalInfoHtml}</td>
+            <td class="text-end no-print text-nowrap">
+              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=${encodeURIComponent(activeRole)}" class="btn btn-sm btn-outline-primary py-0.5 px-2" title="View Full Application Record">
+                <i class="bi bi-eye"></i> View
+              </a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // 11. Quick Filter by Status KPI Card
+      window.quickFilterByStatus = function (statusKey) {
+        document.getElementById('filterStatus').value = statusKey;
+        applyReportFilters();
+      };
+
+      // 12. Apply Filters Action
+      window.applyReportFilters = function () {
+        loadAndRenderReport();
+      };
+
+      // 13. Clear Filters Action
+      window.clearReportFilters = function () {
+        document.getElementById('filterFromDate').value = '';
+        document.getElementById('filterToDate').value = '';
+        document.getElementById('filterCategory').value = 'all';
+        document.getElementById('filterStatus').value = 'all';
+        document.getElementById('filterSearch').value = '';
+        if (activeRole === 'hq') {
+          document.getElementById('filterDistrict').value = 'all';
+        }
+        loadAndRenderReport();
+      };
+
+      // 14. Quick Table Search Box
+      window.handleTableQuickSearch = function (query) {
+        document.getElementById('filterSearch').value = query;
+        loadAndRenderReport();
+      };
+
+      // 15. Export CSV Action (RFC 4180 standard client download)
+      window.exportReportCsv = function () {
+        if (!activeReportData || !activeReportData.records) return;
+        const csvContent = WorkflowEngine.generateCsv(activeReportData);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        const dateStamp = new Date().toISOString().split('T')[0];
+        const filename = (activeRole === 'hq') 
+          ? `Tourism_Permission_Statewide_Report_${dateStamp}.csv`
+          : `Tourism_Permission_Report_${activeDistrict}_Circle_${dateStamp}.csv`;
+
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+
+      // 16. Print Report Action
+      window.printReportDocument = function () {
+        window.print();
+      };
+
+      // 17. Reset Prototype Data
+      window.resetPrototypeData = function () {
+        if (confirm('Reset application data to initial demonstration state?')) {
+          WorkflowEngine.resetToSeedData();
+          location.reload();
+        }
+      };
+
+    })();
+  </script>
+</body>
+</html>
+

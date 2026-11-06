@@ -1,0 +1,316 @@
+{
+  "serviceId": "tourism-permission",
+  "serviceName": "Tourism Permission",
+  "currentStage": "Stage 07 \u2013 Reports and Analytics Complete",
+  "screens": {
+    "landing": "index.html",
+    "roleSelection": "role-select.html",
+    "citizenDashboard": "dashboard.html",
+    "preApplicationInstructions": "instructions.html",
+    "applicationForm": "apply.html",
+    "dtoDashboard": "dashboard-dto.html",
+    "hqDashboard": "dashboard-hq.html",
+    "applicationReview": "review.html",
+    "reports": "reports.html"
+  },
+  "departmentName": "Tourism & Civil Aviation Department",
+  "governmentName": "Government of Sikkim",
+  "governmentNameNepali": "\u0938\u093f\u0915\u094d\u0915\u093f\u092e \u0938\u0930\u0915\u093e\u0930",
+  "theme": "forest-green",
+  "citizenScenarios": [
+    {
+      "id": "scenarioA",
+      "name": "First-Time Citizen",
+      "appsCount": 0
+    },
+    {
+      "id": "scenarioB",
+      "name": "Citizen with Draft Applications",
+      "appsCount": 1
+    },
+    {
+      "id": "scenarioC",
+      "name": "Citizen with Submitted Applications",
+      "appsCount": 3
+    },
+    {
+      "id": "scenarioD",
+      "name": "Citizen with Returned Application",
+      "appsCount": 2
+    },
+    {
+      "id": "scenarioE",
+      "name": "Citizen with Approved Application",
+      "appsCount": 2
+    },
+    {
+      "id": "scenarioF",
+      "name": "Citizen with Rejected Application",
+      "appsCount": 1
+    }
+  ],
+  "themeColors": {
+    "primary": "#114b3f",
+    "secondary": "#165b4c",
+    "accent": "#d97706",
+    "utilityBg": "#0d382f",
+    "footerBg": "#0f2923"
+  },
+  "servicePurpose": "A single online service through which applicants can request tourism-related permissions for activities and events requiring departmental approval.",
+  "officeAddress": "Paryatan Bhawan, Tadong, Gangtok, Sikkim \u2013 737102",
+  "helplinePhone": "03592-209090 / 1800-345-3256",
+  "officialEmail": "secy-tourism@sikkim.gov.in",
+  "sikkimGoLoginUrl": "https://sikkimgo.gov.in/auth/login",
+  "webInformationManager": "Joint Secretary (Tourism), Government of Sikkim",
+  "categories": [
+    {
+      "id": "trekking",
+      "name": "Trekking",
+      "fee": "\u20b9100",
+      "feeAmount": 100
+    },
+    {
+      "id": "expedition",
+      "name": "Expedition",
+      "fee": "\u20b9100",
+      "feeAmount": 100
+    },
+    {
+      "id": "events",
+      "name": "Events, Fairs, Melas, Rallies and Marathons",
+      "fee": "Free",
+      "feeAmount": 0
+    },
+    {
+      "id": "drone",
+      "name": "Drone",
+      "fee": "Free",
+      "feeAmount": 0
+    },
+    {
+      "id": "adventure",
+      "name": "Adventure Activities",
+      "fee": "Free",
+      "feeAmount": 0
+    },
+    {
+      "id": "other",
+      "name": "Any Other",
+      "fee": "Free",
+      "feeAmount": 0,
+      "note": "Applicant will describe activity during submission"
+    },
+    {
+      "id": "satellite-phone",
+      "name": "Satellite Phone Usage Permission",
+      "fee": "Free",
+      "feeAmount": 0,
+      "note": "Provisional free category for prototype"
+    }
+  ],
+  "liaisonOfficers": [
+    {
+      "id": "Tashi",
+      "name": "Tashi"
+    },
+    {
+      "id": "Roshni",
+      "name": "Roshni"
+    },
+    {
+      "id": "Ganesh",
+      "name": "Ganesh"
+    }
+  ],
+  "processingTimeline": "Timeline pending official confirmation by department.",
+  "eligibilityPlaceholder": "Eligibility requirements are subject to the applicable departmental guidelines.",
+  "requiredDocuments": [
+    {
+      "id": "fire_noc",
+      "name": "Fire NOC",
+      "note": "Applicable for events, exhibitions, and specific outdoor gatherings."
+    },
+    {
+      "id": "env_noc",
+      "name": "Environment NOC",
+      "note": "Applicable for eco-sensitive routes and protected zones."
+    },
+    {
+      "id": "land_noc",
+      "name": "Land NOC",
+      "note": "Required where public or community land use is involved."
+    },
+    {
+      "id": "other_doc",
+      "name": "Any Other Supporting Document",
+      "note": "Optional or case-specific supporting documentation."
+    }
+  ],
+  "districts": [
+    {
+      "name": "Gangtok (Headquarters)",
+      "address": "Paryatan Bhawan, Tadong, Gangtok \u2013 737102",
+      "phone": "03592-209090",
+      "email": "tourism-gangtok@sikkim.gov.in"
+    },
+    {
+      "name": "Namchi District Office",
+      "address": "DAC Complex, Namchi, South Sikkim \u2013 737126",
+      "phone": "03595-254210",
+      "email": "tourism-namchi@sikkim.gov.in"
+    },
+    {
+      "name": "Gyalshing District Office",
+      "address": "DAC Complex, Gyalshing, West Sikkim \u2013 737111",
+      "phone": "03595-250810",
+      "email": "tourism-gyalshing@sikkim.gov.in"
+    },
+    {
+      "name": "Mangan District Office",
+      "address": "DAC Complex, Mangan, North Sikkim \u2013 737116",
+      "phone": "03592-234205",
+      "email": "tourism-mangan@sikkim.gov.in"
+    },
+    {
+      "name": "Soreng District Office",
+      "address": "DAC Complex, Soreng, Sikkim \u2013 737121",
+      "phone": "03595-257002",
+      "email": "tourism-soreng@sikkim.gov.in"
+    },
+    {
+      "name": "Pakyong District Office",
+      "address": "DAC Complex, Pakyong, Sikkim \u2013 737106",
+      "phone": "03592-258014",
+      "email": "tourism-pakyong@sikkim.gov.in"
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is the Tourism Permission service?",
+      "answer": "The Tourism Permission service is a single-window online digital facility operated by the Tourism & Civil Aviation Department, Government of Sikkim. It allows citizens, tour operators, expedition organizers, event managers, and commercial entities to apply for and obtain official government permissions for tourism-related activities across Sikkim."
+    },
+    {
+      "question": "Who needs to apply for tourism permission in Sikkim?",
+      "answer": "Any individual, organization, expedition team, event organizer, or drone operator proposing to conduct trekking expeditions, fairs, rallies, marathons, drone operations, or commercial adventure tourism activities within the jurisdiction of Sikkim must obtain statutory permission from the department prior to commencement."
+    },
+    {
+      "question": "What are the applicable fees for tourism permissions?",
+      "answer": "Under current departmental notifications: Trekking is \u20b9100, Expedition is \u20b9100, while permissions for Events/Fairs/Melas/Rallies/Marathons, Drone operations, Adventure Activities, and Any Other categories are currently Free of statutory fee. Online payment for fee-applicable categories can be made digitally via integrated government gateways."
+    },
+    {
+      "question": "Which documents are required for applying?",
+      "answer": "Required documents depend on the specific activity category. Common permissions may require Fire NOC, Environment NOC, Land NOC, or other activity-specific supporting documents. Detailed mandatory document checklists for each activity will be officially confirmed and published by the department."
+    },
+    {
+      "question": "How long does it take to process a permission application?",
+      "answer": "Processing timelines are subject to departmental verification and inter-agency coordination (such as Forest, Police, or District Administration clearances where applicable). Official SLA delivery timelines are currently pending final confirmation by the department."
+    },
+    {
+      "question": "How will I receive my approved permission?",
+      "answer": "Once scrutinized and approved by the designated departmental officer, your official Tourism Permission Certificate will be issued digitally. Applicants can download the signed permission letter directly from their citizen dashboard anytime."
+    },
+    {
+      "question": "How can the authenticity of the digital permission certificate be verified?",
+      "answer": "Every approved digital permission certificate features an official QR code and unique reference ID. Law enforcement officers, checkpoint authorities, and forest staff can scan the QR code using any smartphone camera to instantly verify certificate validity on the official Government of Sikkim portal."
+    }
+  ],
+  "workflowConfig": {
+    "statuses": [
+      "Submitted",
+      "Returned for Correction",
+      "Rejected",
+      "Approved"
+    ],
+    "stagesCount": 13,
+    "demonstratedFlows": [
+      {
+        "id": "flow1",
+        "title": "Flow 1: Standard Application Requiring HQ Verification",
+        "arn": "SK-TP-2026-APP-00481",
+        "district": "Gangtok",
+        "category": "Trekking",
+        "stage": "Awaiting DTO Verification"
+      },
+      {
+        "id": "flow4",
+        "title": "Flow 4: Direct DTO Approval (Adventure Activity)",
+        "arn": "SK-TP-2026-APP-00560",
+        "district": "Mangan",
+        "category": "Adventure Activities",
+        "stage": "Awaiting DTO Verification"
+      },
+      {
+        "id": "reverification",
+        "title": "Citizen Resubmitted (Awaiting DTO Reverification)",
+        "arn": "SK-TP-2026-APP-00635",
+        "district": "Gangtok",
+        "category": "Events & Fairs",
+        "stage": "Awaiting DTO Reverification"
+      },
+      {
+        "id": "flow5_at_hq",
+        "title": "Flow 5: Forwarded to HQ (Awaiting HQ Review)",
+        "arn": "SK-TP-2026-APP-00890",
+        "district": "Gyalshing",
+        "category": "Expedition",
+        "stage": "Awaiting HQ Verification"
+      },
+      {
+        "id": "hq_under_review",
+        "title": "Under Inter-Departmental HQ Review",
+        "arn": "SK-TP-2026-APP-00620",
+        "district": "Pakyong",
+        "category": "Drone",
+        "stage": "Under HQ Review"
+      },
+      {
+        "id": "hq_awaiting_sheet",
+        "title": "Awaiting HQ Approval Sheet Upload",
+        "arn": "SK-TP-2026-APP-00914",
+        "district": "Namchi",
+        "category": "Trekking",
+        "stage": "Awaiting HQ Approval Sheet"
+      },
+      {
+        "id": "flow5_returned_hq",
+        "title": "Returned by HQ to DTO with Objections",
+        "arn": "SK-TP-2026-APP-00778",
+        "district": "Gangtok",
+        "category": "Expedition",
+        "stage": "Returned by HQ to DTO"
+      },
+      {
+        "id": "flow2",
+        "title": "Flow 2: Application Returned to Citizen for Correction",
+        "arn": "SK-TP-2026-APP-00329",
+        "district": "Namchi",
+        "category": "Events & Fairs",
+        "stage": "Awaiting Citizen Correction"
+      },
+      {
+        "id": "awaiting_final",
+        "title": "Awaiting Final DTO Approval (Approval Sheet Attached)",
+        "arn": "SK-TP-2026-APP-00512",
+        "district": "Gangtok",
+        "category": "Trekking",
+        "stage": "Awaiting Final DTO Approval"
+      },
+      {
+        "id": "approved",
+        "title": "Approved Permission (Permission Letter Issued)",
+        "arn": "SK-TP-2026-APP-00215",
+        "district": "Gangtok",
+        "category": "Trekking",
+        "stage": "Approved \u2013 Permission Letter Issued"
+      },
+      {
+        "id": "flow3",
+        "title": "Flow 3: Application Rejected with Ground Remarks",
+        "arn": "SK-TP-2026-APP-00712",
+        "district": "Gangtok",
+        "category": "Drone",
+        "stage": "Rejected"
+      }
+    ]
+  }
+}

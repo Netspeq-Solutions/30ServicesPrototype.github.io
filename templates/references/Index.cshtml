@@ -1,0 +1,422 @@
+@using Microsoft.Extensions.Options
+@using TEMPLATE.Web.Configuration
+@inject IOptionsSnapshot<GovernmentPortalTheme> PortalTheme
+@{
+    Layout = "_GovernmentLayout";
+    var theme = PortalTheme.Value;
+    var activeTheme = theme.GetTheme();
+    ViewData["Title"] = theme.ServiceName;
+}
+
+<!-- ======================================================================
+     1. Citizen Hero Section
+     ====================================================================== -->
+<section class="gov-hero-section" aria-labelledby="hero-heading">
+    <div class="container-xl">
+        <div class="row align-items-center g-4 g-lg-5">
+            <!-- Left: Hero Text & Call to Actions -->
+            <div class="col-lg-7">
+                <h1 id="hero-heading" class="gov-hero-title">
+                    Empowering Every Citizen with One-Stop Digital Public Services
+                </h1>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="@theme.SikkimGoLoginUrl" class="btn btn-gov-accent btn-lg d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                        <span>Login via Sikkim GO</span>
+                    </a>
+                </div>
+
+                
+            </div>
+
+            <!-- Right: Vector Graphic Illustration -->
+            <div class="col-lg-5 text-center">
+                <img src="@Url.Content(theme.HeroIllustrationPath)" alt="Citizen digital portal illustration with Himalayan peaks, travel agency certificate and QR code verification" class="img-fluid" style="max-height: 360px; width: auto;" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================================================================
+     2. SPSDA Key Service Metrics Floating Bar
+     ====================================================================== -->
+<div class="gov-metrics-strip">
+    <div class="container-xl">
+        <div class="gov-metrics-bar">
+            <div class="row g-3 text-center text-sm-start">
+            <div class="col-6 col-md-3 gov-metric-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                        <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <div class="gov-metric-value">Mobile-Friendly Access</div>
+                        <div class="gov-metric-label">Responsive Service Experience</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                        <i class="fas fa-certificate" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <div class="gov-metric-value">Digital Certificate</div>
+                        <div class="gov-metric-label">Officially Issued Online</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                        <i class="fas fa-route" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <div class="gov-metric-value">Paperless Process</div>
+                        <div class="gov-metric-label">End-to-End Digital Workflow</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                        <i class="fas fa-file-upload" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <div class="gov-metric-value">Online Submission</div>
+                        <div class="gov-metric-label">Apply and Submit Digitally</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================================
+     3. Citizen Quick Action Tiles
+     ====================================================================== -->
+@await Html.PartialAsync("_CitizenQuickAccess", theme)
+
+<!-- ======================================================================
+     5. Service Overview & Key Information Matrix
+     ====================================================================== -->
+<section id="service-overview" class="py-5" aria-labelledby="service-overview-heading">
+    <div class="container-xl">
+        <div class="gov-section-header">
+            <div class="gov-section-eyebrow">Service Details</div>
+            <h2 id="service-overview-heading" class="gov-section-title">Official Guidelines &amp; Requirements</h2>
+            <p class="text-muted">Comprehensive specifications for citizens and tourism enterprises in Sikkim</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="eligibility-criteria">
+            <!-- Card 1: Eligibility -->
+            <div class="col">
+                <div class="gov-card p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img src="@Url.Content(theme.EligibilityImagePath)" alt="Eligibility icon" class="img-fluid" style="width: 56px; height: 56px;" />
+                        <div>
+                            <span class="gov-card-badge mb-1">Prerequisites</span>
+                            <h3 class="h6 fw-bold mb-0">Who Can Apply</h3>
+                        </div>
+                    </div>
+                    <ul class="small text-secondary mb-3 ps-3">
+                        <li class="mb-2">Any citizen of India residing in Sikkim possessing a valid Certificate of Identification (COI) or Residential Certificate (RC).</li>
+                        <li class="mb-2">Valid Trade License issued by the Urban Development Department (UDD) or District Administrative Centre.</li>
+                        <li class="mb-2">Designated commercial office premises within Sikkim with appropriate signage and infrastructure.</li>
+                        <li>Qualified staff with Tourism / Mountaineering certification (preferred).</li>
+                    </ul>
+                    <div class="mt-auto pt-2 border-top">
+                        <span class="small text-muted"><i class="fas fa-check text-success me-1"></i> Review the applicable eligibility criteria.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Documents Checklist -->
+            <div class="col">
+                <div class="gov-card p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img src="@Url.Content(theme.DocumentsImagePath)" alt="Documents checklist icon" class="img-fluid" style="width: 56px; height: 56px;" />
+                        <div>
+                            <span class="gov-card-badge mb-1">Checklist</span>
+                            <h3 class="h6 fw-bold mb-0">Required Documents</h3>
+                        </div>
+                    </div>
+                    <ul class="small text-secondary mb-3 ps-3">
+                        <li class="mb-2">Copy of Certificate of Identification (COI) / Sikkim Subject Certificate / RC.</li>
+                        <li class="mb-2">Valid Trade License / Firm Registration Certificate.</li>
+                        <li class="mb-2">Rent Agreement or Proof of Ownership of commercial office premises.</li>
+                        <li class="mb-2">PAN Card &amp; GSTIN Registration (if annual turnover exceeds statutory threshold).</li>
+                        <li>Passport size photograph of the proprietor / authorized partners.</li>
+                    </ul>
+                    <div class="mt-auto pt-2 border-top">
+                        <span class="small text-muted"><i class="fas fa-file-pdf text-danger me-1"></i> Prepare the required supporting documents.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Fees & Timeline -->
+            <div class="col" id="fees-timelines">
+                <div class="gov-card p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img src="@Url.Content(theme.FeesImagePath)" alt="Fees and timeline icon" class="img-fluid" style="width: 56px; height: 56px;" />
+                        <div>
+                            <span class="gov-card-badge mb-1">Statutory Fees</span>
+                            <h3 class="h6 fw-bold mb-0">Fees &amp; Timelines</h3>
+                        </div>
+                    </div>
+                    <div class="table-responsive small mb-3">
+                        <table class="table table-sm table-bordered align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Service Type</th>
+                                    <th>Govt Fee</th>
+                                    <th>Timeline</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>New Registration</td>
+                                    <td class="fw-bold text-primary">₹ 2,000</td>
+                                    <td>15 Days</td>
+                                </tr>
+                                <tr>
+                                    <td>License Renewal</td>
+                                    <td class="fw-bold text-primary">₹ 1,000</td>
+                                    <td>7 Days</td>
+                                </tr>
+                                <tr>
+                                    <td>Duplicate Copy</td>
+                                    <td class="fw-bold text-primary">₹ 500</td>
+                                    <td>3 Days</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-auto pt-2 border-top">
+                        <span class="small text-muted"><i class="fas fa-shield-alt text-success me-1"></i> Applicable fees and timelines.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================================================================
+     6. Step-by-Step Citizen Roadmap
+     ====================================================================== -->
+<section id="how-to-apply" tabindex="-1" class="py-5 bg-light" aria-labelledby="steps-heading">
+    <div class="container-xl">
+        <div class="gov-section-header text-center">
+            <div class="gov-section-eyebrow">Digital Workflow</div>
+            <h2 id="steps-heading" class="gov-section-title">How to Apply (5 Easy Steps)</h2>
+            <p class="text-muted">A clear, transparent single-window journey from application to digital certificate delivery</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-5 g-3">
+            <!-- Step 1 -->
+            <div class="col">
+                <div class="gov-step-card">
+                    <div class="gov-step-number">1</div>
+                    <h3 class="h6 fw-bold mb-2">Citizen Login</h3>
+                    <p class="small text-muted mb-0">
+                        Sign in via Sikkim GO Single Sign-On using your Aadhaar or registered mobile number.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="col">
+                <div class="gov-step-card">
+                    <div class="gov-step-number">2</div>
+                    <h3 class="h6 fw-bold mb-2">Fill Details</h3>
+                    <p class="small text-muted mb-0">
+                        Complete enterprise details, office premises location, and staff qualifications online.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="col">
+                <div class="gov-step-card">
+                    <div class="gov-step-number">3</div>
+                    <h3 class="h6 fw-bold mb-2">Upload &amp; Pay</h3>
+                    <p class="small text-muted mb-0">
+                        Upload self-attested documents and pay prescribed government fee via SBI ePay / UPI.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="col">
+                <div class="gov-step-card">
+                    <div class="gov-step-number">4</div>
+                    <h3 class="h6 fw-bold mb-2">Dept Scrutiny</h3>
+                    <p class="small text-muted mb-0">
+                        Application is scrutinized by the Tourism Inspector with automated SMS notifications.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="col">
+                <div class="gov-step-card">
+                    <div class="gov-step-number">5</div>
+                    <h3 class="h6 fw-bold mb-2">QR Certificate</h3>
+                    <p class="small text-muted mb-0">
+                        Download your digitally signed official Registration Certificate with tamper-proof QR code.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4 pt-2">
+            <a href="@theme.SikkimGoLoginUrl" class="btn btn-gov-accent btn-lg px-4" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-arrow-right me-2" aria-hidden="true"></i> Start Application Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ======================================================================
+     7. Official Downloads & Citizen Resources
+     ====================================================================== -->
+@await Html.PartialAsync("_ServiceNotificationsResources", theme)
+
+<!-- ======================================================================
+     8. Frequently Asked Questions (FAQ) Accordion
+     ====================================================================== -->
+<section id="faq-section" class="py-5 bg-light" aria-labelledby="faq-heading">
+    <div class="container-xl">
+        <div class="gov-section-header text-center">
+            <div class="gov-section-eyebrow">Citizen Helpdesk</div>
+            <h2 id="faq-heading" class="gov-section-title">Frequently Asked Questions</h2>
+            <p class="text-muted">Instant answers to common questions about tourism registrations in Sikkim</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="accordion" id="portalFaqAccordion">
+                    <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                        <h3 class="accordion-header" id="faqOneHeading">
+                            <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                                Who is required to register under the Sikkim Registration of Tourist Trade Act?
+                            </button>
+                        </h3>
+                        <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#portalFaqAccordion">
+                            <div class="accordion-body small text-secondary">
+                                Any person, firm, or company operating or intending to operate as a Travel Agent, Tour Operator, Excursion Agent, Adventure Tour Provider, or Trekking Operator within the territorial jurisdiction of Sikkim must obtain a valid certificate of registration from the Tourism &amp; Civil Aviation Department.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                        <h3 class="accordion-header" id="faqTwoHeading">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                                What is the validity of the Registration Certificate and how do I renew it?
+                            </button>
+                        </h3>
+                        <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#portalFaqAccordion">
+                            <div class="accordion-body small text-secondary">
+                                The registration certificate is valid for a period of three (3) years from the date of issue. Applications for renewal should be submitted online through the Sikkim GO portal at least thirty (30) days prior to the date of expiry.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                        <h3 class="accordion-header" id="faqThreeHeading">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                                What happens if my application is not processed within the 15-day timeline?
+                            </button>
+                        </h3>
+                        <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#portalFaqAccordion">
+                            <div class="accordion-body small text-secondary">
+                                Under the Sikkim Public Services Delivery Act (SPSDA), this service carries a legally mandated delivery timeframe of 15 working days. If the stipulated timeline is breached without justifiable cause, citizens have the right to lodge a formal appeal before the First Appellate Authority (Secretary, Tourism Department) or via the Samadhan Grievance Portal.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                        <h3 class="accordion-header" id="faqFourHeading">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                                How can third parties or tourists verify the authenticity of my licence?
+                            </button>
+                        </h3>
+                        <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#portalFaqAccordion">
+                            <div class="accordion-body small text-secondary">
+                                Each digitally issued certificate includes an encrypted, tamper-proof QR code and a unique reference registration number. Anyone can scan the QR code using any smartphone camera to view the live verification status directly on the official Government of Sikkim domain.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================================================================
+     9. District Facilitation Centers & Contact Helpline
+     ====================================================================== -->
+<section id="help-contacts" class="py-5" aria-labelledby="contacts-heading">
+    <div class="container-xl">
+        <div class="gov-section-header">
+            <div class="gov-section-eyebrow">District Facilitation</div>
+            <h2 id="contacts-heading" class="gov-section-title">District Helpdesks &amp; Support Centers</h2>
+            <p class="text-muted">Need in-person assistance? Visit your nearest District Administrative Centre</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+            <div class="col">
+                <div class="card h-100 border p-3 rounded-3">
+                    <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Gangtok (Headquarters)</div>
+                    <div class="small text-muted mt-1">Paryatan Bhawan, Tadong, Gangtok - 737102</div>
+                    <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-209090</div>
+                    <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-gangtok@sikkim.gov.in</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border p-3 rounded-3">
+                    <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Namchi District Office</div>
+                    <div class="small text-muted mt-1">DAC Complex, Namchi, South Sikkim - 737126</div>
+                    <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-254210</div>
+                    <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-namchi@sikkim.gov.in</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border p-3 rounded-3">
+                    <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Gyalshing District Office</div>
+                    <div class="small text-muted mt-1">DAC Complex, Gyalshing, West Sikkim - 737111</div>
+                    <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-250810</div>
+                    <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-gyalshing@sikkim.gov.in</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border p-3 rounded-3">
+                    <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Mangan District Office</div>
+                    <div class="small text-muted mt-1">DAC Complex, Mangan, North Sikkim - 737116</div>
+                    <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-234205</div>
+                    <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-mangan@sikkim.gov.in</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border p-3 rounded-3">
+                    <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Soreng District Office</div>
+                    <div class="small text-muted mt-1">DAC Complex, Soreng, Sikkim - 737121</div>
+                    <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03595-257002</div>
+                    <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-soreng@sikkim.gov.in</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border p-3 rounded-3">
+                    <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2"></i>Pakyong District Office</div>
+                    <div class="small text-muted mt-1">DAC Complex, Pakyong, Sikkim - 737106</div>
+                    <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted"></i> 03592-258014</div>
+                    <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted"></i> tourism-pakyong@sikkim.gov.in</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

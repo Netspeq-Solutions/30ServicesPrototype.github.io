@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#24476B">
+  <title>Tourism Officer (Level 0) Desk &bull; Tourism Business &amp; Outdoor Photography Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .officer-sidebar {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      flex-shrink: 0 !important;
+      background: #ffffff;
+      border-right: 1px solid var(--gov-border, #D5E0EB);
+      min-height: calc(100vh - 120px);
+    }
+    .officer-stat-card {
+      background: #ffffff;
+      border: 1px solid var(--gov-border, #D5E0EB);
+      border-radius: var(--gov-radius-lg, 10px);
+      padding: 1.15rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      height: 100%;
+    }
+    .officer-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(36, 71, 107, 0.08);
+      border-color: var(--gov-primary, #24476B);
+    }
+    .officer-stat-card.active-kpi {
+      border: 2px solid var(--gov-primary, #24476B) !important;
+      background-color: var(--gov-primary-light, #F7F9FC) !important;
+    }
+    .officer-stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--gov-primary, #24476B);
+    }
+  </style>
+</head>
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Navigation -->
+  <a class="gov-skip-link" href="#main-to-content">Skip to Main Content</a>
+
+  <!-- Tricolor Flag Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Top Reviewer Controller Bar (Stage 04 Standard) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Controller" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-primary text-white fw-bold px-2 py-1">
+            <i class="bi bi-shield-check me-1"></i> LEVEL 0: TO SCRUTINY DESK
+          </span>
+          <span class="fw-semibold text-white">Jurisdiction:</span>
+          <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 250px; font-size: 0.8rem;" onchange="changeDistrictQueue(this.value)">
+            <option value="ALL">All Circles (Statewide Overview)</option>
+            <option value="Gangtok" selected>Gangtok Circle (HQ)</option>
+            <option value="Namchi">Namchi Circle</option>
+            <option value="Gyalshing">Gyalshing Circle</option>
+            <option value="Mangan">Mangan Circle</option>
+            <option value="Pakyong">Pakyong Circle</option>
+            <option value="Soreng">Soreng Circle</option>
+          </select>
+
+          <!-- Quick Scenario / Application Switcher -->
+          <span class="text-white-50 ms-1 d-none d-md-inline">&bull; Quick Review:</span>
+          <select id="quickArnJumpSelect" class="form-select form-select-sm py-0 px-2 border-0 bg-light text-dark fw-semibold shadow-xs d-none d-md-inline-block" style="max-width: 320px; font-size: 0.775rem;" onchange="openToScrutinyModal(this.value)">
+            <option value="">-- Jump to Specific Application --</option>
+            <option value="SK-TBR-2026-TA-00101">[New TA] SK-TBR-00101 &bull; Travel Agent</option>
+            <option value="SK-TBR-2026-TO-00145">[TO Review] SK-TBR-00145 &bull; Tour Operator</option>
+            <option value="SK-TBR-2026-DLR-00305">[Dealer IA] SK-TBR-00305 &bull; Equipment Store</option>
+            <option value="SK-TBR-2026-PHO-00402">[Photographer] SK-TBR-00402 &bull; Portfolio</option>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle Contrast" onclick="document.body.classList.toggle('high-contrast')">
+            <i class="bi bi-circle-half me-1"></i>Contrast
+          </button>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger py-0 px-2 text-white border-white-50" title="Switch Role">
+            <i class="bi bi-people-fill me-1"></i>Switch Role
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header bg-white py-2 border-bottom shadow-xs no-print" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block flex-shrink-0" title="Portal Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Sikkim Emblem" class="gov-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-title-sikkim text-uppercase small text-muted fw-bold">Government of Sikkim</div>
+            <div class="gov-title-dept text-dark fw-bold">Tourism &amp; Civil Aviation Department</div>
+            <div class="small text-secondary fw-semibold">Level 0: Tourism Officer (TO) Scrutiny Desk</div>
+          </div>
+        </div>
+
+        <!-- Officer Identity & District Switcher -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="toOfficerName">Karma Lhendup Bhutia</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-info-subtle text-info border border-info-subtle">Level 0: TO</span>
+              <span id="toDistrictLabel">Gangtok Circle</span>
+            </div>
+          </div>
+          <div class="d-flex gap-1.5">
+            <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Switch Role</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container: Sidebar + Content -->
+  <div class="d-flex flex-column flex-lg-row flex-grow-1 w-100 overflow-hidden officer-workspace-container">
+    
+    <!-- Officer Sidebar Nav (260px Desktop) -->
+    <aside class="officer-sidebar p-3 border-end bg-white" aria-label="TO Work Queues">
+      <div class="mb-3 pb-2 border-bottom">
+        <label for="districtFilter" class="form-label small fw-bold text-dark mb-1">
+          <i class="bi bi-geo-alt-fill text-danger me-1"></i> Active District Circle:
+        </label>
+        <select class="form-select form-select-sm" id="districtFilter" onchange="changeDistrictQueue(this.value)">
+          <option value="Gangtok" selected>Gangtok Circle (HQ)</option>
+          <option value="Namchi">Namchi Circle</option>
+          <option value="Gyalshing">Gyalshing Circle</option>
+          <option value="Mangan">Mangan Circle</option>
+          <option value="Pakyong">Pakyong Circle</option>
+          <option value="Soreng">Soreng Circle</option>
+          <option value="ALL">All Circles (Statewide)</option>
+        </select>
+      </div>
+
+      <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        Level 0 Work Queues
+      </div>
+
+      <nav class="nav flex-column gap-1 mb-4">
+        <a href="javascript:void(0)" class="officer-nav-link active" onclick="filterQueue('PENDING', this)">
+          <i class="bi bi-inbox-fill text-primary"></i>
+          <span>Pending Scrutiny</span>
+          <span class="badge bg-primary text-white" id="badgePending">3</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('DEALER', this)">
+          <i class="bi bi-cart-check text-warning"></i>
+          <span>Dealer Applications</span>
+          <span class="badge bg-warning text-dark" id="badgeDealers">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('FORWARDED_IA', this)">
+          <i class="bi bi-arrow-right-circle text-info"></i>
+          <span>Forwarded to IA</span>
+          <span class="badge bg-info text-white" id="badgeFwdIA">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('RETURNED', this)">
+          <i class="bi bi-arrow-repeat text-danger"></i>
+          <span>Returned to Citizen</span>
+          <span class="badge bg-danger text-white" id="badgeReturned">1</span>
+        </a>
+        <a href="javascript:void(0)" class="officer-nav-link" onclick="filterQueue('ALL', this)">
+          <i class="bi bi-folder2 text-secondary"></i>
+          <span>All Submissions</span>
+          <span class="badge bg-secondary text-white" id="badgeAll">5</span>
+        </a>
+      </nav>
+
+      <div class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+        Role Hierarchy Navigation
+      </div>
+      <nav class="nav flex-column gap-1 small">
+        <a href="dashboard-ia.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-building-check text-warning"></i>
+          <span>Inspect Level 1 (IA Desk)</span>
+        </a>
+        <a href="dashboard-dto.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-award text-success"></i>
+          <span>Inspect Level 2 (DTO Desk)</span>
+        </a>
+        <a href="dashboard.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-person text-primary"></i>
+          <span>Citizen Workspace</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main TO Content Area -->
+    <main id="main-to-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0" role="main">
+      
+      <!-- Top Workspace Bar -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <h1 class="h5 fw-bold text-dark mb-0">Level 0 Scrutiny Desk &bull; <span id="queueHeadingDistrict">Gangtok Circle</span></h1>
+          <p class="text-muted small mb-0">Initial document checks, trade license verification, and inspection assignment.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" onclick="refreshQueue()">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span>Refresh Queue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 KPI Cards -->
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card active-kpi" onclick="filterQueue('PENDING')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Pending Scrutiny</span>
+              <i class="bi bi-inbox-fill text-primary"></i>
+            </div>
+            <div class="officer-stat-number" id="kpiToPending">3</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Awaiting TO initial action</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('DEALER')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Dealer Category</span>
+              <i class="bi bi-cart-check text-warning"></i>
+            </div>
+            <div class="officer-stat-number text-warning" id="kpiToDealer">1</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Requires IA physical inspection</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('FORWARDED_IA')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Assigned to IA</span>
+              <i class="bi bi-arrow-right-circle text-info"></i>
+            </div>
+            <div class="officer-stat-number text-info" id="kpiToIA">1</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">Field inspection in progress</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" onclick="filterQueue('ALL')">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small fw-bold text-dark">Total Registered</span>
+              <i class="bi bi-folder2 text-secondary"></i>
+            </div>
+            <div class="officer-stat-number text-dark" id="kpiToTotal">5</div>
+            <div class="text-muted small" style="font-size: 0.72rem;">In selected district circle</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Applications Queue Card -->
+      <div class="card border shadow-xs bg-white rounded-3">
+        <div class="card-header bg-white py-2.5 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-list-task text-primary"></i>
+            <h2 class="h6 fw-bold text-dark mb-0" id="queueTableTitle">Pending TO Scrutiny Applications</h2>
+          </div>
+          <div class="d-flex gap-2">
+            <input type="text" class="form-control form-control-sm" id="searchQueueInput" placeholder="Search ID or Applicant..." style="max-width: 220px;" oninput="applyFilters()">
+            <select class="form-select form-select-sm" id="categoryFilterSelect" style="max-width: 180px;" onchange="applyFilters()">
+              <option value="ALL">All Categories</option>
+              <option value="travel-agent">Travel Agent</option>
+              <option value="tour-operator">Tour Operator</option>
+              <option value="dealer">Dealer</option>
+              <option value="outdoor-photographer">Outdoor Photographer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="toQueueTable">
+              <thead class="table-light small">
+                <tr>
+                  <th scope="col" style="width: 17%;">APPLICATION ID</th>
+                  <th scope="col" style="width: 16%;">CATEGORY</th>
+                  <th scope="col" style="width: 25%;">APPLICANT &amp; BUSINESS</th>
+                  <th scope="col" style="width: 14%;">SUBMITTED</th>
+                  <th scope="col" style="width: 14%;">STATUS / STAGE</th>
+                  <th scope="col" class="text-end" style="width: 14%;">ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="toQueueTableBody">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: TO Scrutiny Action Modal -->
+  <div class="modal fade" id="toActionModal" tabindex="-1" aria-labelledby="toActionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white" style="background-color: var(--gov-primary, #24476B);">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-clipboard2-check"></i>
+            <h5 class="modal-title fw-bold mb-0" id="toActionModalLabel">Level 0 TO Scrutiny &amp; Verification</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light small">
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <div class="row g-2">
+              <div class="col-md-6"><span class="text-muted">Application ID:</span> <strong class="text-primary font-monospace" id="modalToArn">SK-TBR-2026-TA-00101</strong></div>
+              <div class="col-md-6"><span class="text-muted">Applicant Name:</span> <strong class="text-dark" id="modalToApplicant">Phurba Tshering Bhutia</strong></div>
+              <div class="col-md-6"><span class="text-muted">Category:</span> <strong class="text-dark" id="modalToCategory">Travel Agent Registration</strong></div>
+              <div class="col-md-6"><span class="text-muted">Trade License:</span> <strong class="text-dark" id="modalToTrade">GMC/TL/2026/8941</strong></div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-white rounded-3 border mb-3">
+            <h3 class="h6 fw-bold text-dark mb-2">Level 0 Verification Checklist:</h3>
+            <div class="form-check mb-1.5">
+              <input class="form-check-input" type="checkbox" id="chkIdProof" checked>
+              <label class="form-check-label" for="chkIdProof">COI / Sikkim Subject / Identity verified</label>
+            </div>
+            <div class="form-check mb-1.5">
+              <input class="form-check-input" type="checkbox" id="chkTradeLicense" checked>
+              <label class="form-check-label" for="chkTradeLicense">Local Municipal / GPU Trade License verified active</label>
+            </div>
+            <div class="form-check mb-1.5">
+              <input class="form-check-input" type="checkbox" id="chkPremiseProof" checked>
+              <label class="form-check-label" for="chkPremiseProof">Commercial premise lease / ownership proof verified</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="chkStatutoryFee">
+              <label class="form-check-label" for="chkStatutoryFee">Statutory fee deposit voucher verified</label>
+            </div>
+          </div>
+
+          <!-- TO Action Decision -->
+          <div class="p-3 bg-white rounded-3 border">
+            <h3 class="h6 fw-bold text-dark mb-2">TO Decision &amp; Forwarding:</h3>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <button type="button" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1" onclick="submitToDecision('FORWARD_DTO')">
+                <i class="bi bi-check2-circle"></i>
+                <span>Scrutiny Satisfactory &bull; Forward to DTO</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-warning d-inline-flex align-items-center gap-1" onclick="submitToDecision('ASSIGN_IA')">
+                <i class="bi bi-building-check"></i>
+                <span>Assign to Level 1 IA (Physical Inspection)</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" onclick="submitToDecision('RETURN_CITIZEN')">
+                <i class="bi bi-arrow-repeat"></i>
+                <span>Return to Citizen for Clarification</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mandatory GIGW 3.0 Footer -->
+  <footer class="gov-footer py-2.5 border-top bg-white text-muted small" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>&copy; 2026 Government of Sikkim. Tourism &amp; Civil Aviation Department.</div>
+      <div class="d-flex align-items-center gap-3">
+        <span>GIGW 3.0 / WCAG 2.1 Level AA</span>
+        <span>&bull;</span>
+        <a href="role-select.html" class="text-decoration-none text-muted">Role Gateway</a>
+        <span>&bull;</span>
+        <a href="index.html" class="text-decoration-none text-muted">Portal Home</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script>
+    let activeDistrict = 'Gangtok';
+    let currentFilterQueue = 'ALL';
+
+    function changeDistrictQueue(dist) {
+      activeDistrict = dist;
+      document.getElementById('toDistrictLabel').textContent = dist === 'ALL' ? 'Statewide (All Circles)' : dist + ' Circle';
+      document.getElementById('queueHeadingDistrict').textContent = dist === 'ALL' ? 'All Circles' : dist + ' Circle';
+      
+      const dir = TourismBusinessData.getDistrictOfficers(dist);
+      if (dir && dir.officers && dir.officers.to) {
+        document.getElementById('toOfficerName').textContent = dir.officers.to.name;
+      }
+      applyFilters();
+    }
+
+    function filterQueue(qType, el) {
+      currentFilterQueue = qType;
+      document.querySelectorAll('.officer-nav-link').forEach(l => l.classList.remove('active'));
+      if (el) el.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const search = (document.getElementById('searchQueueInput').value || '').toLowerCase();
+      const cat = document.getElementById('categoryFilterSelect').value;
+
+      let list = TourismBusinessData.allApplications;
+      if (activeDistrict !== 'ALL') {
+        list = list.filter(a => a.district === activeDistrict);
+      }
+
+      // Counts
+      document.getElementById('badgePending').textContent = list.filter(a => a.assignedRole === 'TO' && a.status === 'SUBMITTED').length;
+      document.getElementById('badgeDealers').textContent = list.filter(a => a.category === 'dealer').length;
+      document.getElementById('badgeFwdIA').textContent = list.filter(a => a.assignedRole === 'IA').length;
+      document.getElementById('badgeReturned').textContent = list.filter(a => a.status === 'RETURNED').length;
+      document.getElementById('badgeAll').textContent = list.length;
+
+      document.getElementById('kpiToPending').textContent = list.filter(a => a.assignedRole === 'TO' && a.status === 'SUBMITTED').length;
+      document.getElementById('kpiToDealer').textContent = list.filter(a => a.category === 'dealer').length;
+      document.getElementById('kpiToIA').textContent = list.filter(a => a.assignedRole === 'IA').length;
+      document.getElementById('kpiToTotal').textContent = list.length;
+
+      // Filter by queue
+      if (currentFilterQueue === 'PENDING') {
+        list = list.filter(a => a.assignedRole === 'TO' && a.status === 'SUBMITTED');
+        document.getElementById('queueTableTitle').textContent = 'Pending TO Scrutiny Applications';
+      } else if (currentFilterQueue === 'DEALER') {
+        list = list.filter(a => a.category === 'dealer');
+        document.getElementById('queueTableTitle').textContent = 'Dealer Applications (Inspection Focus)';
+      } else if (currentFilterQueue === 'FORWARDED_IA') {
+        list = list.filter(a => a.assignedRole === 'IA');
+        document.getElementById('queueTableTitle').textContent = 'Applications Assigned to Level 1 IA';
+      } else if (currentFilterQueue === 'RETURNED') {
+        list = list.filter(a => a.status === 'RETURNED');
+        document.getElementById('queueTableTitle').textContent = 'Returned to Applicant for Clarification';
+      } else {
+        document.getElementById('queueTableTitle').textContent = 'All Applications in Queue';
+      }
+
+      // Filter by category
+      if (cat !== 'ALL') {
+        list = list.filter(a => a.category === cat);
+      }
+
+      // Search
+      if (search) {
+        list = list.filter(a => a.refNo.toLowerCase().includes(search) || (a.applicantName && a.applicantName.toLowerCase().includes(search)) || (a.businessName && a.businessName.toLowerCase().includes(search)));
+      }
+
+      renderTable(list);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('toQueueTableBody');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted small">No applications match the active queue and filter criteria.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      list.forEach(app => {
+        let badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
+        if (app.category === 'dealer') badgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
+        else if (app.category === 'outdoor-photographer') badgeClass = 'bg-success-subtle text-success border border-success-subtle';
+
+        let statusPill = `<span class="badge bg-info-subtle text-info border border-info-subtle">${app.processingStage}</span>`;
+        if (app.status === 'APPROVED') statusPill = `<span class="badge bg-success text-white">Approved</span>`;
+        else if (app.status === 'RETURNED') statusPill = `<span class="badge bg-danger text-white">Returned</span>`;
+
+        html += `
+          <tr>
+            <td>
+              <span class="font-monospace fw-bold text-primary">${app.refNo}</span>
+              <div class="small text-muted" style="font-size: 0.72rem;"><i class="bi bi-geo-alt"></i> ${app.district}</div>
+            </td>
+            <td>
+              <span class="badge ${badgeClass}">${app.categoryName}</span>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${app.businessName}</div>
+              <div class="small text-muted">${app.applicantName || 'Applicant'} &bull; Ph: ${app.applicantContact || 'N/A'}</div>
+            </td>
+            <td class="small text-secondary text-nowrap">${app.submittedDate}</td>
+            <td class="small">${statusPill}</td>
+            <td class="text-end text-nowrap">
+              <button type="button" class="btn btn-sm btn-gov-primary py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1" onclick="openToScrutinyModal('${app.refNo}')">
+                <i class="bi bi-pencil-square"></i>
+                <span>Scrutinize</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function openToScrutinyModal(refNo) {
+      const app = TourismBusinessData.allApplications.find(a => a.refNo === refNo);
+      if (app) {
+        document.getElementById('modalToArn').textContent = app.refNo;
+        document.getElementById('modalToApplicant').textContent = app.applicantName || app.businessName;
+        document.getElementById('modalToCategory').textContent = app.categoryName;
+        document.getElementById('modalToTrade').textContent = app.tradeLicenseNo || 'Under Verification';
+      }
+      const modal = new bootstrap.Modal(document.getElementById('toActionModal'));
+      modal.show();
+    }
+
+    function submitToDecision(decision) {
+      if (decision === 'FORWARD_DTO') {
+        alert("Level 0 TO Scrutiny confirmed satisfactory. Application forwarded to Level 2 District Tourism Officer (DTO).");
+      } else if (decision === 'ASSIGN_IA') {
+        alert("Assigned to Level 1 Inspecting Authority (IA) for on-site physical inspection.");
+      } else if (decision === 'RETURN_CITIZEN') {
+        alert("Application returned to citizen with remarks requesting renewed trade license.");
+      }
+      const modal = bootstrap.Modal.getInstance(document.getElementById('toActionModal'));
+      if (modal) modal.hide();
+      applyFilters();
+    }
+
+    function refreshQueue() {
+      applyFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const savedDist = localStorage.getItem('tb_active_district') || 'Gangtok';
+      document.getElementById('districtFilter').value = savedDist;
+      changeDistrictQueue(savedDist);
+    });
+  </script>
+</body>
+</html>
+

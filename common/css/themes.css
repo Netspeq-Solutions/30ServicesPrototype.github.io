@@ -1,0 +1,299 @@
+/**
+ * THEME ARCHITECTURE & CENTRALIZED CSS VARIABLES
+ * Framework: Sikkim Government Services Prototype Framework
+ * 
+ * Themes are applied via data-theme attribute on <body> or <html>:
+ * e.g., <body data-theme="default"> or <body data-theme="forest-green">
+ * 
+ * High Contrast is applied via data-contrast="high":
+ * e.g., <body data-contrast="high">
+ * 
+ * Note: Departmental palettes can be configured here without modifying HTML pages.
+ */
+
+:root {
+  /* ========================================================
+     1. COLOR SYSTEM - DEFAULT THEME (Sikkim Alpine Slate Blue)
+     ======================================================== */
+  --gov-primary: #0b4d75;
+  --gov-primary-hover: #083856;
+  --gov-primary-light: #e8f2f8;
+  --gov-secondary: #2b7a78;
+  --gov-secondary-hover: #205c5a;
+  --gov-accent: #c25912;
+  --gov-accent-light: #fef4ec;
+
+  /* Neutrals & Surfaces */
+  --gov-bg: #f4f6f9;
+  --gov-surface: #ffffff;
+  --gov-surface-secondary: #f8fafc;
+  --gov-border: #d0d7de;
+  --gov-border-light: #e8edf2;
+  --gov-divider: #e5e7eb;
+
+  /* Typography Colors */
+  --gov-text: #1f2937;
+  --gov-text-muted: #596574;
+  --gov-text-heading: #0f172a;
+  --gov-text-inverse: #ffffff;
+
+  /* Functional Status Colors (Standardized Indian Gov semantics) */
+  --gov-success: #1b7a43;
+  --gov-success-light: #e8f6ed;
+  --gov-success-border: #a3d9b5;
+
+  --gov-warning: #b26a00;
+  --gov-warning-light: #fff8e6;
+  --gov-warning-border: #fcd580;
+
+  --gov-danger: #c5221f;
+  --gov-danger-light: #fdeeed;
+  --gov-danger-border: #f7a9a6;
+
+  --gov-info: #0277bd;
+  --gov-info-light: #e1f5fe;
+  --gov-info-border: #81d4fa;
+
+  /* Status Badges */
+  --gov-badge-draft-bg: #e2e8f0;
+  --gov-badge-draft-color: #334155;
+  --gov-badge-submitted-bg: #e0f2fe;
+  --gov-badge-submitted-color: #0369a1;
+  --gov-badge-review-bg: #fef3c7;
+  --gov-badge-review-color: #92400e;
+  --gov-badge-approved-bg: #dcfce7;
+  --gov-badge-approved-color: #166534;
+  --gov-badge-rejected-bg: #fee2e2;
+  --gov-badge-rejected-color: #991b1b;
+
+  /* UI Component Surfaces */
+  --gov-utility-bg: #14212e;
+  --gov-header-bg: #ffffff;
+  --gov-footer-bg: #1a2530;
+  --gov-sidebar-bg: #ffffff;
+  --gov-sidebar-active: #e8f2f8;
+  --gov-sidebar-border: #e2e8f0;
+
+  /* Shadows */
+  --gov-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --gov-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --gov-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --gov-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Geometry & Radii */
+  --gov-radius-sm: 4px;
+  --gov-radius-md: 6px;
+  --gov-radius-lg: 10px;
+  --gov-radius-pill: 50rem;
+
+  /* Focus Indicator */
+  --gov-focus-ring: 0 0 0 3px rgba(255, 204, 0, 0.85);
+
+  /* Spacing Scale */
+  --gov-space-1: 0.25rem;
+  --gov-space-2: 0.5rem;
+  --gov-space-3: 0.75rem;
+  --gov-space-4: 1rem;
+  --gov-space-5: 1.5rem;
+  --gov-space-6: 2rem;
+  --gov-space-8: 3rem;
+}
+
+/* ========================================================
+   2. ALTERNATIVE DEPARTMENT THEMES (CONFIGURABLE ARCHITECTURE)
+   ======================================================== */
+
+/* Theme 1: Forest & Environment, Tourism (Forest Green Theme) */
+[data-theme="forest-green"],
+body.theme-forest-green {
+  --gov-primary: #114b3f;
+  --gov-primary-hover: #0d3a31;
+  --gov-primary-light: #e6f4ea;
+  --gov-secondary: #165b4c;
+  --gov-secondary-hover: #0f4237;
+  --gov-accent: #d97706;
+  --gov-accent-hover: #b45309;
+  --gov-accent-light: #fef3c7;
+  --gov-utility-bg: #0d382f;
+  --gov-footer-bg: #0f2923;
+  --gov-sidebar-active: #e6f4ea;
+}
+
+/* Theme 2: Tourism, Cultural Affairs, Heritage */
+[data-theme="saffron-maroon"],
+body.theme-saffron-maroon {
+  --gov-primary: #8a1428;
+  --gov-primary-hover: #680d1d;
+  --gov-primary-light: #fae8eb;
+  --gov-secondary: #c25912;
+  --gov-secondary-hover: #9e460c;
+  --gov-accent: #f59e0b;
+  --gov-accent-light: #fffbeb;
+  --gov-utility-bg: #2d070e;
+  --gov-footer-bg: #2a0b12;
+  --gov-sidebar-active: #fae8eb;
+}
+
+/* Theme 3: Information Technology, Skill Development, Science */
+[data-theme="royal-navy"],
+body.theme-royal-navy {
+  --gov-primary: #1e3a8a;
+  --gov-primary-hover: #172554;
+  --gov-primary-light: #eff6ff;
+  --gov-secondary: #0284c7;
+  --gov-secondary-hover: #0369a1;
+  --gov-accent: #d97706;
+  --gov-accent-light: #fef3c7;
+  --gov-utility-bg: #0b1533;
+  --gov-footer-bg: #0f172a;
+  --gov-sidebar-active: #eff6ff;
+}
+
+/* Theme 4: Urban Development, Commerce, Municipal Affairs */
+[data-theme="teal"],
+body.theme-teal {
+  --gov-primary: #0f766e;
+  --gov-primary-hover: #115e59;
+  --gov-primary-light: #f0fdfa;
+  --gov-secondary: #0369a1;
+  --gov-secondary-hover: #075985;
+  --gov-accent: #b45309;
+  --gov-accent-light: #fffbeb;
+  --gov-utility-bg: #042f2e;
+  --gov-footer-bg: #082827;
+  --gov-sidebar-active: #f0fdfa;
+}
+
+
+/* Theme 5: Tourism Business & Outdoor Photography Registration (Alpine Blue Theme) */
+[data-theme="alpine-blue"],
+body.theme-alpine-blue {
+  --gov-primary: #24476B;
+  --gov-primary-hover: #18334F;
+  --gov-primary-dark: #18334F;
+  --gov-primary-light: #F7F9FC;
+  --gov-accent: #4C78A8;
+  --gov-accent-hover: #3D668F;
+  --gov-secondary: #172E46;
+  --gov-secondary-hover: #102133;
+  --gov-light-bg: #F7F9FC;
+  --gov-border: #D5E0EB;
+  --gov-utility-bg: #18334F;
+  --gov-footer-bg: #14293D;
+  --gov-sidebar-active: #e8f0f8;
+}
+
+/* ========================================================
+   3. GIGW 3.0 ACCESSIBILITY: HIGH CONTRAST MODE
+   ======================================================== */
+[data-contrast="high"],
+body.contrast-high {
+  --gov-primary: #ffff00 !important;
+  --gov-primary-hover: #ffff99 !important;
+  --gov-primary-light: #222222 !important;
+  --gov-secondary: #00ffff !important;
+  --gov-secondary-hover: #66ffff !important;
+  --gov-accent: #ff9900 !important;
+  
+  --gov-bg: #000000 !important;
+  --gov-surface: #000000 !important;
+  --gov-surface-secondary: #121212 !important;
+  --gov-border: #ffffff !important;
+  --gov-border-light: #cccccc !important;
+  --gov-divider: #ffffff !important;
+  
+  --gov-text: #ffffff !important;
+  --gov-text-muted: #e0e0e0 !important;
+  --gov-text-heading: #ffff00 !important;
+  --gov-text-inverse: #000000 !important;
+  
+  --gov-utility-bg: #000000 !important;
+  --gov-header-bg: #000000 !important;
+  --gov-footer-bg: #000000 !important;
+  --gov-sidebar-bg: #000000 !important;
+  --gov-sidebar-active: #333300 !important;
+  --gov-sidebar-border: #ffffff !important;
+
+  --gov-shadow-xs: none !important;
+  --gov-shadow-sm: none !important;
+  --gov-shadow-md: none !important;
+  --gov-shadow-lg: none !important;
+}
+
+[data-contrast="high"] .gov-emblem,
+body.contrast-high .gov-emblem {
+  filter: brightness(0) invert(1) !important;
+}
+
+[data-contrast="high"] body,
+body.contrast-high {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+[data-contrast="high"] .card,
+[data-contrast="high"] .navbar,
+[data-contrast="high"] .dropdown-menu,
+[data-contrast="high"] .modal-content,
+[data-contrast="high"] .table,
+[data-contrast="high"] input,
+[data-contrast="high"] select,
+[data-contrast="high"] textarea {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+[data-contrast="high"] a {
+  color: #ffff00 !important;
+  text-decoration: underline !important;
+}
+
+[data-contrast="high"] a:hover,
+[data-contrast="high"] a:focus {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+}
+
+[data-contrast="high"] .gov-navbar,
+body.contrast-high .gov-navbar {
+  background-color: #000000 !important;
+  border-bottom: 2px solid #ffffff !important;
+}
+
+[data-contrast="high"] .gov-navbar .nav-link,
+body.contrast-high .gov-navbar .nav-link {
+  color: #ffffff !important;
+}
+
+[data-contrast="high"] .gov-navbar .nav-link:hover,
+[data-contrast="high"] .gov-navbar .nav-link:focus,
+[data-contrast="high"] .gov-navbar .nav-link.active,
+body.contrast-high .gov-navbar .nav-link:hover,
+body.contrast-high .gov-navbar .nav-link:focus,
+body.contrast-high .gov-navbar .nav-link.active {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+}
+
+[data-contrast="high"] .btn-primary,
+[data-contrast="high"] .btn-gov-primary,
+[data-contrast="high"] .btn-gov-secondary,
+body.contrast-high .btn-primary,
+body.contrast-high .btn-gov-primary,
+body.contrast-high .btn-gov-secondary {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border-color: #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+[data-contrast="high"] .btn-outline-primary,
+[data-contrast="high"] .btn-gov-outline,
+body.contrast-high .btn-outline-primary,
+body.contrast-high .btn-gov-outline {
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+  background-color: transparent !important;
+}
+

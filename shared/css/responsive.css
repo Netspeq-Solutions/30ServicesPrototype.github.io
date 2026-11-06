@@ -1,0 +1,199 @@
+/**
+ * RESPONSIVE & MOBILE ADAPTATION STYLESHEET
+ * Framework: Sikkim Government Services Prototype Framework
+ * Compliance: GIGW 3.0 Mobile First & Touch Target Standards
+ */
+
+/* ========================================================
+   1. TOUCH ACCESSIBILITY (WCAG 2.5.5 / GIGW 3.0)
+   ======================================================== */
+@media (pointer: coarse) {
+  .btn,
+  .gov-navbar .nav-link,
+  .gov-sidebar-link,
+  .form-control,
+  .form-select,
+  .font-resize-btn,
+  .contrast-toggle-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ========================================================
+   2. DESKTOP WORKSPACE LAYOUT (Large Screens >= 992px)
+   ======================================================== */
+@media (min-width: 992px) {
+  .gov-workspace-layout,
+  .officer-workspace-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .gov-workspace-content,
+  #main-dto-content,
+  #main-hq-content,
+  #main-review-content,
+  #main-citizen-content,
+  #main-to-content,
+  #main-ia-content,
+  #main-content {
+    flex: 1 1 0%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    padding: 1.5rem 2rem;
+  }
+}
+
+/* ========================================================
+   3. TABLET & MOBILE BREAKPOINTS (< 992px)
+   ======================================================== */
+@media (max-width: 991.98px) {
+  .gov-header {
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .gov-header .d-flex {
+    flex-direction: column;
+    align-items: center !important;
+    gap: 0.75rem;
+  }
+
+  .gov-emblem {
+    height: 52px;
+  }
+
+  .gov-title-group {
+    text-align: center;
+  }
+
+  .gov-dept-name {
+    font-size: 1.05rem;
+  }
+
+  /* Workspace Layout adjustments */
+  .gov-workspace-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gov-sidebar {
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--gov-border);
+    padding: 1rem;
+  }
+
+  .gov-workspace-content {
+    padding: 1.25rem 0.75rem;
+    max-width: 100%;
+  }
+
+  /* Stepper on tablets */
+  .gov-step-label {
+    font-size: 0.75rem;
+  }
+  
+  .gov-step-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================================
+   4. SMALL MOBILE SCREENS (< 576px)
+   ======================================================== */
+@media (max-width: 575.98px) {
+  .gov-utility-bar {
+    font-size: 0.75rem;
+  }
+
+  .gov-utility-bar .container,
+  .gov-utility-bar .container-fluid {
+    flex-direction: column;
+    gap: 0.35rem;
+    text-align: center;
+    justify-content: center !important;
+  }
+
+  .gov-page-banner {
+    padding: 16px 0;
+  }
+
+  .gov-page-banner h1 {
+    font-size: 1.35rem;
+  }
+
+  /* Stepper mobile scroll or compact layout */
+  .gov-stepper {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .gov-step-item {
+    min-width: 80px;
+  }
+
+  /* Form actions stack on mobile */
+  .form-actions-bar {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  .form-actions-bar .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .gov-stat-card {
+    padding: 1rem;
+  }
+
+  .gov-stat-number {
+    font-size: 1.4rem;
+  }
+}
+
+/* ========================================================
+   5. RESPONSIVE DATA TABLES
+   ======================================================== */
+.gov-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+
+/* ========================================================
+   RESPONSIVE APPLICATION TABLE / CARD SWITCHER (G2C SIKKIM)
+   ======================================================== */
+@media (max-width: 767.98px) {
+  .gov-table-desktop {
+    display: none !important;
+  }
+  .gov-cards-mobile {
+    display: block !important;
+  }
+  .gov-kpi-card {
+    padding: 0.85rem 1rem;
+  }
+  .gov-kpi-count {
+    font-size: 1.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .gov-table-desktop {
+    display: block !important;
+  }
+  .gov-cards-mobile {
+    display: none !important;
+  }
+}

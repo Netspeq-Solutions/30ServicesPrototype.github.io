@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Form - Government of Sikkim</title>
+
+  <!-- Bootstrap 5.3 & Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="../css/gigw-template.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-theme="default">
+
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="gov-top-stripe" role="presentation"></div>
+
+  <!-- Utility Bar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+      <div class="d-flex align-items-center gap-3">
+        <span class="small"><i class="bi bi-geo-alt"></i> Government of Sikkim</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <select id="gov-theme-select" class="form-select form-select-sm py-0 px-2 bg-dark text-white border-secondary" style="font-size: 0.75rem;">
+          <option value="default">Theme: Default Slate</option>
+          <option value="forest-green">Theme: Forest & Revenue</option>
+          <option value="saffron-maroon">Theme: Tourism & Culture</option>
+          <option value="royal-navy">Theme: IT & Science</option>
+          <option value="teal">Theme: Urban Development</option>
+        </select>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="font-resize-btn" id="btn-font-decrease">A-</button>
+          <button type="button" class="font-resize-btn" id="btn-font-reset">A</button>
+          <button type="button" class="font-resize-btn" id="btn-font-increase">A+</button>
+        </div>
+        <button type="button" class="contrast-toggle-btn" id="btn-contrast-toggle"><i class="bi bi-circle-half"></i> Contrast</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header -->
+  <header class="gov-header py-2" role="banner">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="gov-emblem-container">
+            <img src="../assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo" class="gov-emblem" width="56" height="52" style="height: 52px; width: auto;">
+          </div>
+          <div class="gov-title-group">
+            <span class="gov-title-sikkim">Government of Sikkim</span>
+            <div class="fw-bold fs-5 text-dark">[Service Name Placeholder] Application Form</div>
+          </div>
+        </div>
+        <div>
+          <a href="citizen-dashboard-template.html" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg me-1"></i> Cancel & Exit</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Banner -->
+  <div class="gov-page-banner py-3">
+    <div class="container">
+      <h1 class="h4 fw-bold mb-1">[Service Title Placeholder]</h1>
+      <p class="small mb-0">Under Sikkim Public Services Delivery Act. Estimated processing SLA: 15 Working Days.</p>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main id="main-content" class="container py-4">
+    
+    <!-- Multi-Step Stepper Header -->
+    <ul class="gov-stepper" id="application-stepper" role="tablist">
+      <li class="gov-step-item active" id="step-tab-1">
+        <div class="gov-step-circle">1</div>
+        <span class="gov-step-label">Applicant Info</span>
+      </li>
+      <li class="gov-step-item" id="step-tab-2">
+        <div class="gov-step-circle">2</div>
+        <span class="gov-step-label">Service Details</span>
+      </li>
+      <li class="gov-step-item" id="step-tab-3">
+        <div class="gov-step-circle">3</div>
+        <span class="gov-step-label">Enclosures</span>
+      </li>
+      <li class="gov-step-item" id="step-tab-4">
+        <div class="gov-step-circle">4</div>
+        <span class="gov-step-label">Declaration</span>
+      </li>
+    </ul>
+
+    <!-- Multi-Step Form -->
+    <form id="gov-service-form" class="needs-gov-validation" novalidate>
+      
+      <!-- STEP 1: Applicant Details -->
+      <section class="form-step-content" id="step-content-1">
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3><i class="bi bi-person-fill text-primary"></i> Step 1: Personal & Demographic Information</h3>
+            <span class="text-muted small">Fields with <span class="text-danger">*</span> are mandatory</span>
+          </div>
+          <div class="form-section-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="applicantName" class="form-label required">Full Name of Applicant</label>
+                <input type="text" class="form-control" id="applicantName" name="applicantName" required placeholder="As per Sikkim Subject / Aadhaar" value="Tenzing Norbu Lepcha">
+                <div class="invalid-feedback">Please enter applicant full name.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="guardianName" class="form-label required">Father's / Husband's / Guardian's Name</label>
+                <input type="text" class="form-control" id="guardianName" name="guardianName" required placeholder="Full guardian name">
+                <div class="invalid-feedback">Guardian name is required.</div>
+              </div>
+              <div class="col-md-4">
+                <label for="dob" class="form-label required">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" name="dob" required>
+              </div>
+              <div class="col-md-4">
+                <label for="gender" class="form-label required">Gender</label>
+                <select class="form-select" id="gender" name="gender" required>
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="socialCategory" class="form-label required">Social Category</label>
+                <select class="form-select" id="socialCategory" name="socialCategory" required>
+                  <option value="">Select Category</option>
+                  <option value="BL">Bhutia / Lepcha (BL)</option>
+                  <option value="OBC">Other Backward Class (OBC)</option>
+                  <option value="MBC">Most Backward Class (MBC)</option>
+                  <option value="ST">Scheduled Tribe (ST)</option>
+                  <option value="SC">Scheduled Caste (SC)</option>
+                  <option value="GEN">General</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="mobileNo" class="form-label required">Mobile Number (for SMS Alerts)</label>
+                <input type="tel" class="form-control" id="mobileNo" name="mobileNo" data-validate="mobile" required placeholder="10-digit mobile number" value="9800123456">
+                <div class="form-text">All status updates and verification OTPs will be dispatched to this number.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="emailAddr" class="form-label">Email Address (Optional)</label>
+                <input type="email" class="form-control" id="emailAddr" name="emailAddr" data-validate="email" placeholder="name@example.com">
+              </div>
+
+              <div class="col-12 mt-4">
+                <h4 class="h6 fw-bold border-bottom pb-2 text-dark">Residential Address in Sikkim</h4>
+              </div>
+
+              <div class="col-md-4">
+                <label for="district" class="form-label required">District</label>
+                <select class="form-select" id="district" name="district" required>
+                  <option value="">Select District</option>
+                  <option value="Gangtok" selected>Gangtok</option>
+                  <option value="Namchi">Namchi</option>
+                  <option value="Gyalshing">Gyalshing</option>
+                  <option value="Mangan">Mangan</option>
+                  <option value="Pakyong">Pakyong</option>
+                  <option value="Soreng">Soreng</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="subDivision" class="form-label required">Sub-Division</label>
+                <input type="text" class="form-control" id="subDivision" name="subDivision" required value="Gangtok Sub-Division">
+              </div>
+              <div class="col-md-4">
+                <label for="pincode" class="form-label required">Postal PIN Code</label>
+                <input type="text" class="form-control" id="pincode" name="pincode" data-validate="pincode" required value="737101">
+              </div>
+              <div class="col-12">
+                <label for="fullAddress" class="form-label required">Street / Ward / Village / GPU Address</label>
+                <textarea class="form-control" id="fullAddress" name="fullAddress" rows="2" required>Near Ridge Park, Below Raj Bhawan, Gangtok</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center form-actions-bar">
+          <button type="button" class="btn btn-outline-secondary" onclick="GovApp.showNotification('Draft saved locally.', 'info');">
+            <i class="bi bi-save"></i> Save Draft
+          </button>
+          <button type="button" class="btn btn-gov-primary" onclick="goToStep(2);">
+            Next: Service Details <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: Service-Specific Particulars -->
+      <section class="form-step-content d-none" id="step-content-2">
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3><i class="bi bi-sliders text-primary"></i> Step 2: Specific Particulars & Eligibility Criteria</h3>
+          </div>
+          <div class="form-section-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="serviceTypeChoice" class="form-label required">Category of Service Required</label>
+                <select class="form-select" id="serviceTypeChoice" name="serviceTypeChoice" required>
+                  <option value="">Select Option</option>
+                  <option value="fresh">Fresh Issuance</option>
+                  <option value="renewal">Renewal / Endorsement</option>
+                  <option value="duplicate">Duplicate Copy / Correction</option>
+                </select>
+              </div>
+
+              <!-- Conditional Question -->
+              <div class="col-md-6">
+                <label class="form-label required">Do you hold a Certificate of Identification (COI) / Sikkim Subject Certificate?</label>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="hasCoi" id="coiYes" value="yes" data-toggle-target="coi-details-block" data-toggle-value="yes" checked>
+                    <label class="form-check-label" for="coiYes">Yes</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="hasCoi" id="coiNo" value="no" data-toggle-target="coi-details-block" data-toggle-value="yes">
+                    <label class="form-check-label" for="coiNo">No</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conditional Block -->
+              <div id="coi-details-block" class="col-12 p-3 bg-light rounded border border-secondary-subtle">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="coiNumber" class="form-label required">COI / Sikkim Subject Certificate Volume & Serial No.</label>
+                    <input type="text" class="form-control" id="coiNumber" name="coiNumber" required placeholder="e.g. Vol-IV / Sl. 1024">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="coiIssuingAuthority" class="form-label required">Issuing Authority / District Collectorate</label>
+                    <input type="text" class="form-control" id="coiIssuingAuthority" name="coiIssuingAuthority" required placeholder="e.g. District Collector, East Sikkim (Gangtok)">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="purposeDescription" class="form-label required">Detailed Purpose / Justification for Service Request</label>
+                <textarea class="form-control" id="purposeDescription" name="purposeDescription" rows="3" required placeholder="Provide clear justification for this official application..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center form-actions-bar">
+          <button type="button" class="btn btn-gov-outline" onclick="goToStep(1);">
+            <i class="bi bi-arrow-left"></i> Previous Step
+          </button>
+          <button type="button" class="btn btn-gov-primary" onclick="goToStep(3);">
+            Next: Upload Enclosures <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Document Uploads -->
+      <section class="form-step-content d-none" id="step-content-3">
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3><i class="bi bi-cloud-arrow-up-fill text-primary"></i> Step 3: Mandatory Document Enclosures</h3>
+            <span class="text-muted small">Max 2 MB per file (PDF, JPG, PNG)</span>
+          </div>
+          <div class="form-section-body">
+            
+            <div class="gov-callout gov-callout-warning mb-4">
+              <i class="bi bi-info-circle me-1"></i> Ensure all scanned copies are clear, legible, and non-password protected. Blurry documents may result in application rejection.
+            </div>
+
+            <!-- Upload Row 1 -->
+            <div class="row g-4 mb-4">
+              <div class="col-md-6">
+                <label class="form-label required">1. Proof of Identity (Aadhaar / Voter ID / Passport)</label>
+                <div class="file-dropzone text-center">
+                  <i class="bi bi-upload"></i>
+                  <div class="fw-semibold">Click or drag & drop file here</div>
+                  <div class="small text-muted">Permitted: PDF, JPG (Max 2MB)</div>
+                  <input type="file" class="d-none dropzone-input" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label required">2. Sikkim Subject / Certificate of Identification (COI) Copy</label>
+                <div class="file-dropzone text-center">
+                  <i class="bi bi-upload"></i>
+                  <div class="fw-semibold">Click or drag & drop file here</div>
+                  <div class="small text-muted">Permitted: PDF, JPG (Max 2MB)</div>
+                  <input type="file" class="d-none dropzone-input" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Row 2 -->
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="form-label required">3. Residential Certificate / Panchayat Verification Report</label>
+                <div class="file-dropzone text-center">
+                  <i class="bi bi-upload"></i>
+                  <div class="fw-semibold">Click or drag & drop file here</div>
+                  <div class="small text-muted">Permitted: PDF, JPG (Max 2MB)</div>
+                  <input type="file" class="d-none dropzone-input" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">4. Supporting Enclosure / Land Parcha (If applicable)</label>
+                <div class="file-dropzone text-center">
+                  <i class="bi bi-upload"></i>
+                  <div class="fw-semibold">Click or drag & drop file here</div>
+                  <div class="small text-muted">Permitted: PDF, JPG (Max 2MB)</div>
+                  <input type="file" class="d-none dropzone-input" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center form-actions-bar">
+          <button type="button" class="btn btn-gov-outline" onclick="goToStep(2);">
+            <i class="bi bi-arrow-left"></i> Previous Step
+          </button>
+          <button type="button" class="btn btn-gov-primary" onclick="goToStep(4);">
+            Next: Review & Declaration <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 4: Review & Declaration -->
+      <section class="form-step-content d-none" id="step-content-4">
+        <div class="form-section-card">
+          <div class="form-section-header">
+            <h3><i class="bi bi-clipboard-check-fill text-primary"></i> Step 4: Preview & Self-Declaration</h3>
+          </div>
+          <div class="form-section-body">
+            
+            <div class="alert alert-secondary mb-4">
+              <div class="fw-bold mb-1"><i class="bi bi-shield-lock me-1"></i> Pre-Submission Review Summary</div>
+              <div class="small">Please verify that all entered information matches your government-issued identity documents before final digital submission.</div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                  <span class="text-muted small d-block">Applicant Name</span>
+                  <span class="fw-bold">Tenzing Norbu Lepcha</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                  <span class="text-muted small d-block">Mobile Contact</span>
+                  <span class="fw-bold">+91 9800123456</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                  <span class="text-muted small d-block">District / Sub-Division</span>
+                  <span class="fw-bold">Gangtok / Gangtok Sub-Division</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                  <span class="text-muted small d-block">Service Requested</span>
+                  <span class="fw-bold">[Selected Service Title]</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Statutory Declaration Checkbox -->
+            <div class="p-3 border rounded bg-warning-subtle mb-4">
+              <div class="form-check">
+                <input class="form-check-input required" type="checkbox" id="declarationCheck" required>
+                <label class="form-check-label small fw-semibold text-dark" for="declarationCheck">
+                  I hereby solemnly affirm and declare that the statements made above and documents uploaded are true to the best of my knowledge and belief. I understand that any false declaration or fraudulent document is punishable under the Indian Penal Code and relevant Sikkim State acts.
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center form-actions-bar">
+          <button type="button" class="btn btn-gov-outline" onclick="goToStep(3);">
+            <i class="bi bi-arrow-left"></i> Previous Step
+          </button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary" onclick="GovApp.showNotification('Application draft saved.', 'info');">
+              <i class="bi bi-save"></i> Save Draft
+            </button>
+            <button type="submit" class="btn btn-success px-4 fw-bold">
+              <i class="bi bi-check2-circle"></i> Submit Application Online
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </form>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="gov-footer" role="contentinfo">
+    <div class="container py-3 text-center small text-white-50">
+      © 2026 Government of Sikkim. Reusable Application Form Template.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/form-validation.js"></script>
+  <script src="../js/file-upload.js"></script>
+
+  <!-- Step Wizard Logic -->
+  <script>
+    function goToStep(stepNumber) {
+      // Validate current step before advancing
+      const currentStepEl = document.querySelector('.form-step-content:not(.d-none)');
+      if (currentStepEl && stepNumber > parseInt(currentStepEl.id.split('-').pop())) {
+        const isValid = GovForm.validateContainer(currentStepEl);
+        if (!isValid) {
+          GovApp.showNotification('Please fill all mandatory fields correctly.', 'danger');
+          return;
+        }
+      }
+
+      // Hide all step contents
+      document.querySelectorAll('.form-step-content').forEach(el => el.classList.add('d-none'));
+      // Show targeted step content
+      const targetStep = document.getElementById(`step-content-${stepNumber}`);
+      if (targetStep) targetStep.classList.remove('d-none');
+
+      // Update stepper header
+      for (let i = 1; i <= 4; i++) {
+        const tab = document.getElementById(`step-tab-${i}`);
+        if (i < stepNumber) {
+          tab.className = 'gov-step-item completed';
+        } else if (i === stepNumber) {
+          tab.className = 'gov-step-item active';
+        } else {
+          tab.className = 'gov-step-item';
+        }
+      }
+
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    // Submit handler simulation
+    document.getElementById('gov-service-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const decCheck = document.getElementById('declarationCheck');
+      if (!decCheck.checked) {
+        GovApp.showNotification('Please accept the statutory self-declaration.', 'danger');
+        return;
+      }
+      GovApp.showNotification('Application submitted successfully! Redirecting to tracker...', 'success');
+      setTimeout(() => {
+        window.location.href = 'application-tracking-template.html';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
+
