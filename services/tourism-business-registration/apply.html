@@ -1233,49 +1233,9 @@
             <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="returnFromSummary()">
               <i class="bi bi-arrow-left me-1"></i> Edit Last Step
             </button>
-            <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs disabled" id="btnSubmitOrPay" onclick="proceedToPaymentStep()">
-              <span id="btnSubmitOrPayLabel">Proceed to Payment Confirmation</span>
-              <i class="bi bi-arrow-right"></i>
-            </button>
-          </div>
-        </section>
-
-        <!-- ==============================================================
-             COMMON STEP: PAYMENT (Pending Departmental Confirmation)
-             ============================================================== -->
-        <section id="step-common-payment" class="form-step-section d-none">
-          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-            <div>
-              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Fee &amp; Payment Status</span>
-              <h2 class="h5 fw-bold text-dark mb-0">Statutory Registration Payment</h2>
-            </div>
-            <span class="badge bg-success-subtle text-success border border-success-subtle">Online Mode</span>
-          </div>
-
-          <!-- Pending Departmental Confirmation Notice -->
-          <div class="p-4 bg-light rounded border text-center my-4">
-            <div class="p-3 bg-white rounded-circle d-inline-flex mb-3 shadow-xs text-primary">
-              <i class="bi bi-credit-card-2-front text-primary" style="font-size: 2.5rem;"></i>
-            </div>
-            <h3 class="h6 fw-bold text-dark mb-1">Payment Configuration: Pending Departmental Confirmation</h3>
-            <p class="text-muted small mx-auto mb-3" style="max-width: 580px;">
-              In accordance with current departmental instructions, statutory registration charges for this service are pending official fee schedule confirmation. For this prototype evaluation, you may complete final submission with zero charge.
-            </p>
-            <div class="d-inline-flex align-items-center gap-2 p-2 px-3 rounded bg-white border">
-              <span class="text-muted small">Total Payable Amount:</span>
-              <strong class="text-success font-monospace fs-5">&#8377;0.00</strong>
-              <span class="badge bg-light text-secondary border small">Prototype Free Submission</span>
-            </div>
-          </div>
-
-          <!-- Navigation Buttons -->
-          <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToSummaryStep()">
-              <i class="bi bi-arrow-left me-1"></i> Back to Summary
-            </button>
-            <button type="button" class="btn btn-sm btn-success px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="executeFinalSubmission()">
+            <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs disabled" id="btnSubmitOrPay" onclick="executeFinalSubmission()">
               <i class="bi bi-send-check"></i>
-              <span>Complete Final Submission</span>
+              <span id="btnSubmitOrPayLabel">Submit Application</span>
             </button>
           </div>
         </section>
@@ -1515,11 +1475,9 @@
         const formB = document.getElementById('formContainerB');
         const formC = document.getElementById('formContainerC');
         const summarySec = document.getElementById('step-common-summary');
-        const paymentSec = document.getElementById('step-common-payment');
         const ackSec = document.getElementById('step-common-ack');
 
         summarySec.classList.add('d-none');
-        paymentSec.classList.add('d-none');
         ackSec.classList.add('d-none');
 
         let title = '';
@@ -1622,12 +1580,7 @@
           sumSec.classList.remove('d-none');
           sumSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (stepNum === totalFormSteps + 2) {
-          // Payment Step
-          const paySec = document.getElementById('step-common-payment');
-          paySec.classList.remove('d-none');
-          paySec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (stepNum === totalFormSteps + 3) {
-          // Ack Step
+          // Ack Step (Displayed immediately upon submission)
           const ackSec = document.getElementById('step-common-ack');
           ackSec.classList.remove('d-none');
           ackSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1649,15 +1602,7 @@
         goToStep(lastStep);
       };
 
-      window.goToSummaryStep = function () {
-        const sumStep = (activeConfig === 'C') ? 4 : 5;
-        goToStep(sumStep);
-      };
 
-      window.proceedToPaymentStep = function () {
-        const payStep = (activeConfig === 'C') ? 5 : 6;
-        goToStep(payStep);
-      };
 
       // ------------------------------------------------------------------
       // REPEATING SECTIONS: PARTNERS (FORM A)
@@ -2246,9 +2191,9 @@
           console.warn("Storage save failed:", e);
         }
 
-        // Jump to Ack step
-        const ackStep = (activeConfig === 'C') ? 6 : 7;
-        goToStep(ackStep);
+        // Jump to Ack step directly upon successful form submission
+        const totalFormSteps = (activeConfig === 'C') ? 3 : 4;
+        goToStep(totalFormSteps + 2);
       };
 
       // ------------------------------------------------------------------
