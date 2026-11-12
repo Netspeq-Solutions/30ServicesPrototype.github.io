@@ -398,12 +398,12 @@
         </div>
       </div>
 
-      <!-- Instructions Section C: Multi-Tier Workflow & Scrutiny Process -->
+      <!-- Instructions Section C: Multi-Tier Workflow & Verification Process -->
       <div class="instruction-card">
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
           <div class="d-flex align-items-center">
             <span class="instruction-step-num">C</span>
-            <h3 class="h5 fw-bold text-dark mb-0">Departmental Scrutiny &amp; Verification Workflow</h3>
+            <h3 class="h5 fw-bold text-dark mb-0">Departmental Verification &amp; Approval Workflow</h3>
           </div>
           <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 small" id="dynWorkflowBadge">
             Standard 2-Tier Path
@@ -581,8 +581,8 @@
           workflowHTML: `
             <div class="col-md-6">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Scrutiny</div>
-                <p class="text-muted mb-0" style="font-size: 0.775rem;">The Tourism Officer scrutinizes trade licenses, office premises documents, staff qualifications, and operational activity profiles.</p>
+                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Verification</div>
+                <p class="text-muted mb-0" style="font-size: 0.775rem;">The Tourism Officer verifies trade licenses, office premises documents, staff qualifications, and operational activity profiles.</p>
               </div>
             </div>
             <div class="col-md-6">
@@ -642,7 +642,7 @@
           workflowHTML: `
             <div class="col-md-6">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Scrutiny</div>
+                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Verification</div>
                 <p class="text-muted mb-0" style="font-size: 0.775rem;">The Tourism Officer conducts preliminary verification of local trade license, office location, staff qualifications, and travel arrangements.</p>
               </div>
             </div>
@@ -703,7 +703,7 @@
           workflowHTML: `
             <div class="col-md-4">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: TO Scrutiny</div>
+                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: TO Verification</div>
                 <p class="text-muted mb-0" style="font-size: 0.775rem;">Tourism Officer verifies Shops Act license, commercial tenancy, and schedules field inspection.</p>
               </div>
             </div>
@@ -766,7 +766,7 @@
           workflowHTML: `
             <div class="col-md-6">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Scrutiny</div>
+                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Verification</div>
                 <p class="text-muted mb-0" style="font-size: 0.775rem;">Tourism Officer verifies minimum Class X certificate, photography credentials, portfolio specimens, and Panchayat recommendation.</p>
               </div>
             </div>
@@ -868,7 +868,7 @@
       };
 
       // Initialize based on URL parameter or default
-      document.addEventListener('DOMContentLoaded', function () {
+      function initInstructions() {
         var urlParams = new URLSearchParams(window.location.search);
         var initialType = urlParams.get('type') || urlParams.get('category') || 'tour-operator';
         if (!CATEGORIES_CONFIG[initialType]) initialType = 'tour-operator';
@@ -879,7 +879,8 @@
         var btnAgreeProceed = document.getElementById('btnAgreeProceed');
         var agreementBox = document.getElementById('agreementBox');
 
-        if (chkAgreement && btnAgreeProceed) {
+        if (chkAgreement && btnAgreeProceed && !chkAgreement.dataset.bound) {
+          chkAgreement.dataset.bound = 'true';
           chkAgreement.addEventListener('change', function () {
             if (this.checked) {
               btnAgreeProceed.classList.remove('disabled');
@@ -895,23 +896,36 @@
         var html = document.documentElement;
         var body = document.body;
         document.querySelectorAll('[data-font-action]').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var action = this.getAttribute('data-font-action');
-            if (action === 'increase') html.setAttribute('data-font-size', 'large');
-            else if (action === 'decrease') html.setAttribute('data-font-size', 'small');
-            else html.setAttribute('data-font-size', 'normal');
-          });
+          if (!btn.dataset.bound) {
+            btn.dataset.bound = 'true';
+            btn.addEventListener('click', function () {
+              var action = this.getAttribute('data-font-action');
+              if (action === 'increase') html.setAttribute('data-font-size', 'large');
+              else if (action === 'decrease') html.setAttribute('data-font-size', 'small');
+              else html.setAttribute('data-font-size', 'normal');
+            });
+          }
         });
 
         // Contrast Toggle
         var contrastBtn = document.getElementById('btn-contrast-toggle');
-        if (contrastBtn) {
+        if (contrastBtn && !contrastBtn.dataset.bound) {
+          contrastBtn.dataset.bound = 'true';
           contrastBtn.addEventListener('click', function () {
             var isHc = html.classList.toggle('high-contrast');
             body.classList.toggle('high-contrast', isHc);
           });
         }
-      });
+      }
+
+      // Initial Synchronous Execution
+      initInstructions();
+
+      // Fallback on DOMContentLoaded and Window Load
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initInstructions);
+      }
+      window.addEventListener('load', initInstructions);
     })();
   </script>
 </body>

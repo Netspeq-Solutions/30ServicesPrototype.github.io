@@ -663,7 +663,7 @@
                 <select class="form-select form-select-sm" id="appStatusFilter">
                   <option value="all">All Statuses</option>
                   <option value="DRAFT">Draft</option>
-                  <option value="UNDER_REVIEW">Under Review / Scrutiny</option>
+                  <option value="UNDER_REVIEW">Under Review / Verification</option>
                   <option value="APPROVED">Approved &amp; Issued</option>
                   <option value="RETURNED">Returned for Clarification</option>
                   <option value="REJECTED">Rejected</option>
@@ -1281,10 +1281,10 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../../common/js/common.js"></script>
-  <script src="citizen-data.js"></script>
+  <script src="citizen-data.js?v=20261112_09"></script>
   <!-- Central Workflow Engine for Stage 04 Live State Sync -->
-  <script src="workflow-engine.js"></script>
-  <script src="document-service.js"></script>
+  <script src="workflow-engine.js?v=20261112_09"></script>
+  <script src="document-service.js?v=20261112_05"></script>
 
   <!-- Workspace Controller Logic -->
   <script>
@@ -1323,7 +1323,7 @@
       }
 
       // Initialize on DOM Ready
-      document.addEventListener('DOMContentLoaded', function () {
+      function initCitizenDashboard() {
         initScenarioSelector();
         initMobileSidebar();
         renderActiveScenario(activeScenarioKey);
@@ -1341,7 +1341,15 @@
             }, 50);
           }
         }
-      });
+      }
+
+      // Initial Synchronous Execution
+      initCitizenDashboard();
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCitizenDashboard);
+      }
+      window.addEventListener('load', initCitizenDashboard);
 
       // 1. Scenario Selector Handler
       function initScenarioSelector() {

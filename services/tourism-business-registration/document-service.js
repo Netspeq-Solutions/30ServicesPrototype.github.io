@@ -26,7 +26,7 @@
         approvalSheet: {
           applicable: true,
           uploaded: true,
-          title: 'Department Scrutiny & Sanction Sheet',
+          title: 'Department Verification & Sanction Sheet',
           statusText: 'Available for View / Download',
           badgeClass: 'bg-success',
           fileName: `Sanction_Sheet_${refNo}.pdf`,

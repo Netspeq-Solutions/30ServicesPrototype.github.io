@@ -151,7 +151,7 @@
     {
       "icon": "bi-patch-check",
       "title": "Department Verification",
-      "description": "Systematic scrutiny, document verification, and officer review."
+      "description": "Systematic verification, document check, and officer review."
     },
     {
       "icon": "bi-qr-code",
@@ -232,7 +232,7 @@
     },
     {
       "q": "How can I track my application status?",
-      "a": "After submission, an Application Reference Number (ARN) will be issued. You can track real-time verification and scrutiny status directly through your citizen dashboard by logging in via Sikkim GO."
+      "a": "After submission, an Application Reference Number (ARN) will be issued. You can track real-time verification and workflow status directly through your citizen dashboard by logging in via Sikkim GO."
     },
     {
       "q": "How can I contact the department for assistance?",
