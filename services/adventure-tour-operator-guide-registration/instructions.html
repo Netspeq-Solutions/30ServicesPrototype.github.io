@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>Pre-Application Instructions &bull; Adventure Tour Operator &amp; Guide Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .instruction-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .instruction-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+    .category-select-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .category-select-card:hover {
+      border-color: #1e3a8a;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
+      transform: translateY(-2px);
+    }
+    .category-select-card.active {
+      border-color: #1e3a8a !important;
+      background-color: #eff6ff !important;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.15) !important;
+    }
+    .cursor-pointer { cursor: pointer; }
+  </style>
+</head>
+<body data-theme="royal-navy" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link -->
+  <a class="gov-skip-link" href="#main-instruction-content">Skip to Main Content</a>
+
+  <!-- Tricolor Ribbon -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" title="Return to Portal Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 56px; width: auto;">
+          </a>
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Government of Sikkim</span>
+            <h1 class="h6 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
+            <span class="small text-muted">Adventure Tour Operator &amp; Guide Registration Gateway</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="dashboard.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1.5 shadow-xs">
+            <i class="bi bi-arrow-left"></i>
+            <span>Citizen Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main id="main-instruction-content" class="flex-grow-1 py-4">
+    <div class="container-xl" style="max-width: 960px;">
+      
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="dashboard.html">Citizen Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Pre-Application Guidelines</li>
+        </ol>
+      </nav>
+
+      <!-- Page Banner -->
+      <div class="card border rounded-3 p-4 mb-4 bg-white shadow-xs">
+        <div class="d-flex align-items-start gap-3">
+          <div class="bg-primary-subtle text-primary p-3 rounded-3 fs-3 flex-shrink-0">
+            <i class="bi bi-journal-check"></i>
+          </div>
+          <div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold mb-1">Pre-Application Guidelines</span>
+            <h2 class="h4 fw-bold text-dark mb-1">Instructions for Applicants</h2>
+            <p class="text-muted small mb-0">
+              Please review the prerequisites, document checklists, and statutory safety guidelines before proceeding to the registration application.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Type Toggle -->
+      <div class="card border rounded-3 p-3 mb-4 bg-white shadow-xs">
+        <label class="form-label fw-bold text-dark mb-2">Selected Registration Category:</label>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="category-select-card active d-flex align-items-center justify-content-between" id="cardATO" onclick="selectInstructionCategory('adventure-tour-operator')">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-compass fs-4 text-primary"></i>
+                <div>
+                  <strong class="d-block text-dark small">Adventure Tour Operator</strong>
+                  <span class="text-muted" style="font-size: 0.75rem;">Commercial Adventure Enterprise</span>
+                </div>
+              </div>
+              <input class="form-check-input" type="radio" name="instructionCategory" id="radioATO" value="adventure-tour-operator" checked>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="category-select-card d-flex align-items-center justify-content-between" id="cardGR" onclick="selectInstructionCategory('guide-registration')">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-person-badge fs-4 text-primary"></i>
+                <div>
+                  <strong class="d-block text-dark small">Guide Registration</strong>
+                  <span class="text-muted" style="font-size: 0.75rem;">Individual Professional Guide</span>
+                </div>
+              </div>
+              <input class="form-check-input" type="radio" name="instructionCategory" id="radioGR" value="guide-registration">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC INSTRUCTIONS CONTENT -->
+      <div id="instructionsContent">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- APPLICANT DECLARATION & PROCEED BAR -->
+      <div class="card border rounded-3 p-4 bg-white shadow-xs mb-4">
+        <h5 class="h6 fw-bold text-dark mb-3"><i class="bi bi-shield-check text-success me-1"></i>Applicant Statutory Undertaking</h5>
+        <div class="form-check mb-3">
+          <input class="form-check-input mt-1" type="checkbox" id="declarationCheck" onchange="toggleProceedButton(this.checked)">
+          <label class="form-check-label small text-secondary" for="declarationCheck">
+            I hereby declare that all information furnished, credentials uploaded, and technical instructor certifications submitted for this registration application are true and correct to the best of my knowledge. I understand that organizing adventure activities without prescribed safety standards will result in immediate cancellation of registration under Sikkim Tourism Rules.
+          </label>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top">
+          <a href="dashboard.html" class="btn btn-sm btn-outline-secondary px-3">
+            <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+          </a>
+          <button type="button" id="proceedBtn" class="btn btn-sm btn-gov-primary px-4 py-2 fw-semibold" disabled onclick="proceedToStage03()">
+            <span>Proceed to Stage 03 Application Form</span>
+            <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Government Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white border-top mt-auto" role="contentinfo">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2 text-white-50 small">
+      <div>&copy; 2026 Tourism &amp; Civil Aviation Department, Government of Sikkim.</div>
+      <div>Designed for Prototype Review &bull; Stage 02 Active</div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="citizen-data.js"></script>
+
+  <script>
+    let activeCategory = 'adventure-tour-operator';
+
+    function selectInstructionCategory(cat) {
+      activeCategory = cat;
+      const cardATO = document.getElementById('cardATO');
+      const cardGR = document.getElementById('cardGR');
+      const radioATO = document.getElementById('radioATO');
+      const radioGR = document.getElementById('radioGR');
+
+      if (cat === 'adventure-tour-operator') {
+        cardATO.classList.add('active');
+        cardGR.classList.remove('active');
+        radioATO.checked = true;
+      } else {
+        cardGR.classList.add('active');
+        cardATO.classList.remove('active');
+        radioGR.checked = true;
+      }
+      renderInstructionsContent();
+    }
+
+    function renderInstructionsContent() {
+      const container = document.getElementById('instructionsContent');
+      if (activeCategory === 'adventure-tour-operator') {
+        container.innerHTML = `
+          <!-- ATO Guidelines -->
+          <div class="instruction-card">
+            <div class="d-flex align-items-center mb-3">
+              <span class="instruction-step-num">1</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Eligibility Prerequisites for Adventure Tour Operators</h3>
+            </div>
+            <ul class="small text-secondary mb-0 ps-3">
+              <li class="mb-2">Must be a registered agency, partnership firm, company, or resident enterprise having a permanent office premise in Sikkim.</li>
+              <li class="mb-2">Must employ certified technical adventure instructors/guides who hold Advance Mountaineering / Allied Adventure certification from recognized national institutes (e.g., HMI Darjeeling, NIM Uttarkashi, ABVIMAS Manali, NIMAS Dirang).</li>
+              <li class="mb-2">Must maintain standard rescue, first-aid, evacuation protocols, and emergency satellite/radio communication setups where applicable.</li>
+              <li>Must hold comprehensive public liability insurance coverage for high-risk adventure participants.</li>
+            </ul>
+          </div>
+
+          <div class="instruction-card">
+            <div class="d-flex align-items-center mb-3">
+              <span class="instruction-step-num">2</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Mandatory Supporting Documents Checklist</h3>
+            </div>
+            <div class="table-responsive small">
+              <table class="table table-bordered align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width: 35%;">Document Name</th>
+                    <th style="width: 25%;">Issuing Body</th>
+                    <th style="width: 40%;">Format &amp; Technical Specifications</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Firm / Trade License</td>
+                    <td>Municipal / Urban Dev. / DAC</td>
+                    <td>Valid Trade License copy (PDF/JPEG &le; 2MB)</td>
+                  </tr>
+                  <tr>
+                    <td>Office Address Proof</td>
+                    <td>Revenue Dept / Lease Agreement</td>
+                    <td>Premises Lease / Ownership Deed (PDF &le; 2MB)</td>
+                  </tr>
+                  <tr>
+                    <td>Technical Staff Certifications</td>
+                    <td>Recognized Mountaineering Institute</td>
+                    <td>Basic &amp; Advance Mountaineering Certificates (PDF)</td>
+                  </tr>
+                  <tr>
+                    <td>Equipment Safety &amp; Inventory Report</td>
+                    <td>Authorized Gear Manufacturer / Agency</td>
+                    <td>Inspection report of ropes, carabiners, life-vests (PDF)</td>
+                  </tr>
+                  <tr>
+                    <td>Public Liability Insurance</td>
+                    <td>Approved Insurance Carrier</td>
+                    <td>Valid policy copy covering adventure activities</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="instruction-card">
+            <div class="d-flex align-items-center mb-3">
+              <span class="instruction-step-num">3</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Statutory Departmental Scrutiny &amp; Field Inspection</h3>
+            </div>
+            <p class="small text-secondary mb-2">
+              Every Adventure Tour Operator application undergoes a 3-tier departmental verification process:
+            </p>
+            <ol class="small text-secondary mb-0 ps-3">
+              <li class="mb-1"><strong>Technical Assistant (TA) Scrutiny:</strong> Verification of trade license, staff certificates, and equipment inventory.</li>
+              <li class="mb-1"><strong>Inspecting Authority (IA) Field Visit:</strong> Mandatory physical on-site inspection of gear, harnesses, safety protocols, and storage facilities.</li>
+              <li class="mb-1"><strong>Assistant Director Review:</strong> State-level technical compliance evaluation and inter-district clearance.</li>
+              <li><strong>District Tourism Officer (DTO) Sanction:</strong> Final grant of Registration Certificate with QR verification.</li>
+            </ol>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <!-- Guide Registration Guidelines -->
+          <div class="instruction-card">
+            <div class="d-flex align-items-center mb-3">
+              <span class="instruction-step-num">1</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Eligibility Prerequisites for Tourist Guides</h3>
+            </div>
+            <ul class="small text-secondary mb-0 ps-3">
+              <li class="mb-2">Applicant must be a permanent resident / domicile of Sikkim holding a valid Certificate of Identification (COI) or Sikkim Resident Certificate.</li>
+              <li class="mb-2">Minimum age must be 18 years on the date of application submission.</li>
+              <li class="mb-2">Must possess a valid training certificate from recognized mountaineering institutes (HMI / NIM) or Department of Tourism Certified Guide Course.</li>
+              <li class="mb-2">Must possess a certified Medical Fitness Certificate issued by a Government Medical Officer / District Hospital.</li>
+              <li>Must hold a clear character certificate / police clearance certificate issued by Sikkim Police.</li>
+            </ul>
+          </div>
+
+          <div class="instruction-card">
+            <div class="d-flex align-items-center mb-3">
+              <span class="instruction-step-num">2</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Mandatory Documents Checklist for Guides</h3>
+            </div>
+            <div class="table-responsive small">
+              <table class="table table-bordered align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width: 35%;">Document Name</th>
+                    <th style="width: 25%;">Issuing Body</th>
+                    <th style="width: 40%;">Format &amp; Technical Specifications</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Proof of Identity &amp; Domicile</td>
+                    <td>Government of Sikkim</td>
+                    <td>Certificate of Identification (COI) / Voter ID (PDF)</td>
+                  </tr>
+                  <tr>
+                    <td>Training Course Certificate</td>
+                    <td>HMI / NIM / Dept Course</td>
+                    <td>Accreditation Course Certificate (PDF &le; 2MB)</td>
+                  </tr>
+                  <tr>
+                    <td>Medical Fitness Certificate</td>
+                    <td>District Hospital / CMO</td>
+                    <td>Signed medical fitness certificate (PDF &le; 2MB)</td>
+                  </tr>
+                  <tr>
+                    <td>Police Clearance Certificate</td>
+                    <td>Sikkim Police Station</td>
+                    <td>Character verification report (PDF &le; 2MB)</td>
+                  </tr>
+                  <tr>
+                    <td>Passport-Size Photograph</td>
+                    <td>Applicant Self</td>
+                    <td>Recent color photo with white background (JPEG)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="instruction-card">
+            <div class="d-flex align-items-center mb-3">
+              <span class="instruction-step-num">3</span>
+              <h3 class="h6 fw-bold text-dark mb-0">Accreditation ID Card &amp; Certification Workflow</h3>
+            </div>
+            <p class="small text-secondary mb-2">
+              Upon submission, the applicant's credentials and medical reports are scrutinized by the Technical Assistant (TA) and forwarded to the District Tourism Officer (DTO) for official accreditation. Once sanctioned, an official QR-coded Guide Registration Certificate and Accreditation Card are generated.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function toggleProceedButton(checked) {
+      document.getElementById('proceedBtn').disabled = !checked;
+    }
+
+    function proceedToStage03() {
+      window.location.href = 'apply.html?type=' + encodeURIComponent(activeCategory);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const typeParam = urlParams.get('type');
+      if (typeParam === 'guide-registration') {
+        selectInstructionCategory('guide-registration');
+      } else {
+        selectInstructionCategory('adventure-tour-operator');
+      }
+    });
+  </script>
+</body>
+</html>
+

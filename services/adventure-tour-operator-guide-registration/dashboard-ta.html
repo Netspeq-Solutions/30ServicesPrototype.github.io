@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>Technical Assistant (TA) Scrutiny Desk &bull; Adventure Tour Operator &amp; Guide Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .officer-sidebar {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      flex-shrink: 0 !important;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      min-height: calc(100vh - 120px);
+    }
+    .officer-nav-link {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      padding: 0.42rem 0.65rem !important;
+      color: #334155;
+      font-weight: 500;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      font-size: 0.8125rem !important;
+      line-height: 1.25 !important;
+      white-space: nowrap !important;
+    }
+    .officer-nav-link span {
+      white-space: nowrap !important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1 1 auto;
+    }
+    .officer-nav-link i {
+      font-size: 0.95rem !important;
+      width: 1.25rem !important;
+      text-align: center;
+      flex-shrink: 0 !important;
+    }
+    .officer-nav-link .badge {
+      flex-shrink: 0 !important;
+      margin-left: auto !important;
+      font-size: 0.72rem !important;
+      padding: 0.18rem 0.45rem !important;
+      font-weight: 700;
+      border-radius: 10rem;
+    }
+    .officer-nav-link:hover {
+      background-color: #f1f5f9;
+      color: #1e3a8a;
+    }
+    .officer-nav-link.active {
+      background-color: #eff6ff !important;
+      color: #1e3a8a !important;
+      font-weight: 700 !important;
+      border-left: 3px solid #1e3a8a !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+    .officer-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.15rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      height: 100%;
+    }
+    .officer-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+    .officer-kpi-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .role-badge-tag {
+      background: #1e3a8a;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    /* Anti-slab rule enforcement */
+    .btn-action-compact {
+      width: auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.25rem !important;
+    }
+    .btn-xs {
+      padding: 0.2rem 0.5rem !important;
+      font-size: 0.75rem !important;
+      border-radius: 4px !important;
+    }
+  </style>
+</head>
+<body data-theme="royal-navy" class="bg-light min-vh-100 d-flex flex-column">
+
+  <!-- Skip to Main Content (Accessibility) -->
+  <a href="#main-ta-content" class="visually-hidden-focusable p-2 bg-primary text-white position-absolute top-0 start-0 z-3">
+    Skip to main content
+  </a>
+
+  <!-- Top Accessibility Bar (GIGW 3.0) -->
+  <nav class="gov-top-strip py-1 px-3 bg-dark text-white border-bottom small" aria-label="Accessibility options">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <span class="flag-icon">&#127470;&#127475;</span>
+        <span class="fw-semibold">Government of Sikkim</span>
+        <span class="text-white-50 d-none d-sm-inline">| Tourism &amp; Civil Aviation Department</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Font sizing">
+          <button type="button" class="btn btn-outline-light btn-xs" onclick="changeFontSize(-1)" title="Decrease font size">A-</button>
+          <button type="button" class="btn btn-outline-light btn-xs" onclick="changeFontSize(0)" title="Default font size">A</button>
+          <button type="button" class="btn btn-outline-light btn-xs" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+        </div>
+        <button type="button" class="btn btn-outline-light btn-xs" id="contrast-toggle" onclick="toggleContrast()" title="Toggle High Contrast">
+          <i class="bi bi-circle-half me-1"></i>Contrast
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Department Header -->
+  <header class="gov-header bg-white border-bottom py-2 shadow-xs">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <img src="../../common/images/sikkim-logo.png" alt="Emblem of Sikkim" height="46" class="img-fluid" onerror="this.src='https://placehold.co/46x46/1e3a8a/ffffff?text=SK'">
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <h1 class="h6 mb-0 fw-bold text-dark">Adventure Tour Operator &amp; Guide Registration</h1>
+            <span class="role-badge-tag" id="headerRoleBadge">Dept &bull; TA Desk</span>
+          </div>
+          <span class="small text-muted" id="headerOfficeSubtitle">Tourism &amp; Civil Aviation Department &bull; Technical Scrutiny &amp; Document Intake Desk</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-none d-md-block text-end">
+          <div class="fw-bold small text-dark" id="headerOfficerName">Tashi Namgyal Bhutia</div>
+          <span class="small text-muted" id="headerOfficerDesignation">Technical Assistant (Headquarters Scrutiny)</span>
+        </div>
+        <a href="role-select.html" class="btn btn-sm btn-outline-secondary" title="Switch Demonstration Role">
+          <i class="bi bi-arrow-left-right me-1"></i>Switch Role
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Office & Role Context Subheader -->
+  <section class="py-2 px-3 bg-white border-bottom">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="small fw-bold text-dark"><i class="bi bi-person-gear text-primary me-1"></i>TA Office Jurisdiction:</span>
+        <select class="form-select form-select-sm w-auto fw-bold text-primary" id="taContextSelect" onchange="onTaContextChange(this.value)">
+          <option value="hq" selected>TA – Headquarters (All ATO + Gangtok Guides)</option>
+          <option value="Mangan">District TA &bull; Mangan Circle</option>
+          <option value="Namchi">District TA &bull; Namchi Circle</option>
+          <option value="Gyalshing">District TA &bull; Gyalshing Circle</option>
+          <option value="Pakyong">District TA &bull; Pakyong Circle</option>
+          <option value="Soreng">District TA &bull; Soreng Circle</option>
+        </select>
+      </div>
+      <div class="text-muted small">
+        <span id="jurisdictionBadgeText"><i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Department Workspace Layout -->
+  <div class="container-fluid px-0 flex-grow-1">
+    <div class="d-flex">
+      
+      <!-- Fixed 260px Officer Sidebar -->
+      <aside class="officer-sidebar p-3 d-none d-lg-block" aria-label="TA Navigation">
+        <!-- Officer Badge Card -->
+        <div class="card p-2.5 mb-3 bg-light border-0 rounded-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" id="sidebarAvatar" style="width: 36px; height: 36px; background: #1e3a8a; flex-shrink: 0;">
+              TN
+            </div>
+            <div class="overflow-hidden">
+              <div class="fw-bold text-dark text-truncate small" id="sidebarOfficerName">Tashi Namgyal Bhutia</div>
+              <div class="text-muted text-truncate" id="sidebarOfficeLabel" style="font-size: 0.72rem;">HQ Scrutiny Desk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Queues -->
+        <div class="text-uppercase text-muted fw-bold mb-2 px-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Work Queues</div>
+        <nav class="nav flex-column gap-1 mb-4">
+          <a class="officer-nav-link active" href="javascript:void(0)" onclick="filterTableByQueue('all')">
+            <i class="bi bi-inbox-fill text-primary"></i>
+            <span>All Intake Files</span>
+            <span class="badge bg-primary text-white" id="badgeAll">0</span>
+          </a>
+          <a class="officer-nav-link" href="javascript:void(0)" onclick="filterTableByQueue('pending')">
+            <i class="bi bi-clock-history text-warning"></i>
+            <span>Pending Review</span>
+            <span class="badge bg-warning-subtle text-warning-emphasis" id="badgePending">0</span>
+          </a>
+          <a class="officer-nav-link" href="javascript:void(0)" onclick="filterTableByQueue('io')">
+            <i class="bi bi-shield-check text-info"></i>
+            <span>IO Assignment / Reports</span>
+            <span class="badge bg-info-subtle text-info" id="badgeIo">0</span>
+          </a>
+          <a class="officer-nav-link" href="javascript:void(0)" onclick="filterTableByQueue('returned')">
+            <i class="bi bi-arrow-return-left text-danger"></i>
+            <span>Returned / Queries</span>
+            <span class="badge bg-danger-subtle text-danger" id="badgeReturned">0</span>
+          </a>
+        </nav>
+
+        <div class="text-uppercase text-muted fw-bold mb-2 px-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Reports &amp; Directives</div>
+        <nav class="nav flex-column gap-1 mb-4">
+          <a class="officer-nav-link" id="sidebarReportsLink" href="reports.html?role=ta-hq&office=hq">
+            <i class="bi bi-file-earmark-bar-graph text-primary"></i>
+            <span>Reports &amp; Summary</span>
+          </a>
+          <a class="officer-nav-link" href="instructions.html" target="_blank">
+            <i class="bi bi-journal-text text-secondary"></i>
+            <span>Registration Rules 2026</span>
+          </a>
+          <a class="officer-nav-link" href="instructions.html#checklist" target="_blank">
+            <i class="bi bi-card-checklist text-secondary"></i>
+            <span>Equipment Safety Mandates</span>
+          </a>
+        </nav>
+
+        <!-- Role Quick Switcher -->
+        <div class="mt-auto pt-3 border-top text-center">
+          <div class="text-muted small mb-2"><i class="bi bi-info-circle me-1"></i>Demonstration Session</div>
+          <a href="role-select.html" class="btn btn-sm btn-outline-primary px-3 py-1.5 small text-nowrap d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-people me-1"></i>Switch User Role
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="col flex-grow-1 p-3 p-lg-4" id="main-ta-content">
+        
+        <!-- Page Title & Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+          <div>
+            <h2 class="h5 fw-bold text-dark mb-0" id="mainDeskTitle">Technical Scrutiny &amp; Document Intake Desk (HQ)</h2>
+            <span class="text-muted small" id="mainDeskSubtitle">Review adventure operator safety dossiers, assign Inspecting Officers, and verify guide credentials</span>
+          </div>
+          <div class="badge bg-light text-secondary border px-3 py-1.5 small">
+            <i class="bi bi-calendar3 me-1"></i>13 November 2026
+          </div>
+        </div>
+
+        <!-- 4 Workload KPIs -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-xl-3">
+            <div class="officer-kpi-card">
+              <div class="small text-muted fw-semibold mb-1">Awaiting Review</div>
+              <div class="officer-kpi-number text-primary" id="kpiAwaiting">0</div>
+              <div class="small text-muted mt-1"><i class="bi bi-clock me-1 text-primary"></i>Intake Scrutiny Pending</div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="officer-kpi-card">
+              <div class="small text-muted fw-semibold mb-1">IO Inspection Desk</div>
+              <div class="officer-kpi-number text-info" id="kpiIo">0</div>
+              <div class="small text-muted mt-1"><i class="bi bi-shield-check me-1 text-info"></i>Assigned or Reports In</div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="officer-kpi-card">
+              <div class="small text-muted fw-semibold mb-1">Forwarded / Passed</div>
+              <div class="officer-kpi-number text-success" id="kpiPassed">0</div>
+              <div class="small text-muted mt-1"><i class="bi bi-send-check me-1 text-success"></i>Sent to Next Desk</div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="officer-kpi-card">
+              <div class="small text-muted fw-semibold mb-1">Returned / Deficient</div>
+              <div class="officer-kpi-number text-warning" id="kpiReturned">0</div>
+              <div class="small text-muted mt-1"><i class="bi bi-arrow-return-left me-1 text-warning"></i>Clarifications Sent</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search & Category Filters -->
+        <div class="card p-3 border rounded-3 bg-white mb-3 shadow-xs">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="taSearchInput" placeholder="Search by Application ID or Applicant Name..." oninput="filterTaTable()">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select form-select-sm" id="taCategoryFilter" onchange="filterTaTable()">
+                <option value="all" selected>All Registration Categories</option>
+                <option value="adventure-tour-operator">Adventure Tour Operator (ATO)</option>
+                <option value="guide-registration">Guide Registration (GR)</option>
+              </select>
+            </div>
+            <div class="col-md-3 text-end">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="resetTaFilters()">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TA Work Queue Table -->
+        <div class="card border rounded-3 bg-white shadow-xs">
+          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-table me-1 text-primary"></i> <span id="tableTitleText">Applications in TA Queue</span></h3>
+              <span class="small text-muted" id="tableSubtitleText">Click Review to scrutinize dossier and perform workflow actions</span>
+            </div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-semibold" id="tableRecordCountBadge">0 Records</span>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0 small">
+                <thead class="table-light text-muted">
+                  <tr>
+                    <th style="width: 17%;">Application ID</th>
+                    <th style="width: 25%;">Applicant / Enterprise</th>
+                    <th style="width: 16%;">Category</th>
+                    <th style="width: 12%;">District</th>
+                    <th style="width: 16%;">Current Stage</th>
+                    <th class="text-end text-nowrap" style="width: 14%;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="taApplicationsTableBody">
+                  <!-- Rendered dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Government Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white border-top mt-auto" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 text-white-50 small">
+      <div>&copy; 2026 Tourism &amp; Civil Aviation Department, Government of Sikkim.</div>
+      <div>Technical Assistant Workspace &bull; Stage 04 Active</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="workflow-engine.js"></script>
+
+  <script>
+    let activeOfficeContext = 'hq'; // 'hq' or district name
+    let activeQueueFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const dist = urlParams.get('district');
+      if (dist && dist !== 'hq') {
+        activeOfficeContext = dist;
+        document.getElementById('taContextSelect').value = dist;
+      }
+      renderTaDashboard();
+    });
+
+    function onTaContextChange(val) {
+      activeOfficeContext = val;
+      renderTaDashboard();
+    }
+
+    function renderTaDashboard() {
+      const allApps = AdventureWorkflowEngine.getAllApplications();
+      const isHQ = (activeOfficeContext === 'hq');
+
+      // Update Header & Officer Card
+      if (isHQ) {
+        document.getElementById('headerRoleBadge').textContent = 'TA – Headquarters';
+        document.getElementById('headerOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
+        document.getElementById('headerOfficerDesignation').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.designation;
+        document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok (HQ)`;
+        document.getElementById('sidebarAvatar').textContent = 'TN';
+        document.getElementById('sidebarOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
+        document.getElementById('sidebarOfficeLabel').textContent = 'HQ Scrutiny Desk';
+        document.getElementById('mainDeskTitle').textContent = 'Technical Scrutiny & Document Intake Desk (HQ)';
+        document.getElementById('mainDeskSubtitle').textContent = 'Review adventure operator safety dossiers, assign Inspecting Officers, and verify Gangtok guide credentials';
+        const reportsLink = document.getElementById('sidebarReportsLink');
+        if (reportsLink) reportsLink.href = 'reports.html?role=ta-hq&office=hq';
+      } else {
+        const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeOfficeContext] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
+        document.getElementById('headerRoleBadge').textContent = `District TA – ${activeOfficeContext}`;
+        document.getElementById('headerOfficerName').textContent = distInfo.taName;
+        document.getElementById('headerOfficerDesignation').textContent = `Technical Assistant (${activeOfficeContext} Circle)`;
+        document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-geo-alt-fill text-danger me-1"></i>${distInfo.office}`;
+        document.getElementById('sidebarAvatar').textContent = distInfo.taName.split(' ').map(n => n[0]).join('').slice(0, 2);
+        document.getElementById('sidebarOfficerName').textContent = distInfo.taName;
+        document.getElementById('sidebarOfficeLabel').textContent = `TA ${activeOfficeContext} Circle`;
+        document.getElementById('mainDeskTitle').textContent = `District Scrutiny Desk &bull; ${activeOfficeContext} Circle`;
+        document.getElementById('mainDeskSubtitle').textContent = `Initial document verification for Guide Registration applications submitted from ${activeOfficeContext} District`;
+        const reportsLink = document.getElementById('sidebarReportsLink');
+        if (reportsLink) reportsLink.href = `reports.html?role=dist-ta-${encodeURIComponent(activeOfficeContext)}&district=${encodeURIComponent(activeOfficeContext)}`;
+      }
+
+      // Filter Applications relevant to this TA context:
+      // - HQ TA sees: ALL Adventure Tour Operators (since all ATOs route through HQ TA) + Gangtok Guide Registrations
+      // - District TA sees: Guide Registrations for that specific district
+      let filtered = allApps.filter(app => {
+        if (isHQ) {
+          return (app.type === 'adventure-tour-operator') || (app.type === 'guide-registration' && app.district === 'Gangtok');
+        } else {
+          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+        }
+      });
+
+      // Calculate Workload KPIs
+      let awaitingCount = 0;
+      let ioCount = 0;
+      let passedCount = 0;
+      let returnedCount = 0;
+
+      filtered.forEach(app => {
+        if (app.status === AdventureWorkflowEngine.STATUSES.RETURNED) {
+          returnedCount++;
+        } else if (app.stage.includes('IO') || app.stage.includes('Inspection')) {
+          ioCount++;
+        } else if (app.currentRole === (isHQ ? 'ta-hq' : 'dist-ta')) {
+          awaitingCount++;
+        } else {
+          passedCount++;
+        }
+      });
+
+      document.getElementById('kpiAwaiting').textContent = awaitingCount;
+      document.getElementById('kpiIo').textContent = ioCount;
+      document.getElementById('kpiPassed').textContent = passedCount;
+      document.getElementById('kpiReturned').textContent = returnedCount;
+
+      document.getElementById('badgeAll').textContent = filtered.length;
+      document.getElementById('badgePending').textContent = awaitingCount;
+      document.getElementById('badgeIo').textContent = ioCount;
+      document.getElementById('badgeReturned').textContent = returnedCount;
+
+      renderTableRows(filtered);
+    }
+
+    function filterTableByQueue(queue) {
+      activeQueueFilter = queue;
+      filterTaTable();
+    }
+
+    function filterTaTable() {
+      const allApps = AdventureWorkflowEngine.getAllApplications();
+      const isHQ = (activeOfficeContext === 'hq');
+      const searchQuery = (document.getElementById('taSearchInput').value || '').toLowerCase().trim();
+      const catFilter = document.getElementById('taCategoryFilter').value;
+
+      let filtered = allApps.filter(app => {
+        if (isHQ) {
+          return (app.type === 'adventure-tour-operator') || (app.type === 'guide-registration' && app.district === 'Gangtok');
+        } else {
+          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+        }
+      });
+
+      // Filter by queue
+      if (activeQueueFilter === 'pending') {
+        filtered = filtered.filter(app => app.currentRole === (isHQ ? 'ta-hq' : 'dist-ta') && app.status !== AdventureWorkflowEngine.STATUSES.RETURNED);
+      } else if (activeQueueFilter === 'io') {
+        filtered = filtered.filter(app => app.stage.includes('IO') || app.stage.includes('Inspection'));
+      } else if (activeQueueFilter === 'returned') {
+        filtered = filtered.filter(app => app.status === AdventureWorkflowEngine.STATUSES.RETURNED);
+      }
+
+      // Filter by category
+      if (catFilter !== 'all') {
+        filtered = filtered.filter(app => app.type === catFilter);
+      }
+
+      // Filter by search query
+      if (searchQuery) {
+        filtered = filtered.filter(app => 
+          app.arn.toLowerCase().includes(searchQuery) ||
+          app.applicantName.toLowerCase().includes(searchQuery) ||
+          (app.enterpriseName && app.enterpriseName.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      renderTableRows(filtered);
+    }
+
+    function resetTaFilters() {
+      document.getElementById('taSearchInput').value = '';
+      document.getElementById('taCategoryFilter').value = 'all';
+      activeQueueFilter = 'all';
+      filterTaTable();
+    }
+
+    function renderTableRows(apps) {
+      const tbody = document.getElementById('taApplicationsTableBody');
+      const countBadge = document.getElementById('tableRecordCountBadge');
+      tbody.innerHTML = '';
+      countBadge.textContent = `${apps.length} Records`;
+
+      if (apps.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No applications matching this filter.</td></tr>`;
+        return;
+      }
+
+      const isHQ = (activeOfficeContext === 'hq');
+      const activeRoleKey = isHQ ? 'ta-hq' : 'dist-ta';
+
+      apps.forEach(app => {
+        const tr = document.createElement('tr');
+        const catBadge = app.type === 'adventure-tour-operator'
+          ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-compass me-1"></i>Adventure Operator</span>`
+          : `<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-person-badge me-1"></i>Guide Registration</span>`;
+
+        let stageBadge = `<span class="badge bg-light text-dark border">${app.stage}</span>`;
+        if (app.status === AdventureWorkflowEngine.STATUSES.RETURNED) {
+          stageBadge = `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-arrow-return-left me-1"></i>Returned for Correction</span>`;
+        } else if (app.stage.includes('IO') || app.stage.includes('Inspection')) {
+          stageBadge = `<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-shield-check me-1"></i>IO Inspection</span>`;
+        }
+
+        tr.innerHTML = `
+          <td><strong class="font-monospace text-primary">${app.arn}</strong></td>
+          <td>
+            <div class="fw-semibold text-dark">${app.enterpriseName || app.applicantName}</div>
+            <span class="text-muted small">${app.applicantName}</span>
+          </td>
+          <td>${catBadge}</td>
+          <td><span class="badge bg-light text-dark border">${app.district}</span></td>
+          <td>${stageBadge}</td>
+          <td class="text-end text-nowrap">
+            <a href="review.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-primary py-1 px-2.5 btn-action-compact">
+              <i class="bi bi-file-earmark-check me-1"></i>Review File
+            </a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  </script>
+</body>
+</html>

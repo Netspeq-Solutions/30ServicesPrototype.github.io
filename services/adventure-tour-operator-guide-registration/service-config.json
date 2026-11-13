@@ -1,0 +1,49 @@
+{
+  "serviceId": "adventure-tour-operator-guide-registration",
+  "serviceName": "Adventure Tour Operator & Guide Registration",
+  "serviceShortName": "Adventure Tour Operator & Guide",
+  "department": "Tourism & Civil Aviation Department",
+  "government": "Government of Sikkim",
+  "theme": "royal-navy",
+  "portalUrl": "index.html",
+  "sikkimGoLoginUrl": "https://sikkimgo.gov.in/auth/login",
+  "contact": {
+    "office": "Paryatan Bhawan, Tadong, Gangtok, Sikkim – 737102",
+    "helpline": "03592-209090 / 1800-345-3256",
+    "email": "secy-tourism@sikkim.gov.in",
+    "workingHours": "10:00 AM – 04:30 PM (Monday to Friday, except State Holidays)"
+  },
+  "registrationTypes": [
+    {
+      "id": "adventure-tour-operator",
+      "code": "ATO",
+      "title": "Adventure Tour Operator",
+      "shortTitle": "Adventure Operator",
+      "categoryNumber": 1,
+      "icon": "bi-compass",
+      "badge": "Commercial Enterprise",
+      "description": "For applicants seeking statutory registration to operate as an authorized Adventure Tour Operator in Sikkim, organizing mountaineering, trekking, river rafting, paragliding, and outdoor adventure activities.",
+      "targetAudience": "Commercial adventure operators, registered agencies, and enterprises with certified adventure safety infrastructure."
+    },
+    {
+      "id": "guide-registration",
+      "code": "GR",
+      "title": "Guide Registration",
+      "shortTitle": "Tour Guide",
+      "categoryNumber": 2,
+      "icon": "bi-person-badge",
+      "badge": "Professional Certification",
+      "description": "For individual professional guides seeking official government accreditation and registration to provide certified guiding services for trekking, mountaineering, cultural tours, and eco-tourism across Sikkim.",
+      "targetAudience": "Individual tour guides, mountaineering guides, and certified trekking escorts residing in Sikkim."
+    }
+  ],
+  "districtOffices": [
+    { "name": "Gangtok (Headquarters)", "address": "Paryatan Bhawan, Tadong, Gangtok – 737102", "phone": "03592-209090", "email": "tourism-gangtok@sikkim.gov.in" },
+    { "name": "Namchi District Office", "address": "DAC Complex, Namchi, South Sikkim – 737126", "phone": "03595-254210", "email": "tourism-namchi@sikkim.gov.in" },
+    { "name": "Gyalshing District Office", "address": "DAC Complex, Gyalshing, West Sikkim – 737111", "phone": "03595-250810", "email": "tourism-gyalshing@sikkim.gov.in" },
+    { "name": "Mangan District Office", "address": "DAC Complex, Mangan, North Sikkim – 737116", "phone": "03592-234205", "email": "tourism-mangan@sikkim.gov.in" },
+    { "name": "Soreng District Office", "address": "DAC Complex, Soreng, Sikkim – 737121", "phone": "03595-257002", "email": "tourism-soreng@sikkim.gov.in" },
+    { "name": "Pakyong District Office", "address": "DAC Complex, Pakyong, Sikkim – 737106", "phone": "03592-258014", "email": "tourism-pakyong@sikkim.gov.in" }
+  ]
+}
+

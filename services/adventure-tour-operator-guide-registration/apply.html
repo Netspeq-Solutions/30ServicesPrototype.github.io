@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>Statutory Application Form &bull; Adventure Tour Operator &amp; Guide Registration &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Stepper Styling */
+    .gov-stepper-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .gov-stepper-list {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      justify-content: space-between;
+      position: relative;
+    }
+    .gov-stepper-list::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 35px;
+      right: 35px;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .gov-stepper-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      cursor: pointer;
+    }
+    .gov-stepper-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      color: #64748b;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.4rem;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    .gov-stepper-title {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #64748b;
+      max-width: 140px;
+      line-height: 1.25;
+    }
+    .gov-stepper-step.active .gov-stepper-bubble {
+      background: #1e3a8a;
+      border-color: #1e3a8a;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.15);
+    }
+    .gov-stepper-step.active .gov-stepper-title {
+      color: #1e3a8a;
+      font-weight: 700;
+    }
+    .gov-stepper-step.completed .gov-stepper-bubble {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+    .gov-stepper-step.completed .gov-stepper-title {
+      color: #10b981;
+    }
+
+    /* Form Section Cards */
+    .form-step-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      margin-bottom: 1.5rem;
+    }
+    .form-step-header {
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 0.85rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap-2;
+    }
+
+    .form-sub-header {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    /* Required field mark */
+    .req-mark {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    /* Upload Controls */
+    .file-upload-card {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s ease;
+    }
+    .file-upload-card:hover {
+      border-color: #1e3a8a;
+      background: #eff6ff;
+    }
+    .file-meta-pill {
+      font-size: 0.75rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+
+    /* Repeatable Equipment Table */
+    .repeatable-equipment-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .repeatable-equipment-table th {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.65rem 0.75rem;
+    }
+    .repeatable-equipment-table td {
+      padding: 0.5rem 0.65rem;
+      vertical-align: middle;
+    }
+
+    /* Anti-slab enforcement */
+    .btn-action-compact {
+      width: auto !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.35rem !important;
+      font-size: 0.8125rem !important;
+    }
+
+    .btn-xs {
+      padding: 0.2rem 0.55rem !important;
+      font-size: 0.75rem !important;
+      border-radius: 4px !important;
+    }
+
+    /* Summary Presentation */
+    .summary-group-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+    .summary-group-header {
+      background: #f8fafc;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-group-body {
+      padding: 1.25rem;
+    }
+    .summary-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .summary-value {
+      font-size: 0.875rem;
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .draft-badge-pill {
+      font-size: 0.72rem;
+      border-radius: 20px;
+      padding: 0.2rem 0.6rem;
+      background: #e2e8f0;
+      color: #334155;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body data-theme="royal-navy" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip to Main Content (Accessibility) -->
+  <a class="gov-skip-link" href="#main-form-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Ribbon -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Top Accessibility Bar (GIGW 3.0) -->
+  <nav class="gov-top-strip py-1 px-3 bg-dark text-white border-bottom small" aria-label="Accessibility options">
+    <div class="container-xl d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <span class="flag-icon">&#127470;&#127475;</span>
+        <span class="fw-semibold">Government of Sikkim</span>
+        <span class="text-white-50 d-none d-sm-inline">| Tourism &amp; Civil Aviation Department</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Font sizing">
+          <button type="button" class="btn btn-outline-light btn-xs" onclick="changeFontSize(-1)" title="Decrease font size">A-</button>
+          <button type="button" class="btn btn-outline-light btn-xs" onclick="changeFontSize(0)" title="Default font size">A</button>
+          <button type="button" class="btn btn-outline-light btn-xs" onclick="changeFontSize(1)" title="Increase font size">A+</button>
+        </div>
+        <button type="button" class="btn btn-outline-light btn-xs" id="contrast-toggle" onclick="toggleContrast()" title="Toggle High Contrast">
+          <i class="bi bi-circle-half me-1"></i>Contrast
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Official Header -->
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" title="Return to Service Landing Page">
+            <img src="../../common/images/sikkim-logo.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 52px; width: auto;" onerror="this.src='https://placehold.co/52x52/1e3a8a/ffffff?text=SK'">
+          </a>
+          <div>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 0.5px; font-size: 0.72rem;">Government of Sikkim</span>
+            <h1 class="h6 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
+            <span class="small text-muted">Statutory Application Portal &bull; Adventure Tour Operator &amp; Guide Registration</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="draft-badge-pill d-none d-sm-inline-flex align-items-center gap-1" id="draftStatusPill">
+            <i class="bi bi-cloud-check text-success"></i> <span id="draftStatusText">Draft Auto-Saved</span>
+          </span>
+          <a href="dashboard.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1.5 shadow-xs">
+            <i class="bi bi-speedometer2"></i>
+            <span>Citizen Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="main-form-content" class="flex-grow-1 py-4">
+    <div class="container-xl" style="max-width: 960px;">
+
+      <!-- Registration Category Switcher & Demo Control Bar -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 bg-white p-2.5 rounded-3 border shadow-xs">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="small fw-bold text-dark"><i class="bi bi-filter-circle text-primary me-1"></i>Category:</span>
+          <div class="btn-group btn-group-sm" role="group" aria-label="Registration Category">
+            <button type="button" class="btn btn-outline-primary active" id="btnCatATO" onclick="switchCategory('adventure-tour-operator')">
+              <i class="bi bi-compass me-1"></i>Adventure Tour Operator
+            </button>
+            <button type="button" class="btn btn-outline-primary" id="btnCatGR" onclick="switchCategory('guide-registration')">
+              <i class="bi bi-person-badge me-1"></i>Guide Registration
+            </button>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-xs btn-outline-warning" onclick="restoreDemoData()" title="Restore Demonstration Values">
+            <i class="bi bi-arrow-counterclockwise me-1"></i>Restore Demo Data
+          </button>
+          <button type="button" class="btn btn-xs btn-outline-danger" onclick="clearForm()" title="Clear Form Fields">
+            <i class="bi bi-trash3 me-1"></i>Clear Form
+          </button>
+        </div>
+      </div>
+
+      <!-- Application Banner -->
+      <div class="card p-3 border rounded-3 bg-white mb-3 shadow-xs">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-primary text-white" id="badgeFormType">Category 1</span>
+              <h2 class="h5 fw-bold text-dark mb-0" id="titleFormType">Adventure Tour Operator Registration</h2>
+            </div>
+            <p class="text-muted small mb-0 mt-1" id="descFormType">
+              Statutory commercial license for operating mountaineering, trekking, rafting, paragliding, and adventure tourism in Sikkim.
+            </p>
+          </div>
+          <div class="text-end">
+            <span class="badge bg-light text-secondary border px-2.5 py-1.5 small">
+              <i class="bi bi-shield-check text-success me-1"></i>Stage 03 Form Active
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-Step Stepper Progress Bar -->
+      <div class="gov-stepper-container" id="stepperContainer">
+        <ul class="gov-stepper-list" id="stepperList">
+          <li class="gov-stepper-step active" id="stepIndicator1" onclick="navigateToStepIfPermitted(1)">
+            <div class="gov-stepper-bubble" id="stepBubble1">1</div>
+            <span class="gov-stepper-title" id="stepTitle1">Applicant &amp; Contact</span>
+          </li>
+          <li class="gov-stepper-step" id="stepIndicator2" onclick="navigateToStepIfPermitted(2)">
+            <div class="gov-stepper-bubble" id="stepBubble2">2</div>
+            <span class="gov-stepper-title" id="stepTitle2">Organization &amp; Staff</span>
+          </li>
+          <li class="gov-stepper-step" id="stepIndicator3" onclick="navigateToStepIfPermitted(3)">
+            <div class="gov-stepper-bubble" id="stepBubble3">3</div>
+            <span class="gov-stepper-title" id="stepTitle3">Activities &amp; Gear</span>
+          </li>
+          <li class="gov-stepper-step" id="stepIndicator4" onclick="navigateToStepIfPermitted(4)">
+            <div class="gov-stepper-bubble" id="stepBubble4">4</div>
+            <span class="gov-stepper-title" id="stepTitle4">Summary &amp; Submit</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ====================================================================
+           FORM 1: ADVENTURE TOUR OPERATOR (ATO)
+           ==================================================================== -->
+      <div id="formContainerATO">
+        
+        <!-- ATO STEP 1: Applicant & Contact -->
+        <div class="form-step-content" id="atoStep1">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-person-circle text-primary me-2"></i>Step 1 of 4: Applicant &amp; Contact Particulars</h3>
+                <span class="text-muted small">Personal identification, statutory registration, and centre contact details</span>
+              </div>
+              <span class="badge bg-light text-muted border small">Fields marked <span class="req-mark">*</span> are mandatory</span>
+            </div>
+
+            <!-- Section: Applicant Identity & Photograph -->
+            <div class="form-sub-header">
+              <i class="bi bi-card-heading text-primary"></i> Applicant Identity &amp; Photograph
+            </div>
+            
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Photo of the Applicant <span class="req-mark">*</span></label>
+                <div class="file-upload-card text-center">
+                  <div class="mb-2">
+                    <img id="atoPhotoPreview" src="https://placehold.co/100x120/1e3a8a/ffffff?text=Photo" alt="Applicant Photo" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #cbd5e1;">
+                  </div>
+                  <input type="file" id="atoPhotoInput" class="form-control form-control-sm d-none" accept="image/*" onchange="handleMockFileChange('atoPhotoInput', 'atoPhotoMeta', 'tenzing_norbu_passport_photo.jpg')">
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('atoPhotoInput').click()">
+                    <i class="bi bi-camera me-1"></i>Upload Photo
+                  </button>
+                  <div class="file-meta-pill text-start" id="atoPhotoMeta">
+                    <span class="text-truncate small"><i class="bi bi-image text-primary me-1"></i><span id="atoPhotoName">tenzing_norbu_photo.jpg</span></span>
+                    <span class="badge bg-success-subtle text-success border">Uploaded</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-8">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="atoApplicantName" class="form-label small fw-semibold">Name of Applicant <span class="req-mark">*</span></label>
+                    <input type="text" class="form-control form-control-sm" id="atoApplicantName" required placeholder="Full name as per official records">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="atoGuardianName" class="form-label small fw-semibold">S/o, D/o, W/o (Father / Husband / Wife Name) <span class="req-mark">*</span></label>
+                    <input type="text" class="form-control form-control-sm" id="atoGuardianName" required placeholder="Father / Husband / Wife name">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Gender <span class="req-mark">*</span></label>
+                    <div class="d-flex align-items-center gap-3 pt-1">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="atoGender" id="atoGenderM" value="Male" checked>
+                        <label class="form-check-label small" for="atoGenderM">Male</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="atoGender" id="atoGenderF" value="Female">
+                        <label class="form-check-label small" for="atoGenderF">Female</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="atoCoiNumber" class="form-label small fw-semibold">COI / SSC Registration Number <span class="req-mark">*</span></label>
+                    <input type="text" class="form-control form-control-sm" id="atoCoiNumber" required placeholder="e.g. COI-GTK-2015-8842">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Upload COI / SSC Document <span class="req-mark">*</span></label>
+                    <input type="file" id="atoCoiFileInput" class="form-control form-control-sm d-none" onchange="handleMockFileChange('atoCoiFileInput', 'atoCoiFileMeta', 'coi_certificate_tenzing_norbu.pdf')">
+                    <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                      <span class="small text-muted text-truncate" id="atoCoiFileName">coi_certificate_tenzing_norbu.pdf</span>
+                      <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('atoCoiFileInput').click()">
+                        <i class="bi bi-upload"></i>
+                      </button>
+                    </div>
+                    <div class="file-meta-pill" id="atoCoiFileMeta">
+                      <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>Verified Document</span>
+                      <span class="badge bg-success-subtle text-success border">1.2 MB</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section: Centre Location & Contact Particulars -->
+            <div class="form-sub-header">
+              <i class="bi bi-geo-alt text-primary"></i> Centre Location &amp; Contact Particulars
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label for="atoRegisteredAddress" class="form-label small fw-semibold">Registered Address of the Adventure Tourism Centre <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="atoRegisteredAddress" rows="2" required placeholder="Street address, building, ward / village"></textarea>
+              </div>
+              <div class="col-md-4">
+                <label for="atoDistrict" class="form-label small fw-semibold">District of Application <span class="req-mark">*</span></label>
+                <select class="form-select form-select-sm" id="atoDistrict" required>
+                  <option value="Gangtok" selected>Gangtok (East Sikkim)</option>
+                  <option value="Mangan">Mangan (North Sikkim)</option>
+                  <option value="Namchi">Namchi (South Sikkim)</option>
+                  <option value="Gyalshing">Gyalshing (West Sikkim)</option>
+                  <option value="Pakyong">Pakyong District</option>
+                  <option value="Soreng">Soreng District</option>
+                </select>
+              </div>
+
+              <!-- Correspondence Address Logic -->
+              <div class="col-12">
+                <div class="form-check p-2 bg-light border rounded-2">
+                  <input class="form-check-input ms-1 me-2" type="checkbox" id="atoSameAddress" checked onchange="handleAtoSameAddressChange(this.checked)">
+                  <label class="form-check-label small fw-semibold text-dark cursor-pointer" for="atoSameAddress">
+                    Correspondence Address is same as Registered Address
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-12" id="atoCorrespondenceContainer" style="display: none;">
+                <label for="atoCorrespondenceAddress" class="form-label small fw-semibold">Correspondence Address <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="atoCorrespondenceAddress" rows="2" placeholder="Full postal address for official departmental correspondence"></textarea>
+              </div>
+
+              <div class="col-md-6">
+                <label for="atoContactNumber" class="form-label small fw-semibold">Contact Number <span class="req-mark">*</span></label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">+91</span>
+                  <input type="tel" class="form-control" id="atoContactNumber" required placeholder="10-digit mobile number">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="atoEmail" class="form-label small fw-semibold">Email ID <span class="req-mark">*</span></label>
+                <input type="email" class="form-control form-control-sm" id="atoEmail" required placeholder="official@agency.in">
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary btn-action-compact">
+                <i class="bi bi-arrow-left"></i> Guidelines
+              </a>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact" onclick="nextAtoStep(1)">
+                  <span>Save &amp; Continue</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ATO STEP 2: Organization & Staff -->
+        <div class="form-step-content" id="atoStep2" style="display: none;">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-building text-primary me-2"></i>Step 2 of 4: Organization &amp; Staff Particulars</h3>
+                <span class="text-muted small">Business constitution, tenancy details, tax registrations, and technical crew strength</span>
+              </div>
+              <span class="badge bg-light text-muted border small">Fields marked <span class="req-mark">*</span> are mandatory</span>
+            </div>
+
+            <!-- Section: Organization & Business Particulars -->
+            <div class="form-sub-header">
+              <i class="bi bi-briefcase text-primary"></i> Organization &amp; Business Particulars
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="atoOrgName" class="form-label small fw-semibold">Name of the Organization <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="atoOrgName" required placeholder="e.g. Khangchendzonga Adventure Trails LLP">
+              </div>
+              <div class="col-md-6">
+                <label for="atoOrgType" class="form-label small fw-semibold">Type of Organization <span class="req-mark">*</span></label>
+                <select class="form-select form-select-sm" id="atoOrgType" required>
+                  <option value="Proprietorship">Sole Proprietorship</option>
+                  <option value="Partnership Firm">Partnership Firm</option>
+                  <option value="Limited Liability Partnership (LLP)" selected>Limited Liability Partnership (LLP)</option>
+                  <option value="Private Limited Company">Private Limited Company</option>
+                  <option value="Public Limited Company">Public Limited Company</option>
+                  <option value="Society / Trust">Registered Society / Trust</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Upload Partnership Deed / Company Agreement / MoU <span class="req-mark">*</span></label>
+                <input type="file" id="atoOrgDeedInput" class="form-control form-control-sm d-none" onchange="handleMockFileChange('atoOrgDeedInput', 'atoOrgDeedMeta', 'llp_agreement_kat_2024.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="atoOrgDeedName">llp_agreement_kat_2024.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('atoOrgDeedInput').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="atoOrgDeedMeta">
+                  <span class="text-truncate small"><i class="bi bi-file-earmark-check text-success me-1"></i>Statutory Deed Uploaded</span>
+                  <span class="badge bg-success-subtle text-success border">2.4 MB</span>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="atoBuildingOwnership" class="form-label small fw-semibold">Building Ownership Status <span class="req-mark">*</span></label>
+                <select class="form-select form-select-sm" id="atoBuildingOwnership" required>
+                  <option value="Owned">Owned Premises</option>
+                  <option value="Rented / Leased" selected>Rented / Leased Premises</option>
+                  <option value="Government Allotted">Government Allotted Tourist Centre</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Upload Rent Deed / Tenancy Agreement <span class="req-mark">*</span></label>
+                <input type="file" id="atoRentDeedInput" class="form-control form-control-sm d-none" onchange="handleMockFileChange('atoRentDeedInput', 'atoRentDeedMeta', 'commercial_lease_deed_gangtok.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="atoRentDeedName">commercial_lease_deed_gangtok.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('atoRentDeedInput').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="atoRentDeedMeta">
+                  <span class="text-truncate small"><i class="bi bi-file-earmark-text text-primary me-1"></i>Valid Tenancy Deed</span>
+                  <span class="badge bg-success-subtle text-success border">1.8 MB</span>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="atoGstNumber" class="form-label small fw-semibold">GST Registration Detail (GSTIN) <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm text-uppercase" id="atoGstNumber" required placeholder="e.g. 11AAECK4589M1Z8">
+                <div class="mt-1 d-flex justify-content-between align-items-center">
+                  <span class="small text-muted" style="font-size: 0.72rem;">Optional GST Certificate Attachment:</span>
+                  <input type="file" id="atoGstCertInput" class="d-none" onchange="handleMockFileChange('atoGstCertInput', 'atoGstCertMeta', 'gst_registration_cert_kat.pdf')">
+                  <button type="button" class="btn btn-xs btn-outline-secondary" onclick="document.getElementById('atoGstCertInput').click()">
+                    <i class="bi bi-paperclip me-1"></i>Attach PDF
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="atoGstCertMeta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>gst_registration_cert_kat.pdf</span>
+                  <span class="badge bg-light text-secondary border">Supporting</span>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="atoPanNumber" class="form-label small fw-semibold">PAN Card Details (PAN Number) <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm text-uppercase" id="atoPanNumber" required placeholder="e.g. AAECK4589M">
+                <div class="mt-1 d-flex justify-content-between align-items-center">
+                  <span class="small text-muted" style="font-size: 0.72rem;">Optional PAN Card Attachment:</span>
+                  <input type="file" id="atoPanDocInput" class="d-none" onchange="handleMockFileChange('atoPanDocInput', 'atoPanDocMeta', 'pan_card_kat_firm.pdf')">
+                  <button type="button" class="btn btn-xs btn-outline-secondary" onclick="document.getElementById('atoPanDocInput').click()">
+                    <i class="bi bi-paperclip me-1"></i>Attach PDF
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="atoPanDocMeta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>pan_card_kat_firm.pdf</span>
+                  <span class="badge bg-light text-secondary border">Supporting</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section: Qualifications & Staff Strength -->
+            <div class="form-sub-header">
+              <i class="bi bi-mortarboard text-primary"></i> Qualifications &amp; Staff Strength
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-5">
+                <label for="atoQualAcademic" class="form-label small fw-semibold">Qualification (Academic) <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="atoQualAcademic" required placeholder="e.g. B.Sc. Environmental Science, Sikkim University">
+              </div>
+              <div class="col-md-5">
+                <label for="atoQualTechnical" class="form-label small fw-semibold">Qualification (Technical) <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="atoQualTechnical" required placeholder="e.g. HMI Advance Mountaineering & Search & Rescue Grade 'A'">
+              </div>
+              <div class="col-md-2">
+                <label for="atoStaffStrength" class="form-label small fw-semibold">Staff Strength <span class="req-mark">*</span></label>
+                <input type="number" min="1" class="form-control form-control-sm" id="atoStaffStrength" required value="8">
+              </div>
+
+              <div class="col-md-6">
+                <label for="atoStaffAcademicDetails" class="form-label small fw-semibold">Staff Qualification Details (Academic) <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="atoStaffAcademicDetails" rows="3" required placeholder="Summary of academic qualifications of administrative and support personnel"></textarea>
+              </div>
+              <div class="col-md-6">
+                <label for="atoStaffTechnicalDetails" class="form-label small fw-semibold">Staff Qualification Details (Technical) <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="atoStaffTechnicalDetails" rows="3" required placeholder="Mountaineering certifications, river rafting licences, WFR first-aid qualifications of lead instructors"></textarea>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="goToAtoStep(1)">
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact" onclick="nextAtoStep(2)">
+                  <span>Save &amp; Continue</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ATO STEP 3: Activities & Gear -->
+        <div class="form-step-content" id="atoStep3" style="display: none;">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-compass text-primary me-2"></i>Step 3 of 4: Activities, Equipment &amp; Safety Compliance</h3>
+                <span class="text-muted small">Adventure activities offered, gear inventory with certification details, and medical provisions</span>
+              </div>
+              <span class="badge bg-light text-muted border small">Fields marked <span class="req-mark">*</span> are mandatory</span>
+            </div>
+
+            <!-- Section A: List of Activities Conducted -->
+            <div class="form-sub-header">
+              <i class="bi bi-list-check text-primary"></i> Section A &bull; List of Activities Conducted
+            </div>
+            <p class="small text-muted mb-2">Select all adventure activities your agency is equipped and qualified to conduct in Sikkim.</p>
+
+            <!-- Group 1: LAND BASE ACTIVITIES -->
+            <div class="card p-3 border rounded-3 bg-light mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-dark small text-uppercase"><i class="bi bi-tree-fill text-success me-1"></i>Land Base Activities <span class="req-mark">*</span></span>
+                <span class="badge bg-white text-secondary border small">Group 1</span>
+              </div>
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2" id="atoLandActivitiesContainer">
+                <!-- Dynamically populated or static land checkboxes -->
+              </div>
+            </div>
+
+            <!-- Group 2: AIR BASE ACTIVITIES -->
+            <div class="card p-3 border rounded-3 bg-light mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-dark small text-uppercase"><i class="bi bi-wind text-info me-1"></i>Air Base Activities</span>
+                <span class="badge bg-white text-secondary border small">Group 2</span>
+              </div>
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2" id="atoAirActivitiesContainer">
+                <!-- Dynamically populated air checkboxes -->
+              </div>
+            </div>
+
+            <!-- Group 3: WATER BASE ACTIVITIES -->
+            <div class="card p-3 border rounded-3 bg-light mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-dark small text-uppercase"><i class="bi bi-water text-primary me-1"></i>Water Base Activities</span>
+                <span class="badge bg-white text-secondary border small">Group 3</span>
+              </div>
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2" id="atoWaterActivitiesContainer">
+                <!-- Dynamically populated water checkboxes -->
+              </div>
+            </div>
+
+            <!-- Section B: List of Equipment (3 Separate Repeating Lists) -->
+            <div class="form-sub-header mt-4">
+              <i class="bi bi-tools text-primary"></i> Section B &bull; List of Equipment &amp; Technical Inventory
+            </div>
+            <p class="small text-muted mb-3">
+              Record equipment descriptions, manufacturing standards, maintenance logs, and safety certifications for physical IA inspection.
+            </p>
+
+            <!-- 1. Safety Gear / Equipment Repeating Section -->
+            <div class="card border rounded-3 p-3 mb-3 bg-white">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h6 class="fw-bold text-dark mb-0"><i class="bi bi-shield-check text-success me-1"></i>1. Safety Gear / Equipment <span class="req-mark">*</span></h6>
+                  <span class="text-muted" style="font-size: 0.72rem;">Harnesses, dynamic ropes, karabiners, helmets, crampons</span>
+                </div>
+                <button type="button" class="btn btn-xs btn-outline-primary" onclick="addEquipmentRow('safety')">
+                  <i class="bi bi-plus-lg me-1"></i>Add Safety Gear Entry
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered repeatable-equipment-table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th style="width: 28%;">Equipment Description <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Quality / Grade <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Manufacturer <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Maintenance <span class="req-mark">*</span></th>
+                      <th style="width: 14%;">Certification <span class="req-mark">*</span></th>
+                      <th style="width: 4%;" class="text-center">Del</th>
+                    </tr>
+                  </thead>
+                  <tbody id="atoSafetyEquipBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2. Rescue Gear / Equipment Repeating Section -->
+            <div class="card border rounded-3 p-3 mb-3 bg-white">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h6 class="fw-bold text-dark mb-0"><i class="bi bi-life-preserver text-danger me-1"></i>2. Rescue Gear / Equipment <span class="req-mark">*</span></h6>
+                  <span class="text-muted" style="font-size: 0.72rem;">Evacuation stretchers, satellite transponders, avalanche beacons, trauma kits</span>
+                </div>
+                <button type="button" class="btn btn-xs btn-outline-primary" onclick="addEquipmentRow('rescue')">
+                  <i class="bi bi-plus-lg me-1"></i>Add Rescue Gear Entry
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered repeatable-equipment-table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th style="width: 28%;">Equipment Description <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Quality / Grade <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Manufacturer <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Maintenance <span class="req-mark">*</span></th>
+                      <th style="width: 14%;">Certification <span class="req-mark">*</span></th>
+                      <th style="width: 4%;" class="text-center">Del</th>
+                    </tr>
+                  </thead>
+                  <tbody id="atoRescueEquipBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 3. Adventure Activity Equipment Repeating Section -->
+            <div class="card border rounded-3 p-3 mb-3 bg-white">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h6 class="fw-bold text-dark mb-0"><i class="bi bi-compass text-primary me-1"></i>3. Adventure Activity Equipment <span class="req-mark">*</span></h6>
+                  <span class="text-muted" style="font-size: 0.72rem;">Whitewater rafts, paragliders, mountain bicycles, high-altitude geodesic tents</span>
+                </div>
+                <button type="button" class="btn btn-xs btn-outline-primary" onclick="addEquipmentRow('activity')">
+                  <i class="bi bi-plus-lg me-1"></i>Add Activity Gear Entry
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered repeatable-equipment-table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th style="width: 28%;">Equipment Description <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Quality / Grade <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Manufacturer <span class="req-mark">*</span></th>
+                      <th style="width: 18%;">Maintenance <span class="req-mark">*</span></th>
+                      <th style="width: 14%;">Certification <span class="req-mark">*</span></th>
+                      <th style="width: 4%;" class="text-center">Del</th>
+                    </tr>
+                  </thead>
+                  <tbody id="atoActivityEquipBody">
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Section C: Insurance & Medical Facilities -->
+            <div class="form-sub-header mt-4">
+              <i class="bi bi-heart-pulse text-primary"></i> Section C &bull; Insurance &amp; Medical Facilities
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="atoInsuranceDetails" class="form-label small fw-semibold">Insurance Coverage Particulars <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="atoInsuranceDetails" rows="2" required placeholder="Policy details, underwriter, coverage limits per tourist/staff, and validity"></textarea>
+                <div class="mt-1 d-flex justify-content-between align-items-center">
+                  <span class="small text-muted" style="font-size: 0.72rem;">Upload Insurance Policy Document (Optional Supporting Document):</span>
+                  <input type="file" id="atoInsuranceFileInput" class="d-none" onchange="handleMockFileChange('atoInsuranceFileInput', 'atoInsuranceFileMeta', 'national_insurance_public_liability_2026.pdf')">
+                  <button type="button" class="btn btn-xs btn-outline-secondary" onclick="document.getElementById('atoInsuranceFileInput').click()">
+                    <i class="bi bi-paperclip me-1"></i>Attach Policy
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="atoInsuranceFileMeta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>national_insurance_public_liability_2026.pdf</span>
+                  <span class="badge bg-light text-secondary border">Optional Supporting</span>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="atoMedicalFacilities" class="form-label small fw-semibold">Medical Facilities Available <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="atoMedicalFacilities" rows="2" required placeholder="First-aid kits, oxygen cylinders, hyperbaric chambers, doctor-on-call arrangements"></textarea>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="goToAtoStep(2)">
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact" onclick="nextAtoStep(3)">
+                  <span>Proceed to Summary</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ATO STEP 4: Application Summary & Declaration -->
+        <div class="form-step-content" id="atoStep4" style="display: none;">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-clipboard-check text-primary me-2"></i>Step 4 of 4: Application Summary &amp; Statutory Declaration</h3>
+                <span class="text-muted small">Carefully review all submitted particulars prior to final statutory submission</span>
+              </div>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-semibold">Final Review</span>
+            </div>
+
+            <!-- Dynamic Summary Sections rendered via JS -->
+            <div id="atoSummaryContainer"></div>
+
+            <!-- Statutory Declaration & Agreement -->
+            <div class="card p-3 border rounded-3 bg-light mt-4 mb-4">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-shield-fill-exclamation text-warning fs-5"></i>
+                <h6 class="fw-bold text-dark mb-0">Applicant Statutory Declaration &amp; Undertaking</h6>
+              </div>
+              <div class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-2 align-self-start small">
+                <i class="bi bi-clock-history me-1"></i>Draft Declaration Wording &bull; Pending Departmental Gazetted Confirmation
+              </div>
+              <p class="small text-muted mb-3" style="line-height: 1.6;">
+                I hereby solemnly declare that all the information, statements, equipment details, and attached documents submitted in this application are true, complete, and correct to the best of my knowledge and belief. I agree to abide by the Sikkim Tourism (Registration and Regulation of Adventure Tourism &amp; Guides) Rules and statutory safety directives issued by the Tourism &amp; Civil Aviation Department, Government of Sikkim. I understand that any false statement or safety non-compliance discovered during the Inspecting Authority (IA) physical check will render this application liable to immediate rejection.
+              </p>
+              <div class="form-check p-2 bg-white border rounded-2">
+                <input class="form-check-input ms-1 me-2" type="checkbox" id="atoDeclarationCheck" onchange="handleAtoDeclarationChange(this.checked)">
+                <label class="form-check-label small fw-bold text-dark cursor-pointer" for="atoDeclarationCheck">
+                  I accept the statutory declaration, terms of adventure tourism safety compliance, and submit this registration dossier. <span class="req-mark">*</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="goToAtoStep(3)">
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact px-4 py-2" id="atoSubmitBtn" disabled onclick="submitFinalAtoApplication()">
+                  <i class="bi bi-send-check"></i> Submit Application
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====================================================================
+           FORM 2: GUIDE REGISTRATION (GR)
+           ==================================================================== -->
+      <div id="formContainerGR" style="display: none;">
+        
+        <!-- GR STEP 1: Applicant & Contact -->
+        <div class="form-step-content" id="grStep1">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-person-badge text-primary me-2"></i>Step 1 of 4: Guide Identity &amp; Contact Information</h3>
+                <span class="text-muted small">Personal details, date of birth, domicile district, and contact channels</span>
+              </div>
+              <span class="badge bg-light text-muted border small">Fields marked <span class="req-mark">*</span> are mandatory</span>
+            </div>
+
+            <!-- Section: Applicant Identity & Photograph -->
+            <div class="form-sub-header">
+              <i class="bi bi-person-bounding-box text-primary"></i> Applicant Identity &amp; Photograph
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-semibold">Photo of the Applicant <span class="req-mark">*</span></label>
+                <div class="file-upload-card text-center">
+                  <div class="mb-2">
+                    <img id="grPhotoPreview" src="https://placehold.co/100x120/1e3a8a/ffffff?text=Photo" alt="Guide Photo" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #cbd5e1;">
+                  </div>
+                  <input type="file" id="grPhotoInput" class="form-control form-control-sm d-none" accept="image/*" onchange="handleMockFileChange('grPhotoInput', 'grPhotoMeta', 'sonam_sherpa_guide_photo.jpg')">
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('grPhotoInput').click()">
+                    <i class="bi bi-camera me-1"></i>Upload Photo
+                  </button>
+                  <div class="file-meta-pill text-start" id="grPhotoMeta">
+                    <span class="text-truncate small"><i class="bi bi-image text-primary me-1"></i><span id="grPhotoName">sonam_sherpa_guide_photo.jpg</span></span>
+                    <span class="badge bg-success-subtle text-success border">Uploaded</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-8">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="grApplicantName" class="form-label small fw-semibold">Name of the Applicant <span class="req-mark">*</span></label>
+                    <input type="text" class="form-control form-control-sm" id="grApplicantName" required placeholder="Full legal name as per Sikkim Subject / Aadhaar">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="grDob" class="form-label small fw-semibold">Date of Birth <span class="req-mark">*</span></label>
+                    <input type="date" class="form-control form-control-sm" id="grDob" required value="1994-08-15">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Gender <span class="req-mark">*</span></label>
+                    <div class="d-flex align-items-center gap-3 pt-1">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="grGender" id="grGenderM" value="Male" checked>
+                        <label class="form-check-label small" for="grGenderM">Male</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="grGender" id="grGenderF" value="Female">
+                        <label class="form-check-label small" for="grGenderF">Female</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section: Residential Address & Contact Information -->
+            <div class="form-sub-header">
+              <i class="bi bi-geo-alt text-primary"></i> Residential Address &amp; Contact Information
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label for="grAddress" class="form-label small fw-semibold">Residential Address <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="grAddress" rows="2" required placeholder="Permanent residential address in Sikkim"></textarea>
+              </div>
+              <div class="col-md-4">
+                <label for="grPincode" class="form-label small fw-semibold">Pincode <span class="req-mark">*</span></label>
+                <input type="text" maxlength="6" class="form-control form-control-sm" id="grPincode" required placeholder="e.g. 737101">
+              </div>
+              <div class="col-md-4">
+                <label for="grDistrict" class="form-label small fw-semibold">District of Application <span class="req-mark">*</span></label>
+                <select class="form-select form-select-sm" id="grDistrict" required>
+                  <option value="Gangtok" selected>Gangtok (East Sikkim)</option>
+                  <option value="Mangan">Mangan (North Sikkim)</option>
+                  <option value="Namchi">Namchi (South Sikkim)</option>
+                  <option value="Gyalshing">Gyalshing (West Sikkim)</option>
+                  <option value="Pakyong">Pakyong District</option>
+                  <option value="Soreng">Soreng District</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="grContactNumber" class="form-label small fw-semibold">Contact Number <span class="req-mark">*</span></label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">+91</span>
+                  <input type="tel" class="form-control" id="grContactNumber" required placeholder="10-digit mobile number">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="grEmail" class="form-label small fw-semibold">Email ID <span class="req-mark">*</span></label>
+                <input type="email" class="form-control form-control-sm" id="grEmail" required placeholder="guide@example.in">
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary btn-action-compact">
+                <i class="bi bi-arrow-left"></i> Guidelines
+              </a>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact" onclick="nextGrStep(1)">
+                  <span>Save &amp; Continue</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GR STEP 2: Qualifications & Category -->
+        <div class="form-step-content" id="grStep2" style="display: none;">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-award text-primary me-2"></i>Step 2 of 4: Qualifications, Experience &amp; Guide Categories</h3>
+                <span class="text-muted small">Education background, guiding field experience, specialization categories, and language skills</span>
+              </div>
+              <span class="badge bg-light text-muted border small">Fields marked <span class="req-mark">*</span> are mandatory</span>
+            </div>
+
+            <!-- Section: Education & Professional Experience -->
+            <div class="form-sub-header">
+              <i class="bi bi-mortarboard text-primary"></i> Education &amp; Professional Experience
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="grEduQual" class="form-label small fw-semibold">Education Qualification <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="grEduQual" required placeholder="e.g. Higher Secondary (Class XII Pass, Sikkim Board)">
+              </div>
+              <div class="col-md-6">
+                <label for="grCertAdditional" class="form-label small fw-semibold">Additional Certification (if any)</label>
+                <input type="text" class="form-control form-control-sm" id="grCertAdditional" placeholder="e.g. Wilderness First Responder (WFR) 80h, Avalanche Safety Level 1">
+              </div>
+              <div class="col-12">
+                <label for="grWorkExp" class="form-label small fw-semibold">Work Experience as Guide (Applied for) <span class="req-mark">*</span></label>
+                <textarea class="form-control form-control-sm" id="grWorkExp" rows="3" required placeholder="Detail years of experience, popular routes guided, and agency affiliations"></textarea>
+              </div>
+            </div>
+
+            <!-- Section: Application Category (Multi-select Checkbox Group) -->
+            <div class="form-sub-header">
+              <i class="bi bi-tags text-primary"></i> Application Category <span class="req-mark">*</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <p class="small text-muted mb-0">Select all guide categories for which government accreditation is sought:</p>
+              <span class="badge bg-primary-subtle text-primary border small" id="grCatSelectedBadge">3 Selected</span>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2 mb-3">
+              <div class="col">
+                <label class="card h-100 p-2.5 border rounded-2 bg-light cursor-pointer">
+                  <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="grCatTour" value="Tour Guide" checked onchange="updateGrCategoryCount()">
+                    <span class="form-check-label small fw-semibold text-dark">Tour Guide</span>
+                  </div>
+                  <span class="text-muted ps-4" style="font-size: 0.72rem;">Heritage, culture, city itineraries</span>
+                </label>
+              </div>
+              <div class="col">
+                <label class="card h-100 p-2.5 border rounded-2 bg-light cursor-pointer">
+                  <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="grCatBird" value="Birdwatching Guide" checked onchange="updateGrCategoryCount()">
+                    <span class="form-check-label small fw-semibold text-dark">Birdwatching Guide</span>
+                  </div>
+                  <span class="text-muted ps-4" style="font-size: 0.72rem;">Avian species, forest sanctuaries</span>
+                </label>
+              </div>
+              <div class="col">
+                <label class="card h-100 p-2.5 border rounded-2 bg-light cursor-pointer">
+                  <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="grCatTrek" value="Trekking Guide" checked onchange="updateGrCategoryCount()">
+                    <span class="form-check-label small fw-semibold text-dark">Trekking Guide</span>
+                  </div>
+                  <span class="text-muted ps-4" style="font-size: 0.72rem;">High-altitude mountain trails</span>
+                </label>
+              </div>
+              <div class="col">
+                <label class="card h-100 p-2.5 border rounded-2 bg-light cursor-pointer">
+                  <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="grCatCook" value="Trekking Cook" onchange="updateGrCategoryCount()">
+                    <span class="form-check-label small fw-semibold text-dark">Trekking Cook</span>
+                  </div>
+                  <span class="text-muted ps-4" style="font-size: 0.72rem;">Expedition culinary logistics</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Section: Language Proficiency -->
+            <div class="form-sub-header">
+              <i class="bi bi-translate text-primary"></i> Language Proficiency
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="grLangKnown" class="form-label small fw-semibold">Language Known <span class="req-mark">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="grLangKnown" required placeholder="e.g. English, Hindi, Nepali, Bhutia, Tibetan">
+              </div>
+              <div class="col-md-6">
+                <label for="grLangForeign" class="form-label small fw-semibold">Foreign Language (if any)</label>
+                <input type="text" class="form-control form-control-sm" id="grLangForeign" placeholder="e.g. Basic French (Conversational)">
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="goToGrStep(1)">
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact" onclick="nextGrStep(2)">
+                  <span>Save &amp; Continue</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GR STEP 3: Required Documents (7-Point Dossier) -->
+        <div class="form-step-content" id="grStep3" style="display: none;">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-file-earmark-arrow-up text-primary me-2"></i>Step 3 of 4: Required Statutory Documents (7-Point Dossier)</h3>
+                <span class="text-muted small">Upload mandatory identification credentials, certificates, and optional language records</span>
+              </div>
+              <span class="badge bg-light text-muted border small">5 Mandatory &bull; 2 Optional</span>
+            </div>
+
+            <div class="alert alert-info border-0 p-2.5 rounded-2 small mb-3">
+              <i class="bi bi-info-circle-fill text-primary me-1"></i>
+              <strong>Notice on Inferred Items:</strong> Document descriptions for items 1 and 2 are inferred based on standard statutory guidelines, pending formal department notification.
+            </div>
+
+            <div class="row g-3">
+              <!-- Doc 1: Identity Proof -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">1. Identity Proof (Inferred: Voter ID Card) <span class="req-mark">*</span></label>
+                <input type="file" id="grDoc1Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc1Input', 'grDoc1Meta', 'voter_id_sonam_gyatso_sherpa.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc1Name">voter_id_sonam_gyatso_sherpa.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('grDoc1Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc1Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>Voter ID Verified</span>
+                  <span class="badge bg-success-subtle text-success border">950 KB</span>
+                </div>
+              </div>
+
+              <!-- Doc 2: Domicile / COI Proof -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">2. Domicile / COI Proof (Inferred: Sikkim Subject COI) <span class="req-mark">*</span></label>
+                <input type="file" id="grDoc2Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc2Input', 'grDoc2Meta', 'coi_certificate_sonam_sherpa.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc2Name">coi_certificate_sonam_sherpa.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('grDoc2Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc2Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>COI Certificate</span>
+                  <span class="badge bg-success-subtle text-success border">1.1 MB</span>
+                </div>
+              </div>
+
+              <!-- Doc 3: Education Qualification Certificate -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">3. Education Qualification Certificate <span class="req-mark">*</span></label>
+                <input type="file" id="grDoc3Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc3Input', 'grDoc3Meta', 'class_xii_marksheet_cbse.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc3Name">class_xii_marksheet_cbse.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('grDoc3Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc3Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>Class XII Marksheet</span>
+                  <span class="badge bg-success-subtle text-success border">820 KB</span>
+                </div>
+              </div>
+
+              <!-- Doc 4: Experience Certificate -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">4. Experience Certificate <span class="req-mark">*</span></label>
+                <input type="file" id="grDoc4Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc4Input', 'grDoc4Meta', 'himalayan_mountaineering_experience_letter.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc4Name">himalayan_mountaineering_experience_letter.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('grDoc4Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc4Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>Guiding Experience Letter</span>
+                  <span class="badge bg-success-subtle text-success border">1.3 MB</span>
+                </div>
+              </div>
+
+              <!-- Doc 5: Insurance Document -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">5. Insurance Document <span class="req-mark">*</span></label>
+                <input type="file" id="grDoc5Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc5Input', 'grDoc5Meta', 'personal_accident_insurance_policy.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc5Name">personal_accident_insurance_policy.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-primary" onclick="document.getElementById('grDoc5Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc5Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>Personal Accident Cover</span>
+                  <span class="badge bg-success-subtle text-success border">1.5 MB</span>
+                </div>
+              </div>
+
+              <!-- Doc 6: Foreign Language Proficiency Certificate (Optional) -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">6. Foreign Language Proficiency Certificate <span class="badge bg-light text-secondary border small">Optional</span></label>
+                <input type="file" id="grDoc6Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc6Input', 'grDoc6Meta', 'alliance_francaise_basic_a1_cert.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc6Name">alliance_francaise_basic_a1_cert.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-secondary" onclick="document.getElementById('grDoc6Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc6Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>A1 French Certificate</span>
+                  <span class="badge bg-light text-secondary border">Optional</span>
+                </div>
+              </div>
+
+              <!-- Doc 7: Training Certificate (if any) (Optional) -->
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">7. Training Certificate (if any) <span class="badge bg-light text-secondary border small">Optional</span></label>
+                <input type="file" id="grDoc7Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc7Input', 'grDoc7Meta', 'hmi_darjeeling_advance_mountaineering_cert.pdf')">
+                <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
+                  <span class="small text-muted text-truncate" id="grDoc7Name">hmi_darjeeling_advance_mountaineering_cert.pdf</span>
+                  <button type="button" class="btn btn-xs btn-outline-secondary" onclick="document.getElementById('grDoc7Input').click()">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+                <div class="file-meta-pill" id="grDoc7Meta">
+                  <span class="text-truncate small"><i class="bi bi-file-pdf text-danger me-1"></i>HMI Advance Mountaineering</span>
+                  <span class="badge bg-light text-secondary border">Optional</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="goToGrStep(2)">
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact" onclick="nextGrStep(3)">
+                  <span>Proceed to Summary</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GR STEP 4: Application Summary & Declaration -->
+        <div class="form-step-content" id="grStep4" style="display: none;">
+          <div class="form-step-card">
+            <div class="form-step-header">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-clipboard-check text-primary me-2"></i>Step 4 of 4: Guide Dossier Summary &amp; Statutory Declaration</h3>
+                <span class="text-muted small">Verify all biographical particulars, qualifications, categories, and uploaded dossier files</span>
+              </div>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-semibold">Final Review</span>
+            </div>
+
+            <!-- Dynamic Summary Sections rendered via JS -->
+            <div id="grSummaryContainer"></div>
+
+            <!-- Statutory Declaration & Agreement -->
+            <div class="card p-3 border rounded-3 bg-light mt-4 mb-4">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-shield-fill-exclamation text-warning fs-5"></i>
+                <h6 class="fw-bold text-dark mb-0">Guide Statutory Declaration &amp; Professional Undertaking</h6>
+              </div>
+              <div class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-2 align-self-start small">
+                <i class="bi bi-clock-history me-1"></i>Draft Declaration Wording &bull; Pending Departmental Gazetted Confirmation
+              </div>
+              <p class="small text-muted mb-3" style="line-height: 1.6;">
+                I hereby declare that all the statements, educational qualifications, guide categories, and attached statutory credentials submitted in this application are authentic, true, and correct. I agree to abide by the Code of Conduct for Professional Guides and safety guidelines framed by the Tourism &amp; Civil Aviation Department, Government of Sikkim. I understand that any false declaration will lead to disqualification and revocation of registration.
+              </p>
+              <div class="form-check p-2 bg-white border rounded-2">
+                <input class="form-check-input ms-1 me-2" type="checkbox" id="grDeclarationCheck" onchange="handleGrDeclarationChange(this.checked)">
+                <label class="form-check-label small fw-bold text-dark cursor-pointer" for="grDeclarationCheck">
+                  I accept the statutory declaration, guide code of conduct, and submit my application. <span class="req-mark">*</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+              <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="goToGrStep(3)">
+                <i class="bi bi-arrow-left"></i> Previous
+              </button>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="saveDraftManual()">
+                  <i class="bi bi-save"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-sm btn-gov-primary btn-action-compact px-4 py-2" id="grSubmitBtn" disabled onclick="submitFinalGrApplication()">
+                  <i class="bi bi-send-check"></i> Submit Application
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====================================================================
+           ACKNOWLEDGEMENT SCREEN (Displayed after successful final submission)
+           ==================================================================== -->
+      <div id="acknowledgementScreen" style="display: none;">
+        <div class="card border-0 rounded-4 shadow-sm p-4 p-md-5 text-center bg-white mb-4">
+          <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 72px; height: 72px; font-size: 2.2rem;">
+            <i class="bi bi-check2"></i>
+          </div>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 mb-2 align-self-center small fw-semibold">
+            Statutory Application Submitted
+          </span>
+          <h2 class="h4 fw-bold text-dark mb-1">Application Received Successfully!</h2>
+          <p class="text-muted small mx-auto mb-4" style="max-width: 580px;">
+            Your statutory registration dossier has been formally recorded in the Tourism &amp; Civil Aviation Department registry and assigned to the scrutiny queue.
+          </p>
+
+          <div class="card p-3 border rounded-3 bg-light text-start mx-auto mb-4" style="max-width: 540px;">
+            <div class="d-flex justify-content-between align-items-center pb-2 mb-2 border-bottom">
+              <span class="small text-muted">Application Reference Number (ARN):</span>
+              <strong class="font-monospace text-primary fs-6" id="ackArn">SK-ATO-2026-7842</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-1">
+              <span class="small text-muted">Registration Category:</span>
+              <span class="fw-semibold text-dark small" id="ackCategory">Adventure Tour Operator</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-1">
+              <span class="small text-muted">Applicant / Enterprise:</span>
+              <span class="fw-semibold text-dark small" id="ackApplicant">Tenzing Norbu Lepcha</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-1">
+              <span class="small text-muted">District Jurisdiction:</span>
+              <span class="badge bg-white text-dark border small" id="ackDistrict">Gangtok District</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center py-1">
+              <span class="small text-muted">Submission Timestamp:</span>
+              <span class="text-muted small" id="ackTimestamp">13 Nov 2026, 12:45 PM</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
+              <span class="small text-muted">Current Workflow Status:</span>
+              <span class="badge bg-info-subtle text-info border border-info-subtle small fw-bold">Stage 1: TA Scrutiny Active</span>
+            </div>
+          </div>
+
+          <div class="alert alert-info border-0 p-3 rounded-3 text-start small mx-auto mb-4" style="max-width: 540px;">
+            <i class="bi bi-info-circle-fill text-primary me-1"></i>
+            <strong>What Happens Next?</strong> The designated Technical Assistant (TA) will verify the uploaded credentials within 2 working days. If any clarifications are required, you will receive an alert on your citizen dashboard. Physical inspection schedule will be notified via SMS.
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <button type="button" class="btn btn-sm btn-outline-secondary btn-action-compact" onclick="window.print()">
+              <i class="bi bi-printer"></i> Print Acknowledgement
+            </button>
+            <a href="dashboard.html" class="btn btn-sm btn-gov-primary btn-action-compact">
+              <i class="bi bi-speedometer2"></i> Go to Citizen Dashboard
+            </a>
+            <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="startNewApplication()">
+              <i class="bi bi-plus-lg"></i> New Application
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Government Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white border-top mt-auto" role="contentinfo">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2 text-white-50 small">
+      <div>&copy; 2026 Tourism &amp; Civil Aviation Department, Government of Sikkim.</div>
+      <div>Single Window Service Gateway &bull; Stage 03 Verified</div>
+    </div>
+  </footer>
+
+  <!-- Scripts: Bootstrap 5.3 CDN & GIGW Controllers -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="workflow-engine.js"></script>
+
+  <!-- Application Logic & Demonstration Datasets -->
+  <script>
+    // ========================================================================
+    // GLOBAL STATE & DEMONSTRATION DATA DEFINITIONS
+    // ========================================================================
+    let currentCategory = 'adventure-tour-operator'; // 'adventure-tour-operator' or 'guide-registration'
+    let currentStep = 1;
+    let maxAllowedStep = 4;
+
+    // Land, Air, Water Activity Lists (Part B)
+    const ACTIVITY_DATA = {
+      land: [
+        { id: "act_land_1", name: "Off Roading tours (ATV, Motor Cycle)" },
+        { id: "act_land_2", name: "Trekking", defaultChecked: true },
+        { id: "act_land_3", name: "Cycling tour" },
+        { id: "act_land_4", name: "Zipline / Traverser" },
+        { id: "act_land_5", name: "Rope course (High/Low)" },
+        { id: "act_land_6", name: "Camping / outdoor pursuits", defaultChecked: true },
+        { id: "act_land_7", name: "Rock climbing", defaultChecked: true },
+        { id: "act_land_8", name: "Bungee jumping" },
+        { id: "act_land_9", name: "Mountain expedition", defaultChecked: true },
+        { id: "act_land_10", name: "Nature walk", defaultChecked: true },
+        { id: "act_land_11", name: "Mountain biking", defaultChecked: true },
+        { id: "act_land_12", name: "Skiing" },
+        { id: "act_land_13", name: "Go kart" }
+      ],
+      air: [
+        { id: "act_air_1", name: "Paragliding", defaultChecked: true },
+        { id: "act_air_2", name: "Hand gliding" },
+        { id: "act_air_3", name: "Hot air ballooning" },
+        { id: "act_air_4", name: "Para Jumping" },
+        { id: "act_air_5", name: "Para Motor" },
+        { id: "act_air_6", name: "Ultra craft / Micro light flying" }
+      ],
+      water: [
+        { id: "act_water_1", name: "River rafting", defaultChecked: true },
+        { id: "act_water_2", name: "Kayaking", defaultChecked: true },
+        { id: "act_water_3", name: "Pedal boat" },
+        { id: "act_water_4", name: "Fishing" },
+        { id: "act_water_5", name: "Water sports centers" },
+        { id: "act_water_6", name: "Row Boat" },
+        { id: "act_water_7", name: "Boat rides" }
+      ]
+    };
+
+    // Equipment Repeating Section State for ATO
+    let atoEquipment = {
+      safety: [
+        { name: "UIAA Certified Dynamic Climbing Ropes (10.2mm x 60m)", quality: "CE / EN 892 Compliant", manufacturer: "Beal / Petzl", maintenance: "Inspected Bi-Weekly & Stored Dry", cert: "UIAA-101 / CE 0082" },
+        { name: "Full Body Mountaineering Harnesses (Set of 12)", quality: "High Tensile Webbing Grade 1", manufacturer: "Black Diamond", maintenance: "Monthly Stress Check", cert: "CE EN 12277 / UIAA" },
+        { name: "Climbing Safety Helmets (Set of 16)", quality: "Impact Absorbing Polycarbonate", manufacturer: "Petzl Elios", maintenance: "Visual Check Before Every Trip", cert: "CE EN 12492" }
+      ],
+      rescue: [
+        { name: "Mountain Evacuation Stretcher & Spinal Board", quality: "Lightweight Carbon Fiber", manufacturer: "Ferno Rescue", maintenance: "Quarterly Servicing", cert: "ISO 9001 / CE Medical" },
+        { name: "Garmin inReach Explorer+ Satellite Communicator", quality: "High-Altitude GPS & Iridium SOS", manufacturer: "Garmin Ltd.", maintenance: "Firmware & Battery Tested Weekly", cert: "FCC / CE / WPC India" }
+      ],
+      activity: [
+        { name: "Hypalon River Raft (14 ft Self-Bailing) with Oars", quality: "Commercial Whitewater Grade IV", manufacturer: "NRS Rafts", maintenance: "Pressure Tested Monthly", cert: "ISO 6185-1" },
+        { name: "Paragliding Wing (Tandem EN-B) & Reserve Chute", quality: "Ripstop Porcher Nylon Airworthy", manufacturer: "Gin Gliders - Fuse 3", maintenance: "Annual Porosity & Line Check", cert: "DHV / LTF EN-B" },
+        { name: "High Altitude 4-Season Geodesic Tents (Set of 6)", quality: "Ripstop Nylon with Snow Skirts", manufacturer: "Mountain Hardwear Trango", maintenance: "Seam Sealed & Weather Checked", cert: "Standard UIAA Winter Grade" }
+      ]
+    };
+
+    // ========================================================================
+    // INITIALIZATION & CATEGORY SWITCHING
+    // ========================================================================
+    document.addEventListener('DOMContentLoaded', function () {
+      renderActivityCheckboxes();
+      renderAllEquipmentTables();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const catParam = urlParams.get('category') || urlParams.get('type');
+      if (catParam === 'guide-registration') {
+        switchCategory('guide-registration');
+      } else {
+        switchCategory('adventure-tour-operator');
+      }
+
+      // Check for saved draft in localStorage
+      checkAndRestoreDraft();
+    });
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      currentStep = 1;
+
+      // Update switcher buttons
+      if (cat === 'guide-registration') {
+        document.getElementById('btnCatGR').classList.add('active');
+        document.getElementById('btnCatATO').classList.remove('active');
+
+        document.getElementById('badgeFormType').textContent = 'Category 2';
+        document.getElementById('titleFormType').textContent = 'Guide Registration';
+        document.getElementById('descFormType').textContent = 'Official government accreditation for individual professional tourist guides for trekking, mountaineering, cultural and eco-tourism.';
+
+        document.getElementById('formContainerGR').style.display = 'block';
+        document.getElementById('formContainerATO').style.display = 'none';
+
+        // Update Stepper Step Titles
+        document.getElementById('stepTitle2').innerHTML = 'Qualifications &amp; Category';
+        document.getElementById('stepTitle3').innerHTML = '7-Point Dossier';
+        
+        prefillGrDemoData();
+        goToGrStep(1);
+      } else {
+        document.getElementById('btnCatATO').classList.add('active');
+        document.getElementById('btnCatGR').classList.remove('active');
+
+        document.getElementById('badgeFormType').textContent = 'Category 1';
+        document.getElementById('titleFormType').textContent = 'Adventure Tour Operator Registration';
+        document.getElementById('descFormType').textContent = 'Statutory commercial license for operating mountaineering, trekking, river rafting, paragliding, and adventure tourism in Sikkim.';
+
+        document.getElementById('formContainerATO').style.display = 'block';
+        document.getElementById('formContainerGR').style.display = 'none';
+
+        // Update Stepper Step Titles
+        document.getElementById('stepTitle2').innerHTML = 'Organization &amp; Staff';
+        document.getElementById('stepTitle3').innerHTML = 'Activities &amp; Gear';
+
+        prefillAtoDemoData();
+        goToAtoStep(1);
+      }
+
+      document.getElementById('acknowledgementScreen').style.display = 'none';
+      document.getElementById('stepperContainer').style.display = 'block';
+      updateStepperDisplay(1);
+    }
+
+    // ========================================================================
+    // PREFILL DEMONSTRATION DATA (Part D)
+    // ========================================================================
+    function prefillAtoDemoData() {
+      document.getElementById('atoApplicantName').value = "Tenzing Norbu Lepcha";
+      document.getElementById('atoGuardianName').value = "Late Sonam Lepcha (Father)";
+      document.getElementById('atoGenderM').checked = true;
+      document.getElementById('atoCoiNumber').value = "COI-GTK-2015-8842";
+      document.getElementById('atoRegisteredAddress').value = "Development Area, Kazi Road, Gangtok – 737101";
+      document.getElementById('atoDistrict').value = "Gangtok";
+      document.getElementById('atoSameAddress').checked = true;
+      handleAtoSameAddressChange(true);
+      document.getElementById('atoContactNumber').value = "9832145698";
+      document.getElementById('atoEmail').value = "tenzing.norbu@himalayantrails.in";
+
+      document.getElementById('atoOrgName').value = "Khangchendzonga Adventure Trails LLP";
+      document.getElementById('atoOrgType').value = "Limited Liability Partnership (LLP)";
+      document.getElementById('atoBuildingOwnership').value = "Rented / Leased";
+      document.getElementById('atoGstNumber').value = "11AAECK4589M1Z8";
+      document.getElementById('atoPanNumber').value = "AAECK4589M";
+      document.getElementById('atoQualAcademic').value = "Bachelor of Science (B.Sc. Environmental Science, Sikkim University)";
+      document.getElementById('atoQualTechnical').value = "HMI Advance Mountaineering & Search & Rescue (SAR) Grade 'A'";
+      document.getElementById('atoStaffStrength').value = "8";
+      document.getElementById('atoStaffAcademicDetails').value = "4 Graduates in Tourism & Humanities, 2 First-Aid Certified Undergraduates, 2 Field Logisticians.";
+      document.getElementById('atoStaffTechnicalDetails').value = "3 HMI Basic & Advance Certified Instructors, 2 Certified Wilderness First Responders (WFR), 2 River Rafting Guides.";
+
+      document.getElementById('atoInsuranceDetails').value = "Comprehensive Public Liability Insurance Policy covering adventure tourists, trekkers, and technical staff up to INR 25,00,000 per incident with National Insurance Co. Ltd.";
+      document.getElementById('atoMedicalFacilities').value = "On-site automated external defibrillator (AED), 4 comprehensive high-altitude trauma medical kits, portable Gamow hyperbaric bag, pulse oximeters, and emergency doctor tie-up with STNM Hospital Gangtok.";
+
+      // Reset activity checkboxes to default checked
+      ACTIVITY_DATA.land.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) el.checked = !!item.defaultChecked;
+      });
+      ACTIVITY_DATA.air.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) el.checked = !!item.defaultChecked;
+      });
+      ACTIVITY_DATA.water.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) el.checked = !!item.defaultChecked;
+      });
+
+      renderAllEquipmentTables();
+    }
+
+    function prefillGrDemoData() {
+      document.getElementById('grApplicantName').value = "Sonam Gyatso Sherpa";
+      document.getElementById('grDob').value = "1994-08-15";
+      document.getElementById('grGenderM').checked = true;
+      document.getElementById('grAddress').value = "Tibet Road, Near Star Cinema, Gangtok – 737101";
+      document.getElementById('grPincode').value = "737101";
+      document.getElementById('grDistrict').value = "Gangtok";
+      document.getElementById('grContactNumber').value = "9832369852";
+      document.getElementById('grEmail').value = "sonam.sherpa@sikkimadventures.in";
+
+      document.getElementById('grEduQual').value = "Higher Secondary (Class XII Pass, Sikkim State Board)";
+      document.getElementById('grCertAdditional').value = "Wilderness First Responder (WFR) 80-hour certified by NIMAS / Red Cross India; Avalanche Safety Level 1.";
+      document.getElementById('grWorkExp').value = "Over 7 years of active guiding on Goechala Trek, Dzongri High Altitude Route, Singalila Ridge, and Green Lake Expeditions with leading state agencies.";
+
+      // 3 Categories selected as per demonstration note
+      document.getElementById('grCatTour').checked = true;
+      document.getElementById('grCatBird').checked = true;
+      document.getElementById('grCatTrek').checked = true;
+      document.getElementById('grCatCook').checked = false;
+      updateGrCategoryCount();
+
+      document.getElementById('grLangKnown').value = "English, Hindi, Nepali, Bhutia, Tibetan";
+      document.getElementById('grLangForeign').value = "Basic French (Conversational for international trekking groups)";
+    }
+
+    function restoreDemoData() {
+      if (currentCategory === 'guide-registration') {
+        prefillGrDemoData();
+      } else {
+        prefillAtoDemoData();
+      }
+      saveDraftSilent();
+      alert('Default demonstration data has been restored.');
+    }
+
+    function clearForm() {
+      if (confirm('Are you sure you want to clear all form fields? This will reset the current draft.')) {
+        if (currentCategory === 'guide-registration') {
+          document.getElementById('grApplicantName').value = '';
+          document.getElementById('grAddress').value = '';
+          document.getElementById('grPincode').value = '';
+          document.getElementById('grContactNumber').value = '';
+          document.getElementById('grEmail').value = '';
+          document.getElementById('grEduQual').value = '';
+          document.getElementById('grCertAdditional').value = '';
+          document.getElementById('grWorkExp').value = '';
+          document.getElementById('grCatTour').checked = false;
+          document.getElementById('grCatBird').checked = false;
+          document.getElementById('grCatTrek').checked = false;
+          document.getElementById('grCatCook').checked = false;
+          updateGrCategoryCount();
+          document.getElementById('grLangKnown').value = '';
+          document.getElementById('grLangForeign').value = '';
+          goToGrStep(1);
+        } else {
+          document.getElementById('atoApplicantName').value = '';
+          document.getElementById('atoGuardianName').value = '';
+          document.getElementById('atoCoiNumber').value = '';
+          document.getElementById('atoRegisteredAddress').value = '';
+          document.getElementById('atoContactNumber').value = '';
+          document.getElementById('atoEmail').value = '';
+          document.getElementById('atoOrgName').value = '';
+          document.getElementById('atoGstNumber').value = '';
+          document.getElementById('atoPanNumber').value = '';
+          document.getElementById('atoQualAcademic').value = '';
+          document.getElementById('atoQualTechnical').value = '';
+          document.getElementById('atoStaffAcademicDetails').value = '';
+          document.getElementById('atoStaffTechnicalDetails').value = '';
+          document.getElementById('atoInsuranceDetails').value = '';
+          document.getElementById('atoMedicalFacilities').value = '';
+          document.querySelectorAll('#formContainerATO input[type="checkbox"]').forEach(cb => cb.checked = false);
+          atoEquipment = { safety: [], rescue: [], activity: [] };
+          renderAllEquipmentTables();
+          goToAtoStep(1);
+        }
+        saveDraftSilent();
+      }
+    }
+
+    // ========================================================================
+    // ATO STEP NAVIGATION & VALIDATION
+    // ========================================================================
+    function handleAtoSameAddressChange(isSame) {
+      const corrBox = document.getElementById('atoCorrespondenceContainer');
+      const corrInput = document.getElementById('atoCorrespondenceAddress');
+      const regInput = document.getElementById('atoRegisteredAddress');
+      if (isSame) {
+        corrBox.style.display = 'none';
+        corrInput.value = regInput.value;
+      } else {
+        corrBox.style.display = 'block';
+      }
+    }
+
+    function renderActivityCheckboxes() {
+      const landBox = document.getElementById('atoLandActivitiesContainer');
+      landBox.innerHTML = '';
+      ACTIVITY_DATA.land.forEach(act => {
+        const checkedAttr = act.defaultChecked ? 'checked' : '';
+        landBox.innerHTML += `
+          <div class="col">
+            <div class="form-check small">
+              <input class="form-check-input" type="checkbox" id="${act.id}" value="${act.name}" ${checkedAttr}>
+              <label class="form-check-label text-dark" for="${act.id}">${act.name}</label>
+            </div>
+          </div>
+        `;
+      });
+
+      const airBox = document.getElementById('atoAirActivitiesContainer');
+      airBox.innerHTML = '';
+      ACTIVITY_DATA.air.forEach(act => {
+        const checkedAttr = act.defaultChecked ? 'checked' : '';
+        airBox.innerHTML += `
+          <div class="col">
+            <div class="form-check small">
+              <input class="form-check-input" type="checkbox" id="${act.id}" value="${act.name}" ${checkedAttr}>
+              <label class="form-check-label text-dark" for="${act.id}">${act.name}</label>
+            </div>
+          </div>
+        `;
+      });
+
+      const waterBox = document.getElementById('atoWaterActivitiesContainer');
+      waterBox.innerHTML = '';
+      ACTIVITY_DATA.water.forEach(act => {
+        const checkedAttr = act.defaultChecked ? 'checked' : '';
+        waterBox.innerHTML += `
+          <div class="col">
+            <div class="form-check small">
+              <input class="form-check-input" type="checkbox" id="${act.id}" value="${act.name}" ${checkedAttr}>
+              <label class="form-check-label text-dark" for="${act.id}">${act.name}</label>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderAllEquipmentTables() {
+      renderEquipmentTable('safety', 'atoSafetyEquipBody');
+      renderEquipmentTable('rescue', 'atoRescueEquipBody');
+      renderEquipmentTable('activity', 'atoActivityEquipBody');
+    }
+
+    function renderEquipmentTable(type, tbodyId) {
+      const tbody = document.getElementById(tbodyId);
+      tbody.innerHTML = '';
+      const list = atoEquipment[type] || [];
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-2 small">No equipment added yet. Click Add to create an entry.</td></tr>`;
+        return;
+      }
+
+      list.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" class="form-control form-control-sm" value="${item.name.replace(/"/g, '&quot;')}" onchange="updateEquipment('${type}', ${idx}, 'name', this.value)" placeholder="Equipment name" required></td>
+          <td><input type="text" class="form-control form-control-sm" value="${item.quality.replace(/"/g, '&quot;')}" onchange="updateEquipment('${type}', ${idx}, 'quality', this.value)" placeholder="Grade / Quality" required></td>
+          <td><input type="text" class="form-control form-control-sm" value="${item.manufacturer.replace(/"/g, '&quot;')}" onchange="updateEquipment('${type}', ${idx}, 'manufacturer', this.value)" placeholder="Manufacturer" required></td>
+          <td><input type="text" class="form-control form-control-sm" value="${item.maintenance.replace(/"/g, '&quot;')}" onchange="updateEquipment('${type}', ${idx}, 'maintenance', this.value)" placeholder="Maintenance log" required></td>
+          <td><input type="text" class="form-control form-control-sm" value="${item.cert.replace(/"/g, '&quot;')}" onchange="updateEquipment('${type}', ${idx}, 'cert', this.value)" placeholder="Cert / Standard" required></td>
+          <td class="text-center">
+            <button type="button" class="btn btn-xs btn-outline-danger" onclick="removeEquipmentRow('${type}', ${idx})" title="Remove Row">
+              <i class="bi bi-x"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function addEquipmentRow(type) {
+      if (!atoEquipment[type]) atoEquipment[type] = [];
+      atoEquipment[type].push({ name: '', quality: '', manufacturer: '', maintenance: '', cert: '' });
+      renderAllEquipmentTables();
+    }
+
+    function removeEquipmentRow(type, idx) {
+      if (atoEquipment[type] && atoEquipment[type].length > 0) {
+        atoEquipment[type].splice(idx, 1);
+        renderAllEquipmentTables();
+      }
+    }
+
+    function updateEquipment(type, idx, field, val) {
+      if (atoEquipment[type] && atoEquipment[type][idx]) {
+        atoEquipment[type][idx][field] = val;
+      }
+    }
+
+    function goToAtoStep(targetStep) {
+      for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`atoStep${i}`);
+        if (stepEl) stepEl.style.display = (i === targetStep) ? 'block' : 'none';
+      }
+      currentStep = targetStep;
+      updateStepperDisplay(targetStep);
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+      saveDraftSilent();
+
+      if (targetStep === 4) {
+        buildAtoSummary();
+      }
+    }
+
+    function nextAtoStep(fromStep) {
+      // Step 1 Validation
+      if (fromStep === 1) {
+        if (!document.getElementById('atoApplicantName').value.trim() ||
+            !document.getElementById('atoGuardianName').value.trim() ||
+            !document.getElementById('atoCoiNumber').value.trim() ||
+            !document.getElementById('atoRegisteredAddress').value.trim() ||
+            !document.getElementById('atoContactNumber').value.trim() ||
+            !document.getElementById('atoEmail').value.trim()) {
+          alert('Please fill in all mandatory fields marked with an asterisk (*) in Step 1.');
+          return;
+        }
+        goToAtoStep(2);
+      }
+      // Step 2 Validation
+      else if (fromStep === 2) {
+        if (!document.getElementById('atoOrgName').value.trim() ||
+            !document.getElementById('atoGstNumber').value.trim() ||
+            !document.getElementById('atoPanNumber').value.trim() ||
+            !document.getElementById('atoQualAcademic').value.trim() ||
+            !document.getElementById('atoQualTechnical').value.trim() ||
+            !document.getElementById('atoStaffStrength').value.trim() ||
+            !document.getElementById('atoStaffAcademicDetails').value.trim() ||
+            !document.getElementById('atoStaffTechnicalDetails').value.trim()) {
+          alert('Please fill in all mandatory organization and staff fields in Step 2.');
+          return;
+        }
+        goToAtoStep(3);
+      }
+      // Step 3 Validation
+      else if (fromStep === 3) {
+        // Validate at least one land activity
+        const checkedLand = Array.from(document.querySelectorAll('#atoLandActivitiesContainer input:checked'));
+        if (checkedLand.length === 0) {
+          alert('Please select at least one Land Base Activity.');
+          return;
+        }
+        if (atoEquipment.safety.length === 0 || atoEquipment.rescue.length === 0 || atoEquipment.activity.length === 0) {
+          alert('Please provide at least one entry in each of the three equipment sections (Safety, Rescue, and Activity gear).');
+          return;
+        }
+        if (!document.getElementById('atoInsuranceDetails').value.trim() ||
+            !document.getElementById('atoMedicalFacilities').value.trim()) {
+          alert('Please provide insurance particulars and medical facilities available.');
+          return;
+        }
+        goToAtoStep(4);
+      }
+    }
+
+    // ========================================================================
+    // GUIDE REGISTRATION (GR) STEP NAVIGATION & VALIDATION
+    // ========================================================================
+    function updateGrCategoryCount() {
+      const checked = document.querySelectorAll('#grStep2 input[type="checkbox"]:checked');
+      const badge = document.getElementById('grCatSelectedBadge');
+      if (badge) badge.textContent = `${checked.length} Selected`;
+    }
+
+    function goToGrStep(targetStep) {
+      for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`grStep${i}`);
+        if (stepEl) stepEl.style.display = (i === targetStep) ? 'block' : 'none';
+      }
+      currentStep = targetStep;
+      updateStepperDisplay(targetStep);
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+      saveDraftSilent();
+
+      if (targetStep === 4) {
+        buildGrSummary();
+      }
+    }
+
+    function nextGrStep(fromStep) {
+      // Step 1 Validation
+      if (fromStep === 1) {
+        if (!document.getElementById('grApplicantName').value.trim() ||
+            !document.getElementById('grDob').value ||
+            !document.getElementById('grAddress').value.trim() ||
+            !document.getElementById('grPincode').value.trim() ||
+            !document.getElementById('grContactNumber').value.trim() ||
+            !document.getElementById('grEmail').value.trim()) {
+          alert('Please fill in all mandatory fields marked with an asterisk (*) in Step 1.');
+          return;
+        }
+        goToGrStep(2);
+      }
+      // Step 2 Validation
+      else if (fromStep === 2) {
+        const checkedCats = document.querySelectorAll('#grStep2 input[type="checkbox"]:checked');
+        if (checkedCats.length === 0) {
+          alert('Please select at least one Guide Category.');
+          return;
+        }
+        if (!document.getElementById('grEduQual').value.trim() ||
+            !document.getElementById('grWorkExp').value.trim() ||
+            !document.getElementById('grLangKnown').value.trim()) {
+          alert('Please fill in educational qualification, work experience, and languages known.');
+          return;
+        }
+        goToGrStep(3);
+      }
+      // Step 3 Validation
+      else if (fromStep === 3) {
+        // Validate required dossier documents
+        goToGrStep(4);
+      }
+    }
+
+    function updateStepperDisplay(stepNum) {
+      for (let i = 1; i <= 4; i++) {
+        const stepInd = document.getElementById(`stepIndicator${i}`);
+        const bubble = document.getElementById(`stepBubble${i}`);
+        if (i < stepNum) {
+          stepInd.className = 'gov-stepper-step completed';
+          bubble.innerHTML = '<i class="bi bi-check-lg"></i>';
+        } else if (i === stepNum) {
+          stepInd.className = 'gov-stepper-step active';
+          bubble.textContent = i;
+        } else {
+          stepInd.className = 'gov-stepper-step';
+          bubble.textContent = i;
+        }
+      }
+    }
+
+    function navigateToStepIfPermitted(stepNum) {
+      if (stepNum > currentStep) {
+        // Only allow jumping forward if prior steps are completed
+        if (currentCategory === 'guide-registration') {
+          nextGrStep(currentStep);
+        } else {
+          nextAtoStep(currentStep);
+        }
+      } else {
+        if (currentCategory === 'guide-registration') {
+          goToGrStep(stepNum);
+        } else {
+          goToAtoStep(stepNum);
+        }
+      }
+    }
+
+    // ========================================================================
+    // SUMMARY PRESENTATION & EDIT HOOKS (Part B & C)
+    // ========================================================================
+    function buildAtoSummary() {
+      const landActs = Array.from(document.querySelectorAll('#atoLandActivitiesContainer input:checked')).map(c => c.value);
+      const airActs = Array.from(document.querySelectorAll('#atoAirActivitiesContainer input:checked')).map(c => c.value);
+      const waterActs = Array.from(document.querySelectorAll('#atoWaterActivitiesContainer input:checked')).map(c => c.value);
+
+      const renderEquipRows = (list) => {
+        if (!list || list.length === 0) return '<div class="text-muted small">None added</div>';
+        return list.map(item => `
+          <div class="border rounded-2 p-2 mb-1.5 bg-light small">
+            <div class="fw-bold text-dark">${item.name}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">Quality: <strong>${item.quality}</strong> | Mfg: <strong>${item.manufacturer}</strong> | Maint: <strong>${item.maintenance}</strong> | Cert: <span class="badge bg-success-subtle text-success border">${item.cert}</span></div>
+          </div>
+        `).join('');
+      };
+
+      const box = document.getElementById('atoSummaryContainer');
+      box.innerHTML = `
+        <!-- Section 1 -->
+        <div class="summary-group-card">
+          <div class="summary-group-header">
+            <span class="fw-bold text-dark small"><i class="bi bi-person-fill text-primary me-1"></i>1. Applicant Identity &amp; Contact Particulars</span>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="goToAtoStep(1)"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+          <div class="summary-group-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="summary-label">Name of Applicant</div>
+                <div class="summary-value">${document.getElementById('atoApplicantName').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">Father / Spouse Name</div>
+                <div class="summary-value">${document.getElementById('atoGuardianName').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">Gender &bull; COI Number</div>
+                <div class="summary-value">Male &bull; ${document.getElementById('atoCoiNumber').value}</div>
+              </div>
+              <div class="col-md-8">
+                <div class="summary-label">Registered Tourism Centre Address</div>
+                <div class="summary-value">${document.getElementById('atoRegisteredAddress').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">District Jurisdiction</div>
+                <div class="summary-value"><span class="badge bg-light text-dark border">${document.getElementById('atoDistrict').value} District</span></div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Contact Mobile</div>
+                <div class="summary-value">+91 ${document.getElementById('atoContactNumber').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Official Email ID</div>
+                <div class="summary-value">${document.getElementById('atoEmail').value}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="summary-group-card">
+          <div class="summary-group-header">
+            <span class="fw-bold text-dark small"><i class="bi bi-building text-primary me-1"></i>2. Organization &amp; Staff Strength</span>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="goToAtoStep(2)"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+          <div class="summary-group-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="summary-label">Organization Name</div>
+                <div class="summary-value fw-bold text-primary">${document.getElementById('atoOrgName').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Constitution Type</div>
+                <div class="summary-value">${document.getElementById('atoOrgType').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">Building Status</div>
+                <div class="summary-value">${document.getElementById('atoBuildingOwnership').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">GSTIN</div>
+                <div class="summary-value font-monospace">${document.getElementById('atoGstNumber').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">PAN Number</div>
+                <div class="summary-value font-monospace">${document.getElementById('atoPanNumber').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Lead Technical Qualification</div>
+                <div class="summary-value">${document.getElementById('atoQualTechnical').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Total Staff Strength</div>
+                <div class="summary-value">${document.getElementById('atoStaffStrength').value} Qualified Personnel</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="summary-group-card">
+          <div class="summary-group-header">
+            <span class="fw-bold text-dark small"><i class="bi bi-compass text-primary me-1"></i>3. Activities, Equipment &amp; Medical Facilities</span>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="goToAtoStep(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+          <div class="summary-group-body">
+            <div class="mb-3">
+              <div class="summary-label mb-1">Approved Adventure Activities</div>
+              <div class="d-flex flex-wrap gap-1.5">
+                ${landActs.map(a => `<span class="badge bg-success-subtle text-success border border-success-subtle small"><i class="bi bi-tree me-1"></i>${a}</span>`).join('')}
+                ${airActs.map(a => `<span class="badge bg-info-subtle text-info border border-info-subtle small"><i class="bi bi-wind me-1"></i>${a}</span>`).join('')}
+                ${waterActs.map(a => `<span class="badge bg-primary-subtle text-primary border border-primary-subtle small"><i class="bi bi-water me-1"></i>${a}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+              <div class="col-12">
+                <div class="summary-label mb-1">Safety Gear Inventory (${atoEquipment.safety.length} Items)</div>
+                ${renderEquipRows(atoEquipment.safety)}
+              </div>
+              <div class="col-12">
+                <div class="summary-label mb-1">Rescue Gear Inventory (${atoEquipment.rescue.length} Items)</div>
+                ${renderEquipRows(atoEquipment.rescue)}
+              </div>
+              <div class="col-12">
+                <div class="summary-label mb-1">Activity Gear Inventory (${atoEquipment.activity.length} Items)</div>
+                ${renderEquipRows(atoEquipment.activity)}
+              </div>
+            </div>
+
+            <div class="row g-3 pt-2 border-top">
+              <div class="col-md-6">
+                <div class="summary-label">Public Liability Insurance</div>
+                <div class="summary-value small">${document.getElementById('atoInsuranceDetails').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Emergency Medical Preparedness</div>
+                <div class="summary-value small">${document.getElementById('atoMedicalFacilities').value}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildGrSummary() {
+      const selectedCats = Array.from(document.querySelectorAll('#grStep2 input[type="checkbox"]:checked')).map(c => c.value);
+
+      const box = document.getElementById('grSummaryContainer');
+      box.innerHTML = `
+        <!-- Section 1 -->
+        <div class="summary-group-card">
+          <div class="summary-group-header">
+            <span class="fw-bold text-dark small"><i class="bi bi-person-fill text-primary me-1"></i>1. Guide Identity &amp; Contact Information</span>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="goToGrStep(1)"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+          <div class="summary-group-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="summary-label">Full Name of Guide</div>
+                <div class="summary-value fw-bold text-dark">${document.getElementById('grApplicantName').value}</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">Date of Birth &bull; Gender</div>
+                <div class="summary-value">${document.getElementById('grDob').value} &bull; Male</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">District Jurisdiction</div>
+                <div class="summary-value"><span class="badge bg-light text-dark border">${document.getElementById('grDistrict').value} District</span></div>
+              </div>
+              <div class="col-md-8">
+                <div class="summary-label">Permanent Residential Address</div>
+                <div class="summary-value">${document.getElementById('grAddress').value} (PIN: ${document.getElementById('grPincode').value})</div>
+              </div>
+              <div class="col-md-4">
+                <div class="summary-label">Contact &bull; Email</div>
+                <div class="summary-value">+91 ${document.getElementById('grContactNumber').value}<br><span class="text-muted small">${document.getElementById('grEmail').value}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="summary-group-card">
+          <div class="summary-group-header">
+            <span class="fw-bold text-dark small"><i class="bi bi-award text-primary me-1"></i>2. Qualifications &amp; Guide Categories</span>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="goToGrStep(2)"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+          <div class="summary-group-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="summary-label">Educational Qualification</div>
+                <div class="summary-value">${document.getElementById('grEduQual').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Additional Safety Certifications</div>
+                <div class="summary-value">${document.getElementById('grCertAdditional').value || 'None'}</div>
+              </div>
+              <div class="col-12">
+                <div class="summary-label">Field Guiding Experience</div>
+                <div class="summary-value small">${document.getElementById('grWorkExp').value}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label mb-1">Accreditation Categories Applied For</div>
+                <div class="d-flex flex-wrap gap-1.5">
+                  ${selectedCats.map(c => `<span class="badge bg-primary-subtle text-primary border border-primary-subtle small"><i class="bi bi-check-circle-fill text-success me-1"></i>${c}</span>`).join('')}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="summary-label">Language Competence</div>
+                <div class="summary-value">${document.getElementById('grLangKnown').value} (${document.getElementById('grLangForeign').value || 'No foreign lang.'})</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="summary-group-card">
+          <div class="summary-group-header">
+            <span class="fw-bold text-dark small"><i class="bi bi-file-earmark-check text-primary me-1"></i>3. Uploaded Statutory 7-Point Dossier</span>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="goToGrStep(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
+          </div>
+          <div class="summary-group-body">
+            <div class="row g-2 small">
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>1. Identity Proof (Voter ID)</span>
+                  <span class="badge bg-success-subtle text-success border">voter_id_sonam.pdf</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>2. Domicile / COI Certificate</span>
+                  <span class="badge bg-success-subtle text-success border">coi_cert_sonam.pdf</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>3. Class XII Marksheet</span>
+                  <span class="badge bg-success-subtle text-success border">marksheet_cbse.pdf</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>4. Guiding Experience Letter</span>
+                  <span class="badge bg-success-subtle text-success border">experience_cert.pdf</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>5. Personal Accident Insurance</span>
+                  <span class="badge bg-success-subtle text-success border">insurance_policy.pdf</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>6. Foreign Language (French A1)</span>
+                  <span class="badge bg-light text-secondary border">alliance_francaise.pdf</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="border rounded-2 p-2 bg-light d-flex justify-content-between align-items-center">
+                  <span>7. HMI Training Certificate</span>
+                  <span class="badge bg-light text-secondary border">hmi_advance_cert.pdf</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ========================================================================
+    // DECLARATION & SUBMISSION LIFECYCLE (Part A & D)
+    // ========================================================================
+    function handleAtoDeclarationChange(isAgreed) {
+      document.getElementById('atoSubmitBtn').disabled = !isAgreed;
+    }
+
+    function handleGrDeclarationChange(isAgreed) {
+      document.getElementById('grSubmitBtn').disabled = !isAgreed;
+    }
+
+    function submitFinalAtoApplication() {
+      const arn = generateArn('ATO');
+      const applicantName = document.getElementById('atoApplicantName').value;
+      const district = document.getElementById('atoDistrict').value;
+
+      displayAcknowledgement(arn, 'Adventure Tour Operator', applicantName, district);
+      recordSubmittedApplication(arn, 'adventure-tour-operator', applicantName, district);
+    }
+
+    function submitFinalGrApplication() {
+      const arn = generateArn('GR');
+      const applicantName = document.getElementById('grApplicantName').value;
+      const district = document.getElementById('grDistrict').value;
+
+      displayAcknowledgement(arn, 'Guide Registration', applicantName, district);
+      recordSubmittedApplication(arn, 'guide-registration', applicantName, district);
+    }
+
+    function generateArn(catCode) {
+      const randomDigits = Math.floor(1000 + Math.random() * 9000);
+      return `SK-${catCode}-2026-${randomDigits}`;
+    }
+
+    function displayAcknowledgement(arn, catName, applicantName, district) {
+      document.getElementById('formContainerATO').style.display = 'none';
+      document.getElementById('formContainerGR').style.display = 'none';
+      document.getElementById('stepperContainer').style.display = 'none';
+
+      document.getElementById('ackArn').textContent = arn;
+      document.getElementById('ackCategory').textContent = catName;
+      document.getElementById('ackApplicant').textContent = applicantName;
+      document.getElementById('ackDistrict').textContent = `${district} District`;
+
+      const now = new Date();
+      const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      document.getElementById('ackTimestamp').textContent = now.toLocaleDateString('en-GB', options);
+
+      document.getElementById('acknowledgementScreen').style.display = 'block';
+      window.scrollTo({ top: 50, behavior: 'smooth' });
+
+      // Clear local draft for this category
+      localStorage.removeItem(`adv_draft_${currentCategory}`);
+    }
+
+    function recordSubmittedApplication(arn, typeKey, applicantName, district) {
+      let existing = JSON.parse(localStorage.getItem('adv_submitted_applications') || '[]');
+      existing.push({
+        id: arn,
+        type: typeKey,
+        applicant: applicantName,
+        district: district,
+        submittedDate: new Date().toISOString().split('T')[0],
+        status: 'UNDER_REVIEW',
+        stage: 'Stage 1: TA Scrutiny'
+      });
+      localStorage.setItem('adv_submitted_applications', JSON.stringify(existing));
+
+      // Synchronize with Central Workflow Engine
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.saveApplication({
+          arn: arn,
+          category: typeKey,
+          categoryName: typeKey === 'adventure-tour-operator' ? 'Adventure Tour Operator' : 'Guide Registration',
+          applicantName: applicantName,
+          enterpriseName: typeKey === 'adventure-tour-operator' ? applicantName : (applicantName + ' (Guide)'),
+          district: district,
+          status: 'Under Scrutiny',
+          stage: typeKey === 'adventure-tour-operator' ? 'Awaiting TA Verification' : (district === 'Gangtok' ? 'Awaiting TA Verification' : 'Awaiting District TA'),
+          submittedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          auditTrail: [
+            {
+              stage: 'Application Submission',
+              action: 'Submitted Online by Citizen',
+              by: applicantName + ' (Citizen)',
+              date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+              remarks: 'Initial online filing submitted via Sikkim Single-Window Citizen Portal.'
+            }
+          ]
+        });
+      }
+    }
+
+    function startNewApplication() {
+      switchCategory(currentCategory);
+    }
+
+    // ========================================================================
+    // DRAFT PERSISTENCE & RESUME (localStorage)
+    // ========================================================================
+    function saveDraftManual() {
+      saveDraftSilent();
+      alert('Your application draft has been saved. You can resume this application at any time.');
+    }
+
+    function saveDraftSilent() {
+      const draftData = {
+        category: currentCategory,
+        step: currentStep,
+        timestamp: new Date().toLocaleTimeString(),
+        equipment: atoEquipment
+      };
+      localStorage.setItem(`adv_draft_${currentCategory}`, JSON.stringify(draftData));
+
+      const pill = document.getElementById('draftStatusText');
+      if (pill) pill.textContent = `Draft Saved (${draftData.timestamp})`;
+    }
+
+    function checkAndRestoreDraft() {
+      const saved = localStorage.getItem(`adv_draft_${currentCategory}`);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.equipment) {
+            atoEquipment = parsed.equipment;
+            renderAllEquipmentTables();
+          }
+        } catch (e) {}
+      }
+    }
+
+    function handleMockFileChange(inputId, metaId, mockFileName) {
+      const meta = document.getElementById(metaId);
+      if (meta) {
+        meta.innerHTML = `
+          <span class="text-truncate small"><i class="bi bi-file-earmark-check text-success me-1"></i>${mockFileName}</span>
+          <span class="badge bg-success-subtle text-success border">Uploaded</span>
+        `;
+      }
+      saveDraftSilent();
+    }
+  </script>
+</body>
+</html>
