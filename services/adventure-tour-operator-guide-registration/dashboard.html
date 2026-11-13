@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="description" content="Citizen Dashboard - Adventure Tour Operator & Guide Registration, Tourism & Civil Aviation Department, Government of Sikkim.">
+  <title>Citizen Dashboard | Adventure Tour Operator &amp; Guide Registration | Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Framework Standard CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .gov-scenario-bar {
+      background: #0b1533;
+      color: #e2e8f0;
+      font-size: 0.8125rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .gov-sidebar {
+      width: 260px !important;
+      min-width: 260px !important;
+      max-width: 260px !important;
+      flex-shrink: 0 !important;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      min-height: calc(100vh - 120px);
+    }
+    .gov-sidebar-link {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      padding: 0.45rem 0.65rem !important;
+      color: #334155;
+      font-weight: 500;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      font-size: 0.8125rem !important;
+      line-height: 1.25 !important;
+      white-space: nowrap !important;
+    }
+    .gov-sidebar-link span {
+      white-space: nowrap !important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1 1 auto;
+    }
+    .gov-sidebar-link i {
+      font-size: 0.95rem !important;
+      width: 1.25rem !important;
+      text-align: center;
+      flex-shrink: 0 !important;
+    }
+    .gov-sidebar-link:hover {
+      background-color: #f1f5f9;
+      color: #1e3a8a;
+    }
+    .gov-sidebar-link.active {
+      background-color: #eff6ff !important;
+      color: #1e3a8a !important;
+      font-weight: 700 !important;
+      border-left: 3px solid #1e3a8a !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+    .action-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+    }
+    .action-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+    .action-card.action-priority {
+      border-left: 4px solid #d97706 !important;
+      background: #fffbeb !important;
+    }
+    .action-card.action-ongoing {
+      border-left: 4px solid #1e3a8a !important;
+      background: #f8fafc !important;
+    }
+    .action-card.action-approved {
+      border-left: 4px solid #16a34a !important;
+      background: #f0fdf4 !important;
+    }
+    .action-card.action-rejected {
+      border-left: 4px solid #dc2626 !important;
+      background: #fef2f2 !important;
+    }
+    .cursor-pointer { cursor: pointer; }
+    .tracking-step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .tracking-step-circle.completed {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+    .tracking-step-circle.active {
+      background-color: #eff6ff;
+      color: #1e3a8a;
+      border: 2px solid #1e3a8a;
+    }
+    .tracking-step-circle.pending {
+      background-color: #f1f5f9;
+      color: #94a3b8;
+      border: 1px solid #cbd5e1;
+    }
+  </style>
+</head>
+<body data-theme="royal-navy" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Links -->
+  <a class="gov-skip-link" href="#main-citizen-content">Skip to Main Content</a>
+  <a class="gov-skip-link" href="#sidebarNav">Skip to Navigation Menu</a>
+
+  <!-- Tricolor Ribbon -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Reviewer Scenario Control Bar (High-Fidelity Demonstration Switcher) -->
+  <aside class="gov-scenario-bar" aria-label="Reviewer Scenario Controller">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="fas fa-flask me-1"></i> PROTOTYPE DEMO
+          </span>
+          <span class="fw-semibold text-white">Select Citizen Scenario:</span>
+          <label for="citizenScenarioSelect" class="visually-hidden">Select Citizen Scenario</label>
+          <select id="citizenScenarioSelect" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 370px; font-size: 0.825rem;" onchange="switchCitizenScenario(this.value)">
+            <option value="scenarioA">Scenario A: First-Time Citizen (0 Applications)</option>
+            <option value="scenarioB" selected>Scenario B: Ongoing Application (Under Review)</option>
+            <option value="scenarioC">Scenario C: Action Required (Returned for Remarks)</option>
+            <option value="scenarioPayment">Scenario F: Statutory Fee Due (₹1,500 Payment)</option>
+            <option value="scenarioD">Scenario D: Approved Application (Certificate Issued)</option>
+            <option value="scenarioGuideDistrict">Scenario G: Other-District Guide (Digital ID &amp; Logbook)</option>
+            <option value="scenarioE">Scenario E: Rejected Application (Ineligible)</option>
+          </select>
+          <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+            <i class="bi bi-people-fill me-1"></i> Switch Role
+          </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-light-subtle text-white-50 border border-white-50 small d-none d-md-inline-block">
+            <i class="fas fa-shield-alt text-warning me-1"></i> Simulated Sikkim GO SSO Session
+          </span>
+          <!-- Font Sizing & High Contrast Controls -->
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" id="btn-font-reset" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-increase" data-font-action="increase" title="Increase font size">A+</button>
+          </div>
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" title="Return to Portal Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim" style="height: 52px; width: auto;">
+          </a>
+          <div>
+            <span class="small text-uppercase fw-bold text-muted d-block" style="letter-spacing: 0.5px; font-size: 0.72rem;">Government of Sikkim</span>
+            <h1 class="h6 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
+            <span class="small text-muted" style="font-size: 0.75rem;">Adventure Tour Operator &amp; Guide Registration Gateway</span>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="d-none d-md-flex flex-column text-end">
+            <span class="fw-bold text-dark small" id="headerCitizenName">Tenzing Norbu Lepcha</span>
+            <span class="text-muted" style="font-size: 0.72rem;"><i class="bi bi-geo-alt-fill text-danger me-1"></i><span id="headerCitizenDistrict">Gangtok</span> &bull; Citizen</span>
+          </div>
+          <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#citizenProfileModal" title="Citizen Profile">
+            <i class="bi bi-person-circle fs-6"></i>
+          </button>
+          <a href="role-select.html" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="d-none d-sm-inline">Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container (Sidebar + Main Content) -->
+  <div class="container-fluid px-lg-4 flex-grow-1 d-flex flex-column">
+    <div class="row flex-grow-1 g-0">
+      
+      <!-- 260px Left Sidebar Navigation -->
+      <aside class="col-lg-auto gov-sidebar py-3 px-2 d-none d-lg-block" id="sidebarNav" aria-label="Citizen Navigation">
+        <div class="d-flex flex-column h-100">
+          <div class="small fw-bold text-muted text-uppercase px-2 mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+            Citizen Menu
+          </div>
+          <nav class="nav flex-column gap-1 mb-auto">
+            <a href="dashboard.html" class="gov-sidebar-link active">
+              <i class="bi bi-speedometer2"></i>
+              <span>Dashboard</span>
+            </a>
+            <a href="#registrationTypeModal" data-bs-toggle="modal" class="gov-sidebar-link text-primary fw-semibold">
+              <i class="bi bi-plus-circle-fill text-primary"></i>
+              <span>Apply for Registration</span>
+            </a>
+            <a href="#applicationsSection" class="gov-sidebar-link">
+              <i class="bi bi-folder2-open"></i>
+              <span>My Applications</span>
+            </a>
+            <a href="#trackApplicationModal" data-bs-toggle="modal" class="gov-sidebar-link">
+              <i class="bi bi-search"></i>
+              <span>Track Application</span>
+            </a>
+            <a href="instructions.html" class="gov-sidebar-link">
+              <i class="bi bi-file-earmark-text"></i>
+              <span>Registration Guidelines</span>
+            </a>
+            <a href="#notificationsModal" data-bs-toggle="modal" class="gov-sidebar-link">
+              <i class="bi bi-bell"></i>
+              <span>Notifications</span>
+              <span class="badge bg-danger rounded-pill" id="sidebarNotifBadge">1</span>
+            </a>
+            <a href="#helpdeskSection" class="gov-sidebar-link">
+              <i class="bi bi-question-circle"></i>
+              <span>Help &amp; Support</span>
+            </a>
+          </nav>
+
+          <div class="border-top pt-3 mt-3 px-2 text-center">
+            <div class="small text-muted mb-1" style="font-size: 0.75rem;">Sikkim GO Citizen Gateway</div>
+            <a href="role-select.html" class="btn btn-sm btn-outline-secondary px-3 py-1 d-inline-flex align-items-center justify-content-center" style="font-size: 0.78rem;">
+              <i class="bi bi-arrow-repeat me-1"></i> Switch Role
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="col flex-grow-1 p-3 p-lg-4" id="main-citizen-content">
+        
+        <!-- Welcome Section -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 pb-2 border-bottom">
+          <div>
+            <div class="d-flex align-items-center gap-2">
+              <h2 class="h4 fw-bold text-dark mb-0">Welcome to Adventure Tour Operator &amp; Guide Registration</h2>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-semibold" id="activeScenarioBadge">Scenario B</span>
+            </div>
+            <p class="text-muted small mb-0 mt-1">
+              Apply for Adventure Tour Operator or Guide Registration in Sikkim and track the progress of your applications from one place.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-gov-primary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#registrationTypeModal">
+              <i class="bi bi-plus-lg"></i>
+              <span>Apply for Registration</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ACTION-ORIENTED SECTION: Guided Priority Containers -->
+        <div id="actionOrientedContainer" class="mb-4">
+          <!-- Dynamic Content Rendered by JS based on Active Scenario -->
+        </div>
+
+        <!-- MY APPLICATIONS LIST & TRACKING (Section 6) -->
+        <div class="card border rounded-3 bg-white shadow-xs mb-4" id="applicationsSection">
+          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-card-checklist me-1 text-primary"></i> My Applications</h3>
+              <span class="small text-muted">Submitted and in-progress registration applications</span>
+            </div>
+
+            <!-- Search and Filters (Clean, not cluttered) -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <div class="input-group input-group-sm" style="max-width: 200px;">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0" id="searchAppInput" placeholder="Search Ref No..." aria-label="Search Applications" oninput="filterApplicationList()">
+              </div>
+              <select class="form-select form-select-sm" id="filterAppType" style="max-width: 170px;" onchange="filterApplicationList()">
+                <option value="ALL">All Categories</option>
+                <option value="adventure-tour-operator">Adventure Operator</option>
+                <option value="guide-registration">Tour Guide</option>
+              </select>
+              <select class="form-select form-select-sm" id="filterAppStatus" style="max-width: 140px;" onchange="filterApplicationList()">
+                <option value="ALL">All Statuses</option>
+                <option value="UNDER_REVIEW">Under Review</option>
+                <option value="RETURNED">Correction</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <!-- Desktop Table View (>= 768px) -->
+            <div class="table-responsive d-none d-md-block">
+              <table class="table table-hover align-middle mb-0" id="citizenAppTable">
+                <thead class="table-light small text-muted">
+                  <tr>
+                    <th scope="col" style="width: 20%;">Application ID</th>
+                    <th scope="col" style="width: 25%;">Category &amp; Title</th>
+                    <th scope="col" style="width: 15%;">Submitted Date</th>
+                    <th scope="col" style="width: 15%;">Current Status</th>
+                    <th scope="col" style="width: 15%;">Processing Stage</th>
+                    <th scope="col" class="text-end text-nowrap" style="width: 10%;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="applicationTableBody" class="small">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Cards View (< 768px) -->
+            <div class="d-md-none p-3" id="mobileAppCardsContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS & HELP SECTION -->
+        <div class="row g-3" id="helpdeskSection">
+          <div class="col-lg-6">
+            <div class="card border rounded-3 bg-white h-100 shadow-xs p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-bell-fill text-warning me-1"></i> Recent Notifications</h4>
+                <span class="badge bg-light text-muted border small">Simulated</span>
+              </div>
+              <div id="recentNotificationsList" class="small">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card border rounded-3 bg-white h-100 shadow-xs p-3">
+              <h4 class="h6 fw-bold text-dark mb-2"><i class="bi bi-headset text-success me-1"></i> Tourism Department Helpdesk</h4>
+              <p class="small text-muted mb-2">
+                Need guidance regarding Adventure Tour Operator safety compliance or Guide registration accreditation? Contact the Tourism &amp; Civil Aviation Department facilitation desk.
+              </p>
+              <div class="bg-light p-2.5 rounded-2 small text-secondary">
+                <div><i class="bi bi-telephone-fill text-primary me-2"></i>Helpline: <strong>03592-209090 / 1800-345-3256</strong></div>
+                <div class="mt-1"><i class="bi bi-envelope-fill text-primary me-2"></i>Email: <strong>secy-tourism@sikkim.gov.in</strong></div>
+                <div class="mt-1"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Office: Paryatan Bhawan, Tadong, Gangtok – 737102</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: REGISTRATION TYPE SELECTION (Section 5)
+       ====================================================================== -->
+  <div class="modal fade" id="registrationTypeModal" tabindex="-1" aria-labelledby="regTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header text-white" style="background: #1e3a8a;">
+          <h5 class="modal-title fw-bold" id="regTypeModalLabel">
+            <i class="bi bi-signpost-split me-2"></i>Select Registration Category
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <p class="small text-muted mb-3">
+            Choose the statutory registration option appropriate for your activity. The two categories have distinct prerequisites, document checklists, and compliance requirements.
+          </p>
+
+          <div class="row g-3">
+            <!-- Option 1: Adventure Tour Operator -->
+            <div class="col-md-6">
+              <label class="card h-100 p-3 border rounded-3 bg-white shadow-xs cursor-pointer text-start d-flex flex-column justify-content-between" for="regOptionATO">
+                <div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-bold">Commercial Enterprise</span>
+                    <input class="form-check-input" type="radio" name="selectedRegType" id="regOptionATO" value="adventure-tour-operator" checked>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="bg-primary-subtle text-primary p-2 rounded-2 fs-4">
+                      <i class="bi bi-compass"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-0">Adventure Tour Operator</h6>
+                  </div>
+                  <p class="small text-muted mb-2">
+                    For commercial agencies, enterprises, and resident operators conducting mountaineering, trekking, river rafting, and paragliding activities.
+                  </p>
+                </div>
+                <div class="small text-secondary border-top pt-2 mt-2" style="font-size: 0.75rem;">
+                  <i class="bi bi-shield-check text-success me-1"></i>Mandatory Equipment Safety &amp; Instructor Check
+                </div>
+              </label>
+            </div>
+
+            <!-- Option 2: Guide Registration -->
+            <div class="col-md-6">
+              <label class="card h-100 p-3 border rounded-3 bg-white shadow-xs cursor-pointer text-start d-flex flex-column justify-content-between" for="regOptionGR">
+                <div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info-subtle small fw-bold">Professional Guide</span>
+                    <input class="form-check-input" type="radio" name="selectedRegType" id="regOptionGR" value="guide-registration">
+                  </div>
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="bg-info-subtle text-info p-2 rounded-2 fs-4">
+                      <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-0">Guide Registration</h6>
+                  </div>
+                  <p class="small text-muted mb-2">
+                    For individual professional guides seeking government accreditation to provide certified guiding for trekking, cultural, and eco-tourism itineraries.
+                  </p>
+                </div>
+                <div class="small text-secondary border-top pt-2 mt-2" style="font-size: 0.75rem;">
+                  <i class="bi bi-mortarboard text-success me-1"></i>Recognized Institute Training (HMI / NIM)
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white d-flex justify-content-between flex-wrap gap-2">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3" onclick="proceedToApplicationInstructions()">
+              <i class="bi bi-journal-text me-1"></i>Guidelines
+            </button>
+            <button type="button" class="btn btn-sm btn-gov-primary px-3 fw-semibold" onclick="proceedDirectlyToApplication()">
+              <span>Apply Online (Stage 03)</span>
+              <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: APPLICATION TRACKING TIMELINE (Section 6)
+       ====================================================================== -->
+  <div class="modal fade" id="trackApplicationModal" tabindex="-1" aria-labelledby="trackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header text-white" style="background: #1e3a8a;">
+          <div>
+            <h5 class="modal-title fw-bold mb-0" id="trackModalLabel">
+              <i class="bi bi-geo-alt me-2"></i>Application Status Tracker
+            </h5>
+            <span class="small text-white-50" id="trackingModalSubtitle">Ref: SK-ATO-2026-0042</span>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          
+          <!-- What Happens Next Dedicated Section (Section 6.3) -->
+          <div class="alert alert-primary border-primary-subtle shadow-xs mb-4 p-3 rounded-3">
+            <h6 class="fw-bold text-dark mb-1 d-flex align-items-center gap-1.5">
+              <i class="bi bi-info-circle-fill text-primary"></i> What Happens Next?
+            </h6>
+            <p class="small text-secondary mb-0" id="trackingWhatHappensNext">
+              Your application is under technical document verification by the Technical Assistant (TA). An on-site safety gear inspection will be scheduled shortly by the Inspecting Authority (IA).
+            </p>
+          </div>
+
+          <!-- Progress Stepper List -->
+          <div class="card border rounded-3 bg-white p-3 shadow-xs">
+            <h6 class="fw-bold text-dark mb-3 small text-uppercase" style="letter-spacing: 0.5px;">Official Department Scrutiny Roadmap</h6>
+            <div class="d-flex flex-column gap-3" id="trackingStepperList">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: CERTIFICATE DEMONSTRATION PREVIEW (Section 4.5)
+       ====================================================================== -->
+  <div class="modal fade" id="certificatePreviewModal" tabindex="-1" aria-labelledby="certModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold" id="certModalLabel">
+            <i class="bi bi-award-fill text-warning me-2"></i>Official Registration Certificate (Demonstration Preview)
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-white text-dark">
+          <div class="border p-4 rounded-3 text-center position-relative" style="background: #fafaf9; border: 2px dashed #cbd5e1 !important;">
+            <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+              <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Sikkim Emblem" style="height: 54px;">
+              <div class="text-center flex-grow-1 px-3">
+                <span class="text-uppercase fw-bold text-muted small d-block">Government of Sikkim</span>
+                <h5 class="fw-bold mb-0 text-dark">Tourism &amp; Civil Aviation Department</h5>
+                <span class="small text-muted">Statutory Tourism Registration Certificate</span>
+              </div>
+              <div class="p-2 bg-white border rounded text-center" style="width: 64px;">
+                <i class="bi bi-qr-code fs-2 text-dark"></i>
+              </div>
+            </div>
+
+            <div class="py-2 text-start small">
+              <div class="row g-2 mb-2">
+                <div class="col-6 text-muted">Certificate Registration No:</div>
+                <div class="col-6 fw-bold text-dark font-monospace" id="certNoDisplay">RC-SK-ATO-2026-0009</div>
+                <div class="col-6 text-muted">Issued to Enterprise / Guide:</div>
+                <div class="col-6 fw-bold text-dark" id="certNameDisplay">Peak Explorers &amp; Mountaineering Expeditions</div>
+                <div class="col-6 text-muted">Registration Category:</div>
+                <div class="col-6 fw-bold text-primary" id="certCategoryDisplay">Adventure Tour Operator</div>
+                <div class="col-6 text-muted">Date of Sanction:</div>
+                <div class="col-6 fw-bold text-dark">02 November 2026</div>
+                <div class="col-6 text-muted">Validity Period:</div>
+                <div class="col-6 fw-bold text-success">Valid till 01 November 2028 (2 Years)</div>
+                <div class="col-6 text-muted">Issuing Authority:</div>
+                <div class="col-6 fw-bold text-dark">District Tourism Officer (DTO), Gangtok Circle</div>
+              </div>
+
+              <div class="alert alert-success py-2 px-3 small mt-3 mb-0">
+                <i class="bi bi-patch-check-fill me-1"></i>
+                <strong>Statutory Compliance Verified:</strong> This certificate is digitally signed and officially verified under the Sikkim Tourism Registration Framework.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light d-flex justify-content-between">
+          <span class="small text-muted"><i class="bi bi-shield-lock text-success me-1"></i>Tamper-proof digital credential preview</span>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: CITIZEN PROFILE MODAL
+       ====================================================================== -->
+  <div class="modal fade" id="citizenProfileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow border-0">
+        <div class="modal-header text-white" style="background: #1e3a8a;">
+          <h5 class="modal-title fw-bold" id="profileModalLabel"><i class="bi bi-person-circle me-2"></i>Citizen Profile</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light small">
+          <div class="card p-3 border rounded-3 bg-white mb-3 text-center">
+            <div class="mx-auto bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 52px; height: 52px; font-size: 1.5rem;">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            <h6 class="fw-bold mb-0 text-dark" id="modalProfileName">Passang Doma Bhutia</h6>
+            <span class="text-muted" id="modalProfileId">CIT-SK-901101</span>
+          </div>
+
+          <div class="bg-white p-3 border rounded-3">
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Mobile Number:</span>
+              <strong class="text-dark" id="modalProfileMobile">9832014589</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">Email:</span>
+              <strong class="text-dark" id="modalProfileEmail">passang.bhutia@example.in</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span class="text-muted">District:</span>
+              <strong class="text-dark" id="modalProfileDistrict">Gangtok</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1">
+              <span class="text-muted">Authentication:</span>
+              <span class="badge bg-success-subtle text-success border border-success-subtle">Sikkim GO SSO</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 5: CITIZEN STATUTORY FEE PAYMENT MODAL (₹1,500)
+       ====================================================================== -->
+  <div class="modal fade" id="citizenPaymentModal" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow border-0">
+        <div class="modal-header text-white" style="background: #1e3a8a;">
+          <h5 class="modal-title fw-bold" id="payModalLabel">
+            <i class="bi bi-credit-card-2-front me-2"></i>Pay Statutory Application Fee
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <div class="card p-3 border rounded-3 bg-white mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+              <span class="text-muted small">Application Reference (ARN):</span>
+              <strong class="font-monospace text-primary" id="payModalArn">ATO-2026-004</strong>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+              <span class="text-muted small">Applicant / Enterprise:</span>
+              <span class="fw-semibold text-dark small" id="payModalApplicant">Himalayan Summit Expeditions</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+              <span class="text-muted small">Category &amp; Jurisdiction:</span>
+              <span class="badge bg-primary-subtle text-primary border small" id="payModalCategory">Adventure Tour Operator (Gangtok)</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+              <span class="text-muted small">Head of Account:</span>
+              <span class="font-monospace small text-dark">0070-02-105-01 (Statutory Registration)</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-1">
+              <span class="fw-bold text-dark">Statutory Fee Payable:</span>
+              <span class="fw-bold text-success fs-5">&#8377;1,500</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-dark">Select Payment Mode (Simulated Gateway):</label>
+            <div class="row g-2">
+              <div class="col-6">
+                <div class="border rounded p-2 bg-white d-flex align-items-center gap-2">
+                  <input type="radio" name="payGatewayMode" id="payModeUPI" checked class="form-check-input">
+                  <label for="payModeUPI" class="small mb-0 cursor-pointer">
+                    <i class="bi bi-qr-code text-primary me-1"></i>UPI / Bharat QR
+                  </label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="border rounded p-2 bg-white d-flex align-items-center gap-2">
+                  <input type="radio" name="payGatewayMode" id="payModeNet" class="form-check-input">
+                  <label for="payModeNet" class="small mb-0 cursor-pointer">
+                    <i class="bi bi-bank text-primary me-1"></i>NetBanking / Card
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warning py-2 px-3 small mb-0 border-0">
+            <i class="bi bi-info-circle-fill text-warning me-1"></i>
+            Non-refundable statutory registration fee as per Sikkim Registration of Tourist Trade Rules. Payment receipt will be recorded immediately.
+          </div>
+        </div>
+        <div class="modal-footer bg-white d-flex justify-content-between">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-sm btn-success px-3 fw-semibold" id="confirmPaymentBtn" onclick="executeCitizenFeePayment()">
+            <i class="bi bi-lock-fill me-1"></i>Confirm &amp; Pay &#8377;1,500
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 6: DIGITAL ID CARD & MANUAL LOGBOOK ISSUANCE RECORD (Other-District Guides)
+       ====================================================================== -->
+  <div class="modal fade" id="digitalIdLogbookModal" tabindex="-1" aria-labelledby="idModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold" id="idModalLabel">
+            <i class="bi bi-person-badge-fill text-warning me-2"></i>Official Guide Digital ID Card &amp; Manual Logbook Record
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <div class="row g-4">
+            <!-- Digital ID Card Simulation -->
+            <div class="col-md-6">
+              <div class="card border rounded-3 shadow-xs text-center p-3 bg-white h-100 position-relative" style="border-top: 5px solid #1e3a8a !important;">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                  <img src="../../common/images/sikkim-logo.png" alt="Sikkim Emblem" style="height: 38px;" onerror="this.src='https://placehold.co/38x38/1e3a8a/ffffff?text=SK'">
+                  <div class="text-end">
+                    <div class="fw-bold small text-primary">GOVERNMENT OF SIKKIM</div>
+                    <div class="text-muted" style="font-size: 0.68rem;">Tourism &amp; Civil Aviation Dept.</div>
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div class="rounded-circle bg-light border mx-auto d-flex align-items-center justify-content-center" style="width: 76px; height: 76px; font-size: 2.2rem; color: #1e3a8a;">
+                    <i class="bi bi-person-bounding-box"></i>
+                  </div>
+                  <h6 class="fw-bold text-dark mt-2 mb-0" id="idGuideName">Wangchuk Lepcha</h6>
+                  <span class="badge bg-primary-subtle text-primary border small" id="idGuideType">Registered Mountain Guide</span>
+                </div>
+                <div class="text-start small bg-light p-2.5 rounded-2 mt-2">
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Digital ID No:</span>
+                    <strong class="font-monospace text-dark" id="idCardNumber">DIG-GR-2026-0016</strong>
+                  </div>
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Jurisdiction Circle:</span>
+                    <span class="fw-semibold text-dark" id="idGuideDistrict">Mangan District</span>
+                  </div>
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Validity:</span>
+                    <span class="fw-semibold text-success">Valid till 12 Nov 2029 (3 Years)</span>
+                  </div>
+                  <div class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Issuing Office:</span>
+                    <span class="fw-semibold text-dark">DTO (Headquarters, Gangtok)</span>
+                  </div>
+                </div>
+                <div class="mt-2 text-center">
+                  <i class="bi bi-qr-code fs-3 text-dark"></i>
+                  <div class="text-muted" style="font-size: 0.65rem;">Official Digital Accreditation QR</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manual Logbook Issuance Record -->
+            <div class="col-md-6">
+              <div class="card border rounded-3 shadow-xs p-3 bg-white h-100">
+                <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom">
+                  <div class="bg-warning-subtle text-warning-emphasis p-2 rounded-2 fs-5">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0">Manual Physical Logbook</h6>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle small">Statutorily Recorded</span>
+                  </div>
+                </div>
+                <p class="small text-muted mb-3">
+                  Under Sikkim Tourism regulations, District Guide registrants are issued an official serialized physical logbook from the HQ DTO desk.
+                </p>
+                <div class="bg-light p-3 rounded-2 small text-dark mb-3">
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Logbook Serial No:</span>
+                    <strong class="font-monospace text-primary" id="logbookSerial">LB-2026-0082</strong>
+                  </div>
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Issuance Status:</span>
+                    <span class="badge bg-success text-white">Dispatched / Available for Collection</span>
+                  </div>
+                  <div class="d-flex justify-content-between py-1 border-bottom">
+                    <span class="text-muted">Issued Authority:</span>
+                    <span class="fw-semibold text-dark">DTO Headquarters, Gangtok</span>
+                  </div>
+                  <div class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Mandatory Requirement:</span>
+                    <span class="text-success fw-medium"><i class="bi bi-check-circle-fill me-1"></i>Must be carried during all treks</span>
+                  </div>
+                </div>
+                <div class="alert alert-info border-0 p-2.5 small mb-0 rounded-2">
+                  <i class="bi bi-info-circle-fill text-primary me-1"></i>
+                  Guide must record all trek itineraries, client manifests, and obtain checkpoint endorsements from Tourism check-posts.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light d-flex justify-content-between">
+          <span class="small text-muted"><i class="bi bi-check-circle-fill text-success me-1"></i>Statutory accreditation issued under Sikkim Tourist Trade Act</span>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Government Compliance Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white border-top mt-auto" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 text-white-50 small">
+      <div>&copy; 2026 Tourism &amp; Civil Aviation Department, Government of Sikkim.</div>
+      <div>Unified Citizen Services Gateway &bull; GIGW 3.0 / WCAG 2.1 AA Compliant</div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="citizen-data.js"></script>
+  <script src="workflow-engine.js"></script>
+  <script src="document-service.js"></script>
+
+  <script>
+    // State management for Citizen Dashboard
+    let currentScenarioData = null;
+    let currentPayingArn = null;
+
+    function renderCitizenDashboard(scenarioKey) {
+      const scenario = AdventureServiceData.scenarios[scenarioKey] || AdventureServiceData.scenarios.scenarioB;
+      currentScenarioData = scenario;
+      setAdventureCitizenScenario(scenarioKey);
+
+      // Update Header & Profile
+      document.getElementById('headerCitizenName').textContent = scenario.citizen.fullName;
+      document.getElementById('headerCitizenDistrict').textContent = scenario.citizen.district;
+      document.getElementById('activeScenarioBadge').textContent = scenario.name.split(':')[0];
+      document.getElementById('modalProfileName').textContent = scenario.citizen.fullName;
+      document.getElementById('modalProfileId').textContent = scenario.citizen.citizenId;
+      document.getElementById('modalProfileMobile').textContent = scenario.citizen.mobile;
+      document.getElementById('modalProfileEmail').textContent = scenario.citizen.email;
+      document.getElementById('modalProfileDistrict').textContent = scenario.citizen.district;
+
+      const container = document.getElementById('actionOrientedContainer');
+      container.innerHTML = '';
+
+      // Priority 1: Statutory Fee Payment Due Card (₹1,500)
+      if (scenario.paymentRequired) {
+        const pay = scenario.paymentRequired;
+        container.innerHTML += `
+          <div class="action-card action-priority mb-3 border-warning" style="background: #fffbeb; border-left: 5px solid #d97706 !important;">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="bg-warning text-dark p-2 rounded-2 fs-4 flex-shrink-0">
+                  <i class="bi bi-credit-card-2-front-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-warning text-dark fw-bold">Payment Due &bull; Action Required</span>
+                    <span class="text-muted small">Application ID: <strong>${pay.refNo}</strong></span>
+                    <span class="badge bg-light text-secondary border small">${pay.typeName}</span>
+                  </div>
+                  <h4 class="h6 fw-bold text-dark mb-1">${pay.enterpriseName} &bull; Statutory Fee: &#8377;${pay.feeAmount || '1,500'}</h4>
+                  <p class="small text-secondary mb-2">${pay.remarks}</p>
+                  <div class="small text-muted">
+                    <i class="bi bi-clock me-1 text-danger"></i>Fee Activated by: <strong>${pay.activatedBy}</strong> on ${pay.activatedDate} &bull; Due within: <strong>${pay.dueDate}</strong>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-sm btn-success px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" onclick="openCitizenPaymentModal('${pay.refNo}')">
+                  <i class="bi bi-credit-card"></i>
+                  <span>Make Payment (&#8377;1,500)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Priority 2: Action Required Card (Returned for Remarks / Correction)
+      if (scenario.actionRequired) {
+        const act = scenario.actionRequired;
+        const targetUrl = act.actionUrl || `apply.html?ref=${act.refNo}&type=${act.typeId || 'adventure-tour-operator'}`;
+        container.innerHTML += `
+          <div class="action-card action-priority mb-3">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="bg-warning text-dark p-2 rounded-2 fs-4 flex-shrink-0">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-danger text-white fw-bold">Action Required</span>
+                    <span class="text-muted small">Application ID: <strong>${act.refNo}</strong></span>
+                    <span class="badge bg-light text-secondary border small">${act.typeName}</span>
+                  </div>
+                  <h4 class="h6 fw-bold text-dark mb-1">Application Returned for Applicant Clarification</h4>
+                  <p class="small text-danger-emphasis mb-2 fw-medium">${act.remarks}</p>
+                  <div class="small text-muted">
+                    <i class="bi bi-person-badge me-1"></i>Returned by: <strong>${act.returnedBy}</strong> on ${act.returnDate}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <a href="${targetUrl}" class="btn btn-sm btn-warning px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                  <i class="bi bi-pencil-square"></i>
+                  <span>Correct &amp; Resubmit</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Priority 3: Ongoing Application Card
+      if (scenario.activeApplication) {
+        const app = scenario.activeApplication;
+        container.innerHTML += `
+          <div class="action-card action-ongoing mb-3">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="bg-primary text-white p-2 rounded-2 fs-4 flex-shrink-0">
+                  <i class="bi bi-hourglass-split"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-info-subtle text-info border border-info-subtle fw-semibold">Under Process</span>
+                    <span class="text-muted small">Application ID: <strong>${app.refNo}</strong></span>
+                    <span class="badge bg-light text-secondary border small">${app.typeName}</span>
+                  </div>
+                  <h4 class="h6 fw-bold text-dark mb-1">${app.enterpriseName}</h4>
+                  <div class="small text-secondary mb-2">
+                    <strong>Current Stage:</strong> <span class="text-primary fw-semibold">${app.currentStage}</span> &bull; Last updated ${app.lastUpdated}
+                  </div>
+                  <div class="small text-dark bg-white p-2 rounded-2 border">
+                    <i class="bi bi-arrow-right-circle text-primary me-1"></i>
+                    <strong>Next Action:</strong> ${app.nextExpectedStep}
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold" onclick="openTrackingModal('${app.refNo}')">
+                  <i class="bi bi-search me-1"></i>Track Application
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Priority 4: Approved Application Card & Document Deliverables (Stage 05)
+      if (scenario.approvedApplication) {
+        const app = scenario.approvedApplication;
+        const isGuide = (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || (app.refNo && app.refNo.includes('GR')));
+        const arn = app.refNo || 'SK-ATO-2026-0009';
+
+        container.innerHTML += `
+          <div class="action-card action-approved mb-3" style="border-left: 4px solid #16a34a !important; background: #f0fdf4 !important;">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="bg-success text-white p-2 rounded-2 fs-4 flex-shrink-0">
+                  <i class="bi bi-award-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-success text-white fw-bold">Approved &amp; Certified</span>
+                    <span class="text-muted small">Application ID: <strong>${arn}</strong></span>
+                  </div>
+                  <h4 class="h6 fw-bold text-dark mb-1">${app.enterpriseName}</h4>
+                  <p class="small text-muted mb-1">
+                    Official statutory registration granted under The Sikkim Registration of Tourist Trade Rules, 2025.
+                  </p>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle small">
+                    <i class="bi bi-patch-check-fill me-1"></i>Official Documents Ready
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 05 Document Deliverables Cards Grid -->
+            <div class="row g-3">
+              <!-- Document 1: Registration Certificate (ATO & Guide) -->
+              <div class="${isGuide ? 'col-md-6' : 'col-12'}">
+                <div class="p-3 bg-white border rounded-3 shadow-xs h-100 d-flex flex-column justify-content-between">
+                  <div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-bold">
+                        ${isGuide ? 'Annexure XVIII' : 'Annexure XVII'}
+                      </span>
+                      <span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i>Generated</span>
+                    </div>
+                    <div class="fw-bold text-dark small mb-1">
+                      ${isGuide ? 'Certificate of Registration of a Guide' : 'Certificate of Registration of Adventure Tour Operator'}
+                    </div>
+                    <div class="text-muted small font-monospace mb-2" style="font-size: 0.72rem;">Ref No: ${app.certificateNo || 'RC-SK-2026-0009'}</div>
+                  </div>
+                  <div class="d-flex gap-2 flex-wrap pt-2 border-top">
+                    <a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 text-nowrap fw-semibold">
+                      <i class="bi bi-eye me-1"></i>View Certificate
+                    </a>
+                    <a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2.5 text-nowrap">
+                      <i class="bi bi-download me-1"></i>Download PDF
+                    </a>
+                    <a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2.5 text-nowrap">
+                      <i class="bi bi-printer me-1"></i>Print
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Document 2: Tour Guide ID Card (Strictly ONLY for Guide Registration) -->
+              ${isGuide ? `
+                <div class="col-md-6">
+                  <div class="p-3 bg-white border border-primary rounded-3 shadow-xs h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle small fw-bold">
+                          Identity Card
+                        </span>
+                        <span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i>Generated</span>
+                      </div>
+                      <div class="fw-bold text-dark small mb-1">
+                        Tour Guide Identity Card (Front &amp; Back)
+                      </div>
+                      <div class="text-muted small font-monospace mb-2" style="font-size: 0.72rem;">Card Ref: ${app.certificateNo ? '133/DoT&CAv/GTK/23/TG' : (app.logbookSerial ? '082/DoT&CAv/NMC/26/TG' : '133/DoT&CAv/GTK/23/TG')}</div>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap pt-2 border-top">
+                      <a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 text-nowrap fw-semibold">
+                        <i class="bi bi-person-badge me-1"></i>View ID Card
+                      </a>
+                      <a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2.5 text-nowrap">
+                        <i class="bi bi-download me-1"></i>Download
+                      </a>
+                      <a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2.5 text-nowrap">
+                        <i class="bi bi-printer me-1"></i>Print ID Card
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+          </div>
+        `;
+      }
+
+      // Priority 5: Rejected Application Card
+      if (scenario.rejectedApplication) {
+        const app = scenario.rejectedApplication;
+        container.innerHTML += `
+          <div class="action-card action-rejected mb-3">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="bg-danger text-white p-2 rounded-2 fs-4 flex-shrink-0">
+                  <i class="bi bi-x-circle-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-danger text-white fw-bold">Ineligible Outcome</span>
+                    <span class="text-muted small">Application ID: <strong>${app.refNo}</strong></span>
+                  </div>
+                  <h4 class="h6 fw-bold text-dark mb-1">${app.enterpriseName}</h4>
+                  <p class="small text-danger-emphasis mb-2">${app.reasons}</p>
+                  <div class="small text-muted">Order issued by: <strong>${app.decisionBy}</strong> on ${app.rejectedDate}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Priority 6: Empty State for First-Time Citizen
+      if (scenario.emptyState && scenario.applications.length === 0) {
+        container.innerHTML += `
+          <div class="card border rounded-3 bg-white p-4 text-center shadow-xs mb-3">
+            <div class="py-3">
+              <div class="bg-primary-subtle text-primary mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 58px; height: 58px; font-size: 1.6rem;">
+                <i class="bi bi-folder-plus"></i>
+              </div>
+              <h4 class="h5 fw-bold text-dark mb-2">${scenario.emptyState.title}</h4>
+              <p class="text-muted small mx-auto mb-3" style="max-width: 550px;">
+                ${scenario.emptyState.description}
+              </p>
+              <button class="btn btn-sm btn-gov-primary px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#registrationTypeModal">
+                <i class="bi bi-plus-lg me-1"></i>${scenario.emptyState.ctaText}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Render Applications Table & Mobile Cards
+      renderApplications(scenario.applications);
+
+      // Render Notifications
+      renderNotifications(scenario.notifications);
+    }
+
+    function renderApplications(apps) {
+      const tbody = document.getElementById('applicationTableBody');
+      const mobileContainer = document.getElementById('mobileAppCardsContainer');
+      tbody.innerHTML = '';
+      mobileContainer.innerHTML = '';
+
+      if (!apps || apps.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">
+              <i class="bi bi-inbox fs-4 d-block mb-1 text-muted"></i>
+              No registration applications found.
+            </td>
+          </tr>
+        `;
+        mobileContainer.innerHTML = `
+          <div class="text-center text-muted py-3 small">
+            No registration applications found.
+          </div>
+        `;
+        return;
+      }
+
+      apps.forEach(app => {
+        const arn = app.refNo || app.arn;
+        const stage = app.currentStage || app.stage || '';
+        const status = app.status || '';
+        const district = app.district || '';
+        const isOtherGuide = district !== 'Gangtok' && (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || app.category === 'guide-registration');
+
+        let actionBtns = '';
+        if (stage === 'Payment Activated' || status === 'PAYMENT_ACTIVATED') {
+          actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay &#8377;1,500</button>`;
+        } else if (status === 'RETURNED' || status === 'Returned for Correction') {
+          actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'adventure-tour-operator'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
+        } else if (status === 'APPROVED' || status === 'Approved') {
+          const isGuideApp = (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || app.category === 'guide-registration' || app.type === 'guide-registration' || arn.includes('GR'));
+          actionBtns += `<a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-success py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-award me-1"></i>Certificate</a>`;
+          if (isGuideApp) {
+            actionBtns += `<a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-primary py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-person-badge me-1"></i>Guide ID Card</a>`;
+          }
+        }
+        actionBtns += `<button class="btn btn-sm btn-outline-primary py-1 px-2 text-nowrap" onclick="openTrackingModal('${arn}')"><i class="bi bi-search me-1"></i>Track</button>`;
+
+        // Table row
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <strong class="font-monospace text-primary">${arn}</strong>
+            </td>
+            <td>
+              <div class="fw-semibold text-dark">${app.title || app.applicantName || app.enterpriseName}</div>
+              <span class="badge bg-light text-secondary border small">${app.typeName || app.categoryName || 'Registration'}</span>
+            </td>
+            <td>${app.submittedDate}</td>
+            <td>
+              <span class="badge ${app.statusBadge || 'bg-light text-dark border'}">${app.statusLabel || app.status}</span>
+            </td>
+            <td>${stage}</td>
+            <td class="text-end text-nowrap">
+              ${actionBtns}
+            </td>
+          </tr>
+        `;
+
+        // Mobile Card (< 768px)
+        mobileContainer.innerHTML += `
+          <div class="card p-3 border rounded-3 mb-2 bg-light">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <strong class="font-monospace text-primary small">${arn}</strong>
+              <span class="badge ${app.statusBadge || 'bg-light text-dark border'}">${app.statusLabel || app.status}</span>
+            </div>
+            <div class="fw-semibold text-dark small mb-1">${app.title || app.applicantName || app.enterpriseName}</div>
+            <div class="small text-muted mb-2">Stage: ${stage}</div>
+            <div class="text-end">
+              ${actionBtns}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderNotifications(notifs) {
+      const container = document.getElementById('recentNotificationsList');
+      container.innerHTML = '';
+      if (!notifs || notifs.length === 0) {
+        container.innerHTML = '<div class="text-muted text-center py-2">No recent notifications.</div>';
+        return;
+      }
+      notifs.forEach(n => {
+        container.innerHTML += `
+          <div class="p-2 border-bottom d-flex align-items-start gap-2">
+            <i class="bi bi-dot fs-4 text-${n.type}"></i>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center">
+                <strong class="text-dark">${n.title}</strong>
+                <span class="text-muted" style="font-size: 0.7rem;">${n.date}</span>
+              </div>
+              <div class="text-muted" style="font-size: 0.78rem;">${n.message}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterApplicationList() {
+      if (!currentScenarioData) return;
+      const search = document.getElementById('searchAppInput').value.trim().toLowerCase();
+      const cat = document.getElementById('filterAppType').value;
+      const status = document.getElementById('filterAppStatus').value;
+
+      const filtered = currentScenarioData.applications.filter(app => {
+        const arn = (app.refNo || app.arn || '').toLowerCase();
+        const title = (app.title || app.applicantName || app.enterpriseName || '').toLowerCase();
+        const matchesSearch = !search || arn.includes(search) || title.includes(search);
+        const matchesCat = (cat === 'ALL' || app.typeId === cat || app.category === cat);
+        const matchesStatus = (status === 'ALL' || app.status === status || (status === 'UNDER_REVIEW' && app.status === 'Under Scrutiny'));
+        return matchesSearch && matchesCat && matchesStatus;
+      });
+
+      renderApplications(filtered);
+    }
+
+    function openCitizenPaymentModal(arn) {
+      currentPayingArn = arn;
+      let applicantName = 'Passang Doma Bhutia';
+      let catName = 'Adventure Tour Operator';
+      let district = 'Gangtok';
+
+      if (window.AdventureWorkflowEngine) {
+        const app = AdventureWorkflowEngine.getApplicationByArn(arn);
+        if (app) {
+          applicantName = app.applicantName || app.enterpriseName;
+          catName = app.categoryName || (app.category === 'guide-registration' ? 'Guide Registration' : 'Adventure Tour Operator');
+          district = app.district;
+        }
+      }
+
+      document.getElementById('payModalArn').textContent = arn;
+      document.getElementById('payModalApplicant').textContent = applicantName;
+      document.getElementById('payModalCategory').textContent = `${catName} (${district})`;
+
+      const modal = new bootstrap.Modal(document.getElementById('citizenPaymentModal'));
+      modal.show();
+    }
+
+    function executeCitizenFeePayment() {
+      if (!currentPayingArn) return;
+      const txnId = 'TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000);
+      
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.submitCitizenPayment(currentPayingArn, txnId, 'NetBanking / UPI');
+      }
+
+      const payModalEl = document.getElementById('citizenPaymentModal');
+      const payModal = bootstrap.Modal.getInstance(payModalEl);
+      if (payModal) payModal.hide();
+
+      // Show Toast / Alert
+      const actionContainer = document.getElementById('actionOrientedContainer');
+      actionContainer.insertAdjacentHTML('afterbegin', `
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+            <div>
+              <strong>Payment Received Successfully!</strong>
+              <div class="small">Statutory fee of &#8377;1,500 deposited for <strong>${currentPayingArn}</strong>. Transaction Ref: <code>${txnId}</code>. File forwarded to DTO for Final Sanction.</div>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `);
+
+      // Refresh applications list
+      if (currentScenarioData) {
+        renderCitizenDashboard(currentScenarioData.id);
+      }
+    }
+
+    function viewIssuedCertificate(arn) {
+      let app = null;
+      if (window.AdventureWorkflowEngine) {
+        app = AdventureWorkflowEngine.getApplicationByArn(arn);
+      }
+
+      if (app) {
+        document.getElementById('certNoDisplay').textContent = app.certificateDetails ? app.certificateDetails.certNumber : ('RC-SK-' + app.arn);
+        document.getElementById('certNameDisplay').textContent = app.applicantName || app.enterpriseName;
+        document.getElementById('certCategoryDisplay').textContent = app.categoryName || 'Adventure Tour Operator';
+      }
+
+      const modal = new bootstrap.Modal(document.getElementById('certificatePreviewModal'));
+      modal.show();
+    }
+
+    function viewIssuedDigitalId(arn) {
+      let app = null;
+      if (window.AdventureWorkflowEngine) {
+        app = AdventureWorkflowEngine.getApplicationByArn(arn);
+      }
+
+      if (app) {
+        document.getElementById('idGuideName').textContent = app.applicantName || 'Wangchuk Lepcha';
+        document.getElementById('idCardNumber').textContent = app.digitalIdDetails ? app.digitalIdDetails.idNumber : ('DIG-' + app.arn);
+        document.getElementById('idGuideDistrict').textContent = app.district;
+        document.getElementById('logbookSerial').textContent = app.logbookDetails ? app.logbookDetails.serialNumber : 'LB-2026-0082';
+      }
+
+      const modal = new bootstrap.Modal(document.getElementById('digitalIdLogbookModal'));
+      modal.show();
+    }
+
+    function openTrackingModal(refNo) {
+      let appRecord = null;
+      if (window.AdventureWorkflowEngine) {
+        appRecord = AdventureWorkflowEngine.getApplicationByArn(refNo);
+      }
+
+      const titleEl = document.getElementById('trackingModalSubtitle');
+      const nextEl = document.getElementById('trackingWhatHappensNext');
+      const stepper = document.getElementById('trackingStepperList');
+
+      if (appRecord) {
+        titleEl.textContent = `Application ID: ${appRecord.arn} • ${appRecord.applicantName || appRecord.enterpriseName} (${appRecord.district})`;
+        
+        if (appRecord.status === 'Approved') {
+          nextEl.textContent = appRecord.category === 'guide-registration' && appRecord.district !== 'Gangtok' 
+            ? 'Digital ID card and Manual Physical Logbook have been issued by HQ DTO. Collect logbook from Paryatan Bhawan.' 
+            : 'Registration certificate has been issued. Download digital QR certificate.';
+        } else if (appRecord.stage === 'Payment Activated') {
+          nextEl.innerHTML = '<span class="text-danger fw-bold"><i class="bi bi-exclamation-circle me-1"></i>Immediate Action Required:</span> Please pay the statutory fee of ₹1,500 using the button on your dashboard.';
+        } else if (appRecord.stage === 'Payment Submitted') {
+          nextEl.textContent = 'Statutory fee received. Application forwarded to DTO for final scrutiny and certificate issuance.';
+        } else if (appRecord.status === 'Returned for Correction') {
+          nextEl.textContent = 'Application returned with remarks. Please review comments and re-submit.';
+        } else if (appRecord.stage === 'Under Inspection') {
+          nextEl.textContent = `Inspecting Officer ${appRecord.inspectionDetails?.assignedOfficer || 'IO'} is conducting field safety inspection.`;
+        } else {
+          nextEl.textContent = `Current Stage: ${appRecord.stage}. Scrutiny under process by Department officers.`;
+        }
+
+        stepper.innerHTML = '';
+        (appRecord.auditTrail || []).forEach((item, idx) => {
+          stepper.innerHTML += `
+            <div class="d-flex align-items-start gap-3">
+              <div class="tracking-step-circle completed"><i class="bi bi-check-lg"></i></div>
+              <div class="flex-grow-1 border-bottom pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="text-dark">${item.stage}</strong>
+                  <span class="badge bg-success-subtle text-success small">${item.action}</span>
+                </div>
+                <div class="small text-muted">${item.remarks || ''}</div>
+                <div class="text-muted" style="font-size: 0.72rem;">${item.by || 'Department Officer'} &bull; ${item.date}</div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        const scenario = currentScenarioData || AdventureServiceData.scenarios.scenarioB;
+        const activeApp = scenario.activeApplication || (scenario.applications.length > 0 ? scenario.applications[0] : null);
+
+        if (activeApp && activeApp.timeline) {
+          titleEl.textContent = 'Application ID: ' + activeApp.refNo;
+          nextEl.textContent = activeApp.nextExpectedStep || 'Review by Department Officers is in progress.';
+          stepper.innerHTML = '';
+
+          activeApp.timeline.forEach((step, idx) => {
+            let circleClass = 'pending';
+            let icon = idx + 1;
+            if (step.status === 'Completed') {
+              circleClass = 'completed';
+              icon = '<i class="bi bi-check-lg"></i>';
+            } else if (step.status === 'In Progress') {
+              circleClass = 'active';
+              icon = '<i class="bi bi-hourglass-split"></i>';
+            }
+
+            stepper.innerHTML += `
+              <div class="d-flex align-items-start gap-3">
+                <div class="tracking-step-circle ${circleClass}">${icon}</div>
+                <div class="flex-grow-1 border-bottom pb-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <strong class="text-dark">${step.stage}</strong>
+                    <span class="badge ${step.status === 'Completed' ? 'bg-success-subtle text-success' : (step.status === 'In Progress' ? 'bg-primary-subtle text-primary' : 'bg-light text-muted')} small">${step.status}</span>
+                  </div>
+                  <div class="small text-muted">${step.remarks}</div>
+                  <div class="text-muted" style="font-size: 0.72rem;">${step.authority} &bull; ${step.date}</div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          titleEl.textContent = refNo || 'Workflow Tracking';
+          nextEl.textContent = 'No action required from you at this stage.';
+          stepper.innerHTML = `
+            <div class="p-3 bg-light rounded text-center small text-muted">
+              <i class="bi bi-info-circle me-1"></i>Detailed workflow verification steps will update upon next departmental action.
+            </div>
+          `;
+        }
+      }
+
+      const modal = new bootstrap.Modal(document.getElementById('trackApplicationModal'));
+      modal.show();
+    }
+
+    function proceedToApplicationInstructions() {
+      const selected = document.querySelector('input[name="selectedRegType"]:checked');
+      const val = selected ? selected.value : 'adventure-tour-operator';
+      window.location.href = 'instructions.html?type=' + encodeURIComponent(val);
+    }
+
+    function proceedDirectlyToApplication() {
+      const selected = document.querySelector('input[name="selectedRegType"]:checked');
+      const val = selected ? selected.value : 'adventure-tour-operator';
+      window.location.href = 'apply.html?type=' + encodeURIComponent(val);
+    }
+
+    function switchCitizenScenario(scenKey) {
+      renderCitizenDashboard(scenKey);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentScen = getAdventureCitizenScenario();
+      const select = document.getElementById('citizenScenarioSelect');
+      if (select) {
+        select.value = currentScen;
+      }
+      renderCitizenDashboard(currentScen);
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <title id="cardPageTitle">Tour Guide ID Card &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+      --id-navy: #0e3768;
+      --id-light-bg: #f8fafc;
+      --id-border: #cbd5e1;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-family: 'Noto Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Screen Control Bar */
+    .id-control-bar {
+      background: #0b1533;
+      color: #e2e8f0;
+      padding: 10px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    .id-main-stage {
+      max-width: 1020px;
+      margin: 2rem auto 4rem auto;
+      padding: 0 1rem;
+    }
+
+    /* ID Card Wrapper */
+    .id-card-display-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .id-card-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .id-card-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #475569;
+      margin-bottom: 0.5rem;
+    }
+
+    /* CR80 Physical Card Proportions (85.6mm x 53.98mm ~= 1.586 aspect ratio) */
+    /* Screen Dimensions: 440px x 278px */
+    .pvc-card {
+      width: 440px;
+      height: 278px;
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #94a3b8;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ------------------------------------------------------------------------
+       FRONT SIDE STYLES (Based on Guide ID Card.jpeg)
+       ------------------------------------------------------------------------ */
+    .front-top-ref-bar {
+      padding: 6px 14px 4px 14px;
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: #1e293b;
+      font-family: 'Noto Sans', sans-serif;
+      letter-spacing: 0.25px;
+      background: #ffffff;
+      line-height: 1.2;
+    }
+
+    .front-title-banner {
+      background-color: var(--id-navy);
+      color: #ffffff;
+      padding: 5px 16px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .front-body-content {
+      padding: 8px 12px 6px 12px;
+      display: flex;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .front-photo-box {
+      width: 96px;
+      height: 122px;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #e2e8f0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .front-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .front-details-col {
+      flex-grow: 1;
+      font-size: 0.725rem;
+      line-height: 1.35;
+      color: #0f172a;
+    }
+
+    .front-detail-line {
+      margin-bottom: 2px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .front-detail-line strong {
+      color: #0f172a;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .front-detail-line span {
+      color: #1e293b;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Specialization Options Sub-Card */
+    .specialization-box {
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      padding: 4px 6px;
+      margin-top: 4px;
+      background: #f8fafc;
+    }
+
+    .specialization-title {
+      font-weight: 700;
+      font-size: 0.7rem;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .specialization-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 6px;
+      font-size: 0.68rem;
+    }
+
+    .spec-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #1e293b;
+    }
+
+    .spec-check-icon {
+      font-size: 0.75rem;
+      color: #0e3768;
+      width: 14px;
+      text-align: center;
+    }
+
+    /* Front Bottom Band */
+    .front-bottom-band {
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid #cbd5e1;
+      height: 48px;
+    }
+
+    .front-validity-box {
+      background-color: var(--id-navy);
+      color: #ffffff;
+      padding: 6px 10px;
+      width: 52%;
+      font-size: 0.68rem;
+      line-height: 1.3;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .front-authority-box {
+      background-color: #ffffff;
+      color: #0f172a;
+      padding: 4px 8px;
+      width: 48%;
+      font-size: 0.58rem;
+      line-height: 1.25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: right;
+    }
+
+    .front-authority-box strong {
+      font-size: 0.62rem;
+    }
+
+    /* ------------------------------------------------------------------------
+       BACK SIDE STYLES (Based on Guide ID Card.jpeg)
+       ------------------------------------------------------------------------ */
+    .back-card-body {
+      padding: 14px 16px 10px 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background-color: #fdfefe;
+      background-image: radial-gradient(#e2e8f0 0.8px, transparent 0.8px);
+      background-size: 16px 16px;
+    }
+
+    /* Top Right QR Area */
+    .back-qr-group {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .back-qr-img {
+      width: 58px;
+      height: 58px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .back-url-text {
+      font-size: 0.55rem;
+      color: #0f172a;
+      font-weight: 700;
+      margin-top: 2px;
+      letter-spacing: -0.2px;
+    }
+
+    /* Central Endless Knot Symbol */
+    .back-symbol-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 16px;
+      flex-grow: 1;
+      z-index: 1;
+    }
+
+    .back-symbol-svg {
+      width: 110px;
+      height: 110px;
+      opacity: 0.95;
+    }
+
+    /* Bottom Text */
+    .back-dept-title {
+      text-align: center;
+      font-size: 0.825rem;
+      font-weight: 800;
+      color: var(--id-navy);
+      line-height: 1.25;
+      margin-bottom: 6px;
+      z-index: 2;
+    }
+
+    .back-legal-note {
+      text-align: center;
+      font-size: 0.525rem;
+      color: #475569;
+      line-height: 1.25;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 4px;
+      margin: 0;
+      z-index: 2;
+    }
+
+    /* ------------------------------------------------------------------------
+       PRINT STYLES: CR80 Card Print Format
+       ------------------------------------------------------------------------ */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm 20mm;
+      }
+      body {
+        background: #ffffff !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .id-main-stage {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .id-card-display-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 15mm !important;
+        margin-top: 20mm !important;
+      }
+      .pvc-card {
+        box-shadow: none !important;
+        border: 1px solid #64748b !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .print-cutting-instructions {
+        display: block !important;
+        text-align: center;
+        font-size: 9pt;
+        color: #475569;
+        margin-bottom: 8mm;
+      }
+    }
+
+    .print-cutting-instructions {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Control Bar -->
+  <aside class="id-control-bar no-print" aria-label="ID Card Controls">
+    <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light py-1 px-2.5 text-nowrap" onclick="goBackToSource()">
+          <i class="bi bi-arrow-left me-1"></i>Back
+        </button>
+        <span class="fw-bold small text-white">Tour Guide ID Card Preview</span>
+        <span class="badge bg-warning text-dark small font-monospace" id="barArnBadge">SK-GR-2026-0044</span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <label for="guideSampleSelect" class="small text-white-50 mb-0 d-none d-md-inline-block">Switch Guide Sample:</label>
+        <select id="guideSampleSelect" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px;" onchange="loadGuideByArn(this.value)">
+          <option value="SK-GR-2026-0044" selected>Srijana Rai – Gangtok (From Guide ID Card.jpeg sample)</option>
+          <option value="SK-GR-2026-0099">Dawa Norbu Sherpa – Namchi (Alpine Guide)</option>
+        </select>
+
+        <button type="button" class="btn btn-sm btn-success py-1 px-3 text-nowrap shadow-xs fw-semibold" onclick="window.print()">
+          <i class="bi bi-printer me-1"></i>Print Guide ID Card
+        </button>
+        <button type="button" class="btn btn-sm btn-primary py-1 px-3 text-nowrap shadow-xs fw-semibold" onclick="window.print()">
+          <i class="bi bi-download me-1"></i>Download PDF
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <main class="id-main-stage">
+    
+    <!-- Printable Notice (Print only) -->
+    <div class="print-cutting-instructions">
+      <strong>Government of Sikkim &bull; Tourism &amp; Civil Aviation Department</strong><br>
+      Official Tour Guide Identity Card &bull; Printed from Sikkim G2C Portal &bull; Cut along outer card borders
+    </div>
+
+    <!-- Dual-Sided Card Display Grid -->
+    <div class="id-card-display-grid">
+      
+      <!-- FRONT SIDE -->
+      <div class="id-card-container">
+        <div class="id-card-label no-print">
+          <i class="bi bi-person-badge me-1"></i>ID Card &bull; Front Side
+        </div>
+
+        <div class="pvc-card" id="cardFrontSide">
+          <!-- Top Reference Bar -->
+          <div class="front-top-ref-bar" id="cardRefNumber">
+            133/DoT&amp;CAv/GTK/23/TG
+          </div>
+
+          <!-- Solid Blue Header Banner -->
+          <div class="front-title-banner">
+            Tour Guide
+          </div>
+
+          <!-- Body Content: Photo + Details + Specialization -->
+          <div class="front-body-content">
+            <!-- Applicant Photo Box -->
+            <div class="front-photo-box">
+              <img src="assets/guide-photo-placeholder.svg" alt="Applicant Photo" class="front-photo-img" id="guidePhoto">
+            </div>
+
+            <!-- Details Column -->
+            <div class="front-details-col">
+              <div class="front-detail-line">
+                <strong>Full Name:</strong>
+                <span id="guideFullName">Srijana Rai</span>
+              </div>
+              <div class="front-detail-line">
+                <strong>Address:</strong>
+                <span id="guideAddress">Shyari, Namchi, Gangtok</span>
+              </div>
+              <div class="front-detail-line">
+                <strong>Mobile No.:</strong>
+                <span id="guideMobile">8391974093</span>
+              </div>
+              <div class="front-detail-line">
+                <strong>Blood Group:</strong>
+                <span id="guideBloodGroup">B+</span>
+              </div>
+
+              <!-- Specialization Options Box -->
+              <div class="specialization-box">
+                <div class="specialization-title">Specialization Options</div>
+                <div class="specialization-grid">
+                  <div class="spec-item">
+                    <span class="spec-check-icon" id="checkTourGuide"><i class="bi bi-check-square-fill"></i></span>
+                    <span>Tour Guide</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-check-icon" id="checkBirdWatching"><i class="bi bi-square"></i></span>
+                    <span>Bird Watching</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-check-icon" id="checkTrekkingGuide"><i class="bi bi-square"></i></span>
+                    <span>Trekking Guide</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-check-icon" id="checkTrekkingCook"><i class="bi bi-square"></i></span>
+                    <span>Trekking Cook</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Validity & Authority Band -->
+          <div class="front-bottom-band">
+            <div class="front-validity-box">
+              <div><strong>Date of Issue:</strong> <span id="cardIssueDate">04.09.2023</span></div>
+              <div><strong>Valid upto:</strong> <span id="cardValidUpto">03.09.2024</span></div>
+            </div>
+
+            <div class="front-authority-box">
+              <strong>Additional Secretary,</strong>
+              <div>Tourism and Civil Aviation Department,</div>
+              <div>Government of Sikkim.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BACK SIDE -->
+      <div class="id-card-container">
+        <div class="id-card-label no-print">
+          <i class="bi bi-shield-check me-1"></i>ID Card &bull; Back Side
+        </div>
+
+        <div class="pvc-card" id="cardBackSide">
+          <div class="back-card-body">
+            
+            <!-- Top Right QR Code & URL -->
+            <div class="back-qr-group">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fwww.sikkimtourism.gov.in%2Fverify%2F133" alt="Verification QR Code" class="back-qr-img" id="cardBackQr">
+              <div class="back-url-text">www.sikkimtourism.gov.in</div>
+            </div>
+
+            <!-- Central Traditional Endless Knot (Sikkim Srivatsa) -->
+            <div class="back-symbol-center">
+              <img src="assets/sikkim-endless-knot.svg" alt="Sikkim Endless Knot (Srivatsa)" class="back-symbol-svg">
+            </div>
+
+            <!-- Bottom Center Department Title -->
+            <div>
+              <div class="back-dept-title">
+                Tourism &amp; Civil Aviation Department,<br>
+                Government of Sikkim
+              </div>
+
+              <!-- Official Statutory Note -->
+              <p class="back-legal-note">
+                *Note: This ID Card is non-Transferable and it's loss must be reported immediately to police and Issuing authority.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Informational Note for Screen Reviewers -->
+    <div class="card border-0 bg-white shadow-xs p-3 rounded-3 mt-4 no-print text-center mx-auto" style="max-width: 650px;">
+      <div class="small text-muted">
+        <i class="bi bi-info-circle text-primary me-1"></i>
+        <strong>Official Sample Alignment:</strong> Front and back designs match the official Gazette prototype image <code>Guide ID Card.jpeg</code> provided for Tour Guides in Sikkim. Designed for standard CR80 PVC lamination (85.6mm &times; 54mm).
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="../../common/js/common.js"></script>
+  <script src="workflow-engine.js"></script>
+
+  <script>
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function goBackToSource() {
+      const role = getQueryParam('role') || '';
+      const ref = getQueryParam('arn') || '';
+      if (role === 'dto' || role === 'dto-hq') {
+        window.location.href = `dashboard-dto.html`;
+      } else if (role === 'review') {
+        window.location.href = `review.html?arn=${encodeURIComponent(ref)}`;
+      } else {
+        window.location.href = `dashboard.html`;
+      }
+    }
+
+    function loadGuideByArn(arn) {
+      let app = null;
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.init();
+        app = AdventureWorkflowEngine.getApplicationByArn(arn);
+      }
+
+      if (!app) {
+        // Default record matching Guide ID Card.jpeg sample exactly
+        app = {
+          arn: arn || 'SK-GR-2026-0044',
+          type: 'guide-registration',
+          applicantName: 'Srijana Rai',
+          details: {
+            residentialAddress: 'Shyari, Namchi, Gangtok',
+            mobile: '8391974093',
+            bloodGroup: 'B+',
+            categories: ['Tour Guide']
+          },
+          district: 'Gangtok',
+          cardReference: '133/DoT&CAv/GTK/23/TG',
+          issueDate: '04.09.2023',
+          validTill: '03.09.2024'
+        };
+      }
+
+      renderIdCard(app);
+    }
+
+    function renderIdCard(app) {
+      const arn = app.arn || 'SK-GR-2026-0044';
+      document.getElementById('barArnBadge').textContent = arn;
+
+      const applicantName = app.applicantName || 'Srijana Rai';
+      const address = (app.details && app.details.residentialAddress) || 'Shyari, Namchi, Gangtok';
+      const mobile = (app.details && app.details.mobile) || '8391974093';
+      const bloodGroup = (app.details && app.details.bloodGroup) || 'Not Provided';
+      const cardRef = app.cardReference || `133/DoT&CAv/${(app.district || 'GTK').substring(0,3).toUpperCase()}/23/TG`;
+      const issueDate = app.issueDate || '04.09.2023';
+      const validTill = app.validTill || '03.09.2024';
+
+      document.getElementById('cardRefNumber').innerHTML = cardRef;
+      document.getElementById('guideFullName').textContent = applicantName;
+      document.getElementById('guideAddress').textContent = address;
+      document.getElementById('guideMobile').textContent = mobile;
+      document.getElementById('guideBloodGroup').textContent = bloodGroup;
+      document.getElementById('cardIssueDate').textContent = issueDate;
+      document.getElementById('cardValidUpto').textContent = validTill;
+
+      // Map Specialization Checkboxes based on Stage 03 categories
+      const categories = (app.details && app.details.categories) || ['Tour Guide'];
+      const hasTourGuide = categories.some(c => c.toLowerCase().includes('tour guide'));
+      const hasBirdWatching = categories.some(c => c.toLowerCase().includes('bird'));
+      const hasTrekkingGuide = categories.some(c => c.toLowerCase().includes('trekking guide'));
+      const hasTrekkingCook = categories.some(c => c.toLowerCase().includes('cook'));
+
+      document.getElementById('checkTourGuide').innerHTML = hasTourGuide ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+      document.getElementById('checkBirdWatching').innerHTML = hasBirdWatching ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+      document.getElementById('checkTrekkingGuide').innerHTML = hasTrekkingGuide ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+      document.getElementById('checkTrekkingCook').innerHTML = hasTrekkingCook ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+
+      // Update QR Code URL
+      const qrData = encodeURIComponent(`https://www.sikkimtourism.gov.in/verify/${encodeURIComponent(cardRef)}`);
+      document.getElementById('cardBackQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrData}`;
+
+      // Update dropdown selection
+      const sel = document.getElementById('guideSampleSelect');
+      if (sel) {
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === arn) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const arn = getQueryParam('arn') || 'SK-GR-2026-0044';
+      loadGuideByArn(arn);
+
+      // Auto-print check when triggered by Tourism Officer (TO) print action
+      if (getQueryParam('print') === 'true') {
+        setTimeout(function() {
+          window.print();
+        }, 600);
+      }
+    });
+  </script>
+</body>
+</html>
+

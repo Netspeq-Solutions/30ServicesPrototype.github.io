@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <title id="pageTitle">Certificate of Registration &bull; Tourism &amp; Civil Aviation Department, Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root {
+      --gov-primary: #1e3a8a;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #111827;
+      font-family: 'Noto Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Top Control Bar (Screen only) */
+    .doc-control-bar {
+      background: #0b1533;
+      color: #e2e8f0;
+      padding: 10px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    /* Document Sheet Container (A4 Portrait) */
+    .cert-sheet-container {
+      max-width: 820px;
+      margin: 2rem auto 4rem auto;
+      padding: 0 1rem;
+    }
+
+    .cert-paper {
+      background: #ffffff;
+      padding: 4.5rem 4rem 5rem 4rem;
+      border: 1px solid #d1d5db;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      position: relative;
+      min-height: 1050px;
+      display: flex;
+      flex-column: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      font-family: 'Noto Serif', serif;
+      line-height: 2.1;
+      font-size: 1.05rem;
+      color: #000000;
+    }
+
+    /* Gazette Sample Header Typography */
+    .cert-annexure-label {
+      text-align: center;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.25rem;
+      color: #000000;
+    }
+
+    .cert-title-heading {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+      line-height: 1.4;
+      color: #000000;
+    }
+
+    /* Gazette Body Certification Paragraph */
+    .cert-body-statement {
+      text-align: justify;
+      margin-bottom: 2rem;
+      text-indent: 2.5rem;
+      line-height: 2.3;
+    }
+
+    .dotted-fill {
+      border-bottom: 1px dotted #000000;
+      padding: 0 6px;
+      font-weight: 700;
+      font-style: normal;
+      display: inline-block;
+      line-height: 1.2;
+      color: #000000;
+    }
+
+    .cert-validity-statement {
+      text-align: left;
+      margin-bottom: 3.5rem;
+      text-indent: 2.5rem;
+      line-height: 2;
+    }
+
+    /* Bottom Sign-off Section */
+    .cert-signoff-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 3.5rem;
+      line-height: 1.45;
+    }
+
+    .cert-meta-left {
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .cert-meta-left div {
+      margin-bottom: 0.75rem;
+    }
+
+    .cert-authority-right {
+      text-align: right;
+      font-size: 1rem;
+    }
+
+    .cert-authority-right .auth-title {
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .cert-page-footer {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #000000;
+      margin-top: 5rem;
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    /* Important Source Footnote for Guide Certificate */
+    .cert-source-note {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 0.75rem;
+      color: #64748b;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 8px 12px;
+      margin-top: 2rem;
+      border-radius: 4px;
+      line-height: 1.4;
+    }
+
+    /* Print Specific Formatting */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm 18mm 15mm 18mm;
+      }
+      body {
+        background: #ffffff !important;
+        font-size: 11pt !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .cert-sheet-container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .cert-paper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 10mm 5mm !important;
+        min-height: auto !important;
+      }
+      .cert-source-note {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen-Only Controls Bar -->
+  <aside class="doc-control-bar no-print" aria-label="Document Controls">
+    <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light py-1 px-2.5 text-nowrap" onclick="goBackToSource()">
+          <i class="bi bi-arrow-left me-1"></i>Back
+        </button>
+        <span class="fw-bold small text-white" id="barDocTitle">Registration Certificate Preview</span>
+        <span class="badge bg-warning text-dark small font-monospace" id="barArnBadge">SK-ATO-2026-0009</span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <label for="sampleSwitcherSelect" class="small text-white-50 mb-0 d-none d-md-inline-block">Switch Document Sample:</label>
+        <select id="sampleSwitcherSelect" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px;" onchange="loadApplicationByArn(this.value)">
+          <option value="SK-ATO-2026-0009">Annexure XVII: Adventure Tour Operator (Sonam Gyatso Sherpa)</option>
+          <option value="SK-GR-2026-0044">Annexure XVIII: Guide Registration – Gangtok (Srijana Rai)</option>
+          <option value="SK-GR-2026-0099">Annexure XVIII: Guide Registration – Namchi (Dawa Norbu Sherpa)</option>
+        </select>
+
+        <button type="button" class="btn btn-sm btn-success py-1 px-3 text-nowrap shadow-xs fw-semibold" onclick="window.print()">
+          <i class="bi bi-printer me-1"></i>Print Certificate
+        </button>
+        <button type="button" class="btn btn-sm btn-primary py-1 px-3 text-nowrap shadow-xs fw-semibold" onclick="window.print()">
+          <i class="bi bi-download me-1"></i>Download PDF
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Printable A4 Certificate Page -->
+  <main class="cert-sheet-container" id="main-certificate-sheet">
+    <div class="cert-paper" id="certificatePaper">
+      
+      <div>
+        <!-- Annexure Number (Exact from samples: XVII or XVIII) -->
+        <div class="cert-annexure-label" id="certAnnexureText">Annexure XVII</div>
+
+        <!-- Official Certificate Title -->
+        <h1 class="cert-title-heading" id="certTitleHeading">
+          CERTIFICATE OF REGISTRATION OF ADVENTURE TOUR OPERATOR
+        </h1>
+
+        <!-- Certification Paragraph -->
+        <div class="cert-body-statement" id="certBodyContent">
+          This is to certify that Mr. <span class="dotted-fill" id="valApplicant">Sonam Gyatso Sherpa</span> S/o. <span class="dotted-fill" id="valGuardian">Pemba Sherpa</span> permanent resident of <span class="dotted-fill" id="valAddress">Tibet Road, Gangtok – 737101</span> has been registered as <span class="dotted-fill" id="valCategory">Peak Explorers &amp; Mountaineering Expeditions</span> Adventure Tour Operators under The Sikkim Registration of Tourist Trade Rules, 2025 Vide Serial No. <span class="dotted-fill" id="valSerialNo">SR-2026-ATO-0077</span> Reg. No. <span class="dotted-fill" id="valRegNo">RC-SK-ATO-2026-0009</span>
+        </div>
+
+        <!-- Validity Statement -->
+        <div class="cert-validity-statement">
+          This registration certificate is valid up to <span class="dotted-fill" id="valValidTill">01 Nov 2028</span>
+        </div>
+
+        <!-- Sign-off: Place, Date & Prescribed Authority -->
+        <div class="cert-signoff-row">
+          <div class="cert-meta-left">
+            <div>Place: <span class="dotted-fill" id="valPlace">Gangtok</span></div>
+            <div>Date: <span class="dotted-fill" id="valDate">02 Nov 2026</span></div>
+          </div>
+
+          <div class="cert-authority-right">
+            <div class="auth-title">Prescribed Authority</div>
+            <div>Department of Tourism &amp; Civil Aviation</div>
+            <div>Government of Sikkim</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Page Number Exact from Gazette Samples: -77- or -78- -->
+      <div>
+        <div class="cert-page-footer" id="certPageNumber">-77-</div>
+
+        <!-- Departmental Clarification Note for Guide Sample (Screen only) -->
+        <div class="cert-source-note no-print" id="sourceClarificationNote" style="display: none;">
+          <i class="bi bi-info-circle-fill text-primary me-1"></i>
+          <strong>Departmental Source Note:</strong> As observed in Gazette Sample <code>Guide Certificate.jpeg</code> (Annexure XVIII), the body text contains the phrase <em>“Adventure Tour Operators”</em> even though the document is titled <em>“Certificate of Registration of a Guide”</em>. Per prompt instructions, this printed wording is reproduced faithfully for official departmental review and confirmation.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../../common/js/common.js"></script>
+  <script src="workflow-engine.js"></script>
+
+  <script>
+    // Document Initialization and Dynamic Population
+    let currentAppRecord = null;
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function goBackToSource() {
+      const role = getQueryParam('role') || '';
+      const ref = getQueryParam('arn') || '';
+      if (role === 'dto' || role === 'dto-hq') {
+        window.location.href = `dashboard-dto.html`;
+      } else if (role === 'review') {
+        window.location.href = `review.html?arn=${encodeURIComponent(ref)}`;
+      } else {
+        window.location.href = `dashboard.html`;
+      }
+    }
+
+    function loadApplicationByArn(arn) {
+      let app = null;
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.init();
+        app = AdventureWorkflowEngine.getApplicationByArn(arn);
+      }
+
+      if (!app) {
+        // Fallback default record
+        app = {
+          arn: arn,
+          type: arn.includes('GR') ? 'guide-registration' : 'adventure-tour-operator',
+          applicantName: arn.includes('GR') ? 'Srijana Rai' : 'Sonam Gyatso Sherpa',
+          enterpriseName: arn.includes('GR') ? 'Tour Guide' : 'Peak Explorers & Mountaineering Expeditions',
+          details: {
+            guardian: arn.includes('GR') ? 'B. B. Rai (Father)' : 'Pemba Sherpa (Father)',
+            registeredAddress: arn.includes('GR') ? 'Shyari, Namchi, Gangtok' : 'Tibet Road, Gangtok – 737101'
+          },
+          district: 'Gangtok',
+          certificateSerialNo: arn.includes('GR') ? 'SR-2026-GR-0044' : 'SR-2026-ATO-0077',
+          certificateRegNo: arn.includes('GR') ? 'RC-SK-GR-2026-0044' : 'RC-SK-ATO-2026-0009',
+          validTill: arn.includes('GR') ? '03.09.2024' : '01 Nov 2028',
+          lastUpdated: '02 Nov 2026'
+        };
+      }
+
+      currentAppRecord = app;
+      renderCertificate(app);
+    }
+
+    function renderCertificate(app) {
+      const isGuide = (app.type === 'guide-registration' || app.category === 'guide-registration');
+      const arn = app.arn || 'SK-ATO-2026-0009';
+
+      document.getElementById('barArnBadge').textContent = arn;
+
+      const applicantName = app.applicantName || 'Applicant Name';
+      const guardian = (app.details && (app.details.guardian || app.details.fatherName)) || 'Guardian Name';
+      const address = (app.details && (app.details.registeredAddress || app.details.residentialAddress)) || `${app.district || 'Gangtok'}, Sikkim`;
+      const category = isGuide ? (app.enterpriseName || 'Tour Guide') : (app.enterpriseName || 'Adventure Tour Operator');
+      const serialNo = app.certificateSerialNo || app.serialNo || `SR-2026-${isGuide ? 'GR' : 'ATO'}-${arn.split('-').pop()}`;
+      const regNo = app.certificateRegNo || app.certificateNo || `RC-SK-${isGuide ? 'GR' : 'ATO'}-2026-${arn.split('-').pop()}`;
+      const validTill = app.validTill || '31 Dec 2028';
+      const place = app.district || 'Gangtok';
+      const date = app.lastUpdated || app.submittedDate || '02 Nov 2026';
+
+      // Update Top Screen Title & Bar
+      document.getElementById('pageTitle').textContent = `${isGuide ? 'Annexure XVIII – Guide Registration Certificate' : 'Annexure XVII – Adventure Tour Operator Certificate'} • ${arn}`;
+      document.getElementById('barDocTitle').textContent = isGuide ? 'Guide Registration Certificate (Annexure XVIII)' : 'Adventure Tour Operator Certificate (Annexure XVII)';
+
+      if (isGuide) {
+        // Annexure XVIII: Guide Certificate
+        document.getElementById('certAnnexureText').textContent = 'Annexure XVIII';
+        document.getElementById('certTitleHeading').textContent = 'CERTIFICATE OF REGISTRATION OF A GUIDE';
+        document.getElementById('certPageNumber').textContent = '-78-';
+        document.getElementById('sourceClarificationNote').style.display = 'block';
+
+        // Official Wording verbatim from Guide Certificate.jpeg sample
+        document.getElementById('certBodyContent').innerHTML = `
+          This is to certify that Mr. <span class="dotted-fill">${applicantName}</span> S/o. <span class="dotted-fill">${guardian}</span> permanent resident of <span class="dotted-fill">${address}</span> has been registered as <span class="dotted-fill">${category}</span> Adventure Tour Operators under The Sikkim Registration of Tourist Trade Rules, 2025 Vide Serial No. <span class="dotted-fill">${serialNo}</span> Reg. No. <span class="dotted-fill">${regNo}</span>
+        `;
+      } else {
+        // Annexure XVII: Adventure Tour Operator Certificate
+        document.getElementById('certAnnexureText').textContent = 'Annexure XVII';
+        document.getElementById('certTitleHeading').textContent = 'CERTIFICATE OF REGISTRATION OF ADVENTURE TOUR OPERATOR';
+        document.getElementById('certPageNumber').textContent = '-77-';
+        document.getElementById('sourceClarificationNote').style.display = 'none';
+
+        // Official Wording verbatim from Adv. Tour Operator Certificate.jpeg sample
+        document.getElementById('certBodyContent').innerHTML = `
+          This is to certify that Mr. <span class="dotted-fill">${applicantName}</span> S/o. <span class="dotted-fill">${guardian}</span> permanent resident of <span class="dotted-fill">${address}</span> has been registered as <span class="dotted-fill">${category}</span> Adventure Tour Operators under The Sikkim Registration of Tourist Trade Rules, 2025 Vide Serial No. <span class="dotted-fill">${serialNo}</span> Reg. No. <span class="dotted-fill">${regNo}</span>
+        `;
+      }
+
+      document.getElementById('valValidTill').textContent = validTill;
+      document.getElementById('valPlace').textContent = place;
+      document.getElementById('valDate').textContent = date;
+
+      // Sync selector dropdown
+      const sel = document.getElementById('sampleSwitcherSelect');
+      if (sel) {
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === arn) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const arn = getQueryParam('arn') || 'SK-ATO-2026-0009';
+      loadApplicationByArn(arn);
+    });
+  </script>
+</body>
+</html>
+
