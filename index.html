@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Services Portal - Government of Sikkim</title>
+
+  <!-- Bootstrap 5.3 CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="common/css/gigw-template.css">
+  <link rel="stylesheet" href="common/css/themes.css">
+  <link rel="stylesheet" href="common/css/components.css">
+  <link rel="stylesheet" href="common/css/responsive.css">
+</head>
+
+<body data-theme="default">
+
+  <!-- GIGW Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Tricolor Bar -->
+  <div class="gov-top-stripe" role="presentation"></div>
+
+  <!-- Accessibility & Utility Toolbar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+      <div class="d-flex align-items-center gap-3">
+        <span class="small"><i class="bi bi-geo-alt"></i> Government of Sikkim</span>
+        <span class="text-white-50">|</span>
+        <a href="#main-content" class="small"><i class="bi bi-arrow-down-short"></i> Skip to Content</a>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <label for="gov-theme-select" class="visually-hidden">Department Theme</label>
+        <select id="gov-theme-select" class="form-select form-select-sm py-0 px-2 bg-dark text-white border-secondary"
+          style="font-size: 0.75rem;">
+          <option value="default">Theme: Default Slate</option>
+          <option value="forest-green">Theme: Forest &amp; Revenue</option>
+          <option value="saffron-maroon">Theme: Tourism &amp; Culture</option>
+          <option value="royal-navy">Theme: IT &amp; Science</option>
+          <option value="teal">Theme: Urban Development</option>
+        </select>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Font Resizing">
+          <button type="button" class="font-resize-btn" id="btn-font-decrease" title="Decrease Font">A-</button>
+          <button type="button" class="font-resize-btn" id="btn-font-reset" title="Normal Font">A</button>
+          <button type="button" class="font-resize-btn" id="btn-font-increase" title="Increase Font">A+</button>
+        </div>
+        <button type="button" class="contrast-toggle-btn" id="btn-contrast-toggle">
+          <i class="bi bi-circle-half"></i> Contrast
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Department Header: Updated with IT Department, Govt. of Sikkim -->
+  <header class="gov-header" role="banner">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="gov-emblem-container">
+            <img src="common/assets/images/sikkim-government-logo-dark.png" alt="Government of Sikkim Official Logo"
+              class="gov-emblem" width="68" height="64">
+          </div>
+          <div class="gov-title-group">
+            <span class="gov-title-sikkim">Government of Sikkim</span>
+            <h1 class="gov-dept-name">IT Department, Govt. of Sikkim</h1>
+            <span class="gov-portal-tagline">Citizen Services &amp; Online Delivery Gateway</span>
+          </div>
+        </div>
+        <div class="d-none d-md-block text-end">
+          <div class="small text-muted fw-semibold">Citizen Toll-Free Helpline</div>
+          <div class="fw-bold text-dark"><i class="bi bi-telephone-fill text-success"></i> 1800-345-3211</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar: Only Home menu item, Citizen Login/Register button removed -->
+  <nav class="navbar navbar-expand-lg gov-navbar" aria-label="Portal Navigation">
+    <div class="container">
+      <div class="collapse navbar-collapse show" id="publicNav">
+        <ul class="navbar-nav me-auto mb-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="index.html">
+              <i class="bi bi-house-door-fill me-1"></i> Home
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <nav class="gov-breadcrumb-wrapper" aria-label="Breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page"><i class="bi bi-house-door me-1"></i> Home &bull; Public
+          Services Portal</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Main Content Area (Hero Section Removed) -->
+  <main id="main-content" class="main-content py-4">
+    <div class="container">
+
+      <!-- Page Section Heading with Department Filter Tabs -->
+      <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+        <div>
+          <h2 class="h4 fw-bold text-dark mb-1">Available Public Services by Department</h2>
+          <p class="text-muted small mb-0">Explore state citizen services categorized by administrative departments.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap" id="dept-filter-buttons">
+          <button type="button" class="btn btn-sm btn-primary active" data-dept="all">All Departments</button>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-dept="tourism">Tourism &amp; Civil Aviation (3)</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-dept="dac">DAC</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-dept="education">Education Dept</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-dept="udd">UDD</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-dept="forest">Forest Dept</button>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- 1. TOURISM & CIVIL AVIATION DEPARTMENT (ACTIVE PROTOTYPES)     -->
+      <!-- ============================================================== -->
+      <section class="department-block mb-5" data-dept-section="tourism">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-2 p-1.5 bg-primary text-white d-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;">
+              <i class="bi bi-compass"></i>
+            </div>
+            <div>
+              <h3 class="h5 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h3>
+              <span class="text-muted small">Paryatan Bhawan, Tadong, Gangtok &bull; 3 Active Prototypes</span>
+            </div>
+          </div>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 small fw-semibold">
+            <i class="bi bi-check-circle-fill me-1"></i> 3 Services Active
+          </span>
+        </div>
+
+        <div class="row g-4">
+          <!-- Service 1: Tourism Permission -->
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column position-relative shadow-xs">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon"><i class="bi bi-compass-fill"></i></div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+                  <i class="bi bi-check-circle-fill me-1"></i> Active Prototype
+                </span>
+              </div>
+              <div class="badge bg-primary-subtle text-primary border border-primary-subtle mb-2 align-self-start">
+                Permit &amp; Clearance</div>
+              <h4 class="h5 fw-bold mb-1">
+                <a href="services/tourism-permission/index.html"
+                  class="text-dark text-decoration-none stretched-link">Tourism Permission</a>
+              </h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> Tourism &amp; Civil Aviation Department
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Single online service for obtaining statutory tourism permissions for trekking, expeditions, public
+                events, drone operations, and adventure activities across Sikkim.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-cash me-1"></i> Fee: ₹100 / Free</span>
+                <a href="services/tourism-permission/index.html" class="btn btn-sm btn-gov-primary position-relative"
+                  style="z-index: 2;">
+                  Open Service <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service 2: Tourism Business & Outdoor Photography Registration -->
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column position-relative shadow-xs">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon" style="background: rgba(36, 71, 107, 0.1); color: #24476B;"><i
+                    class="bi bi-briefcase-fill"></i></div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+                  <i class="bi bi-check-circle-fill me-1"></i> Active Prototype
+                </span>
+              </div>
+              <div class="badge bg-warning-subtle text-warning border border-warning-subtle mb-2 align-self-start">
+                Business &amp; Revenue</div>
+              <h4 class="h5 fw-bold mb-1">
+                <a href="services/tourism-business-registration/index.html"
+                  class="text-dark text-decoration-none stretched-link">Tourism Business &amp; Outdoor Photography
+                  Registration</a>
+              </h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> Tourism &amp; Civil Aviation Department
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Unified single-window statutory registration for Travel Agents, Tour Operators, Equipment Dealers, and
+                Outdoor Photographers across Sikkim.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-tags me-1"></i> 4 Categories &bull; Stage 01</span>
+                <a href="services/tourism-business-registration/index.html"
+                  class="btn btn-sm btn-gov-primary position-relative" style="z-index: 2;">
+                  Open Service <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service 3: Adventure Tour Operator & Guide Registration -->
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column position-relative shadow-xs">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon" style="background: rgba(30, 58, 138, 0.1); color: #1e3a8a;"><i
+                    class="bi bi-compass-fill"></i></div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+                  <i class="bi bi-check-circle-fill me-1"></i> Active Prototype
+                </span>
+              </div>
+              <div class="badge bg-primary-subtle text-primary border border-primary-subtle mb-2 align-self-start">
+                Adventure &amp; Guiding</div>
+              <h4 class="h5 fw-bold mb-1">
+                <a href="services/adventure-tour-operator-guide-registration/index.html"
+                  class="text-dark text-decoration-none stretched-link">Adventure Tour Operator &amp; Guide
+                  Registration</a>
+              </h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> Tourism &amp; Civil Aviation Department
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Unified online registration service for Adventure Tour Operators and Guides under Sikkim Registration of
+                Tourist Trade Rules, 2025.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-tags me-1"></i> 2 Types &bull; Stages 01–06 Active</span>
+                <a href="services/adventure-tour-operator-guide-registration/index.html"
+                  class="btn btn-sm btn-gov-primary position-relative" style="z-index: 2;">
+                  Open Service <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- 2. DISTRICT ADMINISTRATIVE CENTRE (DAC)                        -->
+      <!-- ============================================================== -->
+      <section class="department-block mb-5" data-dept-section="dac">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-2 p-1.5 bg-secondary text-white d-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;">
+              <i class="bi bi-building"></i>
+            </div>
+            <div>
+              <h3 class="h5 fw-bold text-dark mb-0">District Administrative Centre (DAC)</h3>
+              <span class="text-muted small">Land Revenue &amp; Disaster Management Department &bull; District Administrations</span>
+            </div>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 small fw-semibold">
+            <i class="bi bi-clock me-1"></i> In Pipeline
+          </span>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column opacity-75">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon"><i class="bi bi-file-earmark-person"></i></div>
+                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 small">In Pipeline</span>
+              </div>
+              <div class="badge bg-info-subtle text-info border border-info-subtle mb-2 align-self-start">Citizen Certificates</div>
+              <h4 class="h5 fw-bold mb-1 text-dark">Senior Citizen Certificate</h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> District Administrative Centre (DAC)
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Issuance and digital verification of Senior Citizen Certificates for eligible senior residents across Sikkim.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-clock me-1"></i> In Pipeline</span>
+                <button class="btn btn-sm btn-outline-secondary" disabled>Next in Queue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- 3. EDUCATION DEPARTMENT                                        -->
+      <!-- ============================================================== -->
+      <section class="department-block mb-5" data-dept-section="education">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-2 p-1.5 bg-secondary text-white d-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;">
+              <i class="bi bi-mortarboard"></i>
+            </div>
+            <div>
+              <h3 class="h5 fw-bold text-dark mb-0">Education Department</h3>
+              <span class="text-muted small">Tashiling Secretariat, Gangtok</span>
+            </div>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 small fw-semibold">
+            <i class="bi bi-clock me-1"></i> In Pipeline
+          </span>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column opacity-75">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon"><i class="bi bi-award"></i></div>
+                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 small">In Pipeline</span>
+              </div>
+              <div class="badge bg-success-subtle text-success border border-success-subtle mb-2 align-self-start">Scholarships &amp; Examination</div>
+              <h4 class="h5 fw-bold mb-1 text-dark">CMMS Scheme Examination</h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> Education Department
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Online registration and candidate portal for Chief Minister's Merit Scholarship (CMMS) Scheme examination for eligible students of Sikkim.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-clock me-1"></i> In Pipeline</span>
+                <button class="btn btn-sm btn-outline-secondary" disabled>Next in Queue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- 4. URBAN DEVELOPMENT DEPARTMENT (UDD)                          -->
+      <!-- ============================================================== -->
+      <section class="department-block mb-5" data-dept-section="udd">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-2 p-1.5 bg-secondary text-white d-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;">
+              <i class="bi bi-buildings"></i>
+            </div>
+            <div>
+              <h3 class="h5 fw-bold text-dark mb-0">Urban Development Department (UDD)</h3>
+              <span class="text-muted small">NH-10, Gangtok</span>
+            </div>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 small fw-semibold">
+            <i class="bi bi-clock me-1"></i> In Pipeline
+          </span>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column opacity-75">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon"><i class="bi bi-building-check"></i></div>
+                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 small">In Pipeline</span>
+              </div>
+              <div class="badge bg-warning-subtle text-warning border border-warning-subtle mb-2 align-self-start">Municipal Licensing</div>
+              <h4 class="h5 fw-bold mb-1 text-dark">eTrade license Registration System</h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> Urban Development Department
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Statutory municipal trade license issuance and renewal system for commercial establishments across urban Sikkim.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-clock me-1"></i> In Pipeline</span>
+                <button class="btn btn-sm btn-outline-secondary" disabled>Next in Queue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- 5. FOREST DEPARTMENT                                           -->
+      <!-- ============================================================== -->
+      <section class="department-block mb-5" data-dept-section="forest">
+        <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <div class="rounded-2 p-1.5 bg-secondary text-white d-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;">
+              <i class="bi bi-tree"></i>
+            </div>
+            <div>
+              <h3 class="h5 fw-bold text-dark mb-0">Forest Department</h3>
+              <span class="text-muted small">Forest &amp; Environment Department &bull; Forest Secretariat, Deorali</span>
+            </div>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 small fw-semibold">
+            <i class="bi bi-clock me-1"></i> In Pipeline
+          </span>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="gov-service-card h-100 d-flex flex-column opacity-75">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="gov-service-card-icon"><i class="bi bi-tree-fill"></i></div>
+                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 small">In Pipeline</span>
+              </div>
+              <div class="badge bg-success-subtle text-success border border-success-subtle mb-2 align-self-start">Forestry &amp; Environment</div>
+              <h4 class="h5 fw-bold mb-1 text-dark">Mark My Tree</h4>
+              <div class="small text-muted fw-semibold mb-2">
+                <i class="bi bi-building me-1"></i> Forest Department
+              </div>
+              <p class="text-muted small flex-grow-1">
+                Citizen tree plantation, geospatial geotagging, and participatory forest conservation monitoring portal across Sikkim.
+              </p>
+              <div class="border-top pt-3 mt-3 d-flex justify-content-between align-items-center">
+                <span class="small text-muted"><i class="bi bi-clock me-1"></i> In Pipeline</span>
+                <button class="btn btn-sm btn-outline-secondary" disabled>Next in Queue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- GIGW Compliant Footer -->
+  <footer class="gov-footer" role="contentinfo">
+    <div class="container">
+      <div class="gov-footer-links-grid">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="common/assets/images/sikkim-government-logo-light.png" alt="Government of Sikkim"
+                style="height: 44px; width: auto;">
+              <div>
+                <h5 class="mb-0">Government of Sikkim</h5>
+                <div class="small text-white-50">State Citizen Services Portal</div>
+              </div>
+            </div>
+            <p class="small text-white-50 mb-3">State Public Services Gateway.<br>Secretariat, Gangtok, Sikkim - 737101.
+            </p>
+            <div class="small text-white-50"><i class="bi bi-envelope-fill me-1"></i> helpdesk-services@sikkim.gov.in
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <h5>Mandatory Links</h5>
+            <ul>
+              <li><a href="#terms">Terms &amp; Conditions</a></li>
+              <li><a href="#privacy">Privacy Policy</a></li>
+              <li><a href="#accessibility">Accessibility Statement</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <h5>Standards Compliance</h5>
+            <div class="gov-compliance-badge mb-2">
+              <i class="bi bi-shield-check text-success"></i> GIGW 3.0 / WCAG 2.1 Level AA Compliant
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gov-footer-bottom d-flex justify-content-between align-items-center flex-wrap">
+        <div>&copy; 2026 Government of Sikkim. Reusable Base Template.</div>
+        <div class="small">Last Updated: 13 Nov 2026</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="common/js/common.js"></script>
+  <script src="common/js/navigation.js"></script>
+
+  <!-- Department Filter Controller -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const deptButtons = document.querySelectorAll('#dept-filter-buttons button');
+      const deptSections = document.querySelectorAll('.department-block');
+
+      deptButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+          deptButtons.forEach(b => {
+            b.classList.remove('active', 'btn-primary');
+            const deptKey = b.getAttribute('data-dept');
+            if (deptKey === 'tourism' || deptKey === 'all') {
+              b.classList.add('btn-outline-primary');
+            } else {
+              b.classList.add('btn-outline-secondary');
+            }
+          });
+
+          this.classList.add('active', 'btn-primary');
+          this.classList.remove('btn-outline-primary', 'btn-outline-secondary');
+
+          const selectedDept = this.getAttribute('data-dept') || 'all';
+          deptSections.forEach(sec => {
+            if (selectedDept === 'all' || sec.getAttribute('data-dept-section') === selectedDept) {
+              sec.style.display = '';
+            } else {
+              sec.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
