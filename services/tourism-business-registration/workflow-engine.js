@@ -16,7 +16,7 @@
 
   const STORAGE_KEY = 'tourism_business_department_applications';
   const STORAGE_VERSION_KEY = 'tourism_business_dept_apps_version';
-  const CURRENT_SEED_VERSION = 'v12_dept_queues_reverified_2026';
+  const CURRENT_SEED_VERSION = 'v13_merged_tato_2026';
   const SUBMITTED_STORAGE_KEY = 'tourism_business_submitted';
 
   // The 4 Official Statuses
@@ -178,8 +178,17 @@
   };
 
   // Statutory Registration Fee Structure (The Sikkim Registration of Tourist Trade Rules)
-  // Tour Operator & Travel Agent share grade-based fees; Dealer & Photographer have fixed fees
+  // Travel Agent / Tour Operator (TA/TO) has grade-based fees; Dealer & Photographer have fixed fees
   const REGISTRATION_FEES = {
+    'ta-to': {
+      'Grade A': 20000,
+      'Grade B': 7000,
+      'Grade C': 5000,
+      'Grade D': 1500,
+      defaultGrade: 'Grade B',
+      defaultFee: 7000,
+      hasGrades: true
+    },
     'tour-operator': {
       'Grade A': 20000,
       'Grade B': 7000,
@@ -256,9 +265,9 @@
   {
     "refNo": "SK-TBR-2026-TO-00101",
     "formConfig": "A",
-    "category": "tour-operator",
-    "categoryName": "Tour Operator Registration",
-    "categoryCode": "TO",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Karma Lhendup Bhutia",
     "gender": "Male",
     "dob": "14 May 1988",
@@ -341,9 +350,9 @@
   {
     "refNo": "SK-TBR-2026-TO-00102",
     "formConfig": "A",
-    "category": "tour-operator",
-    "categoryName": "Tour Operator Registration",
-    "categoryCode": "TO",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Passang Tshering Sherpa",
     "gender": "Male",
     "dob": "18 Aug 1990",
@@ -430,9 +439,9 @@
   {
     "refNo": "SK-TBR-2026-TO-00103",
     "formConfig": "A",
-    "category": "tour-operator",
-    "categoryName": "Tour Operator Registration",
-    "categoryCode": "TO",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Chungda Lepcha",
     "gender": "Male",
     "dob": "22 Sep 1985",
@@ -519,9 +528,9 @@
   {
     "refNo": "SK-TBR-2026-TO-00104",
     "formConfig": "A",
-    "category": "tour-operator",
-    "categoryName": "Tour Operator Registration",
-    "categoryCode": "TO",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Dawa Norbu Bhutia",
     "gender": "Male",
     "dob": "12 Dec 1989",
@@ -636,9 +645,9 @@
   {
     "refNo": "SK-TBR-2026-TO-00105",
     "formConfig": "A",
-    "category": "tour-operator",
-    "categoryName": "Tour Operator Registration",
-    "categoryCode": "TO",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Tenzing Wangchuk Lepcha",
     "gender": "Male",
     "dob": "05 Jul 1987",
@@ -784,9 +793,9 @@
   {
     "refNo": "SK-TBR-2026-TA-00201",
     "formConfig": "A",
-    "category": "travel-agent",
-    "categoryName": "Travel Agent Registration",
-    "categoryCode": "TA",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Tshering Ongmu Bhutia",
     "gender": "Female",
     "dob": "20 Jan 1991",
@@ -856,9 +865,9 @@
   {
     "refNo": "SK-TBR-2026-TA-00202",
     "formConfig": "A",
-    "category": "travel-agent",
-    "categoryName": "Travel Agent Registration",
-    "categoryCode": "TA",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Mingma Norbu Sherpa",
     "gender": "Male",
     "dob": "15 Mar 1986",
@@ -967,9 +976,9 @@
   {
     "refNo": "SK-TBR-2026-TA-00203",
     "formConfig": "A",
-    "category": "travel-agent",
-    "categoryName": "Travel Agent Registration",
-    "categoryCode": "TA",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Sonam Palden Bhutia",
     "gender": "Male",
     "dob": "11 Nov 1984",
@@ -1049,9 +1058,9 @@
   {
     "refNo": "SK-TBR-2026-TA-00204",
     "formConfig": "A",
-    "category": "travel-agent",
-    "categoryName": "Travel Agent Registration",
-    "categoryCode": "TA",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Rinzing Wangdi Lepcha",
     "gender": "Male",
     "dob": "25 May 1988",
@@ -1180,9 +1189,9 @@
   {
     "refNo": "SK-TBR-2026-TA-00205",
     "formConfig": "A",
-    "category": "travel-agent",
-    "categoryName": "Travel Agent Registration",
-    "categoryCode": "TA",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Nim Lhamu Bhutia",
     "gender": "Female",
     "dob": "14 Feb 1989",
@@ -2085,9 +2094,9 @@
   {
     "refNo": "SK-TBR-2026-TO-00107",
     "formConfig": "A",
-    "category": "tour-operator",
-    "categoryName": "Tour Operator Registration",
-    "categoryCode": "TO",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Norbu Wangdi Bhutia",
     "gender": "Male",
     "dob": "08 Sep 1987",
@@ -2384,9 +2393,9 @@
   {
     "refNo": "SK-TBR-2026-TA-00206",
     "formConfig": "A",
-    "category": "travel-agent",
-    "categoryName": "Travel Agent Registration",
-    "categoryCode": "TA",
+    "category": "ta-to",
+    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+    "categoryCode": "TA/TO",
     "applicantName": "Karma Sonam Lepcha",
     "gender": "Male",
     "dob": "14 Apr 1991",
@@ -2553,8 +2562,8 @@
               refNo: cApp.refNo,
               formConfig: (cApp.category === 'dealer' ? 'B' : (cApp.category === 'outdoor-photographer' ? 'C' : 'A')),
               category: cApp.category,
-              categoryName: cApp.categoryName || 'Tourism Registration',
-              categoryCode: (cApp.category === 'tour-operator' ? 'TO' : (cApp.category === 'travel-agent' ? 'TA' : (cApp.category === 'dealer' ? 'DLR' : 'PHO'))),
+              categoryName: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'Travel Agent / Tour Operator (TA/TO)' : (cApp.categoryName || 'Tourism Registration')),
+              categoryCode: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'TA/TO' : (cApp.category === 'dealer' ? 'DLR' : 'PHO')),
               applicantName: cApp.applicantName || 'Citizen Applicant',
               businessName: cApp.businessName || 'Tourism Enterprise',
               district: cApp.district || 'Gangtok',
@@ -2595,7 +2604,7 @@
     },
 
             getFeeStructure: function (category) {
-      return REGISTRATION_FEES[category] || REGISTRATION_FEES['tour-operator'];
+      return REGISTRATION_FEES[category] || REGISTRATION_FEES['ta-to'] || REGISTRATION_FEES['tour-operator'];
     },
 
     calculateFee: function (category, grade) {
@@ -2912,7 +2921,7 @@
       const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
       const dtoName = dtoOfficerNameOverride || distOffice.dtoName || 'Pema Dorjee Sherpa';
 
-      const feeStruct = REGISTRATION_FEES[app.category] || REGISTRATION_FEES['tour-operator'];
+      const feeStruct = REGISTRATION_FEES[app.category] || REGISTRATION_FEES['ta-to'] || REGISTRATION_FEES['tour-operator'];
       let selectedGrade = 'Not Applicable';
       let calculatedFee = 0;
 

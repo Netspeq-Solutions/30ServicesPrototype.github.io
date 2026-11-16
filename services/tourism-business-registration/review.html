@@ -231,7 +231,7 @@
               <!-- TAB 1: APPLICATION & BUSINESS DETAILS -->
               <div class="tab-pane fade show active" id="tab-details" role="tabpanel">
                 <div id="dynamicFormDetailsContainer">
-                  <!-- Populated dynamically via JS based on Form A / B / C -->
+                  <!-- Populated dynamically via JS based on Category -->
                 </div>
               </div>
 
@@ -440,7 +440,7 @@
             </div>
           </div>
 
-          <!-- Mandatory IA Officer Dropdown (for Tour Operator, Travel Agent, Dealer) -->
+          <!-- Mandatory IA Officer Dropdown (for Travel Agent / Tour Operator, Dealer) -->
           <div class="mb-3" id="toIaOfficerSelectionGroup">
             <label for="toSelectIaOfficer" class="form-label fw-bold text-dark">
               Select Inspecting Authority (IA Officer) <span class="text-danger">*</span>:
@@ -1343,7 +1343,7 @@
         document.getElementById('summaryLastUpdated').textContent = currentApp.lastUpdated || currentApp.submittedDate;
         document.getElementById('summaryDesk').textContent = `${currentApp.district} Circle Desk`;
 
-        // 3. Tab 1: Application Form Details (Form A, B, or C)
+        // 3. Tab 1: Application Form Details
         renderFormDetails();
 
         // 4. Tab 2: Supporting Documents Table
@@ -1396,13 +1396,13 @@
         return 'bg-primary text-white';
       }
 
-      // Render Dynamic Form Fields (Form A, B, C)
+      // Render Dynamic Form Fields
       function renderFormDetails() {
         const container = document.getElementById('dynamicFormDetailsContainer');
         const config = currentApp.formConfig || (currentApp.category === 'dealer' ? 'B' : (currentApp.category === 'outdoor-photographer' ? 'C' : 'A'));
 
         if (config === 'A') {
-          // Tour Operator & Travel Agent Form A
+          // Tour Operator & Travel Agent (TA/TO)
           const partnersHtml = (currentApp.partners && currentApp.partners.length > 0)
             ? currentApp.partners.map(p => `<div><strong>${p.name}</strong> (${p.role}) &bull; Aadhaar: ${p.aadhaar}</div>`).join('')
             : '<div><strong>Phurba Tshering Bhutia</strong> (Sole Proprietor)</div>';
@@ -1507,7 +1507,7 @@
             </div>
           `;
         } else if (config === 'B') {
-          // Dealer Form B
+          // Dealer (DLR)
           container.innerHTML = `
             <!-- 1. Dealer Applicant Details -->
             <div class="mb-4">
@@ -1585,7 +1585,7 @@
             </div>
           `;
         } else if (config === 'C') {
-          // Outdoor Photographer Form C
+          // Outdoor Photographer (PHO)
           container.innerHTML = `
             <!-- 1. Photographer Details -->
             <div class="mb-4">
@@ -2437,7 +2437,7 @@
 
       window.executeDtoActivatePayment = function () {
         const gradeSelect = document.getElementById('dtoSelectGrade');
-        const grade = (currentApp.category === 'tour-operator' || currentApp.category === 'travel-agent')
+        const grade = (currentApp.category === 'ta-to' || currentApp.category === 'tour-operator' || currentApp.category === 'travel-agent')
           ? (gradeSelect ? gradeSelect.value : 'Grade B')
           : 'Not Applicable';
 
