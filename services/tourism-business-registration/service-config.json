@@ -49,53 +49,36 @@
   ],
   "registrationTypes": [
     {
-      "id": "travel-agent",
-      "code": "TA",
-      "title": "Travel Agent Registration",
-      "shortTitle": "Travel Agent",
+      "id": "ta-to",
+      "code": "TA/TO",
+      "title": "Travel Agent / Tour Operator Registration (TA/TO)",
+      "shortTitle": "Travel Agent / Tour Operator",
       "categoryNumber": 1,
       "icon": "bi-compass",
-      "badge": "Agency Registration",
-      "description": "For applicants seeking official statutory registration to establish and operate as an authorized Travel Agent in Sikkim.",
-      "targetAudience": "Enterprises, partnership firms, and resident individual travel professionals.",
-      "eligibility": "Resident citizen or registered commercial entity in Sikkim with an established place of business, valid local trade license, and compliance with Tourism Department norms.",
+      "badge": "Inspection Mandatory",
+      "description": "Unified statutory single-window registration for operating as an authorized Travel Agent or Tour Operator in Sikkim, managing ticketing, passenger booking, guided tours, and tourist transport logistics.",
+      "targetAudience": "Commercial travel agencies, tour operating firms, partnership enterprises, and resident travel professionals.",
+      "eligibility": "Resident citizen or registered commercial entity in Sikkim with an established place of business, valid local municipal/GPU trade license, qualified personnel, and compliance with Tourism Department norms.",
       "documents": [
         "Certificate of Identification (COI) / Sikkim Subject Certificate / Aadhaar Card",
         "Valid Local Municipal / GPU Trade License",
         "Business Premises Ownership Proof or Registered Lease Agreement",
-        "PAN Card & GST Registration Certificate (where applicable)",
-        "Bank Account Statement / Solvency Certificate"
-      ],
-      "fee": "Subject to Departmental Notification*",
-      "timeline": "Pending Official Confirmation*"
-    },
-    {
-      "id": "tour-operator",
-      "code": "TO",
-      "title": "Tour Operator Registration",
-      "shortTitle": "Tour Operator",
-      "categoryNumber": 2,
-      "icon": "bi-geo-alt",
-      "badge": "Operations Registration",
-      "description": "For tourism enterprises and individuals seeking statutory registration to organize, conduct, and promote commercial tour packages across Sikkim.",
-      "targetAudience": "Tour operating firms, adventure tour organizers, and commercial package providers.",
-      "eligibility": "Operating agency in Sikkim possessing adequate operational infrastructure, qualified tour managers, approved itineraries, and vehicle/transport compliance.",
-      "documents": [
-        "Identity Credentials of Proprietor / Partners / Directors",
         "Firm Registration Certificate / Partnership Deed / Incorporation Certificate",
-        "Proof of Registered Office Address in Sikkim",
+        "PAN Card & GST Registration Certificate (where applicable)",
+        "Bank Account Statement / Solvency Certificate",
         "List of Qualified Tour Managers / Guides & Staff Credentials",
         "Details of Fleet / Transport Tie-ups & Comprehensive Itineraries"
       ],
-      "fee": "Subject to Departmental Notification*",
-      "timeline": "Pending Official Confirmation*"
+      "fee": "Grade-Based (₹1,500 – ₹20,000 / 3 Years)",
+      "timeline": "15 Working Days",
+      "requiresInspection": true
     },
     {
       "id": "dealer",
-      "code": "DL",
+      "code": "DLR",
       "title": "Dealer Registration",
       "shortTitle": "Dealer",
-      "categoryNumber": 3,
+      "categoryNumber": 2,
       "icon": "bi-shop",
       "badge": "Inspection Required",
       "description": "For businesses seeking statutory registration as an authorized Tourism Equipment, Handicraft, or Commercial Service Dealer under departmental requirements.",
@@ -109,16 +92,16 @@
         "Staff Details & Organization Constitution",
         "Premises Parking & Safety Compliance Undertaking"
       ],
-      "fee": "Subject to Departmental Notification*",
-      "timeline": "Pending Official Confirmation*",
+      "fee": "₹2,000 / 3 Years",
+      "timeline": "21 Working Days",
       "requiresInspection": true
     },
     {
       "id": "outdoor-photographer",
-      "code": "OP",
+      "code": "PHO",
       "title": "Outdoor Photographer Registration",
       "shortTitle": "Outdoor Photographer",
-      "categoryNumber": 4,
+      "categoryNumber": 3,
       "icon": "bi-camera",
       "badge": "Professional Registration",
       "description": "For professionals and cinematographers seeking statutory registration to provide outdoor photography and filming services in designated tourism zones.",
@@ -132,16 +115,16 @@
         "Professional Recommendation Letter",
         "Equipment Declaration & GST Registration (where applicable)"
       ],
-      "fee": "Subject to Departmental Notification*",
-      "timeline": "Pending Official Confirmation*",
+      "fee": "₹1,500 / 3 Years",
+      "timeline": "7 Working Days",
       "requiresInspection": false
     }
   ],
   "highlights": [
     {
       "icon": "bi-grid-fill",
-      "title": "Four Registration Types",
-      "description": "Distinct statutory paths for Travel Agents, Tour Operators, Dealers, and Photographers."
+      "title": "Three Registration Types",
+      "description": "Unified statutory paths for Travel Agents & Tour Operators (TA/TO), Dealers, and Photographers."
     },
     {
       "icon": "bi-laptop",
@@ -204,11 +187,11 @@
     },
     {
       "q": "Which registration types are available under this service?",
-      "a": "There are four distinct registration categories: (1) Travel Agent Registration, (2) Tour Operator Registration, (3) Dealer Registration, and (4) Outdoor Photographer Registration. Applicants must select the specific category applicable to their business or professional activity."
+      "a": "There are three distinct registration categories: (1) Travel Agent / Tour Operator Registration (TA/TO), (2) Dealer Registration, and (3) Outdoor Photographer Registration. Applicants must select the specific category applicable to their business or professional activity."
     },
     {
       "q": "How do I select the correct registration type?",
-      "a": "Review the category descriptions and prerequisites on this portal. If you arrange passenger tickets and travel itineraries, choose Travel Agent. If you conduct and organize guided group tours, choose Tour Operator. If you sell or rent trekking, mountaineering or adventure equipment, choose Dealer. If you provide commercial photography or cinematography services, choose Outdoor Photographer."
+      "a": "Review the category descriptions and prerequisites on this portal. If you arrange passenger tickets, travel itineraries, or conduct and organize guided group tours, choose Travel Agent / Tour Operator (TA/TO). If you sell or rent trekking, mountaineering or adventure equipment, choose Dealer. If you provide commercial photography or cinematography services, choose Outdoor Photographer."
     },
     {
       "q": "What documents are required to apply?",

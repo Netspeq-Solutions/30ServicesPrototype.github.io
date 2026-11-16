@@ -180,14 +180,13 @@
           <i class="bi bi-flask-fill me-1"></i> STAGE 03 FORM
         </span>
         <span class="fw-semibold text-white d-none d-sm-inline">Registration Type:</span>
-        <select id="quickCategorySelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px; font-size: 0.8rem;" onchange="switchApplicationType(this.value)">
-          <option value="tour-operator">Tour Operator (Form A)</option>
-          <option value="travel-agent">Travel Agent (Form A)</option>
-          <option value="dealer">Equipment Dealer (Form B)</option>
-          <option value="outdoor-photographer">Outdoor Photographer (Form C)</option>
+        <select id="quickCategorySelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 340px; font-size: 0.8rem;" onchange="switchApplicationType(this.value)">
+          <option value="ta-to">Travel Agent / Tour Operator (TA/TO)</option>
+          <option value="dealer">Equipment Dealer (DLR)</option>
+          <option value="outdoor-photographer">Outdoor Photographer (PHO)</option>
         </select>
         <span class="badge bg-primary-subtle text-white border border-secondary small d-none d-md-inline-block">
-          <i class="bi bi-file-earmark-code me-1"></i> Form Config: <strong id="formConfigLabel">Form A</strong>
+          <i class="bi bi-tag-fill me-1"></i> Category: <strong id="formConfigLabel">TA/TO</strong>
         </span>
       </div>
 
@@ -247,7 +246,7 @@
       <!-- Dynamic Form Stepper Container -->
       <div class="gov-stepper-container" id="stepperContainer" aria-label="Application Progress Stepper">
         <ul class="gov-stepper-list" id="formStepperList">
-          <!-- Populated dynamically via JS based on Form A / B / C -->
+          <!-- Populated dynamically via JS based on Category -->
         </ul>
       </div>
 
@@ -255,9 +254,9 @@
       <form id="tourismBusinessForm" novalidate onsubmit="return false;">
 
         <!-- ==============================================================
-             FORM A: TOUR OPERATOR / TRAVEL AGENT (Sections 1 to 4)
+             TOUR OPERATOR / TRAVEL AGENT (Sections 1 to 4)
              ============================================================== -->
-        <div id="formContainerA" class="form-config-container">
+        <div id="formContainerTaTo" class="form-config-container">
           
           <!-- STEP A1: APPLICANT DETAILS (11 fields) -->
           <section id="step-A-1" class="form-step-section">
@@ -474,7 +473,7 @@
                 <label for="fieldA_categoryApplied" class="form-label small fw-bold text-dark mb-1">
                   Category Applied For <span class="text-danger">*</span>
                 </label>
-                <input type="text" class="form-control form-control-sm bg-light" id="fieldA_categoryApplied" value="Tour Operator Registration" readonly>
+                <input type="text" class="form-control form-control-sm bg-light" id="fieldA_categoryApplied" value="Travel Agent / Tour Operator (TA/TO)" readonly>
               </div>
 
               <!-- Field 8: Association Affiliation -->
@@ -656,7 +655,7 @@
         </div>
 
         <!-- ==============================================================
-             FORM B: DEALER REGISTRATION (Sections 1 to 4)
+             DEALER REGISTRATION (Sections 1 to 4)
              ============================================================== -->
         <div id="formContainerB" class="form-config-container d-none">
           
@@ -664,7 +663,7 @@
           <section id="step-B-1" class="form-step-section">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 1 of 5 &bull; Form B</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 1 of 5</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Applicant &amp; Premises</h2>
               </div>
               <span class="text-muted small">All 7 fields are mandatory</span>
@@ -768,7 +767,7 @@
           <section id="step-B-2" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 2 of 5 &bull; Form B</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 2 of 5</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Ownership &amp; Constitution</h2>
               </div>
               <span class="text-muted small">Conditional fields adapt to business constitution</span>
@@ -836,7 +835,7 @@
           <section id="step-B-3" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 3 of 5 &bull; Form B</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 3 of 5</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Staff &amp; Business</h2>
               </div>
               <span class="text-muted small">Equipment Dealer commercial profile</span>
@@ -934,7 +933,7 @@
           <section id="step-B-4" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 4 of 5 &bull; Form B</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 4 of 5</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Premises &amp; Documents</h2>
               </div>
               <span class="text-muted small">Upload statutory trade licenses and clearances</span>
@@ -976,7 +975,7 @@
         </div>
 
         <!-- ==============================================================
-             FORM C: OUTDOOR PHOTOGRAPHER (Sections 1 to 3)
+             OUTDOOR PHOTOGRAPHER (Sections 1 to 3)
              ============================================================== -->
         <div id="formContainerC" class="form-config-container d-none">
           
@@ -984,7 +983,7 @@
           <section id="step-C-1" class="form-step-section">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 1 of 4 &bull; Form C</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 1 of 4</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Applicant Details</h2>
               </div>
               <span class="text-muted small">Personal &amp; Contact Particulars</span>
@@ -1098,7 +1097,7 @@
           <section id="step-C-2" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 2 of 4 &bull; Form C</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 2 of 4</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Qualification &amp; Experience</h2>
               </div>
               <span class="text-muted small">Photography credentials</span>
@@ -1169,7 +1168,7 @@
           <section id="step-C-3" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 3 of 4 &bull; Form C</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Step 3 of 4</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Documents</h2>
               </div>
               <span class="text-muted small">Supporting certifications &amp; proof</span>
@@ -1345,7 +1344,7 @@
       'use strict';
 
       // Global Form State
-      let activeType = 'tour-operator'; // 'tour-operator', 'travel-agent', 'dealer', 'outdoor-photographer'
+      let activeType = 'ta-to'; // 'ta-to', 'dealer', 'outdoor-photographer'
       let activeConfig = 'A'; // 'A', 'B', 'C'
       let currentStep = 1;
       let activeDraftId = '';
@@ -1446,7 +1445,8 @@
 
       function initFormRouting() {
         const urlParams = new URLSearchParams(window.location.search);
-        const typeParam = urlParams.get('type') || urlParams.get('category');
+        let typeParam = urlParams.get('type') || urlParams.get('category');
+        if (typeParam === 'tour-operator' || typeParam === 'travel-agent') typeParam = 'ta-to';
         if (typeParam) {
           activeType = typeParam;
         }
@@ -1477,12 +1477,15 @@
       }
 
       window.switchApplicationType = function (newType) {
+        if (newType === 'tour-operator' || newType === 'travel-agent') newType = 'ta-to';
         activeType = newType;
         applyCategoryConfiguration(newType);
       };
 
       function applyCategoryConfiguration(type) {
-        const formA = document.getElementById('formContainerA');
+        if (type === 'tour-operator' || type === 'travel-agent') type = 'ta-to';
+        activeType = type;
+        const formTaTo = document.getElementById('formContainerTaTo');
         const formB = document.getElementById('formContainerB');
         const formC = document.getElementById('formContainerC');
         const summarySec = document.getElementById('step-common-summary');
@@ -1491,38 +1494,33 @@
         summarySec.classList.add('d-none');
         ackSec.classList.add('d-none');
 
+        const catSelect = document.getElementById('quickCategorySelect');
+        if (catSelect) catSelect.value = type;
+
         let title = '';
         let config = 'A';
-        let code = 'TO';
+        let code = 'TA/TO';
 
-        if (type === 'tour-operator') {
-          title = 'Tour Operator Registration Application';
+        if (type === 'ta-to') {
+          title = 'Travel Agent / Tour Operator (TA/TO) Registration Application';
           config = 'A';
-          code = 'TO';
-          formA.classList.remove('d-none');
+          code = 'TA/TO';
+          formTaTo.classList.remove('d-none');
           formB.classList.add('d-none');
           formC.classList.add('d-none');
-          document.getElementById('fieldA_categoryApplied').value = 'Tour Operator Registration';
-        } else if (type === 'travel-agent') {
-          title = 'Travel Agent Registration Application';
-          config = 'A';
-          code = 'TA';
-          formA.classList.remove('d-none');
-          formB.classList.add('d-none');
-          formC.classList.add('d-none');
-          document.getElementById('fieldA_categoryApplied').value = 'Travel Agent Registration';
+          document.getElementById('fieldA_categoryApplied').value = 'Travel Agent / Tour Operator (TA/TO)';
         } else if (type === 'dealer') {
           title = 'Dealer Registration Application';
           config = 'B';
           code = 'DLR';
-          formA.classList.add('d-none');
+          formTaTo.classList.add('d-none');
           formB.classList.remove('d-none');
           formC.classList.add('d-none');
         } else if (type === 'outdoor-photographer') {
           title = 'Outdoor Photographer Registration Application';
           config = 'C';
           code = 'PHO';
-          formA.classList.add('d-none');
+          formTaTo.classList.add('d-none');
           formB.classList.add('d-none');
           formC.classList.remove('d-none');
         }
@@ -1530,7 +1528,7 @@
         activeConfig = config;
         document.getElementById('formHeaderTitle').textContent = title;
         document.getElementById('breadcrumbFormName').textContent = title;
-        document.getElementById('formConfigLabel').textContent = `Form ${config} (${code})`;
+        document.getElementById('formConfigLabel').textContent = code;
         document.getElementById('summaryCategoryBadge').textContent = title;
 
         renderStepper(config);
@@ -1616,7 +1614,7 @@
 
 
       // ------------------------------------------------------------------
-      // REPEATING SECTIONS: PARTNERS (FORM A)
+      // REPEATING SECTIONS: PARTNERS (TA/TO)
       // ------------------------------------------------------------------
       function renderPartnersA() {
         const container = document.getElementById('partnersContainerA');
@@ -1670,7 +1668,7 @@
       };
 
       // ------------------------------------------------------------------
-      // REPEATING SECTIONS: STAFF QUALIFICATION (FORM A)
+      // REPEATING SECTIONS: STAFF QUALIFICATION (TA/TO)
       // ------------------------------------------------------------------
       function renderStaffA() {
         const container = document.getElementById('staffContainerA');
@@ -1724,7 +1722,7 @@
       };
 
       // ------------------------------------------------------------------
-      // REPEATING SECTIONS: DETAILS OF EMPLOYED PERSONS (FORM B)
+      // REPEATING SECTIONS: DETAILS OF EMPLOYED PERSONS (DEALER)
       // ------------------------------------------------------------------
       function renderEmployeesB() {
         const container = document.getElementById('employeesContainerB');
@@ -1961,7 +1959,7 @@
 
         if (activeConfig === 'A') {
           html = `
-            <!-- Form A Summary -->
+            <!-- TA/TO Summary -->
             <div class="card border shadow-xs bg-white rounded-3 mb-3">
               <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
                 <strong class="text-dark"><i class="bi bi-person text-primary me-1"></i> 1. Applicant Details</strong>
@@ -2026,7 +2024,7 @@
           `;
         } else if (activeConfig === 'B') {
           html = `
-            <!-- Form B Summary -->
+            <!-- Dealer Summary -->
             <div class="card border shadow-xs bg-white rounded-3 mb-3">
               <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
                 <strong class="text-dark"><i class="bi bi-shop text-warning-emphasis me-1"></i> 1. Applicant &amp; Premises</strong>
@@ -2094,7 +2092,7 @@
           `;
         } else if (activeConfig === 'C') {
           html = `
-            <!-- Form C Summary -->
+            <!-- Outdoor Photographer Summary -->
             <div class="card border shadow-xs bg-white rounded-3 mb-3">
               <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
                 <strong class="text-dark"><i class="bi bi-person text-success me-1"></i> 1. Applicant Details</strong>
@@ -2147,15 +2145,12 @@
       // FINAL SUBMISSION EXECUTION
       // ------------------------------------------------------------------
       window.executeFinalSubmission = function () {
-        let code = 'TO';
+        let code = 'TATO';
         let entName = 'Registered Entity';
 
-        if (activeType === 'tour-operator') {
-          code = 'TO';
-          entName = document.getElementById('fieldA_firmName').value || document.getElementById('fieldA_applicantName').value || 'Sikkim Tour Operator';
-        } else if (activeType === 'travel-agent') {
-          code = 'TA';
-          entName = document.getElementById('fieldA_firmName').value || document.getElementById('fieldA_applicantName').value || 'Sikkim Travel Desk';
+        if (activeType === 'ta-to' || activeType === 'tour-operator' || activeType === 'travel-agent') {
+          code = 'TATO';
+          entName = document.getElementById('fieldA_firmName').value || document.getElementById('fieldA_applicantName').value || 'Sikkim Travel Agent / Tour Operator';
         } else if (activeType === 'dealer') {
           code = 'DLR';
           entName = document.getElementById('fieldB_premisesName').value || document.getElementById('fieldB_proprietor').value || 'Outdoor Equipment Hub';

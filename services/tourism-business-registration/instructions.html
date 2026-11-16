@@ -249,63 +249,32 @@
           </span>
         </div>
 
-        <!-- 4 Interactive Selection Cards -->
-        <div class="row row-cols-1 row-cols-md-2 g-3 mb-3">
+        <!-- 3 Interactive Selection Cards (Merged TA/TO) -->
+        <div class="row row-cols-1 row-cols-md-3 g-3 mb-3">
 
-          <!-- Card 1: Travel Agent (Form A) -->
+          <!-- Card 1: Travel Agent / Tour Operator (TA/TO) -->
           <div class="col">
-            <div class="category-select-card h-100 d-flex flex-column" id="card-travel-agent"
-              onclick="selectCategory('travel-agent')">
+            <div class="category-select-card d-flex flex-column h-100" id="card-ta-to"
+              onclick="selectCategory('ta-to')">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <div class="d-flex align-items-center gap-2">
-                  <input class="form-check-input mt-0" type="radio" name="appCategoryChoice" id="radio-travel-agent"
-                    value="travel-agent">
-                  <label class="form-check-label fw-bold text-dark fs-6" for="radio-travel-agent">
-                    Travel Agent Registration (TA)
+                  <input class="form-check-input mt-0" type="radio" name="appCategoryChoice" id="radio-ta-to"
+                    value="ta-to">
+                  <label class="form-check-label fw-bold text-dark fs-6" for="radio-ta-to">
+                    Travel Agent / Tour Operator (TA/TO)
                   </label>
                 </div>
-                <span class="form-badge-pill bg-primary text-white">Form A</span>
+                <span class="form-badge-pill bg-primary text-white">TA/TO</span>
               </div>
-              <p class="text-muted small mb-3 flex-grow-1" style="font-size: 0.8rem;">
-                For passenger ticketing desks, ground travel agencies, and booking operators in Sikkim.
+              <p class="text-muted small mb-0 flex-grow-1" style="font-size: 0.8rem;">
+                Unified registration for passenger ticketing desks, travel agencies, tour packages, guided expeditions, logistics, and fleet transport tie-ups in Sikkim.
               </p>
-              <div class="d-flex justify-content-between align-items-center pt-2 border-top small">
-                <span class="fee-badge bg-primary-subtle text-primary">&#8377;3,000 / 3 Years</span>
-                <span class="text-muted" style="font-size: 0.725rem;"><i class="bi bi-clock me-1"></i>SLA: 15 Working
-                  Days</span>
-              </div>
             </div>
           </div>
 
-          <!-- Card 2: Tour Operator (Form A) -->
+          <!-- Card 2: Dealer (DLR) -->
           <div class="col">
-            <div class="category-select-card h-100 d-flex flex-column" id="card-tour-operator"
-              onclick="selectCategory('tour-operator')">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div class="d-flex align-items-center gap-2">
-                  <input class="form-check-input mt-0" type="radio" name="appCategoryChoice" id="radio-tour-operator"
-                    value="tour-operator">
-                  <label class="form-check-label fw-bold text-dark fs-6" for="radio-tour-operator">
-                    Tour Operator Registration (TO)
-                  </label>
-                </div>
-                <span class="form-badge-pill bg-primary text-white">Form A</span>
-              </div>
-              <p class="text-muted small mb-3 flex-grow-1" style="font-size: 0.8rem;">
-                For packaged itineraries, guided expeditions, logistics, and fleet transport tie-ups.
-              </p>
-              <div class="d-flex justify-content-between align-items-center pt-2 border-top small">
-                <span class="fee-badge bg-info-subtle text-info">&#8377;5,000 / 3 Years</span>
-                <span class="text-muted" style="font-size: 0.725rem;"><i class="bi bi-clock me-1"></i>SLA: 15 Working
-                  Days</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3: Dealer (Form B) -->
-          <div class="col">
-            <div class="category-select-card h-100 d-flex flex-column" id="card-dealer"
-              onclick="selectCategory('dealer')">
+            <div class="category-select-card d-flex flex-column h-100" id="card-dealer" onclick="selectCategory('dealer')">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <div class="d-flex align-items-center gap-2">
                   <input class="form-check-input mt-0" type="radio" name="appCategoryChoice" id="radio-dealer"
@@ -314,23 +283,17 @@
                     Equipment Dealer Registration (DLR)
                   </label>
                 </div>
-                <span class="form-badge-pill bg-warning text-dark">Form B</span>
+                <span class="form-badge-pill bg-warning text-dark">DLR</span>
               </div>
-              <p class="text-muted small mb-3 flex-grow-1" style="font-size: 0.8rem;">
-                Retailers of mountaineering, trekking gear &amp; outdoor equipment. <strong>Mandatory Level 1 IA on-site
-                  inspection.</strong>
+              <p class="text-muted small mb-0 flex-grow-1" style="font-size: 0.8rem;">
+                Retailers of mountaineering, trekking gear &amp; outdoor equipment. <strong>Mandatory Level 1 IA on-site inspection.</strong>
               </p>
-              <div class="d-flex justify-content-between align-items-center pt-2 border-top small">
-                <span class="fee-badge bg-warning-subtle text-warning-emphasis">&#8377;5,000 / 3 Years</span>
-                <span class="text-muted" style="font-size: 0.725rem;"><i class="bi bi-clock me-1"></i>SLA: 21 Working
-                  Days</span>
-              </div>
             </div>
           </div>
 
-          <!-- Card 4: Outdoor Photographer (Form C) -->
+          <!-- Card 3: Outdoor Photographer (PHO) -->
           <div class="col">
-            <div class="category-select-card h-100 d-flex flex-column" id="card-outdoor-photographer"
+            <div class="category-select-card d-flex flex-column h-100" id="card-outdoor-photographer"
               onclick="selectCategory('outdoor-photographer')">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <div class="d-flex align-items-center gap-2">
@@ -340,39 +303,17 @@
                     Outdoor Photographer Registration (PHO)
                   </label>
                 </div>
-                <span class="form-badge-pill bg-success text-white">Form C</span>
+                <span class="form-badge-pill bg-success text-white">PHO</span>
               </div>
-              <p class="text-muted small mb-3 flex-grow-1" style="font-size: 0.8rem;">
+              <p class="text-muted small mb-0 flex-grow-1" style="font-size: 0.8rem;">
                 For commercial landscape, aerial drone, and expedition photographers operating in Sikkim.
               </p>
-              <div class="d-flex justify-content-between align-items-center pt-2 border-top small">
-                <span class="fee-badge bg-success-subtle text-success">&#8377;1,000 / 3 Years</span>
-                <span class="text-muted" style="font-size: 0.725rem;"><i class="bi bi-clock me-1"></i>SLA: 7 Working
-                  Days</span>
-              </div>
             </div>
           </div>
 
         </div>
 
-        <!-- Dynamic Category Configuration Summary Banner -->
-        <div class="instruction-detail-box d-flex align-items-center justify-content-between flex-wrap gap-2"
-          id="categorySummaryBanner">
-          <div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="badge bg-primary text-white" id="dynFormBadge">Form A</span>
-              <strong class="text-dark" id="dynCategoryTitle">Tour Operator Registration</strong>
-            </div>
-            <div class="small text-muted mt-1" id="dynCategoryDesc">
-              Form A: 4 Steps (11 Applicant Details, 15 Organisation &amp; Activities, Staff Qualifications, 13
-              Documents).
-            </div>
-          </div>
-          <div class="text-end">
-            <span class="fw-bold text-dark" id="dynFeeSchedule">&#8377;5,000 / 3 Years</span>
-            <div class="text-muted small" id="dynSlaSchedule">SLA: 15 Working Days</div>
-          </div>
-        </div>
+
       </div>
 
       <!-- Instructions Section B: Dynamic Prerequisites & Mandatory Documents Checklist -->
@@ -384,12 +325,11 @@
           </div>
           <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small"
             id="dynPrereqBadge">
-            Customized for Tour Operator (Form A)
+            Customized for Travel Agent / Tour Operator (TA/TO)
           </span>
         </div>
         <p class="text-muted small mb-3">
-          Before initiating your application in Form <span id="dynFormLetter">A</span>, verify that all applicable
-          documents and infrastructure meet the statutory requirements:
+          Before initiating your application, verify that all applicable documents and infrastructure meet the statutory requirements:
         </p>
 
         <!-- Dynamic Content Area populated via JavaScript -->
@@ -460,7 +400,7 @@
         <a href="apply.html?type=tour-operator"
           class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs disabled"
           id="btnAgreeProceed">
-          <span id="btnAgreeProceedLabel">Agree and Proceed to Form A (Tour Operator)</span>
+          <span id="btnAgreeProceedLabel">Agree and Proceed to Application</span>
           <i class="bi bi-arrow-right"></i>
         </a>
       </div>
@@ -531,27 +471,28 @@
       'use strict';
 
       const CATEGORIES_CONFIG = {
-        'tour-operator': {
-          form: 'Form A',
-          title: 'Tour Operator Registration (TO)',
-          shortTitle: 'Tour Operator',
+        'ta-to': {
+          form: 'Application',
+          title: 'Travel Agent / Tour Operator Registration (TA/TO)',
+          shortTitle: 'Travel Agent / Tour Operator',
           badgeClass: 'bg-primary text-white',
-          fee: '₹5,000 / 3 Years',
+          fee: 'Grade-Based (₹1,500 – ₹20,000 / 3 Years)',
           sla: '15 Working Days',
-          formLetter: 'A',
-          desc: 'Form A: 4 Steps (11 Applicant Details, 15 Organisation & Activity fields, repeating Staff Qualifications, 13 Statutory Documents).',
-          prereqBadge: 'Customized for Tour Operator (Form A)',
-          workflowBadge: 'Standard 2-Tier Path',
+          formLetter: 'TA/TO',
+          desc: '4 Steps (11 Applicant Details, 15 Organisation & Activity fields, repeating Staff Qualifications, 13 Statutory Documents).',
+          prereqBadge: 'Customized for Travel Agent / Tour Operator (TA/TO)',
+          workflowBadge: '3-Tier Path with Level 1 IA Physical Inspection',
           isDealer: false,
           prereqHTML: `
             <div class="row g-3">
               <div class="col-md-6">
                 <div class="border rounded p-3 bg-white h-100">
-                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-card-checklist text-primary me-1"></i> Form A Prerequisite Checklist</h6>
+                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-card-checklist text-primary me-1"></i> Statutory Prerequisite Checklist</h6>
                   <ul class="list-unstyled small mb-0 d-flex flex-column gap-2 text-secondary">
                     <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Valid Municipal / GPU Trade License registered in Sikkim</li>
                     <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Registered Head Office / Branch premises within Sikkim</li>
                     <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Certified Tour Guide / Manager credentials on staff</li>
+                    <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Dedicated passenger ticketing desk / workstation with high-speed internet</li>
                     <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Fleet affiliation or transport logistics tie-up agreements</li>
                     <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Commercial enterprise liability &amp; guest accident insurance</li>
                   </ul>
@@ -579,90 +520,35 @@
               </div>
             </div>`,
           workflowHTML: `
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Verification</div>
-                <p class="text-muted mb-0" style="font-size: 0.775rem;">The Tourism Officer verifies trade licenses, office premises documents, staff qualifications, and operational activity profiles.</p>
+                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: TO Verification</div>
+                <p class="text-muted mb-0" style="font-size: 0.775rem;">Tourism Officer verifies trade licenses, office premises documents, staff qualifications, and operational activity profiles.</p>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-success mb-1"><i class="bi bi-2-circle-fill me-1"></i> Level 2: District Tourism Officer (DTO) Sanction</div>
-                <p class="text-muted mb-0" style="font-size: 0.775rem;">The DTO evaluates the vetted dossier, approves statutory registration, and issues the 3-Year Digitally Signed Tour Operator Certificate.</p>
-              </div>
-            </div>`
-        },
-        'travel-agent': {
-          form: 'Form A',
-          title: 'Travel Agent Registration (TA)',
-          shortTitle: 'Travel Agent',
-          badgeClass: 'bg-primary text-white',
-          fee: '₹3,000 / 3 Years',
-          sla: '15 Working Days',
-          formLetter: 'A',
-          desc: 'Form A: 4 Steps (11 Applicant Details, 15 Organisation & Activity fields, repeating Staff Qualifications, 13 Statutory Documents).',
-          prereqBadge: 'Customized for Travel Agent (Form A)',
-          workflowBadge: 'Standard 2-Tier Path',
-          isDealer: false,
-          prereqHTML: `
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="border rounded p-3 bg-white h-100">
-                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-card-checklist text-primary me-1"></i> Form A Prerequisite Checklist</h6>
-                  <ul class="list-unstyled small mb-0 d-flex flex-column gap-2 text-secondary">
-                    <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Valid Municipal / GPU Local Trade License for ticketing &amp; travel desk</li>
-                    <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Office Tenancy Agreement or Ownership Deed in Sikkim</li>
-                    <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Certificate of Identification (COI) / Domicile / RC / Aadhaar</li>
-                    <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Partnership Deed / GST Registration / MSME Udyam (if applicable)</li>
-                    <li><i class="bi bi-check-circle-fill text-success me-1.5"></i> Dedicated passenger ticketing workstation with high-speed internet</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="border rounded p-3 bg-white h-100">
-                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-file-earmark-arrow-up text-primary me-1"></i> 13 Mandatory Statutory Uploads</h6>
-                  <div class="d-flex flex-wrap gap-1.5 small">
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Passport Photo</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>COI / Domicile / RC</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Applicant Training Cert</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Employee Certs</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Class 10 Attested</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Ward/GPU NOC</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>MOA / Society Deed</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Oath Affidavit</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>GST Clearance</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Aadhaar Card</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Promoter ID Proof</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>PAN Card</span>
-                    <span class="badge bg-light text-dark border"><i class="bi bi-file-image me-1"></i>Office Premises Photos</span>
-                  </div>
-                </div>
-              </div>
-            </div>`,
-          workflowHTML: `
-            <div class="col-md-6">
-              <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-primary mb-1"><i class="bi bi-1-circle-fill me-1"></i> Level 0: Tourism Officer (TO) Verification</div>
-                <p class="text-muted mb-0" style="font-size: 0.775rem;">The Tourism Officer conducts preliminary verification of local trade license, office location, staff qualifications, and travel arrangements.</p>
+                <div class="fw-bold text-warning-emphasis mb-1"><i class="bi bi-2-circle-fill me-1"></i> Level 1: IA Physical Inspection</div>
+                <p class="text-muted mb-0" style="font-size: 0.775rem;">Inspecting Authority conducts on-site premises inspection, verifies infrastructure, and uploads the inspection report.</p>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="p-3 rounded border bg-light small h-100">
-                <div class="fw-bold text-success mb-1"><i class="bi bi-2-circle-fill me-1"></i> Level 2: District Tourism Officer (DTO) Sanction</div>
-                <p class="text-muted mb-0" style="font-size: 0.775rem;">The DTO evaluates the dossier and issues the 3-Year Digitally Signed Travel Agent Certificate for Sikkim.</p>
+                <div class="fw-bold text-success mb-1"><i class="bi bi-3-circle-fill me-1"></i> Level 2: DTO Sanction</div>
+                <p class="text-muted mb-0" style="font-size: 0.775rem;">District Tourism Officer reviews the verified dossier, assigns grade & activates fee, and issues the 3-Year Registration Certificate.</p>
               </div>
             </div>`
         },
         'dealer': {
-          form: 'Form B',
+          form: 'Application',
           title: 'Equipment Dealer Registration (DLR)',
           shortTitle: 'Equipment Dealer',
           badgeClass: 'bg-warning text-dark',
-          fee: '₹5,000 / 3 Years',
+          fee: '₹2,000 / 3 Years',
           sla: '21 Working Days',
-          formLetter: 'B',
-          desc: 'Form B: 4 Steps (7 Applicant & Premises, 4 Ownership & Constitution with conditional Father\'s Name/Partners, 6 Staff & Business with repeating Employees, 10 Premises & Statutory Documents with mandatory on-site inspection).',
-          prereqBadge: 'Customized for Equipment Dealer (Form B)',
+          formLetter: 'DLR',
+          desc: '4 Steps (7 Applicant & Premises, 4 Ownership & Constitution with conditional Father\'s Name/Partners, 6 Staff & Business with repeating Employees, 10 Premises & Statutory Documents with mandatory on-site inspection).',
+          prereqBadge: 'Customized for Equipment Dealer (DLR)',
           workflowBadge: '3-Tier Path with Mandatory IA Inspection',
           isDealer: true,
           prereqHTML: `
@@ -681,7 +567,7 @@
               </div>
               <div class="col-md-6">
                 <div class="border rounded p-3 bg-white h-100">
-                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-file-earmark-check text-primary me-1"></i> 10 Form B Statutory Clearances</h6>
+                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-file-earmark-check text-primary me-1"></i> 10 Statutory Clearances</h6>
                   <div class="d-flex flex-wrap gap-1.5 small mb-2">
                     <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>SSC / COI / RC</span>
                     <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Occupancy / Lease Deed</span>
@@ -721,15 +607,15 @@
             </div>`
         },
         'outdoor-photographer': {
-          form: 'Form C',
+          form: 'Application',
           title: 'Outdoor Photographer Registration (PHO)',
           shortTitle: 'Outdoor Photographer',
           badgeClass: 'bg-success text-white',
-          fee: '₹1,000 / 3 Years',
+          fee: '₹1,500 / 3 Years',
           sla: '7 Working Days',
-          formLetter: 'C',
-          desc: 'Form C: 3 Steps (9 Applicant Details with "Same as Residential Address" sync, 5 Qualification & Experience fields including Certificate copy upload, and 6 Statutory Documents).',
-          prereqBadge: 'Customized for Outdoor Photographer (Form C)',
+          formLetter: 'PHO',
+          desc: '3 Steps (9 Applicant Details with "Same as Residential Address" sync, 5 Qualification & Experience fields including Certificate copy upload, and 6 Statutory Documents).',
+          prereqBadge: 'Customized for Outdoor Photographer (PHO)',
           workflowBadge: 'Fast-Track 2-Tier Path (7 Days)',
           isDealer: false,
           prereqHTML: `
@@ -748,7 +634,7 @@
               </div>
               <div class="col-md-6">
                 <div class="border rounded p-3 bg-white h-100">
-                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-file-earmark-arrow-up text-success me-1"></i> 6 Form C Statutory Documents</h6>
+                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-file-earmark-arrow-up text-success me-1"></i> 6 Statutory Documents</h6>
                   <div class="d-flex flex-wrap gap-1.5 small mb-2">
                     <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Sikkim Subject / COI</span>
                     <span class="badge bg-light text-dark border"><i class="bi bi-file-pdf me-1"></i>Min. Class X Certificate</span>
@@ -779,12 +665,17 @@
         }
       };
 
-      var activeCategory = 'tour-operator';
+      // Backward-compatibility aliases
+      CATEGORIES_CONFIG['tour-operator'] = CATEGORIES_CONFIG['ta-to'];
+      CATEGORIES_CONFIG['travel-agent'] = CATEGORIES_CONFIG['ta-to'];
+
+      var activeCategory = 'ta-to';
 
       function selectCategory(catKey) {
         // also attach to window
         window.selectCategory = selectCategory;
-        if (!CATEGORIES_CONFIG[catKey]) catKey = 'tour-operator';
+        if (catKey === 'tour-operator' || catKey === 'travel-agent') catKey = 'ta-to';
+        if (!CATEGORIES_CONFIG[catKey]) catKey = 'ta-to';
         activeCategory = catKey;
         const cfg = CATEGORIES_CONFIG[catKey];
 
@@ -856,7 +747,7 @@
           btnAgreeProceed.href = 'apply.html?type=' + encodeURIComponent(catKey);
         }
         if (btnAgreeProceedLabel) {
-          btnAgreeProceedLabel.textContent = 'Agree and Proceed to ' + cfg.form + ' (' + cfg.shortTitle + ')';
+          btnAgreeProceedLabel.textContent = 'Agree and Proceed to Application (' + cfg.shortTitle + ')';
         }
 
         // 7. Update URL query without full reload
@@ -870,8 +761,9 @@
       // Initialize based on URL parameter or default
       function initInstructions() {
         var urlParams = new URLSearchParams(window.location.search);
-        var initialType = urlParams.get('type') || urlParams.get('category') || 'tour-operator';
-        if (!CATEGORIES_CONFIG[initialType]) initialType = 'tour-operator';
+        var initialType = urlParams.get('type') || urlParams.get('category') || 'ta-to';
+        if (initialType === 'tour-operator' || initialType === 'travel-agent') initialType = 'ta-to';
+        if (!CATEGORIES_CONFIG[initialType]) initialType = 'ta-to';
         selectCategory(initialType);
 
         // Checkbox agreement handling

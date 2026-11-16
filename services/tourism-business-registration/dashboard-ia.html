@@ -390,11 +390,10 @@
                 <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
                 <input type="text" id="iaSearchInput" class="form-control form-control-sm border-start-0" placeholder="Search ID or Shop...">
               </div>
-              <select id="iaCategoryFilter" class="form-select form-select-sm" style="max-width: 200px;">
+              <select id="iaCategoryFilter" class="form-select form-select-sm" style="max-width: 260px;">
                 <option value="ALL" selected>All Categories</option>
+                <option value="ta-to">Travel Agent / Tour Operator (TA/TO)</option>
                 <option value="dealer">Equipment Dealer (Mandatory)</option>
-                <option value="travel-agent">Travel Agent</option>
-                <option value="tour-operator">Tour Operator</option>
                 <option value="outdoor-photographer">Outdoor Photographer</option>
               </select>
             </div>
@@ -571,7 +570,11 @@
         const catFilterEl = document.getElementById('iaCategoryFilter');
         const catFilter = catFilterEl ? (catFilterEl.value || '').trim() : '';
         if (catFilter && catFilter.toUpperCase() !== 'ALL') {
-          apps = apps.filter(a => (a.category || '').toLowerCase() === catFilter.toLowerCase());
+          if (catFilter === 'ta-to') {
+            apps = apps.filter(a => ['ta-to', 'tour-operator', 'travel-agent'].includes((a.category || '').toLowerCase()));
+          } else {
+            apps = apps.filter(a => (a.category || '').toLowerCase() === catFilter.toLowerCase());
+          }
         }
 
         // Search text (safe against null)

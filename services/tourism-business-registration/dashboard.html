@@ -506,7 +506,7 @@
                 <div>
                   <h3 class="h5 fw-bold text-dark mb-1">Apply for New Registration</h3>
                   <p class="text-muted small mb-0" style="max-width: 620px;">
-                    Start a new statutory registration for Travel Agents, Tour Operators, Equipment Dealers, or Outdoor Photographers across Sikkim.
+                    Start a new statutory registration for Travel Agents / Tour Operators (TA/TO), Equipment Dealers, or Outdoor Photographers across Sikkim.
                   </p>
                 </div>
               </div>
@@ -649,14 +649,10 @@
               </div>
               <div class="col-md-3">
                 <select class="form-select form-select-sm" id="appCategoryFilter">
-                  <option value="all">All Categories (7 Types)</option>
-                  <option value="Trekking">Trekking</option>
-                  <option value="Expedition">Expedition</option>
-                  <option value="Events, Fairs, Melas, Rallies and Marathons">Events, Fairs &amp; Marathons</option>
-                  <option value="Drone">Drone Operations</option>
-                  <option value="Adventure Activities">Adventure Activities</option>
-                  <option value="Satellite Phone Usage Permission">Satellite Phone Usage Permission</option>
-                  <option value="Any Other">Any Other</option>
+                  <option value="all">All Categories (3 Types)</option>
+                  <option value="ta-to">Travel Agent / Tour Operator (TA/TO)</option>
+                  <option value="dealer">Equipment Dealer</option>
+                  <option value="outdoor-photographer">Outdoor Photographer</option>
                 </select>
               </div>
               <div class="col-md-3">
@@ -860,54 +856,41 @@
           </div>
 
           <div class="row g-3 mb-4">
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-4">
               <div class="p-3 rounded border bg-light h-100">
-                <span class="badge bg-primary-subtle text-primary mb-2">Category 1 &bull; TA</span>
-                <h3 class="h6 fw-bold text-dark mb-1">Travel Agent</h3>
-                <div class="fw-bold text-primary mb-2">&#8377;3,000 / 3 Years</div>
+                <span class="badge bg-primary-subtle text-primary mb-2">Category 1 &bull; TA/TO</span>
+                <h3 class="h6 fw-bold text-dark mb-1">Travel Agent / Tour Operator</h3>
+                <div class="fw-bold text-primary mb-2">&#8377;1,500 – &#8377;20,000 / 3 Years</div>
                 <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
-                  <li>Valid Municipal Trade License</li>
-                  <li>Commercial premises proof in Sikkim</li>
-                  <li>COI / Aadhaar of proprietor</li>
+                  <li>Valid Municipal Trade License &amp; Commercial premises</li>
+                  <li>Grade A (&#8377;20k), B (&#8377;7k), C (&#8377;5k), D (&#8377;1.5k)</li>
+                  <li><strong>3-Tier Workflow: TO &rarr; IA &rarr; TO &rarr; DTO</strong></li>
                   <li>SLA: 15 Working Days</li>
                 </ul>
               </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-4">
               <div class="p-3 rounded border bg-light h-100">
-                <span class="badge bg-info-subtle text-info mb-2">Category 2 &bull; TO</span>
-                <h3 class="h6 fw-bold text-dark mb-1">Tour Operator</h3>
-                <div class="fw-bold text-info mb-2">&#8377;5,000 / 3 Years</div>
-                <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
-                  <li>Head office / Branch in Sikkim</li>
-                  <li>Certified Tour Guide / Manager</li>
-                  <li>Fleet tie-up agreements</li>
-                  <li>SLA: 15 Working Days</li>
-                </ul>
-              </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-              <div class="p-3 rounded border bg-light h-100">
-                <span class="badge bg-warning-subtle text-warning-emphasis mb-2">Category 3 &bull; DLR</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis mb-2">Category 2 &bull; DLR</span>
                 <h3 class="h6 fw-bold text-dark mb-1">Equipment Dealer</h3>
-                <div class="fw-bold text-warning-emphasis mb-2">&#8377;5,000 / 3 Years</div>
+                <div class="fw-bold text-warning-emphasis mb-2">&#8377;2,000 / 3 Years</div>
                 <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
-                  <li>Physical shop &gt;= 200 sq.ft</li>
-                  <li>UIAA safety gear standards</li>
+                  <li>Physical commercial premises &ge; 200 sq.ft</li>
+                  <li>Certified equipment inventory &amp; storage</li>
                   <li><strong>Level 1 IA On-Site Inspection</strong></li>
                   <li>SLA: 21 Working Days</li>
                 </ul>
               </div>
             </div>
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-4">
               <div class="p-3 rounded border bg-light h-100">
-                <span class="badge bg-success-subtle text-success mb-2">Category 4 &bull; PHO</span>
+                <span class="badge bg-success-subtle text-success mb-2">Category 3 &bull; PHO</span>
                 <h3 class="h6 fw-bold text-dark mb-1">Outdoor Photographer</h3>
-                <div class="fw-bold text-success mb-2">&#8377;1,000 / 3 Years</div>
+                <div class="fw-bold text-success mb-2">&#8377;1,500 / 3 Years</div>
                 <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
-                  <li>Min Class X pass certificate</li>
-                  <li>Portfolio of Sikkim outdoor work</li>
-                  <li>Association recommendation</li>
+                  <li>Class X pass certificate &amp; ID Proof</li>
+                  <li>Portfolio of Sikkim outdoor work &amp; camera serial</li>
+                  <li>Direct 2-tier approval (TO &rarr; DTO)</li>
                   <li>SLA: 7 Working Days</li>
                 </ul>
               </div>
@@ -1977,7 +1960,8 @@
               app.refNo.toLowerCase().includes(query) ||
               app.activityTitle.toLowerCase().includes(query) ||
               (app.category && app.category.toLowerCase().includes(query));
-            const matchesCategory = (category === 'all' || app.category === category);
+            const matchesCategory = (category === 'all' || 
+              (category === 'ta-to' ? ['ta-to', 'tour-operator', 'travel-agent'].includes(app.category) : app.category === category));
             const matchesStatus = (status === 'all' || app.status === status);
             return matchesQuery && matchesCategory && matchesStatus;
           });
