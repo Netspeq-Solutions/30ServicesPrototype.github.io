@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Offline Payment Challan | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal" class="gr-doc-page">
+  <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
+  <div class="gr-no-print bg-white border-bottom py-2 mb-3">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <a href="#" class="btn btn-sm btn-outline-secondary" id="btnBack"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back</a>
+      <button type="button" class="btn btn-sm btn-primary" onclick="window.print()"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Challan</button>
+    </div>
+  </div>
+  <main id="main-content" tabindex="-1" class="pb-4 px-2"><div id="docRoot"></div></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-docs.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr, Docs = window.GRDocs;
+      Docs.backButton();
+      var root = document.getElementById('docRoot');
+      var no = App.qs('no');
+      var c = D.challans.filter(function (x) { return x.challanNo === no; })[0];
+      if (!c) { root.innerHTML = '<div class="gr-doc"><div class="alert alert-warning mb-0">Challan ' + esc(no || '') + ' was not found.</div></div>'; return; }
+      // Expire challans whose validity date has passed (demo date based).
+      if (c.status === 'Generated' && c.validTill < D.demoToday) { c.status = 'Expired'; App.save(); }
+      var s = App.site(c.grId);
+      var u = App.ulb(s.ulb);
+      var bank = D.config.lists.banks[0];
+      var lines = c.snapshot && c.snapshot.lines ? c.snapshot.lines : [{ label: 'Ground rent dues as on ' + App.fmtDate(c.generatedOn), amount: c.amount }];
+      var inactive = c.status !== 'Generated' && c.status !== 'BR Recorded';
+
+      root.innerHTML = '<article class="gr-doc" aria-label="Offline payment challan ' + esc(c.challanNo) + '">' +
+        (inactive && c.status !== 'Verified' ? '<div class="gr-doc-watermark" aria-hidden="true">' + esc(c.status.toUpperCase()) + '</div>' : '') +
+        Docs.header('Offline Payment Acknowledgement / Challan') +
+        '<div class="d-flex justify-content-between flex-wrap gap-2 mb-2"><span>Status: ' + App.challanPill(c) + '</span><span class="fw-bold text-danger">Valid till ' + App.fmtDate(c.validTill) + '</span></div>' +
+        '<div class="row g-3 mb-3"><div class="col-sm-8"><table class="table table-sm table-borderless mb-0"><tbody>' +
+          Docs.row('Challan No.', '<span class="font-monospace fw-bold">' + esc(c.challanNo) + '</span>') +
+          Docs.row('Generated on', App.fmtDate(c.generatedOn)) +
+          Docs.row('GR ID', '<span class="gr-gr-id">' + esc(s.grId) + '</span>') +
+          Docs.row('Allottee(s)', s.owners.map(function (o) { return esc(o.name) + ' ' + esc(o.relation) + ' ' + esc(o.guardian); }).join('<br>')) +
+          Docs.row('Site', esc(s.address) + ' &bull; ' + esc(s.locality) + ' &bull; ' + esc(u.name)) +
+        '</tbody></table></div>' +
+        '<div class="col-sm-4 text-center"><div class="gr-qr mx-auto" id="qr"></div><div class="small text-muted mt-1">Staff scan this at the counter</div></div></div>' +
+        '<h2 class="h6 fw-bold">Amount to pay</h2>' +
+        '<table class="table table-sm table-bordered"><thead class="table-light"><tr><th scope="col">Particulars</th><th scope="col" class="text-end">Amount</th></tr></thead><tbody>' +
+          lines.map(function (l) { return '<tr><td>' + esc(l.label) + '</td><td class="text-end">' + inr(l.amount) + '</td></tr>'; }).join('') +
+        '</tbody><tfoot><tr><th scope="row" class="text-end">Total (pay this exact amount)</th><td class="text-end fw-bold fs-6">' + inr(c.amount) + '</td></tr></tfoot></table>' +
+        '<p class="mb-3"><strong>In words:</strong> ' + esc(Docs.words(c.amount)) + ' only</p>' +
+        '<div class="row g-3 mb-3"><div class="col-md-6"><div class="border rounded p-3 h-100"><h2 class="h6 fw-bold">Pay at</h2>' +
+          '<div>' + esc(bank.name) + '</div><div class="small text-muted">' + esc(bank.branch) + '</div>' +
+          '<div class="small mt-2">Account name: Urban Development Department, Govt. of Sikkim<br>Account no. / IFSC: <em>pending departmental confirmation (Q8)</em></div></div></div>' +
+        '<div class="col-md-6"><div class="border rounded p-3 h-100"><h2 class="h6 fw-bold">What to do</h2><ol class="small ps-3 mb-0">' +
+          '<li>Pay the exact amount at the bank before <strong>' + App.fmtDate(c.validTill) + '</strong> and collect the original Bank Receipt (BR).</li>' +
+          '<li>Log in to the portal and choose <strong>Upload Bank Receipt</strong> to upload a scan or photo of the BR. Keep the original BR.</li>' +
+          '<li>The office verifies the BR and issues your system receipt.</li></ol></div></div></div>' +
+        '<p class="small text-muted mb-0">The amount is frozen on this challan. It is never valid after 31 March, because the amount changes on 1 April (surcharge). If it expires, generate a new challan from the bill.</p>' +
+        (c.brNo ? '<p class="small mt-2 mb-0"><strong>BR recorded:</strong> ' + esc(c.brNo) + (c.brDate ? ' dated ' + App.fmtDate(c.brDate) : '') + (c.receiptNo ? ' &bull; Receipt <a href="receipt.html?no=' + encodeURIComponent(c.receiptNo) + '">' + esc(c.receiptNo) + '</a>' : '') + '</p>' : '') +
+        Docs.prototypeNote() +
+      '</article>';
+      App.renderQr(document.getElementById('qr'), App.verifyUrl('challan', c.challanNo));
+      document.title = 'Challan ' + c.challanNo + ' | Online Ground Rent Payment System';
+    })();
+  </script>
+</body>
+</html>

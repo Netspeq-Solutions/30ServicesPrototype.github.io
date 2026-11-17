@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Online Ground Rent Payment System - Urban Development Department, Government of Sikkim. Find your ground rent account, view year-wise dues and pay online or through a Bank Receipt.">
+  <title>Online Ground Rent Payment System | Urban Development Department | Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Framework Standard CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+  <style>
+    /* Mandatory Viewport & Zero Horizontal Overflow Guardrails */
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Payment option cards (scoped to this service) */
+    .pay-option-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      border: 1.5px solid var(--gov-border, #e2e8f0);
+      border-radius: var(--gov-radius-lg, 10px);
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .pay-option-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--gov-primary, #0f766e) !important;
+      box-shadow: 0 10px 24px rgba(15, 118, 110, 0.12) !important;
+    }
+    .pay-icon-box {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      background: var(--gov-primary-light, #f0fdfa);
+      color: var(--gov-primary, #0f766e);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      border: 1px solid var(--gov-border, #e2e8f0);
+      transition: all 0.2s ease;
+    }
+    .pay-option-card:hover .pay-icon-box {
+      background: var(--gov-primary, #0f766e);
+      color: #ffffff;
+      border-color: var(--gov-primary, #0f766e);
+    }
+    .gr-id-sample {
+      font-family: SFMono-Regular, Menlo, Consolas, monospace;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body data-theme="teal" class="d-flex flex-column min-vh-100">
+
+  <!-- ======================================================================
+       GIGW 3.0 ACCESSIBILITY SKIP LINKS
+       ====================================================================== -->
+  <a class="gov-skip-link" href="#payment-options">Skip to Main Content</a>
+  <a class="gov-skip-link" href="#govNavbar">Skip to Navigation</a>
+
+  <!-- ======================================================================
+       1. TOP INDIAN TRICOLOR FLAG STRIPE
+       ====================================================================== -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- ======================================================================
+       2. TOP ACCESSIBILITY & UTILITY BAR (GIGW 3.0 MANDATORY)
+       ====================================================================== -->
+  <header class="gov-top-bar" role="region" aria-label="Accessibility and Utility Controls">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between gap-2 py-0">
+        <!-- Left: Official Government Identification with Badge -->
+        <div class="d-flex align-items-center gap-2">
+          <span class="gov-official-badge">
+            <i class="fas fa-shield-alt text-warning" aria-hidden="true"></i> OFFICIAL
+          </span>
+          <span class="fw-semibold">Government of Sikkim</span>
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+          <span class="text-white-50 d-none d-sm-inline">सिक्किम सरकार</span>
+        </div>
+
+        <!-- Right: Accessibility Toolbar -->
+        <div class="d-flex align-items-center gap-2">
+          <!-- Skip to Main Content Link -->
+          <a href="#payment-options" class="gov-top-link d-inline-flex align-items-center gap-1" title="Skip to Payment Options" aria-label="Skip to main content and payment options">
+            <i class="fas fa-arrow-down small" aria-hidden="true"></i>
+            <span>Skip to Main Content</span>
+          </a>
+
+          <span class="text-white-50 d-none d-md-inline">|</span>
+
+          <!-- Screen Reader Access Link -->
+          <a href="#screenReaderModal" data-bs-toggle="modal" class="gov-top-link d-none d-md-inline-flex align-items-center gap-1" aria-label="Screen Reader Access information" title="Screen Reader Access">
+            <i class="fas fa-volume-up small" aria-hidden="true"></i>
+            <span>Screen Reader</span>
+          </a>
+
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+
+          <!-- Font Sizing Controls (GIGW 3.0 Standard) -->
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size" aria-label="Decrease text size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" id="btn-font-reset" data-font-action="reset" title="Normal font size" aria-label="Reset text size to default">A</button>
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-increase" data-font-action="increase" title="Increase font size" aria-label="Increase text size">A+</button>
+          </div>
+
+          <!-- High Contrast Toggle (Icon Only) -->
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" aria-pressed="false" title="Toggle High Contrast Mode" aria-label="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       3. GOVERNMENT OF SIKKIM & DEPARTMENT BRAND HEADER
+       ====================================================================== -->
+  <div class="gov-header" role="banner">
+    <div class="container-xl">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <!-- Left: Official Department & Service Identity -->
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block text-decoration-none" title="Return to Online Ground Rent Payment System Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Official Emblem of the Government of Sikkim" class="gov-header-emblem">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow">Urban Development Department</div>
+            <h1 class="gov-header-title">Online Ground Rent Payment System</h1>
+            <div class="gov-header-subtitle">Unified Citizen Services &amp; Digital Governance Gateway &bull; Government of Sikkim</div>
+          </div>
+        </div>
+
+        <!-- Right Side: Helpline & Action Buttons (Sikkim GO SSO + Services) -->
+        <div class="d-flex flex-column align-items-end gap-2">
+          <!-- Top Sub-row: Subtle Helpline Pill (number pending departmental confirmation) -->
+          <div>
+            <a href="#help-contacts" class="gov-helpline-pill" title="Department helpline number pending departmental confirmation">
+              <i class="fas fa-headset text-success" aria-hidden="true"></i>
+              <span>Helpline: <strong>Pending confirmation</strong></span>
+            </a>
+          </div>
+
+          <!-- Bottom Sub-row: Sikkim GO (SSO) & Services Buttons -->
+          <div class="d-flex align-items-center gap-2">
+            <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-header-sso" title="Citizen and staff login (prototype)">
+              <i class="fas fa-user-circle" aria-hidden="true"></i>
+              <span>Sikkim GO (SSO)</span>
+            </a>
+            <a href="#service-overview" class="btn btn-header-services" title="Explore Citizen Services">
+              <i class="fas fa-th-large" aria-hidden="true"></i>
+              <span>Services</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       4. PRIMARY NAVIGATION BAR
+       ====================================================================== -->
+  <nav class="gov-navbar navbar navbar-expand-lg" id="govNavbar" aria-label="Main Navigation">
+    <div class="container-xl">
+      <button class="navbar-toggler text-white border-white py-2" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav" aria-controls="portalNav" aria-expanded="false" aria-label="Toggle navigation menu">
+        <i class="fas fa-bars me-1" aria-hidden="true"></i> Menu
+      </button>
+      <div class="collapse navbar-collapse" id="portalNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html">
+              <i class="fas fa-home me-1" aria-hidden="true"></i> Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#service-overview">Service Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#eligibility-criteria">Eligibility &amp; Checklist</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#how-to-apply">How to Apply</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#downloads-resources">Notifications</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#faq-section">FAQs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#help-contacts">Helpline</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       MAIN CONTENT AREA
+       ====================================================================== -->
+  <main id="main-content" tabindex="-1" class="flex-grow-1">
+
+    <!-- ====================================================================
+         5. CITIZEN HERO SECTION
+         ==================================================================== -->
+    <section class="gov-hero-section" aria-labelledby="hero-heading">
+      <div class="container-xl">
+        <div class="row align-items-center g-4 g-lg-5">
+          <!-- Left: Hero Text & Call to Actions -->
+          <div class="col-lg-7">
+            <h1 id="hero-heading" class="gov-hero-title">
+              Pay Ground Rent Online for Your Allotted Urban Site
+            </h1>
+            <p class="lead text-white-50 mb-4" style="font-size: 1.125rem; line-height: 1.7;">
+              Find your ground rent account by plot number, allottee's name or father's / husband's name, check the year-wise dues and pay online or through a Bank Receipt &ndash; Urban Development Department, Government of Sikkim.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="d-flex flex-wrap gap-3 mb-4">
+              <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-gov-accent btn-lg d-inline-flex align-items-center gap-2">
+                <i class="fas fa-lock" aria-hidden="true"></i>
+                <span>Login via Sikkim GO</span>
+              </a>
+              <a href="#payment-options" class="btn btn-outline-light btn-lg d-inline-flex align-items-center gap-2">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                <span>Explore Payment Options</span>
+              </a>
+            </div>
+            <p class="small text-white-50 mb-0">
+              <i class="fas fa-user-shield me-1" aria-hidden="true"></i>
+              You need to log in through Sikkim GO to view your bill and pay. (Prototype: login is simulated.)
+            </p>
+          </div>
+
+          <!-- Right: Service Preview Card -->
+          <div class="col-lg-5 text-center">
+            <div class="gov-hero-preview-card">
+              <!-- Mountain Sky Header Graphic -->
+              <div style="background: linear-gradient(180deg, #042f2e 0%, #0f766e 60%, #99f6e4 100%); padding: 28px 16px 14px; position: relative;">
+                <svg viewBox="0 0 400 120" class="w-100" style="display: block; margin-bottom: -15px;" aria-hidden="true">
+                  <polygon points="50,120 120,40 190,120" fill="#ffffff" opacity="0.95" />
+                  <polygon points="110,50 120,40 130,50 120,60" fill="#e2e8f0" />
+                  <polygon points="140,120 220,20 300,120" fill="#f8fafc" opacity="0.98" />
+                  <polygon points="205,35 220,20 235,35 220,50" fill="#e2e8f0" />
+                  <polygon points="260,120 330,50 400,120" fill="#ffffff" opacity="0.9" />
+                  <polygon points="0,120 70,70 140,120" fill="#cbd5e1" opacity="0.8" />
+                </svg>
+              </div>
+
+              <!-- Foreground Account Preview -->
+              <div class="gov-hero-preview-body bg-white text-start">
+                <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+                    <i class="fas fa-check-circle me-1" aria-hidden="true"></i> Official Department Portal
+                  </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="bg-primary-subtle text-primary p-3 rounded-3 text-center" style="min-width: 60px;">
+                    <i class="fas fa-receipt fs-2" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold mb-1 text-dark">Ground Rent ID (GR ID)</h6>
+                    <p class="small text-muted mb-0">Printed on every receipt, challan and SMS, e.g. <span class="gr-id-sample text-dark">GR-GMC-W05-00123</span></p>
+                  </div>
+                </div>
+
+                <div class="bg-light p-2 rounded-2 small text-secondary mb-3">
+                  <div class="d-flex justify-content-between gap-2 py-1 border-bottom">
+                    <span>Rate (Municipal Corporation):</span>
+                    <strong class="text-dark text-end">&#8377;500 per 100 sq ft</strong>
+                  </div>
+                  <div class="d-flex justify-content-between gap-2 py-1 border-bottom">
+                    <span>Due date:</span>
+                    <strong class="text-dark text-end">31 March of each FY</strong>
+                  </div>
+                  <div class="d-flex justify-content-between gap-2 py-1">
+                    <span>Payment modes:</span>
+                    <strong class="text-dark text-end">Online / Bank Receipt</strong>
+                  </div>
+                </div>
+
+                <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-sm btn-primary fw-semibold">
+                  <i class="fas fa-external-link-alt me-1" aria-hidden="true"></i> Pay via Sikkim GO Portal
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         6. KEY SERVICE HIGHLIGHTS FLOATING BAR
+         ==================================================================== -->
+    <div class="gov-metrics-strip">
+      <div class="container-xl">
+        <div class="gov-metrics-bar">
+          <div class="row g-3 text-center text-sm-start">
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Find Your Account</div>
+                  <div class="gov-metric-label">Plot No., Name or GR ID</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-list-ol" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Year-wise Bill</div>
+                  <div class="gov-metric-label">Rent and Surcharge per FY</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-wallet" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Online or Offline</div>
+                  <div class="gov-metric-label">Gateway or Bank Receipt</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex">
+                  <i class="fas fa-qrcode" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <div class="gov-metric-value">Digital Receipt</div>
+                  <div class="gov-metric-label">QR-verifiable Receipt</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         7. PAYMENT OPTIONS (TWO DISTINCT MODES)
+         ==================================================================== -->
+    <section id="payment-options" tabindex="-1" class="py-5 bg-white" aria-labelledby="payment-options-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Payment Options</div>
+          <h2 id="payment-options-heading" class="gov-section-title">Two Ways to Pay Your Ground Rent</h2>
+          <p class="text-muted">The amount always goes to the selected site's account. Anyone may pay for any site, as with utility bills.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+          <!-- Option A: Pay Online -->
+          <div class="col">
+            <div class="pay-option-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pay-icon-box"><i class="fas fa-globe" aria-hidden="true"></i></div>
+                <div>
+                  <span class="gov-card-badge mb-1">Option A</span>
+                  <h3 class="h5 fw-bold mb-0">Pay Online</h3>
+                </div>
+              </div>
+              <p class="small text-secondary mb-3">
+                Pay the full amount shown on your bill through the payment gateway. Your receipt with a QR code is generated as soon as the payment succeeds, and the site is saved under <strong>My Ground Rent Accounts</strong> for one-tap payment next year.
+              </p>
+              <ul class="small text-secondary ps-3 mb-3">
+                <li class="mb-1">UPI, debit / credit card or net banking</li>
+                <li class="mb-1">Receipt sent by SMS and email</li>
+                <li>If the result is pending, the payment is shown as <em>under verification</em> until it is confirmed</li>
+              </ul>
+              <div class="mt-auto pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span class="small text-muted"><i class="fas fa-clock me-1" aria-hidden="true"></i> Gateway pending confirmation</span>
+                <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-sm btn-primary">
+                  Login to Pay Online <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option B: Pay Offline (Bank Receipt) -->
+          <div class="col">
+            <div class="pay-option-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pay-icon-box"><i class="fas fa-university" aria-hidden="true"></i></div>
+                <div>
+                  <span class="gov-card-badge mb-1">Option B</span>
+                  <h3 class="h5 fw-bold mb-0">Pay Offline (Bank Receipt)</h3>
+                </div>
+              </div>
+              <p class="small text-secondary mb-3">
+                Generate an offline payment challan, pay the exact amount at the Department's designated bank, then upload a scan or photo of the Bank Receipt (BR). The Department verifies it and issues your receipt.
+              </p>
+              <ul class="small text-secondary ps-3 mb-3">
+                <li class="mb-1">Challan valid for 15 days, and never past 31 March</li>
+                <li class="mb-1">Upload the BR scan; staff verify it and issue your receipt</li>
+                <li>Advance payment for future years is not accepted</li>
+              </ul>
+              <div class="mt-auto pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span class="small text-muted"><i class="fas fa-clock me-1" aria-hidden="true"></i> Bank pending confirmation</span>
+                <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-sm btn-outline-primary">
+                  Login to Generate Challan <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         8. CITIZEN QUICK ACTION TILES
+         ==================================================================== -->
+    <section class="py-5 bg-light" aria-labelledby="quick-access-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">CITIZEN QUICK ACCESS</div>
+          <h2 id="quick-access-heading" class="gov-section-title">What would you like to do today?</h2>
+          <p class="text-muted">Choose an action below to get started with your ground rent</p>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+          <div class="col">
+            <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="gov-action-tile">
+              <div class="gov-action-tile-icon"><i class="fas fa-rupee-sign" aria-hidden="true"></i></div>
+              <div class="gov-action-tile-title">Pay Ground Rent</div>
+              <p class="gov-action-tile-desc">Login via Sikkim GO</p>
+            </a>
+          </div>
+          <div class="col">
+            <a href="#how-to-apply" class="gov-action-tile">
+              <div class="gov-action-tile-icon"><i class="fas fa-search-location" aria-hidden="true"></i></div>
+              <div class="gov-action-tile-title">Find My Account</div>
+              <p class="gov-action-tile-desc">How the search works</p>
+            </a>
+          </div>
+          <div class="col">
+            <a href="#fees-timelines" class="gov-action-tile">
+              <div class="gov-action-tile-icon"><i class="fas fa-percent" aria-hidden="true"></i></div>
+              <div class="gov-action-tile-title">Rates &amp; Surcharge</div>
+              <p class="gov-action-tile-desc">Notified rates and due date</p>
+            </a>
+          </div>
+          <div class="col">
+            <a href="#eligibility-criteria" class="gov-action-tile">
+              <div class="gov-action-tile-icon"><i class="fas fa-clipboard-check" aria-hidden="true"></i></div>
+              <div class="gov-action-tile-title">What You Need</div>
+              <p class="gov-action-tile-desc">Details to keep ready</p>
+            </a>
+          </div>
+          <div class="col">
+            <a href="#help-contacts" class="gov-action-tile">
+              <div class="gov-action-tile-icon"><i class="fas fa-comments" aria-hidden="true"></i></div>
+              <div class="gov-action-tile-title">Contact Support</div>
+              <p class="gov-action-tile-desc">ULB helpdesks</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         9. SERVICE OVERVIEW & KEY INFORMATION MATRIX
+         ==================================================================== -->
+    <section id="service-overview" class="py-5 bg-white" aria-labelledby="service-overview-heading">
+      <div class="container-xl">
+        <div class="gov-section-header">
+          <div class="gov-section-eyebrow">Service Details</div>
+          <h2 id="service-overview-heading" class="gov-section-title">Official Guidelines &amp; Requirements</h2>
+          <p class="text-muted">The paper Assessment Chart of Ground Rents is now online. Each ULB joins once its register records are loaded.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="eligibility-criteria">
+          <!-- Card 1: Who Pays -->
+          <div class="col">
+            <div class="gov-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;">
+                  <i class="fas fa-user-check text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="gov-card-badge mb-1">Coverage</span>
+                  <h3 class="h6 fw-bold mb-0">Who Pays Ground Rent</h3>
+                </div>
+              </div>
+              <ul class="small text-secondary mb-3 ps-3">
+                <li class="mb-2">Allottees of urban sites recorded in the Department's ground rent register.</li>
+                <li class="mb-2">Joint allottees &ndash; any one of them can pay for the site.</li>
+                <li class="mb-2">Anyone paying on behalf of an allottee; the money always goes to the selected site.</li>
+                <li>Heirs of a deceased allottee may pay in the old name until the transfer is recorded.</li>
+              </ul>
+              <div class="mt-auto pt-2 border-top">
+                <span class="small text-muted"><i class="fas fa-check text-success me-1" aria-hidden="true"></i> No new allotments are made through this service.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: What You Need -->
+          <div class="col">
+            <div class="gov-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;">
+                  <i class="fas fa-folder-open text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="gov-card-badge mb-1">Checklist</span>
+                  <h3 class="h6 fw-bold mb-0">What You Need</h3>
+                </div>
+              </div>
+              <div class="alert alert-success py-2 px-3 small mb-3">
+                <i class="fas fa-check-circle me-1" aria-hidden="true"></i>
+                No documents need to be uploaded to pay ground rent.
+              </div>
+              <ul class="small text-secondary mb-3 ps-3">
+                <li class="mb-2"><strong>Sikkim GO login:</strong> your mobile number and OTP.</li>
+                <li class="mb-2"><strong>Any one search detail:</strong> GR ID from an earlier receipt, plot no., allottee's name or father's / husband's name (at least 3 letters).</li>
+                <li class="mb-2"><strong>Plot number is optional:</strong> most register entries have none, so search by name works too.</li>
+                <li><strong>For offline payment:</strong> the printed challan and the original Bank Receipt.</li>
+              </ul>
+              <div class="mt-auto pt-2 border-top">
+                <span class="small text-muted"><i class="fas fa-mobile-alt text-primary me-1" aria-hidden="true"></i> Sites linked to your mobile number appear automatically.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Rates, Due Date & Surcharge -->
+          <div class="col" id="fees-timelines">
+            <div class="gov-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;">
+                  <i class="fas fa-receipt text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="gov-card-badge mb-1">Notified Rates</span>
+                  <h3 class="h6 fw-bold mb-0">Rates, Due Date &amp; Surcharge</h3>
+                </div>
+              </div>
+              <div class="table-responsive small mb-2">
+                <table class="table table-sm table-bordered align-middle mb-0">
+                  <caption class="visually-hidden">Ground rent rates per 100 sq ft from 01-09-2024</caption>
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Rate Category</th>
+                      <th scope="col" class="text-end">Per 100 sq ft</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Municipal Corporation</td>
+                      <td class="fw-bold text-primary text-end">&#8377;500</td>
+                    </tr>
+                    <tr>
+                      <td>Municipal Council</td>
+                      <td class="fw-bold text-primary text-end">&#8377;200</td>
+                    </tr>
+                    <tr>
+                      <td>Nagar Panchayat</td>
+                      <td class="fw-bold text-primary text-end">&#8377;200</td>
+                    </tr>
+                    <tr>
+                      <td>Other Notified Area / Bazaar</td>
+                      <td class="fw-bold text-primary text-end">&#8377;50</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ul class="small text-secondary ps-3 mb-2" style="font-size: 0.8125rem;">
+                <li class="mb-1">Annual rent = total assessed area &times; rate &divide; 100.</li>
+                <li class="mb-1">Due by <strong>31 March</strong> closing each financial year.</li>
+                <li class="mb-1"><strong>5% surcharge</strong> on a year paid after its due date.*</li>
+                <li>Advance payment for future years is not accepted.</li>
+              </ul>
+              <p class="small text-muted mb-3" style="font-size: 0.75rem;">
+                Rates effective 01-09-2024 (Gazette No. 416, Notification 17/UDD/2024). * Whether surcharge applies once per overdue year or for every year of delay is pending departmental confirmation (Q2).
+              </p>
+              <div class="mt-auto pt-2 border-top">
+                <span class="small text-muted"><i class="fas fa-shield-alt text-success me-1" aria-hidden="true"></i> Amounts are always calculated by the system.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         10. STEP-BY-STEP CITIZEN ROADMAP
+         ==================================================================== -->
+    <section id="how-to-apply" tabindex="-1" class="py-5 bg-light" aria-labelledby="steps-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Digital Workflow</div>
+          <h2 id="steps-heading" class="gov-section-title">How to Pay (5 Easy Steps)</h2>
+          <p class="text-muted">At most four clicks from login to payment</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-5 g-3">
+          <div class="col">
+            <div class="gov-step-card">
+              <div class="gov-step-number">1</div>
+              <h3 class="h6 fw-bold mb-2">Citizen Login</h3>
+              <p class="small text-muted mb-0">
+                Log in through Sikkim GO Single Sign-On using your mobile number and OTP.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="gov-step-card">
+              <div class="gov-step-number">2</div>
+              <h3 class="h6 fw-bold mb-2">Find Your Account</h3>
+              <p class="small text-muted mb-0">
+                Search by plot no., allottee's name, father's / husband's name or GR ID, then select your site from the list.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="gov-step-card">
+              <div class="gov-step-number">3</div>
+              <h3 class="h6 fw-bold mb-2">Check Your Bill</h3>
+              <p class="small text-muted mb-0">
+                See the structures, paid-up-to year, year-wise rent and surcharge, and the total payable.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="gov-step-card">
+              <div class="gov-step-number">4</div>
+              <h3 class="h6 fw-bold mb-2">Pay Online or Offline</h3>
+              <p class="small text-muted mb-0">
+                Pay through the payment gateway, or generate an offline challan and pay at the designated bank.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="gov-step-card">
+              <div class="gov-step-number">5</div>
+              <h3 class="h6 fw-bold mb-2">Download Receipt</h3>
+              <p class="small text-muted mb-0">
+                Download the QR-verifiable receipt. The site is saved under My Ground Rent Accounts for next year.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-4 pt-2">
+          <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-gov-accent btn-lg px-4">
+            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i> Pay Ground Rent Now
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         11. OFFICIAL NOTIFICATIONS & CITIZEN RESOURCES
+         ==================================================================== -->
+    <section id="downloads-resources" class="py-5 bg-white" aria-labelledby="resources-heading">
+      <div class="container-xl">
+        <div class="gov-section-header">
+          <div class="gov-section-eyebrow">Official Notices &amp; Forms</div>
+          <h2 id="resources-heading" class="gov-section-title">Notifications &amp; Resources</h2>
+          <p class="text-muted">Departmental notifications on ground rent rates and surcharge</p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Verified notification -->
+          <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-action-icon flex-shrink-0" style="width: 52px; height: 52px; font-size: 1.5rem;">
+                  <i class="fas fa-file-invoice text-primary" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <span class="gov-status-pill gov-status-pill-approved mb-2 d-inline-flex align-items-center"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>In Force</span>
+                  <h3 class="h6 fw-bold mb-1">Revision of Ground Rent Rates</h3>
+                  <p class="small text-muted mb-2">Gazette No. 416 &bull; Notification No. 17/UDD/2024 &bull; Effective 01-09-2024</p>
+                  <p class="small text-secondary mb-3">Notifies ground rent per 100 sq ft for each rate category (Municipal Corporation &#8377;500; Municipal Council &#8377;200; Nagar Panchayat &#8377;200; Other Notified Area / Bazaar &#8377;50) and a 5% surcharge on late payment.</p>
+                  <span class="badge bg-light text-secondary border px-3 py-2">
+                    <i class="fas fa-clock me-1 text-warning" aria-hidden="true"></i> Gazette PDF to be provided by the Department
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Further publications placeholder -->
+          <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center rounded-3 bg-white">
+              <div class="my-auto">
+                <div class="gov-action-icon mx-auto mb-3" style="width: 64px; height: 64px; font-size: 1.85rem;">
+                  <i class="fas fa-folder-open text-primary" aria-hidden="true"></i>
+                </div>
+                <h3 class="h6 fw-bold text-dark mb-2">Further Notices Under Publication</h3>
+                <p class="text-muted small mx-auto mb-3" style="max-width: 460px;">
+                  Citizen guidelines, the designated bank details for offline payment and notices on new ULBs joining the system will be published here by the Urban Development Department upon formal release.
+                </p>
+                <span class="badge bg-light text-secondary border px-3 py-2">
+                  <i class="fas fa-shield-alt me-1 text-success" aria-hidden="true"></i> Urban Development Department
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         12. FREQUENTLY ASKED QUESTIONS (FAQ) ACCORDION
+         ==================================================================== -->
+    <section id="faq-section" class="py-5 bg-light" aria-labelledby="faq-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Citizen Helpdesk</div>
+          <h2 id="faq-heading" class="gov-section-title">Frequently Asked Questions</h2>
+          <p class="text-muted">Answers to common questions about paying ground rent in Sikkim</p>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="col-lg-9">
+            <div class="accordion" id="portalFaqAccordion">
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    What is the Online Ground Rent Payment System?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    It replaces the paper Assessment Chart of Ground Rents. You can find your site, see what is due year by year and pay online or through a Bank Receipt. Department staff maintain allottees, structures and transfers in the same system.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    How do I find my ground rent account? I don't have a plot number.
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Type any one of these in the search box: plot no. (if recorded), allottee's name or father's / husband's name (at least 3 letters), or the GR ID printed on an earlier receipt. Case, dots and extra spaces are ignored, so "M.D. Ibrahim" and "md ibrahim" both match. Pick your site from the list; no amounts are shown in the list, to protect privacy.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    What is a GR ID?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    The Ground Rent ID is the permanent number of your site, for example GR-GMC-W05-00123 (ULB, ward and serial number). It never changes, even when the allotment is transferred, and it is printed on every receipt, challan and SMS.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    When is ground rent due and what happens if I pay late?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Rent for a financial year is due by 31 March at the end of that year. Paying any time within the year is on time. A year paid after its due date attracts a 5% surcharge. Whether this is charged once per overdue year or for every year of delay is pending departmental confirmation.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqFiveHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive" aria-expanded="false" aria-controls="faqFive">
+                    Can I pay for future years in advance?
+                  </button>
+                </h3>
+                <div id="faqFive" class="accordion-collapse collapse" aria-labelledby="faqFiveHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    No. Advance payment has been stopped. The bill always runs up to and including the current financial year, never a future year.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqSixHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqSix" aria-expanded="false" aria-controls="faqSix">
+                    How does offline payment through the bank work?
+                  </button>
+                </h3>
+                <div id="faqSix" class="accordion-collapse collapse" aria-labelledby="faqSixHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Choose Pay Offline on your bill to get a challan. It is valid for 15 days, and never past 31 March because the amount changes on 1 April. Pay the exact amount at the Department's designated bank, then upload a scan or photo of the Bank Receipt on the challan page. Staff verify it and issue your system receipt; keep the original BR in case the office asks to see it. The designated bank is pending departmental confirmation.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqSevenHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqSeven" aria-expanded="false" aria-controls="faqSeven">
+                    My bill shows an opening balance. Where does it come from?
+                  </button>
+                </h3>
+                <div id="faqSeven" class="accordion-collapse collapse" aria-labelledby="faqSevenHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    Dues for years before your ULB joined the system are taken from the paper register. The Department calculates and certifies them as an opening balance. The system calculates rent and surcharge itself only from the go-live year onward. For questions on the opening balance, contact your ULB helpdesk.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+                <h3 class="accordion-header" id="faqEightHeading">
+                  <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqEight" aria-expanded="false" aria-controls="faqEight">
+                    Can I apply for a transfer of allotment or a refund here?
+                  </button>
+                </h3>
+                <div id="faqEight" class="accordion-collapse collapse" aria-labelledby="faqEightHeading" data-bs-parent="#portalFaqAccordion">
+                  <div class="accordion-body small text-secondary">
+                    No. Transfer applications are processed at Department headquarters outside this system; staff only record the transfer once the order is issued. Refunds are also handled outside the system. If you pay more than the billed amount offline, only the billed amount is recorded and the excess is flagged for refund.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         13. ULB HELPDESKS & SUPPORT CENTERS
+         ==================================================================== -->
+    <section id="help-contacts" class="py-5 bg-white" aria-labelledby="contacts-heading">
+      <div class="container-xl">
+        <div class="gov-section-header">
+          <div class="gov-section-eyebrow">ULB Facilitation</div>
+          <h2 id="contacts-heading" class="gov-section-title">Helpdesks &amp; Support Centers</h2>
+          <p class="text-muted">Ground rent is administered by Urban Local Body (ULB). Visit the office for your site's ULB for in-person help and offline Bank Receipt verification.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="fw-bold text-dark"><i class="fas fa-building text-primary me-2" aria-hidden="true"></i>Urban Development Department (HQ)</div>
+              <div class="small text-muted mt-1">NH-10, Gangtok, Sikkim</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted" aria-hidden="true"></i> Pending departmental confirmation</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted" aria-hidden="true"></i> Pending departmental confirmation</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="fw-bold text-dark"><i class="fas fa-city text-primary me-2" aria-hidden="true"></i>Gangtok Municipal Corporation</div>
+                <span class="gov-status-pill gov-status-pill-approved flex-shrink-0"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Online</span>
+              </div>
+              <div class="small text-muted mt-1">M.G. Marg, DPH, Development Area, Deorali, Tadong, Ranipool, Burtuk, Arithang and other wards</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-phone-alt me-1 text-muted" aria-hidden="true"></i> Pending departmental confirmation</div>
+              <div class="small text-secondary"><i class="fas fa-envelope me-1 text-muted" aria-hidden="true"></i> Pending departmental confirmation</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="fw-bold text-dark"><i class="fas fa-store text-primary me-2" aria-hidden="true"></i>Municipal Council &amp; Nagar Panchayats</div>
+                <span class="gov-status-pill gov-status-pill-review flex-shrink-0"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Joining later</span>
+              </div>
+              <div class="small text-muted mt-1">Namchi Municipal Council; Singtam, Rangpo, Nayabazar Jorethang, Gyalshing, Soreng, Pakyong and Mangan Nagar Panchayats</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-info-circle me-1 text-muted" aria-hidden="true"></i> Online payment opens after each ULB's records are migrated.</div>
+            </div>
+          <div class="col">
+            <div class="card h-100 border p-3 rounded-3 bg-white">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="fw-bold text-dark"><i class="fas fa-map-marker-alt text-primary me-2" aria-hidden="true"></i>Other Notified Areas / Bazaars</div>
+                <span class="gov-status-pill gov-status-pill-review flex-shrink-0"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Joining later</span>
+              </div>
+              <div class="small text-muted mt-1">Lingdok / Penlong, 32-Nos. / Middle Camp, Makha, Rorathang, Rhenock, Rongli, Dikchu and other notified bazaars</div>
+              <div class="small text-secondary mt-2"><i class="fas fa-info-circle me-1 text-muted" aria-hidden="true"></i> Online payment opens after each ULB's records are migrated.</div>
+            </div>
+          </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       14. GIGW 3.0 MANDATORY COMPLIANCE FOOTER
+       ====================================================================== -->
+  <footer class="gov-footer" role="contentinfo" aria-label="Government Portal Footer">
+    <div class="container-xl">
+      <div class="row g-4">
+        <!-- Col 1: Department Information & Contact -->
+        <div class="col-lg-3 col-md-6">
+          <h3 class="footer-heading">Urban Development Department</h3>
+          <p class="small text-white-50 mb-2">Government of Sikkim</p>
+          <p class="small text-white-50 mb-3">
+            <i class="fas fa-map-marker-alt me-2 text-warning" aria-hidden="true"></i>
+            NH-10, Gangtok, Sikkim
+          </p>
+          <p class="small text-white-50 mb-2">
+            <i class="fas fa-phone-alt me-2 text-warning" aria-hidden="true"></i>
+            Helpline pending confirmation
+          </p>
+          <p class="small text-white-50 mb-0">
+            <i class="fas fa-envelope me-2 text-warning" aria-hidden="true"></i>
+            Email pending confirmation
+          </p>
+        </div>
+
+        <!-- Col 2: Citizen Quick Services -->
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-heading">Citizen Services</h4>
+          <ul class="gov-footer-list small">
+            <li><a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Pay Ground Rent</a></li>
+            <li><a href="#payment-options"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Payment Options</a></li>
+            <li><a href="#fees-timelines"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Rates &amp; Surcharge</a></li>
+            <li><a href="#how-to-apply"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>How to Pay Guide</a></li>
+            <li><a href="#faq-section"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Citizen FAQ &amp; Guidance</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: GIGW 3.0 Mandatory Website Policies -->
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-heading">Website Policies</h4>
+          <ul class="gov-footer-list small">
+            <li><a href="#termsModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Terms &amp; Conditions</a></li>
+            <li><a href="#privacyModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Privacy Policy</a></li>
+            <li><a href="#hyperlinkModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Hyperlinking Policy</a></li>
+            <li><a href="#copyrightModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Copyright Policy</a></li>
+            <li><a href="#disclaimerModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Disclaimer &amp; Notice</a></li>
+            <li><a href="#accessibilityModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Accessibility Statement</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Government Links & Compliance Seal -->
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-heading">National &amp; State Portals</h4>
+          <ul class="gov-footer-list small mb-3">
+            <li><a href="https://sikkim.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>State Portal of Sikkim</a></li>
+            <li><a href="https://sikkimgo.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>Sikkim GO Citizen Gateway</a></li>
+            <li><a href="https://www.india.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>National Portal of India</a></li>
+            <li><a href="https://samadhan.sikkim.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>Samadhan Grievance Redressal</a></li>
+          </ul>
+
+          <!-- GIGW 3.0 Compliance Badge -->
+          <div class="gov-badge-gigw mb-2">
+            <i class="fas fa-check-circle text-success" aria-hidden="true"></i>
+            <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="gov-footer-divider">
+
+      <!-- Sub-footer: Attributions, WIM, Last Updated, Visitor Count -->
+      <div class="row align-items-center g-3 small">
+        <div class="col-lg-7">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Urban Development Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-1 text-white-50">
+            Designed, Developed and Hosted by <strong>Department of Information Technology &amp; Communications (DITEC)</strong> / <strong>National Informatics Centre (NIC)</strong>.
+          </p>
+          <p class="mb-0 text-white-50">
+            <strong>Web Information Manager:</strong> Pending departmental confirmation.
+          </p>
+        </div>
+        <div class="col-lg-5 text-lg-end">
+          <div class="d-inline-flex flex-column align-items-lg-end gap-1">
+            <span class="text-white-50">Last Reviewed &amp; Updated: <strong>16 November 2026</strong></span>
+            <span class="text-white-50">&copy; 2026 Government of Sikkim. All Rights Reserved.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       MODALS: Screen Reader Info & Policy Modals
+       ====================================================================== -->
+
+  <!-- Screen Reader Access Modal -->
+  <div class="modal fade" id="screenReaderModal" tabindex="-1" aria-labelledby="screenReaderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title" id="screenReaderModalLabel"><i class="fas fa-volume-up me-2" aria-hidden="true"></i>Screen Reader Access</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This portal complies with the Guidelines for Indian Government Websites (GIGW 3.0) and World Wide Web Consortium (W3C) Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.</p>
+          <p class="fw-bold mb-2">Compatible Screen Readers:</p>
+          <ul>
+            <li><strong>Non Visual Desktop Access (NVDA)</strong> - Free / Open Source (Windows)</li>
+            <li><strong>JAWS (Job Access With Speech)</strong> - Windows</li>
+            <li><strong>VoiceOver</strong> - macOS and iOS</li>
+            <li><strong>TalkBack</strong> - Android Devices</li>
+            <li><strong>Narrator</strong> - Windows Built-in</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessibility Statement Modal -->
+  <div class="modal fade" id="accessibilityModal" tabindex="-1" aria-labelledby="accessibilityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title" id="accessibilityModalLabel"><i class="fas fa-universal-access me-2 text-primary" aria-hidden="true"></i>Accessibility Statement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body small">
+          <p>The Government of Sikkim is committed to ensuring that its portals and services are accessible to all citizens, including individuals with visual, auditory, cognitive, or physical impairments.</p>
+          <p>This website follows the Guidelines for Indian Government Websites (GIGW 3.0) and adheres to WCAG 2.1 Level AA criteria. Features include:</p>
+          <ul>
+            <li>Skip to Main Content &amp; Skip to Navigation keyboard links</li>
+            <li>High Contrast color scheme for low-vision readability</li>
+            <li>Font size scaling without breaking page layout (A-, A, A+)</li>
+            <li>Descriptive text equivalents (alt attributes) for visual elements</li>
+            <li>Logical heading hierarchy and landmark HTML5 semantics</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policy Modals Container -->
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">This portal does not automatically capture personal information without citizen consent. Information collected is used solely for the fulfillment of the requested public service in accordance with the Sikkim Information Technology &amp; Data Protection Rules. Account search results show no amounts, to protect allottees' privacy.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="termsModalLabel">Terms &amp; Conditions</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">This portal is designed, developed, and maintained by DITEC / NIC for the Urban Development Department, Government of Sikkim. Payments made through this portal are credited to the account of the site selected at the time of payment.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="hyperlinkModal" tabindex="-1" aria-labelledby="hyperlinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="hyperlinkModalLabel">Hyperlinking Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">Prior permission is required before hyperlinks are directed from any website to this portal. External links provided on this portal are for citizen convenience only; Government of Sikkim is not responsible for the contents or reliability of external websites.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="copyrightModal" tabindex="-1" aria-labelledby="copyrightModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="copyrightModalLabel">Copyright Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">Material featured on this portal may be reproduced free of charge after obtaining permission from the Urban Development Department, provided the material is reproduced accurately and not used in a derogatory or misleading context.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="disclaimerModalLabel">Disclaimer</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">While every effort has been made to ensure accuracy and currency of the content on this website, the same should not be construed as a statement of law or used for any legal purposes. In case of any ambiguity, users are advised to verify with the department or relevant official gazette.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       SCRIPTS: Bootstrap 5.3 CDN & GIGW 3.0 Controllers
+       ====================================================================== -->
+  <!-- ======================================================================
+       LOGIN POPUP (prototype – replaces Sikkim GO single sign-on)
+       ====================================================================== -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl modal-fullscreen-md-down">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white py-3" style="background: linear-gradient(135deg, var(--gov-primary, #0f766e) 0%, var(--gov-utility-bg, #042f2e) 100%);">
+          <div class="d-flex align-items-center gap-3">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="" aria-hidden="true" style="height: 44px; filter: brightness(0) invert(1);">
+            <div>
+              <h2 class="modal-title h5 fw-bold text-white mb-0" id="loginModalLabel"><i class="fas fa-user-shield me-2 text-warning" aria-hidden="true"></i>Login &ndash; Online Ground Rent Payment System</h2>
+              <p class="small mb-0 text-white-50">Prototype login &bull; Sikkim GO is not connected</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3 p-lg-4 bg-light">
+          <div class="alert alert-info border-0 d-flex align-items-start gap-2 py-2 px-3 mb-3">
+            <i class="bi bi-info-circle-fill text-primary mt-1" aria-hidden="true"></i>
+            <span class="small text-dark"><strong>Prototype login:</strong> in production, citizens log in through Sikkim GO (single sign-on with OTP). Here the login is simulated &ndash; no SMS is sent and no real credentials are used.</span>
+          </div>
+
+          <div class="row g-3">
+            <!-- Citizen login (C1) -->
+            <div class="col-lg-5">
+              <section class="card border-0 shadow-sm h-100" aria-labelledby="citizen-login-heading">
+                <div class="card-body p-3 p-lg-4">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="gr-icon-circle bg-success-subtle text-success"><i class="bi bi-person-fill" aria-hidden="true"></i></span>
+                    <div>
+                      <h3 id="citizen-login-heading" class="h6 fw-bold mb-0">Citizen Login</h3>
+                      <div class="small text-muted">Click a demo citizen to log in directly</div>
+                    </div>
+                  </div>
+                  <h4 class="h6 fw-bold mb-1" id="scenario-heading">Prototype Demo &ndash; Select Citizen Scenario</h4>
+                  <p class="small text-muted mb-2">Click a citizen to log in.</p>
+                  <div class="d-flex flex-column gap-2" id="scenarioList" role="list" aria-labelledby="scenario-heading"></div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Department staff -->
+            <div class="col-lg-7">
+              <section class="card border-0 shadow-sm h-100" aria-labelledby="staff-login-heading">
+                <div class="card-body p-3 p-lg-4">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="gr-icon-circle bg-primary-subtle text-primary"><i class="bi bi-building" aria-hidden="true"></i></span>
+                    <div>
+                      <h3 id="staff-login-heading" class="h6 fw-bold mb-0">Department Staff</h3>
+                      <div class="small text-muted">Select a role to open its dashboard (demonstration users)</div>
+                    </div>
+                  </div>
+                  <div class="row g-3" id="staffRoleGrid"></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-white justify-content-between flex-wrap gap-2">
+          <span class="small text-muted"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>You can switch role or scenario at any time from the bar at the top of each dashboard.</span>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    // Login popup controller (prototype)
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc;
+      var modalEl = document.getElementById('loginModal');
+      var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+      // ---------- Citizen scenarios ----------
+      var list = document.getElementById('scenarioList');
+      Object.keys(D.citizens).forEach(function (key, i) {
+        var c = D.citizens[key];
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gr-scenario-chip';
+        btn.setAttribute('role', 'listitem');
+        btn.innerHTML = '<div class="d-flex justify-content-between align-items-center gap-2">' +
+          '<span class="fw-bold text-dark">' + String.fromCharCode(65 + i) + '. ' + esc(c.label) + '</span>' +
+          '<span class="small text-muted font-monospace">' + esc(c.mobile) + '</span></div>' +
+          '<div class="small text-muted">' + esc(c.name) + ' &bull; ' + esc(c.badge) + '</div>';
+        btn.addEventListener('click', function () { citizenLogin(c.mobile); });
+        list.appendChild(btn);
+      });
+
+      // ---------- Direct citizen login (no OTP in this prototype) ----------
+      function citizenLogin(mobile) {
+        var scenario = Object.keys(D.citizens).filter(function (k) { return D.citizens[k].mobile === mobile; })[0] || 'scenarioA';
+        App.setSession({ type: 'citizen', scenario: scenario, mobile: mobile, loggedInAt: new Date().toISOString() });
+        window.location.href = 'dashboard.html';
+      }
+
+      // ---------- Staff roles ----------
+      var grid = document.getElementById('staffRoleGrid');
+      Object.keys(D.staffRoles).forEach(function (key) {
+        var r = D.staffRoles[key];
+        var col = document.createElement('div');
+        col.className = 'col-md-6';
+        col.innerHTML = '<div class="gr-role-card p-3">' +
+          '<div class="d-flex align-items-center gap-2 mb-2"><span class="gr-icon-circle bg-primary-subtle text-primary" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + r.icon + '" aria-hidden="true"></i></span>' +
+          '<div><h4 class="h6 fw-bold mb-0">' + esc(r.title) + '</h4><div class="small text-muted">' + esc(r.user) + ' (demo)</div></div></div>' +
+          '<p class="small text-secondary mb-3">' + esc(r.description) + '</p>' +
+          '<div class="mt-auto"><div><button type="button" class="btn btn-sm btn-primary" data-role="' + key + '">Continue as ' + esc(r.title) + ' <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></button></div></div></div>';
+        grid.appendChild(col);
+      });
+      grid.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-role]');
+        if (!btn) return;
+        var key = btn.getAttribute('data-role');
+        App.setSession({ type: 'staff', role: key, ulb: D.staffRoles[key].scope === 'ULB' ? App.defaultUlb() : 'ALL', loggedInAt: new Date().toISOString() });
+        window.location.href = 'dashboard-staff.html';
+      });
+
+      // Open automatically after logout / switch role (index.html#login).
+      if (location.hash === '#login') modal.show();
+      modalEl.addEventListener('hidden.bs.modal', function () {
+        if (location.hash === '#login') history.replaceState(null, '', location.pathname);
+      });
+    })();
+  </script>
+
+  <!-- GIGW Accessibility & Interactive Page Controllers -->
+  <script>
+    (function () {
+      'use strict';
+      var html = document.documentElement;
+      var body = document.body;
+
+      // 1. Text Size Controller
+      var fontSizeButtons = document.querySelectorAll('[data-font-action]');
+      var currentSize = localStorage.getItem('gov_font_size') || 'normal';
+      html.setAttribute('data-font-size', currentSize);
+
+      fontSizeButtons.forEach(function (btn) {
+        var action = btn.getAttribute('data-font-action');
+        if ((action === 'reset' && currentSize === 'normal') ||
+            (action === 'increase' && currentSize === 'large') ||
+            (action === 'decrease' && currentSize === 'small')) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+
+        btn.addEventListener('click', function () {
+          var newSize = 'normal';
+          if (action === 'increase') newSize = 'large';
+          else if (action === 'decrease') newSize = 'small';
+
+          html.setAttribute('data-font-size', newSize);
+          localStorage.setItem('gov_font_size', newSize);
+
+          fontSizeButtons.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
+      });
+
+      // 2. High Contrast Controller
+      var hcBtn = document.getElementById('btn-contrast-toggle');
+      if (localStorage.getItem('gov_contrast') === 'high') {
+        html.classList.add('high-contrast');
+        body.classList.add('high-contrast');
+        body.setAttribute('data-contrast', 'high');
+        if (hcBtn) hcBtn.setAttribute('aria-pressed', 'true');
+      }
+
+      if (hcBtn) {
+        hcBtn.addEventListener('click', function () {
+          var isHc = html.classList.toggle('high-contrast');
+          body.classList.toggle('high-contrast', isHc);
+          if (isHc) {
+            body.setAttribute('data-contrast', 'high');
+          } else {
+            body.removeAttribute('data-contrast');
+          }
+          hcBtn.setAttribute('aria-pressed', String(isHc));
+          localStorage.setItem('gov_contrast', isHc ? 'high' : 'normal');
+        });
+      }
+
+      // 3. Skip to Main Content Link Controller
+      var skipLinks = document.querySelectorAll('a[href="#payment-options"].gov-skip-link, a[href="#payment-options"].gov-top-link');
+      skipLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          var target = document.getElementById('payment-options') || document.getElementById('main-content');
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.focus({ preventScroll: true });
+            target.classList.add('gov-skip-highlight');
+            setTimeout(function () {
+              target.classList.remove('gov-skip-highlight');
+            }, 1800);
+          }
+        });
+      });
+
+      // 4. Active navigation state follows the section in view
+      var navLinks = document.querySelectorAll('#portalNav .nav-link[href^="#"]');
+      var homeLink = document.querySelector('#portalNav .nav-link[href="index.html"]');
+      var sections = [];
+      navLinks.forEach(function (link) {
+        var sec = document.querySelector(link.getAttribute('href'));
+        if (sec) sections.push({ link: link, el: sec });
+      });
+      function setActive(link) {
+        navLinks.forEach(function (l) { l.classList.remove('active'); l.removeAttribute('aria-current'); });
+        if (homeLink) { homeLink.classList.toggle('active', !link); }
+        if (link) { link.classList.add('active'); link.setAttribute('aria-current', 'location'); }
+        else if (homeLink) { homeLink.setAttribute('aria-current', 'page'); }
+      }
+      function onScroll() {
+        var y = window.scrollY + 140;
+        var current = null;
+        sections.forEach(function (s) {
+          if (s.el.getBoundingClientRect().top + window.scrollY <= y) current = s.link;
+        });
+        setActive(current);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Collapse the mobile menu after choosing a section
+      var portalNav = document.getElementById('portalNav');
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (portalNav.classList.contains('show') && window.bootstrap) {
+            bootstrap.Collapse.getOrCreateInstance(portalNav).hide();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Bill Details | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="search.html">Pay Ground Rent</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Bill</li>
+    </ol></nav>
+    <div id="billRoot"></div>
+  </main>
+
+  <!-- Offline challan confirmation -->
+  <div class="modal fade" id="offlineModal" tabindex="-1" aria-labelledby="offlineModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header"><h2 class="modal-title h6 fw-bold" id="offlineModalLabel"><i class="bi bi-bank me-1" aria-hidden="true"></i>Generate Offline Challan</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small" id="offlineModalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-sm btn-primary" id="btnConfirmChallan"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Generate Challan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('citizen');
+      if (!session) return;
+      App.shell({ type: 'citizen', active: 'pay' });
+
+      var root = document.getElementById('billRoot');
+      var s = App.site(App.qs('gr'));
+      if (!s || s.status === 'Closed') {
+        root.innerHTML = '<div class="alert alert-warning">This account was not found or is closed. <a href="search.html">Search again</a>.</div>';
+        return;
+      }
+      var d = App.dues(s);
+      var u = App.ulb(s.ulb), w = App.ward(s.ulb, s.ward);
+      var ch = App.challanFor(s.grId);
+
+      // Snapshot of the bill lines – frozen into the intent / challan.
+      function snapshot() {
+        var lines = [];
+        if (d.opening.balance > 0) lines.push({ fy: 'OB', label: d.opening.label, amount: d.opening.balance });
+        d.years.forEach(function (y) { if (y.balance > 0) lines.push({ fy: y.label, label: 'FY ' + y.label + ' rent' + (y.surcharge ? ' + surcharge' : ''), amount: y.balance }); });
+        return { lines: lines, total: d.totalPayable, paidUpToFy: d.paidUpToFy, asOf: D.demoToday };
+      }
+
+      function rateText(y) {
+        return y.segments.map(function (g) { return inr(g.rate) + '/100 sq ft' + (y.segments.length > 1 ? ' × ' + g.months + ' mo' : ''); }).join(' + ');
+      }
+      function stateFor(y) {
+        if (y.state === 'Paid') return App.pill('paid', 'Paid');
+        if (y.state === 'Overdue') return App.pill('overdue', 'Overdue');
+        return App.pill('due', 'Due ' + App.fmtDate(y.dueDate));
+      }
+
+      // ---------- Notices ----------
+      var notice = '';
+      var canPay = !d.blocked && d.totalPayable > 0 && !d.pendingPayment && !(ch && ch.status === 'BR Recorded');
+      if (d.blocked) notice = '<div class="alert alert-danger"><i class="bi bi-x-octagon me-1" aria-hidden="true"></i><strong>Bill cannot be generated.</strong> ' + esc(d.blockReason) + '. A wrong amount is never shown.</div>';
+      else if (d.pendingPayment) notice = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i><strong>Payment under verification.</strong> An online payment of ' + inr(d.pendingPayment.amount) + ' is awaiting the gateway result. Payment is locked to stop a double payment. <a href="pay-online.html?intent=' + encodeURIComponent(d.pendingPayment.intentNo) + '">Check status</a></div>';
+      else if (ch && ch.status === 'BR Recorded') notice = '<div class="alert alert-info"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Bank Receipt ' + esc(ch.brNo) + ' against challan ' + esc(ch.challanNo) + ' is being verified by staff.</div>';
+      else if (ch) notice = '<div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2"><span><i class="bi bi-bank me-1" aria-hidden="true"></i>Challan <strong>' + esc(ch.challanNo) + '</strong> for ' + inr(ch.amount) + ' is valid till ' + App.fmtDate(ch.validTill) + '. Paid at the bank? Upload the Bank Receipt. You can still pay online instead.</span><span class="d-flex flex-wrap gap-2"><a class="btn btn-sm btn-warning" href="upload-br.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Bank Receipt</a><a class="btn btn-sm btn-outline-dark" href="challan.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Challan</a></span></div>';
+      else if (d.totalPayable === 0) notice = '<div class="alert alert-success"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>No dues. This site is paid up to FY ' + esc(d.paidUpToFy) + '. Advance payment for future years is not accepted.</div>';
+      if (s.flags && s.flags.length) notice += '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + s.flags.map(esc).join(' &bull; ') + '. Payment is still allowed and goes to this site\'s account.</div>';
+
+      // ---------- Year-wise rows ----------
+      var rows = [];
+      if (d.opening.rent || d.opening.surcharge) {
+        rows.push({ label: 'Opening balance', sub: 'Certified by the Department as on ' + App.fmtDate(u.cutOffDate) + ' (register paid up to FY ' + esc(s.opening.paidUpToFy) + ')',
+          rent: d.opening.rent, surcharge: d.opening.surcharge, adj: d.opening.adjustment, paid: d.opening.paid, balance: d.opening.balance,
+          state: d.opening.balance ? App.pill('overdue', 'Arrears') : App.pill('paid', 'Cleared') });
+      }
+      d.years.forEach(function (y) {
+        rows.push({ label: 'FY ' + y.label, sub: App.sqft(y.area) + ' × ' + rateText(y), rent: y.rent, surcharge: y.surcharge, adj: y.adjustment, paid: y.paid, balance: y.balance, state: stateFor(y) });
+      });
+      // The Adjustment column appears only when the Department has adjusted a year.
+      var hasAdj = rows.some(function (r) { return r.adj; });
+      function adjCell(n) { return n ? (n < 0 ? '−' : '+') + inr(Math.abs(n)) : inr(0); }
+
+      var structRows = s.structures.map(function (x) {
+        var active = !x.chargeableToFy;
+        return '<tr><td>' + esc(x.type) + '</td><td>' + (x.lengthFt ? x.lengthFt + "' × " + x.widthFt + "'" : '<span class="text-muted small">' + esc(x.areaOverrideReason || 'Area entered directly') + '</span>') + '</td>' +
+          '<td class="text-end">' + App.sqft(x.areaSqft) + '</td><td class="small">' + esc(x.mutationNo || '—') + (x.orderDate ? '<div class="text-muted">' + App.fmtDate(x.orderDate) + '</div>' : '') + '</td>' +
+          '<td>' + (active ? App.pill('paid', 'Chargeable') : App.pill('closed', 'Ended FY ' + x.chargeableToFy)) + '</td></tr>';
+      }).join('');
+
+      root.innerHTML =
+        '<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3"><div><h1 class="h4 fw-bold mb-1">Ground Rent Bill</h1>' +
+        '<div class="gr-gr-id fs-6">' + esc(s.grId) + '</div></div><div class="text-end small text-muted">Bill as on<br><strong class="text-dark">' + App.fmtDate(D.demoToday) + '</strong></div></div>' + notice +
+        '<div class="row g-4">' +
+        '<div class="col-xl-8">' +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Site &amp; Allottee Details</h2></div><div class="card-body"><dl class="gr-meta-grid mb-0">' +
+            '<div><dt>Allottee(s)</dt><dd>' + s.owners.map(function (o) { return esc(o.name) + ' <span class="fw-normal text-muted">' + esc(o.relation) + ' ' + esc(o.guardian) + (s.owners.length > 1 ? ' · ' + o.share + '%' : '') + '</span>'; }).join('<br>') + '</dd></div>' +
+            '<div><dt>Address</dt><dd>' + esc(s.address) + '</dd></div>' +
+            '<div><dt>Ward</dt><dd>' + esc(w ? w.name : s.ward) + '</dd></div>' +
+            '<div><dt>Locality</dt><dd>' + esc(s.locality) + '</dd></div>' +
+            '<div><dt>Plot No.</dt><dd>' + esc(s.plotNo || 'Not recorded') + '</dd></div>' +
+            '<div><dt>Register ref.</dt><dd>' + esc(App.legacyRef(s)) + '</dd></div>' +
+          '</dl></div></div>' +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Structures</h2></div>' +
+            '<div class="gov-table-desktop table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Structures on this site</caption><thead><tr><th scope="col">Kind of structure</th><th scope="col">Measurement</th><th scope="col" class="text-end">Area</th><th scope="col">Mutation / Order</th><th scope="col">Status</th></tr></thead><tbody>' + structRows + '</tbody></table></div>' +
+            '<div class="gov-cards-mobile p-3">' + s.structures.map(function (x) {
+              return '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2"><span class="fw-semibold small">' + esc(x.type) + '</span>' + (x.chargeableToFy ? App.pill('closed', 'Ended') : App.pill('paid', 'Chargeable')) + '</div>' +
+                '<div class="small text-muted">' + (x.lengthFt ? x.lengthFt + "' × " + x.widthFt + "' = " : '') + App.sqft(x.areaSqft) + ' &bull; ' + esc(x.mutationNo || '—') + '</div></div>';
+            }).join('') + '</div>' +
+            '<div class="card-footer bg-white small d-flex justify-content-between flex-wrap gap-2"><span>Total chargeable area: <strong>' + App.sqft(d.currentArea || 0) + '</strong></span><span>Annual rent FY ' + esc(d.currentFy) + ': <strong>' + inr(d.annualRent) + '</strong></span></div></div>' +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Year-wise Dues</h2><div class="small text-muted">Calculated by the system from the structures and the notified rate. Surcharge applies once to a year paid after its 31 March due date.</div></div>' +
+            (d.blocked ? '<div class="card-body small text-muted">Not available.</div>' :
+            '<div class="gov-table-desktop table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Year-wise dues</caption><thead><tr><th scope="col" style="width:30%">Year</th><th scope="col" class="text-end">Rent</th><th scope="col" class="text-end">Surcharge</th>' + (hasAdj ? '<th scope="col" class="text-end">Adjustment</th>' : '') + '<th scope="col" class="text-end">Paid</th><th scope="col" class="text-end">Balance</th><th scope="col">Status</th></tr></thead><tbody>' +
+              rows.map(function (r) { return '<tr><td><div class="fw-semibold">' + r.label + '</div><div class="small text-muted">' + r.sub + '</div></td><td class="text-end">' + inr(r.rent) + '</td><td class="text-end">' + inr(r.surcharge) + '</td>' + (hasAdj ? '<td class="text-end">' + adjCell(r.adj) + '</td>' : '') + '<td class="text-end">' + inr(r.paid) + '</td><td class="text-end fw-bold">' + inr(r.balance) + '</td><td>' + r.state + '</td></tr>'; }).join('') +
+              '</tbody><tfoot><tr class="table-light"><th scope="row" colspan="' + (hasAdj ? 5 : 4) + '" class="text-end">Total payable</th><td class="text-end fw-bold fs-6">' + inr(d.totalPayable) + '</td><td></td></tr></tfoot></table></div>' +
+            '<div class="gov-cards-mobile p-3">' + rows.map(function (r) {
+              return '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2"><span class="fw-semibold">' + r.label + '</span>' + r.state + '</div><div class="small text-muted mb-1">' + r.sub + '</div>' +
+                '<div class="small">Rent ' + inr(r.rent) + ' &bull; Surcharge ' + inr(r.surcharge) + (r.adj ? ' &bull; Adjustment ' + adjCell(r.adj) : '') + ' &bull; Paid ' + inr(r.paid) + '</div><div class="text-end fw-bold">Balance ' + inr(r.balance) + '</div></div>';
+            }).join('') + '<div class="text-end fw-bold">Total payable ' + inr(d.totalPayable) + '</div></div>') +
+          '</div>' +
+        '</div>' +
+        '<div class="col-xl-4">' +
+          '<div class="card border-primary border-2 shadow-sm position-sticky" style="top:1rem;"><div class="card-body">' +
+            '<div class="small text-muted">Total amount payable</div><div class="gr-amount mb-1">' + (d.blocked ? '—' : inr(d.totalPayable)) + '</div>' +
+            '<div class="small text-muted mb-3">Paid up to FY <strong class="text-dark">' + esc(d.paidUpToFy || '—') + '</strong> &bull; Current FY due by ' + App.fmtDate(d.currentDueDate) + '</div>' +
+            (canPay ?
+              '<div class="d-flex flex-wrap gap-2 mb-3"><button type="button" class="btn btn-sm btn-primary" id="btnPayOnline"><i class="bi bi-globe me-1" aria-hidden="true"></i>Pay Online</button>' +
+              '<button type="button" class="btn btn-sm btn-outline-primary" id="btnPayOffline"><i class="bi bi-bank me-1" aria-hidden="true"></i>Pay Offline (Bank)</button></div>' +
+              '<ul class="small text-secondary ps-3 mb-0"><li><strong>Online:</strong> UPI, card or net banking. Receipt issued at once.</li><li><strong>Offline:</strong> challan valid till ' + App.fmtDate(App.challanValidTill(D.demoToday)) + '; pay at the designated bank, then upload the Bank Receipt for verification.</li><li>The bill covers up to the current FY only. Advance payment is not accepted.</li></ul>'
+              : '<p class="small text-muted mb-0">Payment is not available for this bill right now.</p>') +
+          '</div></div>' +
+        '</div></div>';
+
+      // ---------- Pay online: freeze the bill as a PaymentIntent ----------
+      var btnOn = document.getElementById('btnPayOnline');
+      if (btnOn) btnOn.addEventListener('click', function () {
+        var intent = { intentNo: App.newIntentNo(), grId: s.grId, mode: 'Online', amount: d.totalPayable, snapshot: snapshot(),
+          createdAt: App.stamp(), status: 'Initiated', payerMobile: session.mobile };
+        D.intents.unshift(intent);
+        App.audit({ grId: s.grId, entity: 'PaymentIntent', action: 'Online payment intent ' + intent.intentNo + ' created · ' + inr(intent.amount) });
+        App.save();
+        window.location.href = 'pay-online.html?intent=' + encodeURIComponent(intent.intentNo);
+      });
+
+      // ---------- Pay offline: challan with validity ----------
+      var btnOff = document.getElementById('btnPayOffline');
+      var modal = btnOff ? new bootstrap.Modal(document.getElementById('offlineModal')) : null;
+      if (btnOff) btnOff.addEventListener('click', function () {
+        var till = App.challanValidTill(D.demoToday);
+        document.getElementById('offlineModalBody').innerHTML =
+          '<p>A challan for <strong>' + inr(d.totalPayable) + '</strong> will be generated for <span class="gr-gr-id">' + esc(s.grId) + '</span>.</p>' +
+          '<ul class="ps-3"><li>Valid till <strong>' + App.fmtDate(till) + '</strong> (15 days, never past 31 March).</li><li>Pay the exact amount at the designated bank (' + esc(D.config.lists.banks[0].name) + ').</li>' +
+          '<li>After paying, upload a scan or photo of the Bank Receipt from <strong>Upload Bank Receipt</strong> in the menu. Your system receipt is issued after the office verifies it.</li></ul>' +
+          (ch ? '<div class="alert alert-warning py-2 mb-0">Your earlier challan ' + esc(ch.challanNo) + ' will be cancelled.</div>' : '');
+        modal.show();
+      });
+      var btnConfirm = document.getElementById('btnConfirmChallan');
+      btnConfirm.addEventListener('click', function () {
+        if (ch) { ch.status = 'Cancelled'; }
+        var c = { challanNo: App.newChallanNo(), grId: s.grId, amount: d.totalPayable, generatedOn: D.demoToday, validTill: App.challanValidTill(D.demoToday),
+          status: 'Generated', generatedBy: 'Citizen', snapshot: snapshot(), payerMobile: session.mobile };
+        D.challans.unshift(c);
+        App.saveSiteForCitizen(session.mobile, s.grId);
+        App.audit({ grId: s.grId, entity: 'Challan', action: 'Offline challan ' + c.challanNo + ' generated · ' + inr(c.amount) + ' · valid till ' + App.fmtDate(c.validTill) });
+        App.notify(session.mobile, 'Offline challan generated', 'Challan ' + c.challanNo + ' for ' + inr(c.amount) + ' (' + s.grId + ') is valid till ' + App.fmtDate(c.validTill) + '. Pay the exact amount at the designated bank.', s.grId);
+        App.save();
+        window.location.href = 'challan.html?no=' + encodeURIComponent(c.challanNo);
+      });
+    })();
+  </script>
+</body>
+</html>

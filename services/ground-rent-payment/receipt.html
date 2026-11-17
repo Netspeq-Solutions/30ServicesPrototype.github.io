@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Ground Rent Receipt | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal" class="gr-doc-page">
+  <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
+  <div class="gr-no-print bg-white border-bottom py-2 mb-3">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <a href="#" class="btn btn-sm btn-outline-secondary" id="btnBack"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back</a>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-sm btn-primary" onclick="window.print()"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+  <main id="main-content" tabindex="-1" class="pb-4 px-2"><div id="docRoot"></div></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-docs.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr, Docs = window.GRDocs;
+      Docs.backButton();
+      var root = document.getElementById('docRoot');
+      var no = App.qs('no');
+      var p = D.payments.filter(function (x) { return x.receiptNo === no; })[0];
+      if (!p) { root.innerHTML = '<div class="gr-doc"><div class="alert alert-warning mb-0">Receipt ' + esc(no || '') + ' was not found.</div></div>'; return; }
+      var s = App.site(p.grId);
+      var u = App.ulb(s.ulb), w = App.ward(s.ulb, s.ward);
+      var d = App.dues(s);
+      var alloc = (d.allocations[p.receiptNo] || { lines: [], excess: 0 });
+      var covered = alloc.lines.map(function (l) { return l.fy === 'OB' ? 'Opening balance' : 'FY ' + l.fy; });
+
+      root.innerHTML = '<article class="gr-doc" aria-label="Ground rent receipt ' + esc(p.receiptNo) + '">' +
+        (p.status === 'Reversed' ? '<div class="gr-doc-watermark" aria-hidden="true">REVERSED</div>' : '') +
+        Docs.header('Ground Rent Receipt') +
+        (p.status === 'Reversed' ? '<div class="alert alert-danger py-2 small"><strong>This payment was reversed</strong> on ' + App.fmtDate(p.reversedOn) + ': ' + esc(p.reversalReason || '') + '. The dues it cleared are open again.</div>' : '') +
+        '<div class="row g-3 mb-3"><div class="col-sm-8"><table class="table table-sm table-borderless mb-0"><tbody>' +
+          Docs.row('Receipt No.', '<span class="font-monospace fw-bold">' + esc(p.receiptNo) + '</span>') +
+          Docs.row('Date of payment', App.fmtDate(p.paidOn)) +
+          Docs.row('GR ID', '<span class="gr-gr-id">' + esc(s.grId) + '</span>') +
+          Docs.row('Allottee(s)', s.owners.map(function (o) { return esc(o.name) + ' ' + esc(o.relation) + ' ' + esc(o.guardian); }).join('<br>')) +
+          Docs.row('Site', esc(s.address) + '<br><span class="text-muted">' + esc(s.locality) + ' &bull; ' + esc(u.name) + ' &bull; ' + esc(w ? w.name : s.ward) + (s.plotNo ? ' &bull; Plot ' + esc(s.plotNo) : '') + '</span>') +
+          Docs.row('Payment mode', esc(p.mode) + (p.method ? ' (' + esc(p.method) + ')' : '')) +
+          Docs.row(p.mode === 'Offline' ? 'Bank Receipt (BR) No.' : 'Transaction ref.', '<span class="font-monospace">' + esc(p.ref) + '</span>' + (p.brDate ? ' &bull; BR date ' + App.fmtDate(p.brDate) : '')) +
+          Docs.row('Bank / Gateway', esc(p.bank || '—')) +
+        '</tbody></table></div>' +
+        '<div class="col-sm-4 text-center"><div class="gr-qr mx-auto" id="qr"></div><div class="small text-muted mt-1">Scan to verify this receipt</div></div></div>' +
+        '<h2 class="h6 fw-bold">Amount allocated</h2>' +
+        '<table class="table table-sm table-bordered align-middle"><thead class="table-light"><tr><th scope="col">Period</th><th scope="col" class="text-end">Rent</th><th scope="col" class="text-end">Surcharge</th><th scope="col" class="text-end">Total</th></tr></thead><tbody>' +
+          (alloc.lines.length ? alloc.lines.map(function (l) {
+            return '<tr><td>' + (l.fy === 'OB' ? 'Opening balance (certified arrears)' : 'FY ' + esc(l.fy)) + '</td><td class="text-end">' + inr(l.rent) + '</td><td class="text-end">' + inr(l.surcharge) + '</td><td class="text-end">' + inr(l.rent + l.surcharge) + '</td></tr>';
+          }).join('') : '<tr><td colspan="4" class="text-muted">' + (p.status === 'Reversed' ? 'Allocation released on reversal.' : 'Allocation not available.') + '</td></tr>') +
+        '</tbody><tfoot><tr><th scope="row" colspan="3" class="text-end">Amount received</th><td class="text-end fw-bold">' + inr(p.amount) + '</td></tr></tfoot></table>' +
+        '<p class="mb-1"><strong>Amount in words:</strong> ' + esc(Docs.words(p.amount)) + ' only</p>' +
+        (covered.length ? '<p class="mb-1"><strong>Arrear from–to:</strong> ' + esc(covered[0] + (covered.length > 1 ? ' to ' + covered[covered.length - 1] : '')) + '</p>' : '') +
+        (p.excessFlagged ? '<p class="mb-1 text-danger"><strong>Excess paid at bank:</strong> ' + inr(p.excessFlagged) + ' &ndash; not recorded, flagged for refund outside the system.</p>' : '') +
+        '<p class="mb-3"><strong>Paid up to:</strong> FY ' + esc(d.paidUpToFy || '—') + ' &bull; <strong>Balance outstanding today:</strong> ' + inr(d.totalPayable) + '</p>' +
+        '<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 border-top pt-3 small text-muted">' +
+          '<div>Recorded by: ' + esc(p.recordedBy || '—') + '<br>This is a computer-generated receipt and does not need a signature.<br>Verify at: <span class="font-monospace">verify.html?type=receipt&amp;ref=' + esc(p.receiptNo) + '</span></div>' +
+          '<div class="text-end">Urban Development Department<br>Government of Sikkim</div></div>' +
+        Docs.prototypeNote() +
+      '</article>';
+      App.renderQr(document.getElementById('qr'), App.verifyUrl('receipt', p.receiptNo));
+      document.title = 'Receipt ' + p.receiptNo + ' | Online Ground Rent Payment System';
+    })();
+  </script>
+</body>
+</html>

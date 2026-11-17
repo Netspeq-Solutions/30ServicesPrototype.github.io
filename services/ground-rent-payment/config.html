@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Configuration | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+  <style>.gr-cfg-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; } .gr-cfg-tabs .nav-link { white-space: nowrap; min-height: 44px; }</style>
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+      <div><h1 class="h4 fw-bold mb-1">Configuration</h1><p class="text-muted small mb-0" id="cfgSub">Rates and rules live in effective-dated tables, so a new notification is entered as a new row. Old rows are never edited.</p></div>
+      <span id="modePill"></span>
+    </div>
+    <ul class="nav nav-tabs gr-cfg-tabs mb-3" role="tablist" id="cfgTabs"></ul>
+    <div id="cfgPane"></div>
+  </main>
+
+  <div class="modal fade" id="cfgModal" tabindex="-1" aria-labelledby="cfgModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"><form class="modal-content" id="cfgForm" novalidate>
+      <div class="modal-header"><h2 class="modal-title h6 fw-bold" id="cfgModalLabel">Edit</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body" id="cfgBody"></div>
+      <div class="modal-footer"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-sm btn-primary" id="cfgSubmit">Save</button></div>
+    </form></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, T = window.GRDues, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'configView');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'config' });
+      var edit = App.can('configEdit');
+      var $ = function (id) { return document.getElementById(id); };
+      $('modePill').innerHTML = edit ? App.pill('paid', 'System Admin – can edit') : App.pill('info', 'View only');
+
+      // ---------- Modal ----------
+      var modal = new bootstrap.Modal($('cfgModal'));
+      var handler = null;
+      function open(title, body, label, fn, tone) {
+        $('cfgModalLabel').innerHTML = title; $('cfgBody').innerHTML = body; $('cfgSubmit').textContent = label;
+        $('cfgSubmit').className = 'btn btn-sm btn-' + (tone || 'primary'); handler = fn; modal.show();
+      }
+      $('cfgForm').addEventListener('submit', function (e) { e.preventDefault(); if (handler && handler() !== false) { modal.hide(); App.save(); render(); } });
+      function v(id) { return ($(id) && $(id).value || '').trim(); }
+      function need(id, msg) { return App.fieldError($(id), v(id) ? '' : msg); }
+      var reasonField = '<div class="mt-2"><label for="cReason" class="form-label small fw-semibold">Reason <span class="text-danger">*</span></label><input id="cReason" class="form-control form-control-sm"></div>';
+      function btn(label, attr, tone) { return edit ? '<button type="button" class="btn btn-sm btn-' + (tone || 'outline-primary') + '" ' + attr + '>' + label + '</button>' : ''; }
+
+      var TABS = [['ulbs', 'Districts & ULBs'], ['wards', 'Wards & Localities'], ['rates', 'Rates & Surcharge'], ['rules', 'Rules & Lists'], ['users', 'Users & Roles']];
+      // HQ sees only the masters and rates; global rules and users are System Admin business.
+      if (session.role === 'hq') TABS = TABS.slice(0, 3);
+      // The District → ULB mapping is a System Admin master; others just pick a ULB.
+      if (session.role !== 'sysAdmin') TABS = TABS.filter(function (t) { return t[0] !== 'ulbs'; });
+      var tab = (location.hash || '#' + TABS[0][0]).slice(1);
+      if (!TABS.some(function (t) { return t[0] === tab; })) tab = TABS[0][0];
+      var wardUlb = App.staffScope(session) || (App.defaultUlb() === 'ALL' ? D.config.ulbs[0].code : App.defaultUlb()), rateTab = 'rent';
+
+      function card(title, body, action) {
+        return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (action || '') + '</div>' + body + '</div>';
+      }
+      function table(head, rows, caption) {
+        return '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">' + caption + '</caption><thead><tr>' + head.map(function (h) { return '<th scope="col"' + (h.end ? ' class="text-end"' : '') + '>' + (h.t || h) + '</th>'; }).join('') + '</tr></thead><tbody>' + (rows || '<tr><td colspan="' + head.length + '" class="text-center text-muted py-3">None.</td></tr>') + '</tbody></table></div>';
+      }
+
+      // ================= Masters 1: District → ULB → Type =================
+      function typeName(code) { var c = D.config.rateCategories.filter(function (x) { return x.code === code; })[0]; return c ? c.name : code; }
+      function wardsNamed(u) { return App.wardsOf(u.code).filter(function (w) { return (w.localities || []).length; }).length; }
+      function paneUlbs() {
+        var rows = '';
+        D.config.districts.forEach(function (dist) {
+          var list = D.config.ulbs.filter(function (u) { return u.district === dist; });
+          list.forEach(function (u, i) {
+            var p = u.migrationStatus === 'Live' ? App.pill('paid', 'Live') : u.migrationStatus === 'Data received' ? App.pill('pending', 'Data received') : App.pill('closed', 'Not live');
+            var wards = App.wardsOf(u.code).length;
+            rows += '<tr>' + (i === 0 ? '<th scope="rowgroup" rowspan="' + list.length + '" class="fw-bold small align-top">' + esc(dist) + '</th>' : '') +
+              '<td class="fw-semibold small">' + esc(u.name) + '</td><td class="small">' + esc(typeName(u.category)) + '</td>' +
+              '<td class="text-end small">' + wards + (u.category === 'ONA' ? ' area' + (wards > 1 ? 's' : '') : '') + '<div class="text-muted">' + wardsNamed(u) + ' with localities</div></td><td>' + p + '</td>' +
+              '<td class="text-end text-nowrap"><div class="d-inline-flex gap-1"><button type="button" class="btn btn-sm btn-outline-secondary" data-goward="' + u.code + '">Wards</button>' + btn('Edit', 'data-ulb="' + u.code + '"') + '</div></td></tr>';
+          });
+        });
+        return card('Districts &amp; ULBs', table(['District', 'Municipality / ULB', 'Type', { t: 'Wards', end: true }, 'Status', { t: 'Action', end: true }], rows, 'Districts and ULBs') +
+            '<div class="card-footer bg-white small text-muted">The type decides the rent rate (Rates &amp; Surcharge tab). Adding a ULB creates its wards as Ward 1 … Ward N (a bazaar usually has one area); name them and add localities in the Wards &amp; Localities tab.</div>',
+            btn('<i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add ULB', 'id="btnAddUlb"', 'primary'));
+      }
+      function ulbForm(u) {
+        var isNew = !u;
+        u = u || { code: '', name: '', category: 'NP', district: D.config.districts[0], wardCount: 5, cutOffDate: '', goLiveFy: '', migrationStatus: 'Not started', active: false };
+        var locked = u.migrationStatus === 'Live';
+        var opt = function (list, sel) { return list.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === sel ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join(''); };
+        open(isNew ? 'Add ULB' : 'Edit ' + esc(u.name),
+          '<div class="row g-2"><div class="col-md-6"><label for="uDist" class="form-label small fw-semibold">District <span class="text-danger">*</span></label><select id="uDist" class="form-select form-select-sm">' + opt(D.config.districts.map(function (d) { return [d, d]; }), u.district) + '</select></div>' +
+          '<div class="col-md-6"><label for="uCat" class="form-label small fw-semibold">Type <span class="text-danger">*</span></label><select id="uCat" class="form-select form-select-sm">' + opt(D.config.rateCategories.map(function (c) { return [c.code, c.name]; }), u.category) + '</select></div>' +
+          '<div class="col-md-8"><label for="uName" class="form-label small fw-semibold">Municipality / ULB name <span class="text-danger">*</span></label><input id="uName" class="form-control form-control-sm" value="' + esc(u.name) + '"></div>' +
+          '<div class="col-md-4"><label for="uWards" class="form-label small fw-semibold">No. of wards / areas <span class="text-danger">*</span></label><input id="uWards" type="number" min="1" max="60" class="form-control form-control-sm" value="' + esc(u.wardCount || App.wardsOf(u.code).length || '') + '"></div>' +
+          (isNew ? '<div class="col-md-4"><label for="uCode" class="form-label small fw-semibold">Short code <span class="text-danger">*</span></label><input id="uCode" class="form-control form-control-sm text-uppercase" maxlength="4" placeholder="e.g. NMC"><div class="form-text">Used in the GR ID.</div></div>' : '') +
+          '</div>' +
+          '<details class="mt-3"' + (isNew ? '' : ' open') + '><summary class="small fw-semibold">Go-live (when the ULB starts using the system)</summary>' +
+          (locked ? '<div class="alert alert-warning small py-2 mt-2 mb-0">This ULB is Live; the go-live dates are locked.</div>' : '') +
+          '<div class="row g-2 mt-1"><div class="col-6 col-md-4"><label for="uCut" class="form-label small fw-semibold">Register cut-off date</label><input id="uCut" type="date" class="form-control form-control-sm" value="' + esc(u.cutOffDate || '') + '"' + (locked ? ' disabled' : '') + '></div>' +
+          '<div class="col-6 col-md-4"><label for="uGo" class="form-label small fw-semibold">Go-live FY</label><input id="uGo" class="form-control form-control-sm" placeholder="2027-28" value="' + esc(u.goLiveFy || '') + '"' + (locked ? ' disabled' : '') + '></div>' +
+          '<div class="col-md-4"><label for="uStatus" class="form-label small fw-semibold">Status</label><select id="uStatus" class="form-select form-select-sm"' + (locked ? ' disabled' : '') + '>' + opt([['Not started', 'Not live'], ['Data received', 'Data received'], ['Live', 'Live']], u.migrationStatus) + '</select></div></div></details>' +
+          reasonField, 'Save', function () {
+            var ok = need('uName', 'Enter the name.') & need('cReason', 'A reason is required.');
+            var n = +v('uWards');
+            ok = App.fieldError($('uWards'), n >= 1 && n <= 60 ? '' : 'Enter the number of wards.') && ok;
+            if (isNew) {
+              var code = v('uCode').toUpperCase();
+              ok = App.fieldError($('uCode'), !code ? 'Enter a short code.' : D.config.ulbs.some(function (x) { return x.code === code; }) ? 'This code is already used.' : '') && ok;
+            }
+            var existing = App.wardsOf(u.code, true).length;
+            if (!isNew && n < existing) ok = App.fieldError($('uWards'), 'This ULB already has ' + existing + ' wards. Wards are never deleted.') && false;
+            var cut = v('uCut'), go = v('uGo'), st = v('uStatus');
+            if (!locked) {
+              if (go && !/^\d{4}-\d{2}$/.test(go)) ok = App.fieldError($('uGo'), 'Use the format 2027-28.') && false;
+              else if (cut && go) {
+                var expected = T.fyLabel(T.fyOfDate(T.toDate(cut)) + 1);
+                ok = App.fieldError($('uGo'), go === expected ? '' : 'Go-live FY must be the year after the cut-off: ' + expected + '.') && ok;
+              }
+              if (st === 'Live' && (!cut || !go)) ok = App.fieldError($('uStatus'), 'Set the cut-off date and go-live FY first.') && false;
+            }
+            if (!ok) return false;
+            var before = JSON.parse(JSON.stringify(u));
+            if (isNew) { u.code = v('uCode').toUpperCase(); D.config.ulbs.push(u); }
+            u.name = v('uName'); u.category = v('uCat'); u.district = v('uDist'); u.wardCount = n;
+            if (!locked) { u.cutOffDate = cut || null; u.goLiveFy = go || null; u.migrationStatus = st; u.active = st === 'Live'; }
+            // Create the missing wards as Ward k … Ward n.
+            for (var k = existing + 1; k <= n; k++) D.config.wards.push({ ulb: u.code, code: 'W' + (k < 10 ? '0' : '') + k, name: 'Ward ' + k, localities: [] });
+            App.audit({ grId: null, entity: 'ULB', action: (isNew ? 'ULB added ' : 'ULB updated ') + u.code + ' · ' + u.district + ' · ' + typeName(u.category) + ' · ' + n + ' wards', reason: v('cReason'), before: before, after: u });
+            App.toast('ULB saved.');
+          });
+      }
+
+      // ================= Masters 2: ULB → Wards → Localities =================
+      function paneWards() {
+        var cur = App.ulb(wardUlb);
+        // Only the ULB is chosen; its district comes from the District → ULB master.
+        var ulbOpts = D.config.ulbs.filter(function (u) { return !App.staffScope(session) || u.code === App.staffScope(session); }).map(function (u) { return '<option value="' + u.code + '"' + (u.code === wardUlb ? ' selected' : '') + '>' + esc(u.name) + '</option>'; }).join('');
+        var rows = App.wardsOf(wardUlb, true).map(function (w) {
+          var used = function (l) { return D.sites.filter(function (s) { return s.ulb === w.ulb && s.ward === w.code && s.locality === l; }).length; };
+          var count = D.sites.filter(function (s) { return s.ulb === w.ulb && s.ward === w.code; }).length;
+          var chips = (w.localities || []).map(function (l) {
+            var n = used(l);
+            return '<span class="badge rounded-pill text-bg-light border fw-normal me-1 mb-1 d-inline-flex align-items-center gap-1">' + esc(l) + (n ? ' <span class="text-muted">(' + n + ')</span>' : '') +
+              (edit && !n ? '<button type="button" class="btn-close" style="width:.5rem;height:.5rem;" aria-label="Remove locality ' + esc(l) + '" data-lrem="' + w.code + '|' + esc(l) + '"></button>' : '') + '</span>';
+          }).join('') || '<span class="small text-muted">No localities yet</span>';
+          return '<tr><td class="fw-semibold small text-nowrap">' + esc(w.name) + '</td><td>' + chips + '</td><td class="text-end small">' + count + '</td>' +
+            '<td class="text-end text-nowrap"><div class="d-inline-flex gap-1">' + btn('<i class="bi bi-plus" aria-hidden="true"></i>Locality', 'data-ladd="' + w.code + '"') + btn('Rename', 'data-wedit="' + w.code + '"', 'outline-secondary') + '</div></td></tr>';
+        }).join('');
+        return '<div class="row g-2 align-items-end mb-3" style="max-width:640px;"><div class="col-sm-8"><label for="wUlb" class="form-label small fw-semibold">Municipality / ULB</label><select id="wUlb" class="form-select form-select-sm">' + ulbOpts + '</select></div>' +
+          '<div class="col-sm-4"><div class="small text-muted">District</div><div class="small fw-semibold">' + esc(cur.district) + '</div></div></div>' +
+          card(esc(cur.name) + ' &ndash; ' + App.wardsOf(wardUlb, true).length + ' wards', table(['Ward', 'Localities', { t: 'Accounts', end: true }, { t: 'Action', end: true }], rows, 'Wards and localities') +
+            '<div class="card-footer bg-white small text-muted">When a site is created, staff pick the ward and then one of its localities. A locality in use cannot be removed.</div>',
+            btn('<i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Ward', 'id="btnAddWard"', 'primary'));
+      }
+      function wardForm(w) {
+        var isNew = !w;
+        open(isNew ? 'Add ward' : 'Rename ward', '<label for="wName" class="form-label small fw-semibold">Ward name <span class="text-danger">*</span></label><input id="wName" class="form-control form-control-sm" value="' + esc(w ? w.name : '') + '" placeholder="e.g. Arithang">' +
+          (isNew ? '<label for="wLocs" class="form-label small fw-semibold mt-2">Localities</label><textarea id="wLocs" rows="3" class="form-control form-control-sm" placeholder="One locality per line"></textarea>' : '') + reasonField, 'Save', function () {
+            if (!(need('wName', 'Enter the ward name.') & need('cReason', 'A reason is required.'))) return false;
+            var before = w ? JSON.parse(JSON.stringify(w)) : null;
+            if (isNew) {
+              var k = App.wardsOf(wardUlb, true).length + 1;
+              w = { ulb: wardUlb, code: 'W' + (k < 10 ? '0' : '') + k, localities: v('wLocs').split('\n').map(function (x) { return x.trim(); }).filter(Boolean), active: true };
+              D.config.wards.push(w);
+              var u = App.ulb(wardUlb); if (u.wardCount < k) u.wardCount = k;
+            }
+            w.name = v('wName');
+            App.audit({ grId: null, entity: 'Ward', action: (isNew ? 'Ward added ' : 'Ward renamed ') + w.ulb + '/' + w.code + ' · ' + w.name, reason: v('cReason'), before: before, after: w });
+            App.toast('Ward saved.');
+          });
+      }
+      function localityForm(w) {
+        open('Add locality to ' + esc(w.name), '<label for="lName" class="form-label small fw-semibold">Locality name(s) <span class="text-danger">*</span></label><textarea id="lName" rows="3" class="form-control form-control-sm" placeholder="One locality per line"></textarea>', 'Add', function () {
+          var names = v('lName').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+          if (!App.fieldError($('lName'), names.length ? '' : 'Enter at least one locality.')) return false;
+          w.localities = w.localities || [];
+          names.forEach(function (n) { if (w.localities.indexOf(n) === -1) w.localities.push(n); });
+          App.audit({ grId: null, entity: 'Ward', action: 'Localities added to ' + w.ulb + '/' + w.name + ': ' + names.join(', ') });
+          App.toast('Locality added.');
+        });
+      }
+
+      // ================= Rates & Surcharge =================
+      function targetName(r) {
+        if (r.level === 'Category') { var c = D.config.rateCategories.filter(function (x) { return x.code === r.target; })[0]; return c ? c.name : r.target; }
+        if (r.level === 'ULB') { var u = App.ulb(r.target); return u ? u.name : r.target; }
+        var wp = r.target.split('/'); return App.ulb(wp[0]).name + ' – ' + App.wardName(wp[0], wp[1]);
+      }
+      function paneRates() {
+        var sub = '<div class="btn-group btn-group-sm mb-3" role="group" aria-label="Rate tables"><button type="button" class="btn btn-' + (rateTab === 'rent' ? '' : 'outline-') + 'primary" data-rt="rent">Rent rates</button><button type="button" class="btn btn-' + (rateTab === 'sur' ? '' : 'outline-') + 'primary" data-rt="sur">Surcharge</button></div>';
+        if (rateTab === 'rent') {
+          var rows = D.config.rateRules.slice().sort(function (a, b) { return a.level === b.level ? (a.target === b.target ? (a.from < b.from ? 1 : -1) : (a.target < b.target ? -1 : 1)) : (a.level < b.level ? -1 : 1); }).map(function (r) {
+            return '<tr><td class="small">' + esc(r.level) + '</td><td class="small fw-semibold">' + esc(targetName(r)) + '</td><td class="text-end fw-bold">' + inr(r.rate) + '</td><td class="small">' + App.fmtDate(r.from) + ' – ' + (r.to ? App.fmtDate(r.to) : 'in force') + '</td>' +
+              '<td class="small">Notif. ' + esc(r.notificationNo || '—') + (r.gazetteNo ? ' &bull; Gazette ' + esc(r.gazetteNo) : '') + (r.gazetteFile ? '<div>' + App.fileLink(r.gazetteFile, null) + '</div>' : '') + '</td><td>' + (r.to ? App.pill('closed', 'Closed') : App.pill('paid', 'In force')) + '</td></tr>';
+          }).join('');
+          return sub + card('Rent rate history (₹ per 100 sq ft)', table(['Level', 'Applies to', { t: 'Rate', end: true }, 'Effective', 'Notification', 'Status'], rows, 'Rate history') +
+            '<div class="card-footer bg-white small text-muted">Lookup order: Ward → ULB → Category; the most specific rate wins. A row cannot be edited once used; add a revision instead. Only rates from the go-live FY onward are needed.</div>', btn('<i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Revision', 'id="btnAddRate"', 'primary'));
+        }
+        var srows = D.config.surchargeRules.slice().sort(function (a, b) { return a.from < b.from ? 1 : -1; }).map(function (r) {
+          return '<tr><td class="fw-bold">' + r.rate + '%</td><td class="small">' + App.fmtDate(r.from) + ' – ' + (r.to ? App.fmtDate(r.to) : 'in force') + '</td><td class="small">' + (r.method === 'ONCE_PER_OVERDUE_YEAR' ? 'Once per overdue year' : 'Per completed year of delay') + '</td><td class="small">' + esc(r.ref || '—') + '</td><td>' + (r.to ? App.pill('closed', 'Closed') : App.pill('paid', 'In force')) + '</td></tr>';
+        }).join('');
+        return sub + card('Surcharge history', table(['Rate', 'Effective', 'Method', 'Notification', 'Status'], srows, 'Surcharge history') +
+          '<div class="card-footer bg-white small text-muted">Applied on 1 April after the 31 March due date at the rate in force that day. The method is pending confirmation (Q2). The certified opening balance is not surcharged again (Q12).</div>', btn('<i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Surcharge Revision', 'id="btnAddSur"', 'primary'));
+      }
+
+      function rateForm() {
+        var catOpts = D.config.rateCategories.map(function (c) { return '<option value="' + c.code + '">' + esc(c.code + ' – ' + c.name) + '</option>'; }).join('');
+        var ulbOpts = D.config.ulbs.map(function (u) { return '<option value="' + u.code + '">' + esc(u.name) + '</option>'; }).join('');
+        var wardOpts = D.config.wards.map(function (w) { return '<option value="' + w.ulb + '/' + w.code + '">' + esc(App.ulb(w.ulb).name + ' – ' + w.name) + '</option>'; }).join('');
+        open('Add rate revision', '<div class="row g-2"><div class="col-md-4"><label for="rLevel" class="form-label small fw-semibold">1. Level</label><select id="rLevel" class="form-select form-select-sm"><option>Category</option><option>ULB</option><option>Ward</option></select></div>' +
+          '<div class="col-md-8"><label for="rTarget" class="form-label small fw-semibold">Target</label><select id="rTarget" class="form-select form-select-sm">' + catOpts + '</select></div>' +
+          '<div class="col-6 col-md-4"><label for="rRate" class="form-label small fw-semibold">2. New rate / 100 sq ft <span class="text-danger">*</span></label><input id="rRate" type="number" min="1" class="form-control form-control-sm"></div>' +
+          '<div class="col-6 col-md-4"><label for="rFrom" class="form-label small fw-semibold">Effective from <span class="text-danger">*</span></label><input id="rFrom" type="date" class="form-control form-control-sm"></div>' +
+          '<div class="col-6 col-md-4"><label for="rNotif" class="form-label small fw-semibold">Notification no. <span class="text-danger">*</span></label><input id="rNotif" class="form-control form-control-sm"></div>' +
+          '<div class="col-6 col-md-4"><label for="rNotifDate" class="form-label small fw-semibold">Notification date <span class="text-danger">*</span></label><input id="rNotifDate" type="date" class="form-control form-control-sm"></div>' +
+          '<div class="col-md-8"><label for="rGazette" class="form-label small fw-semibold">Gazette PDF <span class="text-danger">*</span></label><input id="rGazette" type="file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png"></div></div>' +
+          '<div class="alert alert-light border small mt-2 mb-0" id="impact"><strong>3. Impact preview</strong> appears once the rate and date are entered.</div>' + reasonField, 'Save Revision', function () {
+            var ok = need('rRate', 'Enter the rate.') & need('rFrom', 'Enter the effective date.') & need('rNotif', 'Enter the notification no.') & need('rNotifDate', 'Enter the notification date.') & need('cReason', 'A reason is required.');
+            ok = App.fieldError($('rGazette'), App.checkFile($('rGazette'), true)) && ok;
+            if (!ok) return false;
+            var level = v('rLevel'), target = v('rTarget'), from = v('rFrom');
+            var prev = D.config.rateRules.filter(function (r) { return r.level === level && r.target === target && !r.to; })[0];
+            if (prev && from <= prev.from) { App.fieldError($('rFrom'), 'Must be after the current row (from ' + App.fmtDate(prev.from) + ').'); return false; }
+            var imp = impact(level, target, +v('rRate'), from);
+            // Freeze rent on years already fully paid – they stay unchanged.
+            imp.freeze.forEach(function (f) { var s = App.site(f.grId); s.frozenRent = s.frozenRent || {}; s.frozenRent[f.fy] = f.rent; });
+            if (prev) { var dayBefore = T.toDate(from); dayBefore.setDate(dayBefore.getDate() - 1); prev.to = T.iso(dayBefore); }
+            var row = { id: 'RR-' + String(D.config.rateRules.length + 1).padStart(3, '0'), level: level, target: target, rate: +v('rRate'), from: from, to: null, notificationNo: v('rNotif'), notificationDate: v('rNotifDate'), gazetteFile: App.addAttachment(null, 'Gazette notification', $('rGazette')), recordedOn: D.demoToday };
+            D.config.rateRules.push(row);
+            App.audit({ grId: null, entity: 'RateRule', action: 'Rate revision ' + row.id + ' · ' + level + ' ' + targetName(row) + ' · ' + inr(row.rate) + ' from ' + App.fmtDate(from) + ' · ' + imp.sites + ' sites affected', reason: v('cReason'), file: row.gazetteFile, before: prev ? { id: prev.id, rate: prev.rate, to: prev.to } : null, after: row });
+            App.toast('Rate revision saved. ' + imp.sites + ' sites recalculated; paid years and issued challans unchanged.');
+          });
+        function fillTargets() { $('rTarget').innerHTML = { Category: catOpts, ULB: ulbOpts, Ward: wardOpts }[v('rLevel')]; preview(); }
+        function preview() {
+          if (!v('rRate') || !v('rFrom')) { $('impact').innerHTML = '<strong>3. Impact preview</strong> appears once the rate and date are entered.'; return; }
+          var imp = impact(v('rLevel'), v('rTarget'), +v('rRate'), v('rFrom'));
+          $('impact').innerHTML = '<strong>3. Impact preview</strong><ul class="mb-0 ps-3"><li>Sites affected: <strong>' + imp.sites + '</strong></li><li>Annual demand FY ' + imp.fy + ': <strong>' + inr(imp.oldDemand) + ' → ' + inr(imp.newDemand) + '</strong></li>' +
+            '<li>FYs recalculated: ' + (imp.fys.length ? imp.fys.map(function (f) { return 'FY ' + f; }).join(', ') : 'none yet (future date)') + '</li><li>Paid years kept unchanged: ' + imp.freeze.length + '; issued challans keep their frozen amount.</li></ul>';
+        }
+        $('rLevel').addEventListener('change', fillTargets);
+        ['rTarget', 'rRate', 'rFrom'].forEach(function (id) { $(id).addEventListener('input', preview); $(id).addEventListener('change', preview); });
+      }
+      // Compare each active site's rent for the FY of the effective date, old vs new rule set.
+      function impact(level, target, rate, from) {
+        var fy = T.fyOfDate(from);
+        var test = JSON.parse(JSON.stringify(D));
+        var prev = test.config.rateRules.filter(function (r) { return r.level === level && r.target === target && !r.to; })[0];
+        if (prev && from > prev.from) { var db = T.toDate(from); db.setDate(db.getDate() - 1); prev.to = T.iso(db); }
+        test.config.rateRules.push({ id: 'NEW', level: level, target: target, rate: rate, from: from, to: null });
+        var asOf = T.iso(new Date(Math.max(T.toDate(D.demoToday), new Date(fy, 3, 1))));
+        var res = { sites: 0, oldDemand: 0, newDemand: 0, fy: T.fyLabel(fy), fys: [], freeze: [] };
+        var curFy = T.fyOfDate(D.demoToday);
+        for (var y = fy; y <= curFy; y++) res.fys.push(T.fyLabel(y));
+        D.sites.filter(function (s) { return s.status === 'Active' && App.ulb(s.ulb).goLiveFy; }).forEach(function (s) {
+          var a = T.computeDues(s, asOf, D), b = T.computeDues(s, asOf, test);
+          if (a.blocked || b.blocked) return;
+          res.oldDemand += a.annualRent; res.newDemand += b.annualRent;
+          var cur = T.computeDues(s, D.demoToday, D);
+          var changed = a.annualRent !== b.annualRent;
+          cur.years.forEach(function (yr) {
+            if (yr.fy >= fy && yr.balance === 0) {
+              var nb = T.computeDues(s, D.demoToday, test).years.filter(function (z) { return z.fy === yr.fy; })[0];
+              if (nb && nb.rent !== yr.rent) { res.freeze.push({ grId: s.grId, fy: yr.label, rent: yr.rent }); changed = true; }
+            }
+          });
+          if (changed) res.sites++;
+        });
+        return res;
+      }
+
+      function surForm() {
+        open('Add surcharge revision', '<div class="row g-2"><div class="col-4"><label for="sRate" class="form-label small fw-semibold">Rate % <span class="text-danger">*</span></label><input id="sRate" type="number" step="0.1" min="0" class="form-control form-control-sm"></div>' +
+          '<div class="col-8"><label for="sFrom" class="form-label small fw-semibold">Effective from <span class="text-danger">*</span></label><input id="sFrom" type="date" class="form-control form-control-sm"></div>' +
+          '<div class="col-md-6"><label for="sMethod" class="form-label small fw-semibold">Method</label><select id="sMethod" class="form-select form-select-sm"><option value="ONCE_PER_OVERDUE_YEAR">Once per overdue year</option><option value="PER_COMPLETED_YEAR_OF_DELAY">Per completed year of delay</option></select></div>' +
+          '<div class="col-md-6"><label for="sRef" class="form-label small fw-semibold">Notification ref. <span class="text-danger">*</span></label><input id="sRef" class="form-control form-control-sm"></div>' +
+          '<div class="col-12"><label for="sGazette" class="form-label small fw-semibold">Gazette PDF <span class="text-danger">*</span></label><input id="sGazette" type="file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png"></div></div>' +
+          '<div class="alert alert-light border small mt-2 mb-0">Applies only to years that become overdue on or after the effective date (1 April assessments). Years already surcharged are not changed.</div>' + reasonField, 'Save Revision', function () {
+            var ok = need('sRate', 'Enter the rate.') & need('sFrom', 'Enter the date.') & need('sRef', 'Enter the notification ref.') & need('cReason', 'A reason is required.');
+            ok = App.fieldError($('sGazette'), App.checkFile($('sGazette'), true)) && ok;
+            var prev = D.config.surchargeRules.filter(function (r) { return !r.to; })[0];
+            if (ok && prev && v('sFrom') <= prev.from) ok = App.fieldError($('sFrom'), 'Must be after ' + App.fmtDate(prev.from) + '.') && false;
+            if (!ok) return false;
+            if (prev) { var db = T.toDate(v('sFrom')); db.setDate(db.getDate() - 1); prev.to = T.iso(db); }
+            var row = { id: 'SR-' + String(D.config.surchargeRules.length + 1).padStart(3, '0'), rate: +v('sRate'), from: v('sFrom'), to: null, method: v('sMethod'), ref: v('sRef'), gazetteFile: App.addAttachment(null, 'Gazette notification', $('sGazette')) };
+            D.config.surchargeRules.push(row);
+            App.audit({ grId: null, entity: 'SurchargeRule', action: 'Surcharge revision ' + row.id + ' · ' + row.rate + '% from ' + App.fmtDate(row.from) + ' · ' + row.method, reason: v('cReason'), file: row.gazetteFile });
+            App.toast('Surcharge revision saved.');
+          });
+      }
+
+      // ================= Rules & Lists =================
+      var RULES = [
+        ['makerChecker', 'Maker–checker approval', [[true, 'On'], [false, 'Off']]],
+        ['partialOfflinePayment', 'Partial payment (offline)', [[true, 'Allowed, oldest dues first'], [false, 'Not allowed']]],
+        ['allocationOrder', 'Allocation within a FY', [['SURCHARGE_FIRST', 'Surcharge then rent'], ['RENT_FIRST', 'Rent then surcharge']]],
+        ['rounding', 'Rounding', [['NEAREST', 'Each line to nearest rupee'], ['UP', 'Each line up']]],
+        ['newStructureFrom', 'New structure chargeable from', [['SAME_FY', 'FY of its order date (full year)'], ['NEXT_FY', 'Next FY']]],
+        ['structureRemovalStops', 'Structure removal stops charge from', [['NEXT_FY', 'Next FY'], ['SAME_FY', 'Same FY']]],
+        ['midYearRevision', 'Mid-year rate revision', [['PRO_RATA_MONTH', 'Pro-rata by month']]],
+        ['advancePayment', 'Advance payment', [[false, 'Not allowed (currently stopped)']]]
+      ];
+      function paneRules() {
+        var s = D.config.settings;
+        var rows = RULES.map(function (r) {
+          var cur = r[2].filter(function (o) { return o[0] === s[r[0]]; })[0];
+          return '<tr><td class="fw-semibold small">' + esc(r[1]) + '</td><td class="small">' + esc(cur ? cur[1] : String(s[r[0]])) + '</td><td class="text-end text-nowrap">' + (r[2].length > 1 ? btn('Change', 'data-rule="' + r[0] + '"') : '<span class="small text-muted">Fixed</span>') + '</td></tr>';
+        }).join('') + '<tr><td class="fw-semibold small">Financial year &amp; due date</td><td class="small">1 April – 31 March; due 31 March closing the FY</td><td class="text-end"><span class="small text-muted">Fixed</span></td></tr>' +
+          '<tr><td class="fw-semibold small">Offline challan validity</td><td class="small">' + s.challanValidityDays + ' days, never past 31 March</td><td class="text-end text-nowrap">' + btn('Change', 'data-rule="challanValidityDays"') + '</td></tr>';
+        var lists = function (key, title) {
+          var items = D.config.lists[key].map(function (x) { return '<li class="list-group-item small">' + esc(typeof x === 'string' ? x : x.name + ' – ' + x.branch) + '</li>'; }).join('');
+          return '<div class="col-md-6">' + card(title, '<ul class="list-group list-group-flush">' + items + '</ul>', btn('<i class="bi bi-plus" aria-hidden="true"></i>Add', 'data-list="' + key + '"')) + '</div>';
+        };
+        var rem = D.config.reminders.map(function (r) { return '<tr><td class="small fw-semibold">' + esc(r.on) + '</td><td class="small">' + esc(r.audience) + '</td><td class="small">' + esc(r.text) + '</td><td class="small">' + esc(r.channel) + '</td></tr>'; }).join('');
+        var out = D.outbox.slice(0, 8).map(function (o) { return '<li class="list-group-item small"><span class="text-muted">' + esc(o.at) + ' &bull; ' + esc(o.to) + '</span><br>' + esc(o.text) + '</li>'; }).join('') || '<li class="list-group-item small text-muted">No messages sent during this demo yet.</li>';
+        return card('Global rules (Section 5.7)', table(['Rule', 'Current value', { t: 'Action', end: true }], rows, 'Global rules')) +
+          '<div class="row g-3">' + lists('structureTypes', 'Structure types') + lists('banks', 'Banks / branches') + lists('transferReasons', 'Transfer reasons') + lists('documentTypes', 'Document types') + '</div>' +
+          card('Reminder schedule (SMS &amp; email stubs)', table(['Date', 'Who', 'Message', 'Channel'], rem, 'Reminders')) +
+          card('Message outbox (simulated)', '<ul class="list-group list-group-flush">' + out + '</ul>');
+      }
+      function ruleForm(key) {
+        var s = D.config.settings;
+        if (key === 'challanValidityDays') {
+          open('Offline challan validity', '<label for="rVal" class="form-label small fw-semibold">Days</label><input id="rVal" type="number" min="1" max="60" class="form-control form-control-sm" value="' + s.challanValidityDays + '">' + reasonField, 'Save', function () {
+            var n = +v('rVal');
+            if (!(App.fieldError($('rVal'), n >= 1 && n <= 60 ? '' : 'Enter 1–60 days.') & need('cReason', 'A reason is required.'))) return false;
+            App.audit({ entity: 'GlobalSetting', grId: null, action: 'Challan validity ' + s.challanValidityDays + ' → ' + n + ' days', reason: v('cReason') });
+            s.challanValidityDays = n; App.toast('Rule saved.');
+          });
+          return;
+        }
+        var r = RULES.filter(function (x) { return x[0] === key; })[0];
+        open(esc(r[1]), r[2].map(function (o, i) { return '<div class="form-check"><input class="form-check-input" type="radio" name="rOpt" id="ro' + i + '" value="' + i + '"' + (o[0] === s[key] ? ' checked' : '') + '><label class="form-check-label small" for="ro' + i + '">' + esc(o[1]) + '</label></div>'; }).join('') + reasonField, 'Save', function () {
+          if (!need('cReason', 'A reason is required.')) return false;
+          var o = r[2][+document.querySelector('input[name="rOpt"]:checked').value];
+          App.audit({ entity: 'GlobalSetting', grId: null, action: r[1] + ': ' + String(s[key]) + ' → ' + String(o[0]), reason: v('cReason') });
+          s[key] = o[0]; App.toast('Rule saved.');
+        });
+      }
+      function listForm(key) {
+        var bank = key === 'banks';
+        open('Add item', '<label for="lVal" class="form-label small fw-semibold">' + (bank ? 'Bank name' : 'Value') + ' <span class="text-danger">*</span></label><input id="lVal" class="form-control form-control-sm">' +
+          (bank ? '<label for="lBranch" class="form-label small fw-semibold mt-2">Branch</label><input id="lBranch" class="form-control form-control-sm">' : '') + reasonField, 'Add', function () {
+            if (!(need('lVal', 'Enter a value.') & need('cReason', 'A reason is required.'))) return false;
+            D.config.lists[key].push(bank ? { name: v('lVal'), branch: v('lBranch') } : v('lVal'));
+            App.audit({ entity: 'List', grId: null, action: 'Added to ' + key + ': ' + v('lVal'), reason: v('cReason') });
+            App.toast('Item added.');
+          });
+      }
+
+      // ================= Users & Roles =================
+      var PERM_ROWS = [['Search accounts, view bill & account', 'Own / any', 'Yes', 'Yes', 'View', 'Yes'], ['Pay online / offline challan', 'Yes', 'On behalf', 'Yes', '–', 'Yes'], ['Create / edit allottee & site', '–', 'Yes', 'Yes', '–', 'Yes'],
+        ['Add / end structures', '–', 'Yes', 'Yes', '–', 'Yes'], ['Record transfer', '–', 'Submit', 'Submit & approve', '–', 'Yes'], ['Approve bank payments (BR)', '–', 'Yes', 'Yes', '–', 'Yes'],
+        ['Adjustment / waiver / reversal', '–', '–', 'Yes (reason + file)', '–', 'Yes (reason + file)'],
+        ['Configure ULBs, wards, rates, rules', '–', '–', 'View', 'View', 'Yes'], ['Manage staff users & roles', '–', '–', '–', '–', 'Yes'], ['Reports', '–', 'Own ULB', 'Own ULB', 'All ULBs + state totals', 'All ULBs'], ['Audit log', '–', 'Own ULB', 'Own ULB', 'All (read-only)', 'All']];
+      function paneUsers() {
+        var rows = D.users.map(function (u) {
+          return '<tr><td class="fw-semibold small">' + esc(u.name) + '<div class="text-muted font-monospace">' + esc(u.id) + '</div></td><td class="small">' + esc(D.staffRoles[u.role].title) + '</td><td class="small">' + esc(u.ulbs[0] === 'ALL' ? 'All ULBs' : u.ulbs.map(function (c) { var x = App.ulb(c); return x ? x.name : c; }).join(', ')) + '</td>' +
+            '<td class="small">' + esc(u.login) + '</td><td>' + (u.active ? App.pill('paid', 'Active') : App.pill('closed', 'Disabled')) + '</td><td class="text-end text-nowrap">' + (App.can('users') ? '<button type="button" class="btn btn-sm btn-outline-primary" data-user="' + u.id + '">Edit</button>' : '') + '</td></tr>';
+        }).join('');
+        var matrix = '<div class="table-responsive"><table class="table table-sm table-bordered mb-0 small"><caption class="visually-hidden">Permissions by role</caption><thead class="table-light"><tr><th scope="col">Permission</th><th scope="col">Citizen</th><th scope="col">Supervisor</th><th scope="col">Dept. Admin</th><th scope="col">HQ</th><th scope="col">System Admin</th></tr></thead><tbody>' +
+          PERM_ROWS.map(function (r) { return '<tr>' + r.map(function (c, i) { return i ? '<td>' + esc(c) + '</td>' : '<th scope="row" class="fw-semibold">' + esc(c) + '</th>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+        return card('Staff users (demonstration accounts)', table(['User', 'Role', 'ULB', 'Login', 'Status', { t: 'Action', end: true }], rows, 'Users'), App.can('users') ? '<button type="button" class="btn btn-sm btn-primary" data-user="NEW"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add User</button>' : '') +
+          card('Permissions by role', '<div class="card-body">' + matrix + '<p class="small text-muted mt-2 mb-0">Permissions attach to roles, not users. Supervisors and Dept. Admins work on their own ULB.</p></div>');
+      }
+      function userForm(id) {
+        var u = id === 'NEW' ? null : D.users.filter(function (x) { return x.id === id; })[0];
+        var roles = Object.keys(D.staffRoles).map(function (k) { return '<option value="' + k + '"' + (u && u.role === k ? ' selected' : '') + '>' + esc(D.staffRoles[k].title) + '</option>'; }).join('');
+        var ulbOpts = '<option value="ALL">All ULBs</option>' + D.config.ulbs.map(function (x) { return '<option value="' + x.code + '"' + (u && u.ulbs[0] === x.code ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('');
+        open(u ? 'Edit user' : 'Add user', '<div class="row g-2"><div class="col-md-6"><label for="uN" class="form-label small fw-semibold">Name <span class="text-danger">*</span></label><input id="uN" class="form-control form-control-sm" value="' + esc(u ? u.name : '') + '"></div>' +
+          '<div class="col-md-6"><label for="uR" class="form-label small fw-semibold">Role</label><select id="uR" class="form-select form-select-sm">' + roles + '</select></div>' +
+          '<div class="col-md-6"><label for="uS" class="form-label small fw-semibold">ULB</label><select id="uS" class="form-select form-select-sm">' + ulbOpts + '</select></div>' +
+          '<div class="col-md-6"><label for="uL" class="form-label small fw-semibold">Login</label><select id="uL" class="form-select form-select-sm"><option' + (u && u.login === 'Sikkim GO' ? ' selected' : '') + '>Sikkim GO</option><option' + (u && u.login !== 'Sikkim GO' ? ' selected' : '') + '>Local + OTP</option></select></div>' +
+          '<div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="uA"' + (!u || u.active ? ' checked' : '') + '><label class="form-check-label small" for="uA">Active</label></div></div></div>' + reasonField, 'Save', function () {
+            var ok = need('uN', 'Enter the name.') & need('cReason', 'A reason is required.');
+            var role = v('uR'), sc = v('uS');
+            if (D.staffRoles[role].scope === 'ULB' && sc === 'ALL') ok = App.fieldError($('uS'), 'Supervisors and Dept. Admins need a ULB.') && false;
+            if (!ok) return false;
+            if (!u) { u = { id: 'U-' + String(D.users.length + 1).padStart(3, '0') }; D.users.push(u); }
+            u.name = v('uN'); u.role = role; u.ulbs = [D.staffRoles[role].scope === 'STATE' ? 'ALL' : sc]; u.login = v('uL'); u.active = $('uA').checked;
+            App.audit({ entity: 'User', grId: null, action: 'User ' + u.id + ' saved · ' + D.staffRoles[role].title + ' · ' + u.ulbs[0], reason: v('cReason') });
+            App.toast('User saved.');
+          });
+      }
+
+      // ---------- Render ----------
+      function render() {
+        $('cfgTabs').innerHTML = TABS.map(function (t) { return '<li class="nav-item" role="presentation"><button type="button" class="nav-link' + (t[0] === tab ? ' active' : '') + '" role="tab" aria-selected="' + (t[0] === tab) + '" data-tab="' + t[0] + '">' + esc(t[1]) + '</button></li>'; }).join('');
+        $('cfgPane').innerHTML = { ulbs: paneUlbs, wards: paneWards, rates: paneRates, rules: paneRules, users: paneUsers }[tab]();
+        document.querySelectorAll('[data-tab]').forEach(function (b) { b.addEventListener('click', function () { tab = b.getAttribute('data-tab'); history.replaceState(null, '', '#' + tab); render(); }); });
+        var on = function (sel, fn) { document.querySelectorAll(sel).forEach(function (b) { b.addEventListener('click', function () { fn(b); }); }); };
+        on('[data-ulb]', function (b) { ulbForm(App.ulb(b.getAttribute('data-ulb'))); });
+        on('#btnAddUlb', function () { ulbForm(null); });
+        on('[data-goward]', function (b) { wardUlb = b.getAttribute('data-goward'); tab = 'wards'; history.replaceState(null, '', '#wards'); render(); });
+        on('[data-wedit]', function (b) { wardForm(App.ward(wardUlb, b.getAttribute('data-wedit'))); });
+        on('[data-ladd]', function (b) { localityForm(App.ward(wardUlb, b.getAttribute('data-ladd'))); });
+        on('[data-lrem]', function (b) {
+          var parts = b.getAttribute('data-lrem').split('|'), w = App.ward(wardUlb, parts[0]), name = parts.slice(1).join('|');
+          w.localities = w.localities.filter(function (l) { return l !== name; });
+          App.audit({ grId: null, entity: 'Ward', action: 'Locality removed from ' + w.ulb + '/' + w.name + ': ' + name });
+          App.save(); App.toast('Locality removed.'); render();
+        });
+        on('#btnAddWard', function () { wardForm(null); });
+        on('[data-rt]', function (b) { rateTab = b.getAttribute('data-rt'); render(); });
+        on('#btnAddRate', rateForm);
+        on('#btnAddSur', surForm);
+        on('[data-rule]', function (b) { ruleForm(b.getAttribute('data-rule')); });
+        on('[data-list]', function (b) { listForm(b.getAttribute('data-list')); });
+        on('[data-user]', function (b) { userForm(b.getAttribute('data-user')); });
+        var wu = $('wUlb');
+        if (wu) wu.addEventListener('change', function () { wardUlb = wu.value; render(); });
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>

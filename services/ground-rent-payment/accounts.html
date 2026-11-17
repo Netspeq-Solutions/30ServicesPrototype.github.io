@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Account Search | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+      <div>
+        <h1 class="h4 fw-bold mb-1">Account Search</h1>
+        <p class="text-muted small mb-0" id="pageSub">Find a site account and open it.</p>
+      </div>
+      <a href="account-form.html" class="btn btn-sm btn-primary d-none" id="btnCreate"><i class="bi bi-person-plus me-1" aria-hidden="true"></i>Create Account</a>
+    </div>
+    <div id="intentBanner"></div>
+
+    <form id="filterForm" class="card border-0 shadow-xs mb-3" novalidate>
+      <div class="card-body row g-2">
+        <div class="col-6 col-md-3"><label for="fDist" class="form-label small fw-semibold mb-1">District</label><select id="fDist" class="form-select form-select-sm"></select></div>
+        <div class="col-6 col-md-3"><label for="fUlb" class="form-label small fw-semibold mb-1">ULB</label><select id="fUlb" class="form-select form-select-sm"></select></div>
+        <div class="col-6 col-md-3"><label for="fWard" class="form-label small fw-semibold mb-1">Ward</label><select id="fWard" class="form-select form-select-sm"></select></div>
+        <div class="col-6 col-md-3"><label for="fLoc" class="form-label small fw-semibold mb-1">Locality</label><select id="fLoc" class="form-select form-select-sm"></select></div>
+        <div class="col-6 col-md-3"><label for="fStatus" class="form-label small fw-semibold mb-1">Status</label>
+          <select id="fStatus" class="form-select form-select-sm"><option value="">All</option><option value="due">Due</option><option value="paid">Paid</option><option value="closed">Closed</option></select></div>
+        <div class="col-md-9"><label for="fText" class="form-label small fw-semibold mb-1">Name, GR ID, plot or mobile</label>
+          <input id="fText" type="search" class="form-control form-control-sm" placeholder="e.g. Goyal, GR-GMC-W01-00002, DEO/114, 98000…"></div>
+      </div>
+    </form>
+
+    <div class="card border-0 shadow-xs">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center"><h2 class="h6 fw-bold mb-0" id="resultCount">Accounts</h2></div>
+      <div class="gov-table-desktop table-responsive">
+        <table class="table gov-table-compact table-hover mb-0"><caption class="visually-hidden">Site accounts</caption>
+          <thead><tr><th scope="col" style="width:18%">GR ID</th><th scope="col" style="width:24%">Allottee</th><th scope="col" style="width:18%">Locality &amp; Ward</th>
+            <th scope="col" class="text-end" style="width:14%">Outstanding</th><th scope="col" style="width:12%">Status</th><th scope="col" class="text-end" style="width:14%">Action</th></tr></thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+      <div class="gov-cards-mobile p-3" id="tCards"></div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'viewAccounts');
+      if (!session) return;
+      var intent = App.qs('intent');
+      App.shell({ type: 'staff', active: intent === 'adjust' ? 'adjust' : 'search' });
+
+      var scope = App.staffScope(session);
+      if (App.can('editAccounts')) document.getElementById('btnCreate').classList.remove('d-none');
+      if (session.role === 'hq') document.getElementById('pageSub').textContent = 'Read-only. Open any account to view it.';
+      if (intent === 'adjust') document.getElementById('intentBanner').innerHTML = '<div class="alert alert-info small py-2"><i class="bi bi-sliders2-vertical me-1" aria-hidden="true"></i>Select the account for the adjustment or payment reversal. It opens on the Payments tab.</div>';
+
+      // District → ULB → Ward → Locality; ULB-level staff see their own ULB fixed.
+      var place = App.cascadeFilters({ district: 'fDist', ulb: 'fUlb', ward: 'fWard', locality: 'fLoc' }, { lockUlb: scope, onChange: function () { render(); } });
+      if (['due', 'paid', 'closed'].indexOf(App.qs('status')) !== -1) document.getElementById('fStatus').value = App.qs('status');
+
+      function matches(s) {
+        if (!App.inScope(s, session)) return false;
+        if (!place.match(s)) return false;
+        var st = document.getElementById('fStatus').value;
+        if (st === 'closed') { if (s.status !== 'Closed') return false; }
+        else if (st) { if (s.status === 'Closed' || (App.dues(s).totalPayable > 0 ? 'due' : 'paid') !== st) return false; }
+        var t = App.norm(document.getElementById('fText').value);
+        if (!t) return true;
+        var tc = t.replace(/\s/g, '');
+        return App.norm(s.grId).indexOf(tc) !== -1 || (s.plotNo && App.norm(s.plotNo).indexOf(tc) !== -1) ||
+          s.owners.some(function (o) { return App.norm(o.name).indexOf(t) !== -1 || App.norm(o.guardian).indexOf(t) !== -1 || (o.mobile && o.mobile.indexOf(tc) !== -1); });
+      }
+
+      function render() {
+        var list = D.sites.filter(matches);
+        document.getElementById('resultCount').textContent = list.length + ' account' + (list.length === 1 ? '' : 's');
+        var target = intent === 'adjust' ? '#payments' : '';
+        var rows = list.map(function (s) {
+          var d = App.dues(s), w = App.ward(s.ulb, s.ward);
+          var p = App.duesPill(s, d);
+          var a = '<a class="btn btn-sm btn-outline-primary" href="ledger.html?gr=' + encodeURIComponent(s.grId) + target + '">Open</a>';
+          return {
+            row: '<tr><td class="gr-gr-id small">' + esc(s.grId) + '</td><td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(App.ownersText(s)) + '</div><div class="small text-muted">' + esc(App.legacyRef(s)) + '</div></td>' +
+              '<td class="small"><div class="text-truncate" style="max-width:200px;">' + esc(s.locality) + '</div><div class="text-muted">' + esc(w ? w.name : s.ward) + '</div></td>' +
+              '<td class="text-end fw-bold">' + (s.status === 'Closed' ? '—' : inr(d.totalPayable)) + '</td><td>' + p + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
+            card: '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2 mb-1"><span class="gr-gr-id small">' + esc(s.grId) + '</span>' + p + '</div>' +
+              '<div class="small fw-semibold">' + esc(App.ownersText(s)) + '</div><div class="small text-muted">' + esc(s.locality) + ' &bull; ' + (s.status === 'Closed' ? 'Closed' : inr(d.totalPayable) + ' outstanding') + '</div>' +
+              '<div class="d-flex justify-content-end mt-2">' + a + '</div></div>'
+          };
+        });
+        var empty = 'No accounts match these filters.';
+        document.getElementById('tBody').innerHTML = rows.map(function (r) { return r.row; }).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">' + empty + '</td></tr>';
+        document.getElementById('tCards').innerHTML = rows.map(function (r) { return r.card; }).join('') || '<p class="text-center text-muted small mb-0">' + empty + '</p>';
+      }
+      document.getElementById('filterForm').addEventListener('input', render);
+      document.getElementById('filterForm').addEventListener('change', render);
+      document.getElementById('filterForm').addEventListener('submit', function (e) { e.preventDefault(); });
+      render();
+    })();
+  </script>
+</body>
+</html>

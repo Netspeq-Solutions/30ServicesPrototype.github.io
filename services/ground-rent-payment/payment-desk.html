@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Approve Bank Payments | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <h1 class="h4 fw-bold mb-1">Approve Bank Payments</h1>
+    <p class="text-muted small mb-3">The citizen generates a challan, pays at the bank and uploads the Bank Receipt. When they come to the counter, check the original BR against the details below and approve.</p>
+
+    <div class="card border-0 shadow-xs mb-3">
+      <div class="card-body">
+        <label for="fFind" class="form-label small fw-semibold mb-1">Find by challan no., GR ID or allottee name</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+          <input id="fFind" type="search" class="form-control" placeholder="e.g. GRC-2026-000322 or GR-GMC-W03-00048">
+        </div>
+      </div>
+    </div>
+
+    <div id="doneBox"></div>
+    <div class="card border-0 shadow-xs">
+      <div class="card-header bg-white"><h2 class="h6 fw-bold mb-0" id="listTitle">Waiting for approval</h2></div>
+      <div class="gov-table-desktop table-responsive">
+        <table class="table gov-table-compact table-hover mb-0 align-middle"><caption class="visually-hidden">Bank payments waiting for approval</caption>
+          <thead><tr><th scope="col" style="width:16%">Challan No.</th><th scope="col" style="width:24%">GR ID &amp; Allottee</th><th scope="col" style="width:22%">Bank Receipt (uploaded)</th>
+            <th scope="col" class="text-end" style="width:12%">Amount</th><th scope="col" class="text-end" style="width:26%">Action</th></tr></thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+      <div class="gov-cards-mobile p-3" id="tCards"></div>
+      <div class="card-footer bg-white small text-muted" id="waitNote"></div>
+    </div>
+  </main>
+
+  <!-- Approve -->
+  <div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title h5" id="approveTitle">Approve payment</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body" id="approveBody"></div>
+      <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-success" id="btnApproveYes"><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Approve &amp; Issue Receipt</button></div>
+    </div></div>
+  </div>
+  <!-- Reject -->
+  <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title h5" id="rejectTitle">Return to citizen</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body">
+        <p class="small mb-2" id="rejectInfo"></p>
+        <label for="rejectReason" class="form-label small fw-semibold">Reason <span class="text-danger" aria-hidden="true">*</span></label>
+        <select id="rejectReason" class="form-select">
+          <option value="">Select a reason</option>
+          <option>BR no. does not match the original receipt</option>
+          <option>Amount does not match the original receipt</option>
+          <option>Scan is not readable</option>
+          <option>Original BR not produced at the counter</option>
+        </select>
+        <div class="form-text">The citizen gets an SMS and can upload the Bank Receipt again.</div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger" id="btnRejectYes">Return to Citizen</button></div>
+    </div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'payments');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'verify' });
+      var $ = function (id) { return document.getElementById(id); };
+      var approveModal = new bootstrap.Modal($('approveModal')), rejectModal = new bootstrap.Modal($('rejectModal'));
+      var current = null;
+      if (App.qs('challan')) $('fFind').value = App.qs('challan');
+
+      function inScopeChallans(status) {
+        return D.challans.filter(function (c) {
+          var s = App.site(c.grId);
+          return s && App.inScope(s, session) && s.status !== 'Closed' && c.status === status;
+        });
+      }
+
+      // A BR no. may be used only once – checked against system payments, other challans and the paper register.
+      function duplicateOf(c) {
+        var n = App.norm(c.brNo || '').replace(/\s/g, '');
+        if (!n) return null;
+        var p = D.payments.filter(function (x) { return x.mode === 'Offline' && App.norm(x.ref).replace(/\s/g, '') === n && x.status !== 'Reversed'; })[0];
+        if (p) return 'BR already used on receipt ' + p.receiptNo + ' (' + p.grId + ').';
+        var o = D.challans.filter(function (x) { return x.challanNo !== c.challanNo && x.brNo && App.norm(x.brNo).replace(/\s/g, '') === n && x.status !== 'Cancelled'; })[0];
+        if (o) return 'Same BR no. uploaded on challan ' + o.challanNo + '.';
+        var s = D.sites.filter(function (x) { return x.opening && x.opening.lastPayment && App.norm(x.opening.lastPayment.brNo).replace(/\s/g, '') === n; })[0];
+        if (s) return 'BR is already in the paper register for ' + s.grId + '.';
+        return null;
+      }
+
+      // What will be recorded: never more than the challan amount or what is outstanding today.
+      function check(c) {
+        var s = App.site(c.grId), d = App.dues(s);
+        var paid = c.brAmount || c.amount;
+        var cap = Math.min(c.amount, d.totalPayable);
+        var dup = duplicateOf(c);
+        var note = '', tone = 'success';
+        if (dup) { note = dup; tone = 'danger'; }
+        else if (paid === cap) note = 'Amount matches the challan.';
+        else if (paid < cap) { note = 'Paid ' + inr(cap - paid) + ' less than the challan. ' + (D.config.settings.partialOfflinePayment ? 'It will be recorded as a part payment.' : 'Part payments are not allowed.'); tone = 'warning'; }
+        else { note = 'Paid ' + inr(paid - cap) + ' more than due. Only ' + inr(cap) + ' is recorded; the excess is refunded outside the system.'; tone = 'warning'; }
+        var blocked = !!dup || (paid < cap && !D.config.settings.partialOfflinePayment) || cap <= 0;
+        if (cap <= 0 && !dup) { note = 'Nothing is outstanding on this account any more.'; tone = 'danger'; }
+        return { site: s, paid: paid, record: Math.min(paid, cap), note: note, tone: tone, blocked: blocked };
+      }
+
+      function render() {
+        var t = App.norm($('fFind').value), tc = t.replace(/\s/g, '');
+        var list = inScopeChallans('BR Recorded').filter(function (c) {
+          if (!t) return true;
+          var s = App.site(c.grId);
+          return App.norm(c.challanNo).indexOf(tc) !== -1 || App.norm(c.grId).indexOf(tc) !== -1 || s.owners.some(function (o) { return App.norm(o.name).indexOf(t) !== -1; });
+        });
+        $('listTitle').textContent = 'Waiting for approval (' + list.length + ')';
+        var rows = list.map(function (c) {
+          var k = check(c);
+          var scan = c.brScan ? '<span class="small">' + App.fileLink(c.brScan, c.grId) + '</span>' : '<span class="small text-muted">No scan</span>';
+          var flag = '<div class="small text-' + (k.tone === 'success' ? 'success' : k.tone === 'danger' ? 'danger' : 'warning-emphasis') + '"><i class="bi ' + (k.tone === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle') + ' me-1" aria-hidden="true"></i>' + esc(k.note) + '</div>';
+          var btns = '<div class="d-flex gap-2 justify-content-end flex-wrap"><button type="button" class="btn btn-sm btn-success" data-approve="' + esc(c.challanNo) + '"' + (k.blocked ? ' disabled' : '') + '><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Approve</button>' +
+            '<button type="button" class="btn btn-sm btn-outline-danger" data-reject="' + esc(c.challanNo) + '">Return</button></div>';
+          return {
+            row: '<tr><td class="font-monospace fw-bold small">' + esc(c.challanNo) + '<div class="text-muted fw-normal">' + App.fmtDate(c.generatedOn) + '</div></td>' +
+              '<td><a class="gr-gr-id small" href="ledger.html?gr=' + encodeURIComponent(c.grId) + '">' + esc(c.grId) + '</a><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(App.ownersText(k.site)) + '</div></td>' +
+              '<td class="small"><div class="font-monospace">' + esc(c.brNo) + '</div><div class="text-muted">' + App.fmtDate(c.brDate) + '</div>' + scan + '</td>' +
+              '<td class="text-end"><div class="fw-bold">' + inr(k.paid) + '</div><div class="small text-muted">challan ' + inr(c.amount) + '</div></td>' +
+              '<td class="text-end">' + btns + '<div class="text-end mt-1">' + flag + '</div></td></tr>',
+            card: '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2 mb-1"><span class="font-monospace fw-bold small">' + esc(c.challanNo) + '</span><span class="fw-bold">' + inr(k.paid) + '</span></div>' +
+              '<div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted">' + esc(App.ownersText(k.site)) + '</div>' +
+              '<div class="small mt-1">BR <span class="font-monospace">' + esc(c.brNo) + '</span> &bull; ' + App.fmtDate(c.brDate) + '</div>' + scan + flag +
+              '<div class="mt-2">' + btns + '</div></div>'
+          };
+        });
+        var empty = t ? 'No uploaded Bank Receipt matches "' + esc($('fFind').value) + '".' : 'Nothing to approve. Uploaded Bank Receipts appear here.';
+        $('tBody').innerHTML = rows.map(function (r) { return r.row; }).join('') || '<tr><td colspan="5" class="text-center text-muted py-4">' + empty + '</td></tr>';
+        $('tCards').innerHTML = rows.map(function (r) { return r.card; }).join('') || '<p class="text-center text-muted small mb-0">' + empty + '</p>';
+        var waiting = inScopeChallans('Generated').filter(function (c) { return c.validTill >= D.demoToday; }).length;
+        $('waitNote').innerHTML = '<i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + (waiting ? waiting + ' more challan' + (waiting === 1 ? ' is' : 's are') + ' issued but the citizen has not uploaded the Bank Receipt yet.' : 'All issued challans have a Bank Receipt uploaded.');
+        document.querySelectorAll('[data-approve]').forEach(function (b) { b.addEventListener('click', function () { openApprove(b.getAttribute('data-approve')); }); });
+        document.querySelectorAll('[data-reject]').forEach(function (b) { b.addEventListener('click', function () { openReject(b.getAttribute('data-reject')); }); });
+      }
+
+      function byNo(no) { return D.challans.filter(function (c) { return c.challanNo === no; })[0]; }
+
+      function openApprove(no) {
+        current = byNo(no);
+        var k = check(current);
+        $('approveBody').innerHTML = '<dl class="gr-meta-grid mb-3"><div><dt>GR ID</dt><dd class="gr-gr-id">' + esc(current.grId) + '</dd></div><div><dt>Allottee</dt><dd>' + esc(App.ownersText(k.site)) + '</dd></div>' +
+          '<div><dt>BR no.</dt><dd class="font-monospace">' + esc(current.brNo) + '</dd></div><div><dt>BR date</dt><dd>' + App.fmtDate(current.brDate) + '</dd></div>' +
+          '<div><dt>Amount to record</dt><dd class="fs-5">' + inr(k.record) + '</dd></div><div><dt>Challan</dt><dd class="font-monospace">' + esc(current.challanNo) + '</dd></div></dl>' +
+          '<div class="form-check"><input class="form-check-input" type="checkbox" id="chkOriginal"><label class="form-check-label small" for="chkOriginal">I have seen the original Bank Receipt and it matches these details.</label></div>' +
+          '<div class="invalid-feedback d-block d-none" id="chkErr">Please confirm you have checked the original Bank Receipt.</div>';
+        approveModal.show();
+      }
+
+      $('btnApproveYes').addEventListener('click', function () {
+        if (!$('chkOriginal').checked) { $('chkErr').classList.remove('d-none'); return; }
+        var c = current, k = check(c);
+        if (k.blocked) return;
+        var s = k.site;
+        var p = { receiptNo: App.newReceiptNo(), grId: s.grId, mode: 'Offline', ref: c.brNo, brDate: c.brDate, bank: 'Designated bank (pending Q8)', amount: k.record,
+          paidOn: c.brDate, recordedBy: D.staffRoles[session.role].user, status: 'Success', challanNo: c.challanNo, excessFlagged: Math.max(0, k.paid - k.record),
+          note: k.paid < Math.min(c.amount, App.dues(s).totalPayable) ? 'Part payment, allocated oldest dues first.' : '' };
+        D.payments.unshift(p);
+        App.closeChallans(s.grId, 'Paid against challan ' + c.challanNo + ' · receipt ' + p.receiptNo, c.challanNo);
+        c.status = 'Verified'; c.receiptNo = p.receiptNo; c.approvedBy = p.recordedBy; c.approvedOn = D.demoToday;
+        if (c.payerMobile) App.saveSiteForCitizen(c.payerMobile, s.grId);
+        App.audit({ grId: s.grId, entity: 'Payment', action: 'Bank payment approved · challan ' + c.challanNo + ' · BR ' + c.brNo + ' · ' + inr(k.record) + ' · receipt ' + p.receiptNo, file: c.brScan || null });
+        var mobiles = App.siteMobiles(s);
+        if (c.payerMobile && mobiles.indexOf(c.payerMobile) === -1) mobiles.push(c.payerMobile);
+        mobiles.forEach(function (m) { App.notify(m, 'Payment received', 'Receipt ' + p.receiptNo + ' · ' + inr(k.record) + ' for ' + s.grId + ' (BR ' + c.brNo + ').', s.grId); });
+        App.save();
+        approveModal.hide();
+        $('doneBox').innerHTML = '<div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-2"><div><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Approved. Receipt <strong class="font-monospace">' + esc(p.receiptNo) + '</strong> &bull; ' + inr(k.record) + ' &bull; ' + esc(s.grId) + '</div>' +
+          '<a class="btn btn-sm btn-success" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Receipt</a></div>';
+        render();
+      });
+
+      function openReject(no) {
+        current = byNo(no);
+        $('rejectInfo').innerHTML = 'Challan <strong class="font-monospace">' + esc(current.challanNo) + '</strong> &bull; BR ' + esc(current.brNo) + ' &bull; ' + esc(current.grId);
+        $('rejectReason').value = '';
+        App.fieldError($('rejectReason'), '');
+        rejectModal.show();
+      }
+
+      $('btnRejectYes').addEventListener('click', function () {
+        var reason = $('rejectReason').value;
+        if (!App.fieldError($('rejectReason'), reason ? '' : 'Select a reason.')) return;
+        var c = current, s = App.site(c.grId);
+        App.audit({ grId: s.grId, entity: 'Challan', action: 'Bank Receipt returned to citizen · challan ' + c.challanNo + ' · BR ' + c.brNo, reason: reason, file: c.brScan || null });
+        var mobiles = App.siteMobiles(s);
+        if (c.payerMobile && mobiles.indexOf(c.payerMobile) === -1) mobiles.push(c.payerMobile);
+        mobiles.forEach(function (m) { App.notify(m, 'Bank Receipt not accepted', 'Challan ' + c.challanNo + ': ' + reason + '. Please upload the Bank Receipt again.', s.grId); });
+        c.status = 'Generated'; c.returnReason = reason;
+        delete c.brNo; delete c.brDate; delete c.brAmount; delete c.brScan;
+        App.save();
+        rejectModal.hide();
+        $('doneBox').innerHTML = '<div class="alert alert-warning"><i class="bi bi-arrow-return-left me-1" aria-hidden="true"></i>Challan ' + esc(c.challanNo) + ' returned to the citizen: ' + esc(reason) + '.</div>';
+        render();
+      });
+
+      $('fFind').addEventListener('input', render);
+      render();
+    })();
+  </script>
+</body>
+</html>

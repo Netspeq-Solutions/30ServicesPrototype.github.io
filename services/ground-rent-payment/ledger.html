@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Site Account | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+  <style>
+    .gr-ledger-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; }
+    .gr-ledger-tabs .nav-link { white-space: nowrap; min-height: 44px; }
+    .gr-timeline { list-style: none; padding-left: 0; margin: 0; }
+    .gr-timeline li { position: relative; padding: 0 0 1rem 1.5rem; border-left: 2px solid #e2e8f0; margin-left: 0.4rem; }
+    .gr-timeline li::before { content: ''; position: absolute; left: -7px; top: 0.2rem; width: 12px; height: 12px; border-radius: 50%; background: var(--gov-primary, #0f766e); }
+  </style>
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard-staff.html">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="accounts.html">Account Search</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Site Account</li>
+    </ol></nav>
+    <div id="ledgerHead"></div>
+    <ul class="nav nav-tabs gr-ledger-tabs mb-3" role="tablist" id="ledgerTabs"></ul>
+    <div id="ledgerPane" role="tabpanel"></div>
+  </main>
+
+  <!-- Generic action dialog -->
+  <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <form class="modal-content" id="actionForm" novalidate>
+        <div class="modal-header"><h2 class="modal-title h6 fw-bold" id="actionModalLabel">Action</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body" id="actionBody"></div>
+        <div class="modal-footer"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-sm btn-primary" id="actionSubmit">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-staff.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, S = window.GRStaff, T = window.GRDues, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'viewAccounts');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'search' });
+
+      var site = App.site(App.qs('gr'));
+      var pane = document.getElementById('ledgerPane');
+      if (!site || !App.inScope(site, session)) {
+        document.getElementById('ledgerHead').innerHTML = '<div class="alert alert-warning">Account not found or outside your ULB scope. <a href="accounts.html">Back to search</a></div>';
+        return;
+      }
+      var readOnly = session.role === 'hq';
+      var canEdit = App.can('editAccounts'), canAdjust = App.can('adjust');
+      S.ensureOwnershipHistory(site);
+
+      // ---------- Generic modal ----------
+      var modalEl = document.getElementById('actionModal');
+      var modal = new bootstrap.Modal(modalEl);
+      var onSubmit = null;
+      function openModal(title, body, submitLabel, handler, tone) {
+        document.getElementById('actionModalLabel').innerHTML = title;
+        document.getElementById('actionBody').innerHTML = body;
+        var btn = document.getElementById('actionSubmit');
+        btn.textContent = submitLabel;
+        btn.className = 'btn btn-sm btn-' + (tone || 'primary');
+        onSubmit = handler;
+        modal.show();
+      }
+      document.getElementById('actionForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (onSubmit && onSubmit() !== false) { modal.hide(); render(); }
+      });
+      function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+      function req(id, msg) { var el = document.getElementById(id); return App.fieldError(el, el.value.trim() ? '' : msg); }
+      function fileReq(id, required) { var el = document.getElementById(id); return App.fieldError(el, App.checkFile(el, required)); }
+      function commentField(label) {
+        return '<div class="mb-2"><label for="mComment" class="form-label small fw-semibold">' + (label || 'Comment / reason') + ' <span class="text-danger" aria-hidden="true">*</span></label><textarea id="mComment" class="form-control form-control-sm" rows="2" required></textarea></div>';
+      }
+      function fileField(label, required) {
+        return '<div class="mb-2"><label for="mFile" class="form-label small fw-semibold">' + label + (required ? ' <span class="text-danger" aria-hidden="true">*</span>' : ' (optional)') + '</label><input id="mFile" type="file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png"><div class="form-text">PDF, JPG or PNG, up to 5 MB.</div></div>';
+      }
+      function mcNote() { return App.needsApproval(session) ? '<div class="alert alert-warning small py-2 mb-2"><i class="bi bi-check2-square me-1" aria-hidden="true"></i>Maker–checker is on: this change goes to the Dept. Admin approval queue.</div>' : ''; }
+      function done(result, what) {
+        App.toast(result === 'submitted' ? what + ' submitted for Dept. Admin approval.' : what + ' saved and logged in the audit trail.');
+      }
+      function fyOptionsHtml(opts, sel) { return opts.map(function (f) { return '<option value="' + f + '"' + (f === sel ? ' selected' : '') + '>FY ' + f + '</option>'; }).join(''); }
+
+      // ---------- Header ----------
+      function header() {
+        var d = App.dues(site), u = App.ulb(site.ulb);
+        var st = d.blocked ? '' : App.duesPill(site, d);
+        var actions = '';
+        if (canEdit && site.status !== 'Closed') {
+          actions += '<a class="btn btn-sm btn-outline-primary" href="account-form.html?gr=' + encodeURIComponent(site.grId) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit Account</a>';
+        }
+        document.getElementById('ledgerHead').innerHTML =
+          '<div class="card border-0 shadow-xs mb-3"><div class="card-body d-flex justify-content-between align-items-start flex-wrap gap-3">' +
+          '<div class="min-w-0"><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h5 fw-bold mb-0 gr-gr-id">' + esc(site.grId) + '</h1>' + st + (readOnly ? App.pill('info', 'Read-only') : '') + '</div>' +
+          '<div class="fw-semibold">' + esc(App.ownersFull(site)) + '</div><div class="small text-muted">' + esc(site.address) + ' &bull; ' + esc(site.locality) + ' &bull; ' + esc(u.name) + ' &bull; ' + esc(App.legacyRef(site)) + '</div>' +
+          (site.flags && site.flags.length ? '<div class="small text-danger mt-1"><i class="bi bi-flag-fill me-1" aria-hidden="true"></i>' + site.flags.map(esc).join(' &bull; ') + '</div>' : '') + '</div>' +
+          '<div class="text-end"><div class="small text-muted">Outstanding</div><div class="gr-amount">' + (d.blocked ? '—' : inr(d.totalPayable)) + '</div><div class="small text-muted">Paid up to FY ' + esc(d.paidUpToFy || '—') + '</div></div>' +
+          '</div>' + (actions ? '<div class="card-footer bg-white d-flex flex-wrap gap-2">' + actions + '</div>' : '') + '</div>';
+      }
+
+      // ---------- Tabs ----------
+      var TABS = [['summary', 'Summary'], ['allottees', 'Allottees'], ['structures', 'Structures'], ['dues', 'Dues (year-wise)'], ['payments', 'Payments'], ['documents', 'Documents'], ['history', 'History']];
+      var current = (location.hash || '#summary').slice(1);
+      if (!TABS.some(function (t) { return t[0] === current; })) current = 'summary';
+      function tabsHtml() {
+        document.getElementById('ledgerTabs').innerHTML = TABS.map(function (t) {
+          return '<li class="nav-item" role="presentation"><button type="button" class="nav-link' + (t[0] === current ? ' active' : '') + '" role="tab" aria-selected="' + (t[0] === current) + '" data-tab="' + t[0] + '">' + t[1] + '</button></li>';
+        }).join('');
+        document.querySelectorAll('[data-tab]').forEach(function (b) {
+          b.addEventListener('click', function () { current = b.getAttribute('data-tab'); history.replaceState(null, '', '#' + current); render(); });
+        });
+      }
+
+      function card(title, body, action) {
+        return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (action || '') + '</div>' + body + '</div>';
+      }
+
+      // ---------- Panes ----------
+      function paneSummary() {
+        var d = App.dues(site), u = App.ulb(site.ulb), w = App.ward(site.ulb, site.ward);
+        var ob = site.opening;
+        var act = '';
+        if (canEdit && !readOnly && site.status !== 'Closed') {
+          if (!site.dataVerified || site.status === 'Draft') act += '<button type="button" class="btn btn-sm btn-success" id="btnVerify"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>' + (site.status === 'Draft' ? 'Verify &amp; Activate' : 'Mark Data Verified') + '</button>';
+          act += '<button type="button" class="btn btn-sm btn-outline-warning" id="btnFlag">' + ((site.flags || []).some(function (f) { return f.indexOf('Transfer pending') !== -1; }) ? 'Clear "Transfer pending"' : 'Flag "Transfer pending"') + '</button>';
+        }
+        return '<div class="row g-3"><div class="col-lg-7">' +
+          card('Site', '<div class="card-body"><dl class="gr-meta-grid mb-0">' +
+            '<div><dt>ULB</dt><dd>' + esc(u.name) + '</dd></div><div><dt>Ward</dt><dd>' + esc(w ? w.code + ' – ' + w.name : site.ward) + '</dd></div>' +
+            '<div><dt>Locality</dt><dd>' + esc(site.locality) + '</dd></div><div><dt>Plot / Holding No.</dt><dd>' + esc(site.plotNo || 'Not recorded') + '</dd></div>' +
+            '<div><dt>Address</dt><dd>' + esc(site.address) + '</dd></div><div><dt>Register ref.</dt><dd>' + esc(App.legacyRef(site)) + '</dd></div>' +
+            '<div><dt>Status</dt><dd>' + esc(site.status) + '</dd></div><div><dt>Data verified</dt><dd>' + (site.dataVerified ? 'Yes' + (site.verifiedBy ? ' (' + esc(site.verifiedBy) + ', ' + App.fmtDate(site.verifiedOn) + ')' : '') : 'No') + '</dd></div>' +
+          '</dl></div>', act ? '<div class="d-flex flex-wrap gap-2">' + act + '</div>' : '') +
+          '</div><div class="col-lg-5">' +
+          card('Certified opening balance', '<div class="card-body"><dl class="gr-meta-grid mb-0">' +
+            '<div><dt>As on (cut-off)</dt><dd>' + App.fmtDate(u.cutOffDate) + '</dd></div><div><dt>Register paid up to</dt><dd>FY ' + esc(ob.paidUpToFy) + '</dd></div>' +
+            '<div><dt>Arrear rent</dt><dd>' + inr(ob.principal) + '</dd></div><div><dt>Arrear surcharge</dt><dd>' + inr(ob.surcharge) + '</dd></div>' +
+            '<div><dt>Last register payment</dt><dd>' + (ob.lastPayment ? esc(ob.lastPayment.brNo) + '<br><span class="fw-normal">' + App.fmtDate(ob.lastPayment.date) + ' &bull; ' + inr(ob.lastPayment.amount) + ' &bull; ' + esc(ob.lastPayment.period) + '</span>' : '—') + '</dd></div>' +
+            '<div><dt>Certified by</dt><dd>' + esc(ob.certifiedBy || '—') + '</dd></div></dl>' +
+            '<p class="small text-muted mt-2 mb-0">Fixed when the register data was loaded. It changes only through an audited adjustment.</p></div>') +
+          card('Current position', '<div class="card-body"><dl class="gr-meta-grid mb-0">' +
+            '<div><dt>Chargeable area</dt><dd>' + App.sqft(d.currentArea || 0) + '</dd></div><div><dt>Annual rent FY ' + esc(d.currentFy) + '</dt><dd>' + inr(d.annualRent) + '</dd></div>' +
+            '<div><dt>Outstanding</dt><dd>' + inr(d.totalPayable) + '</dd></div><div><dt>Paid up to</dt><dd>FY ' + esc(d.paidUpToFy || '—') + '</dd></div></dl></div>') +
+          '</div></div>';
+      }
+
+      function paneAllottees() {
+        var hist = site.ownershipHistory;
+        var act = canEdit && !readOnly && site.status !== 'Closed' ? '<button type="button" class="btn btn-sm btn-primary" id="btnTransfer"><i class="bi bi-arrow-left-right me-1" aria-hidden="true"></i>Record Transfer</button>' : '';
+        var currentRows = site.owners.map(function (o) {
+          return '<tr><td class="fw-semibold">' + esc(o.name) + '</td><td>' + esc(o.relation + ' ' + o.guardian) + '</td><td>' + esc(App.maskMobile(o.mobile)) + '</td><td class="text-end">' + o.share + '%</td></tr>';
+        }).join('');
+        var histItems = hist.slice().reverse().map(function (h) {
+          return '<li><div class="fw-semibold small">' + esc(h.owners.map(function (o) { return o.name + (h.owners.length > 1 ? ' (' + o.share + '%)' : ''); }).join(' & ')) + '</div>' +
+            '<div class="small text-muted">' + (h.from ? 'From ' + App.fmtDate(h.from) : 'From original allotment') + (h.to ? ' to ' + App.fmtDate(h.to) : ' &bull; current') + '</div>' +
+            '<div class="small">' + esc(h.reason || '') + (h.orderNo ? ' &bull; Order ' + esc(h.orderNo) + (h.orderDate ? ' dt. ' + App.fmtDate(h.orderDate) : '') : '') + (h.duesHandling ? ' &bull; ' + esc(h.duesHandling) : '') + '</div></li>';
+        }).join('');
+        return card('Current allottee(s)', '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Current allottees</caption><thead><tr><th scope="col">Name</th><th scope="col">Relation</th><th scope="col">Mobile</th><th scope="col" class="text-end">Share</th></tr></thead><tbody>' + currentRows + '</tbody></table></div>', act) +
+          card('Ownership history', '<div class="card-body"><ul class="gr-timeline">' + histItems + '</ul><p class="small text-muted mb-0">Transfers are decided at HQ outside this system and only recorded here. The GR ID, structures and payment history stay the same.</p></div>');
+      }
+
+      function paneStructures() {
+        var act = canEdit && !readOnly && site.status !== 'Closed' ? '<button type="button" class="btn btn-sm btn-primary" id="btnAddStructure"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Structure</button>' : '';
+        var rows = site.structures.map(function (x, i) {
+          var ended = !!x.chargeableToFy;
+          var a = '';
+          if (canEdit && !readOnly && !ended && site.status !== 'Closed') {
+            a = '<div class="d-inline-flex align-items-center gap-1 text-nowrap"><button type="button" class="btn btn-sm btn-outline-primary" data-correct="' + i + '">Correct Area</button><button type="button" class="btn btn-sm btn-outline-danger" data-end="' + i + '">End</button></div>';
+          }
+          return '<tr><td><div class="fw-semibold small">' + esc(x.type) + '</div><div class="small text-muted">' + (x.lengthFt ? x.lengthFt + "' × " + x.widthFt + "'" : esc(x.areaOverrideReason || 'Area entered directly')) + '</div></td>' +
+            '<td class="text-end">' + App.sqft(x.areaSqft) + '</td><td class="small">' + esc(x.mutationNo || '—') + (x.orderDate ? '<div class="text-muted">' + App.fmtDate(x.orderDate) + '</div>' : '') + '</td>' +
+            '<td class="small">FY ' + esc(x.chargeableFromFy) + (ended ? ' – ' + esc(x.chargeableToFy) : ' onward') + '</td>' +
+            '<td>' + (ended ? App.pill('closed', 'Ended') : App.pill('paid', 'Chargeable')) + '</td><td class="text-end text-nowrap">' + a + '</td></tr>';
+        }).join('');
+        return card('Structures', '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Structures</caption><thead><tr><th scope="col">Kind &amp; Measurement</th><th scope="col" class="text-end">Area</th><th scope="col">Mutation / Order</th><th scope="col">Chargeable</th><th scope="col">Status</th><th scope="col" class="text-end">Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+          '<div class="card-footer bg-white small">Structures are never deleted. Ending one stops the charge from the chosen FY; correcting an area applies from the first unpaid year so paid years stay unchanged.</div>', act);
+      }
+
+      function paneDues() {
+        var d = App.dues(site);
+        if (d.blocked) return '<div class="alert alert-danger">' + esc(d.blockReason) + '</div>';
+        var rows = [];
+        rows.push(['Opening balance', 'Certified arrears', d.opening.rent, d.opening.surcharge, d.opening.adjustment, d.opening.paid, d.opening.balance, d.opening.balance ? App.pill('overdue', 'Arrears') : App.pill('paid', 'Cleared')]);
+        d.years.forEach(function (y) {
+          var rate = y.segments.map(function (g) { return inr(g.rate) + (y.segments.length > 1 ? '×' + g.months + 'm' : ''); }).join(' + ');
+          var st = y.state === 'Paid' ? App.pill('paid', 'Paid') : y.state === 'Overdue' ? App.pill('overdue', 'Overdue') : App.pill('due', 'Due');
+          rows.push(['FY ' + y.label, App.sqft(y.area) + ' @ ' + rate + '/100 sq ft' + (y.assessments.length ? ' &bull; surcharge ' + y.assessments.map(function (a) { return a.rate + '% on ' + App.fmtDate(a.on); }).join(', ') : ''), y.rent, y.surcharge, y.adjustment, y.paid, y.balance, st]);
+        });
+        // Adjustment shown with its sign: + adds to the dues, − reduces them.
+        function adj(n) { return n ? '<span class="' + (n < 0 ? 'text-success' : 'text-danger') + '">' + (n < 0 ? '−' : '+') + inr(Math.abs(n)) + '</span>' : inr(0); }
+        return card('Dues (year-wise)', '<div class="gov-table-desktop table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Year-wise dues</caption><thead><tr><th scope="col" style="width:32%">Year</th><th scope="col" class="text-end">Rent</th><th scope="col" class="text-end">Surcharge</th><th scope="col" class="text-end">Adjustment</th><th scope="col" class="text-end">Paid</th><th scope="col" class="text-end">Balance</th><th scope="col">Status</th></tr></thead><tbody>' +
+          rows.map(function (r) { return '<tr><td><div class="fw-semibold">' + r[0] + '</div><div class="small text-muted">' + r[1] + '</div></td><td class="text-end">' + inr(r[2]) + '</td><td class="text-end">' + inr(r[3]) + '</td><td class="text-end">' + adj(r[4]) + '</td><td class="text-end">' + inr(r[5]) + '</td><td class="text-end fw-bold">' + inr(r[6]) + '</td><td>' + r[7] + '</td></tr>'; }).join('') +
+          '</tbody><tfoot><tr class="table-light"><th scope="row" colspan="5" class="text-end">Total outstanding</th><td class="text-end fw-bold">' + inr(d.totalPayable) + '</td><td></td></tr></tfoot></table></div>' +
+          '<div class="gov-cards-mobile p-3">' + rows.map(function (r) { return '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between gap-2"><span class="fw-semibold">' + r[0] + '</span>' + r[7] + '</div><div class="small text-muted">' + r[1] + '</div><div class="small">Rent ' + inr(r[2]) + ' &bull; Surcharge ' + inr(r[3]) + (r[4] ? ' &bull; Adjustment ' + adj(r[4]) : '') + ' &bull; Paid ' + inr(r[5]) + '</div><div class="text-end fw-bold">' + inr(r[6]) + '</div></div>'; }).join('') + '</div>' +
+          '<div class="card-footer bg-white small text-muted">Balance = Rent + Surcharge + Adjustment − Paid. Calculated from the structures, notified rates, certified opening balance, payments and approved adjustments.</div>');
+      }
+
+      function panePayments() {
+        var pays = D.payments.filter(function (p) { return p.grId === site.grId; });
+        var rows = pays.map(function (p) {
+          var a = p.status === 'Success' ? '<div class="d-inline-flex align-items-center gap-1 text-nowrap"><a class="btn btn-sm btn-outline-primary" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '">Receipt</a>' +
+            (canAdjust ? '<button type="button" class="btn btn-sm btn-outline-danger" data-reverse="' + esc(p.receiptNo) + '">Reverse</button>' : '') + '</div>' : '<span class="small text-muted">—</span>';
+          return '<tr><td class="font-monospace small fw-bold">' + esc(p.receiptNo || p.intentNo) + '</td><td>' + App.fmtDate(p.paidOn) + '<div class="small text-muted">' + esc(p.mode) + '</div></td><td class="small font-monospace">' + esc(p.ref || '—') + '</td>' +
+            '<td class="text-end fw-bold">' + inr(p.amount) + '</td><td>' + App.paymentPill(p) + (p.reversalReason ? '<div class="small text-muted">' + esc(p.reversalReason) + '</div>' : '') + '</td><td class="text-end text-nowrap">' + a + '</td></tr>';
+        }).join('') || '<tr><td colspan="6" class="text-center text-muted py-3">No payments since go-live.</td></tr>';
+        var adj = D.adjustments.filter(function (a) { return a.grId === site.grId; });
+        var adjRows = adj.map(function (a) {
+          return '<tr><td class="small font-monospace">' + esc(a.id) + '</td><td>' + App.fmtDate(a.date) + '</td><td>' + esc(a.fy === 'OB' ? 'Opening balance' : 'FY ' + a.fy) + '</td><td>' + esc(a.type) + '</td><td class="text-end fw-bold ' + (a.amount < 0 ? 'text-success' : 'text-danger') + '">' + (a.amount < 0 ? '−' : '+') + inr(Math.abs(a.amount)) + '<div class="small fw-normal text-muted">' + (a.amount < 0 ? 'Dues reduced' : 'Dues added') + '</div></td><td class="small">' + esc(a.reason) + '<div class="text-muted">' + (a.file ? App.fileLink(a.file, site.grId) + ' &bull; ' : '') + esc(a.approvedBy) + '</div></td></tr>';
+        }).join('') || '<tr><td colspan="6" class="text-center text-muted py-3">No adjustments.</td></tr>';
+        var adjAct = canAdjust && site.status !== 'Closed' ? '<button type="button" class="btn btn-sm btn-primary" id="btnAdjust"><i class="bi bi-sliders2-vertical me-1" aria-hidden="true"></i>Add Adjustment</button>' : '';
+        return card('Payments', '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Payments</caption><thead><tr><th scope="col">Receipt</th><th scope="col">Date &amp; Mode</th><th scope="col">Txn / BR No.</th><th scope="col" class="text-end">Amount</th><th scope="col">Status</th><th scope="col" class="text-end">Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+            '<div class="card-footer bg-white small text-muted">Payments are never deleted. A reversal keeps the original visible and reopens the dues.</div>') +
+          card('Adjustments', '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Adjustments</caption><thead><tr><th scope="col">ID</th><th scope="col">Date</th><th scope="col">Period</th><th scope="col">Type</th><th scope="col" class="text-end">Amount</th><th scope="col">Reason &amp; File</th></tr></thead><tbody>' + adjRows + '</tbody></table></div>' +
+            '<div class="card-footer bg-white small text-muted">Use an adjustment only on a written order, for example a waiver approved by the Department or an opening balance copied wrongly from the register. Dues are otherwise never changed by hand.</div>', adjAct);
+      }
+
+      function paneDocuments() {
+        var docs = D.attachments.filter(function (a) { return a.grId === site.grId; });
+        var act = canEdit && !readOnly ? '<button type="button" class="btn btn-sm btn-outline-primary" id="btnUpload"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Document</button>' : '';
+        return card('Documents', '<ul class="list-group list-group-flush">' + (docs.map(function (f) {
+          return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2"><div><i class="bi bi-file-earmark-text me-1 text-primary" aria-hidden="true"></i><span class="fw-semibold small">' + esc(f.file) + '</span><div class="small text-muted">' + esc(f.docType) + ' &bull; ' + esc(f.uploadedBy) + ' &bull; ' + App.fmtDate(f.at) + '</div></div><a class="btn btn-sm btn-outline-primary" href="document.html?id=' + encodeURIComponent(f.id) + '" target="_blank" rel="noopener"><i class="bi bi-eye me-1" aria-hidden="true"></i>View<span class="visually-hidden"> ' + esc(f.file) + ' (opens in a new tab)</span></a></li>';
+        }).join('') || '<li class="list-group-item small text-muted">No documents yet.</li>') + '</ul>', act);
+      }
+
+      function paneHistory() {
+        var items = D.auditLog.filter(function (a) { return a.grId === site.grId; });
+        return card('History (audit trail)', '<div class="card-body">' + (items.length ? '<ul class="gr-timeline">' + items.map(function (a) {
+          return '<li><div class="small"><strong>' + esc(a.at.slice(0, 10).split('-').reverse().join('-')) + '</strong> &bull; ' + esc(a.user) + ' (' + esc(a.role) + ') &bull; ' + esc(a.action) + (a.file ? ' &bull; ' + App.fileLink(a.file, site.grId) : '') + '</div>' +
+            (a.reason ? '<div class="small text-muted">Reason: ' + esc(a.reason) + '</div>' : '') + '</li>';
+        }).join('') + '</ul>' : '<p class="small text-muted mb-0">No changes recorded yet.</p>') + '<p class="small text-muted mt-2 mb-0"><i class="bi bi-lock me-1" aria-hidden="true"></i>Append-only. No role can edit or delete entries.</p></div>');
+      }
+
+      // ---------- Actions ----------
+      function bindActions() {
+        var b;
+        if ((b = document.getElementById('btnVerify'))) b.addEventListener('click', function () {
+          openModal(site.status === 'Draft' ? 'Verify &amp; activate account' : 'Mark data verified', '<p class="small">Confirm the site, allottee, structures and opening balance were checked against the paper register (' + esc(App.legacyRef(site)) + ').</p>' + commentField(), 'Confirm', function () {
+            if (!req('mComment', 'A comment is required.')) return false;
+            var before = { status: site.status, dataVerified: site.dataVerified };
+            site.dataVerified = true; site.verifiedBy = D.staffRoles[session.role].user; site.verifiedOn = D.demoToday;
+            if (site.status === 'Draft') site.status = 'Active';
+            site.flags = (site.flags || []).filter(function (f) { return f.indexOf('≠') === -1; });
+            App.audit({ grId: site.grId, entity: 'SiteAccount', action: 'Data verified against register' + (before.status === 'Draft' ? ' · status Draft → Active' : ''), reason: val('mComment'), before: before, after: { status: site.status, dataVerified: true } });
+            App.save(); App.toast('Account marked as verified.');
+          }, 'success');
+        });
+        if ((b = document.getElementById('btnFlag'))) b.addEventListener('click', function () {
+          var has = (site.flags || []).some(function (f) { return f.indexOf('Transfer pending') !== -1; });
+          openModal(has ? 'Clear "Transfer pending"' : 'Flag "Transfer pending"', '<p class="small">' + (has ? 'Remove the flag.' : 'Use when the allottee has died and no transfer is recorded yet. Payment in the old name stays allowed.') + '</p>' + commentField(), 'Save', function () {
+            if (!req('mComment', 'A comment is required.')) return false;
+            site.flags = (site.flags || []).filter(function (f) { return f.indexOf('Transfer pending') === -1; });
+            if (!has) site.flags.push('Transfer pending – allottee deceased');
+            App.audit({ grId: site.grId, entity: 'SiteAccount', action: has ? 'Flag cleared: Transfer pending' : 'Flag set: Transfer pending', reason: val('mComment') });
+            App.save(); App.toast('Flag updated.');
+          });
+        });
+
+        // S5 – add structure with L × W calculator and rent preview
+        if ((b = document.getElementById('btnAddStructure'))) b.addEventListener('click', function () {
+          var fys = S.fyOptions(site, 2);
+          openModal('Add structure (mutation)', mcNote() +
+            '<div class="row g-2"><div class="col-md-6"><label for="sType" class="form-label small fw-semibold">Kind of structure <span class="text-danger">*</span></label><select id="sType" class="form-select form-select-sm">' + D.config.lists.structureTypes.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</select></div>' +
+            '<div class="col-md-6"><div class="form-check mt-md-4"><input class="form-check-input" type="checkbox" id="sDirect"><label class="form-check-label small" for="sDirect">Enter area directly (with reason)</label></div></div>' +
+            '<div class="col-4" id="lCol"><label for="sL" class="form-label small fw-semibold">Length (ft) <span class="text-danger">*</span></label><input id="sL" type="number" min="0" step="0.01" class="form-control form-control-sm"></div>' +
+            '<div class="col-4" id="wCol"><label for="sW" class="form-label small fw-semibold">Width (ft) <span class="text-danger">*</span></label><input id="sW" type="number" min="0" step="0.01" class="form-control form-control-sm"></div>' +
+            '<div class="col-4"><label for="sA" class="form-label small fw-semibold">Area (sq ft)</label><input id="sA" type="number" min="0" step="0.01" class="form-control form-control-sm" readonly></div>' +
+            '<div class="col-12 d-none" id="reasonCol"><label for="sReason" class="form-label small fw-semibold">Reason area is entered directly <span class="text-danger">*</span></label><input id="sReason" class="form-control form-control-sm"></div>' +
+            '<div class="col-md-4"><label for="sMut" class="form-label small fw-semibold">Mutation / order no. <span class="text-danger">*</span></label><input id="sMut" class="form-control form-control-sm" placeholder="3/DCE"></div>' +
+            '<div class="col-md-4"><label for="sDate" class="form-label small fw-semibold">Order date <span class="text-danger">*</span></label><input id="sDate" type="date" class="form-control form-control-sm" max="' + D.demoToday + '"></div>' +
+            '<div class="col-md-4"><label for="sFrom" class="form-label small fw-semibold">Chargeable from <span class="text-danger">*</span></label><select id="sFrom" class="form-select form-select-sm">' + fyOptionsHtml(fys, S.defaultFromFy(null)) + '</select></div></div>' +
+            '<div class="alert alert-light border small my-2" id="sPreview">Enter the measurement to preview the rent.</div>' +
+            fileField('Mutation order / plan', true) + commentField(), 'Save Structure', function () {
+              var direct = document.getElementById('sDirect').checked;
+              var ok = true;
+              if (!direct) { ok = req('sL', 'Enter the length.') & ok; ok = req('sW', 'Enter the width.') & ok; }
+              else { ok = App.fieldError(document.getElementById('sA'), +val('sA') > 0 ? '' : 'Enter the area.') & ok; ok = req('sReason', 'A reason is required when the area is entered directly.') & ok; }
+              ok = req('sMut', 'Enter the mutation / order no.') & ok;
+              ok = req('sDate', 'Enter the order date.') & ok;
+              ok = fileReq('mFile', true) & ok;
+              ok = req('mComment', 'A comment is required.') & ok;
+              if (!ok) return false;
+              var area = direct ? +val('sA') : Math.round(+val('sL') * +val('sW') * 100) / 100;
+              var structure = { type: val('sType'), lengthFt: direct ? null : +val('sL'), widthFt: direct ? null : +val('sW'), areaSqft: area, areaOverrideReason: direct ? val('sReason') : null,
+                mutationNo: val('sMut'), orderDate: val('sDate'), chargeableFromFy: val('sFrom'), chargeableToFy: null };
+              var file = App.addAttachment(site.grId, 'Mutation order / plan', document.getElementById('mFile'));
+              done(S.submitChange(session, 'structureAdd', site, { structure: structure }, val('mComment'), file), 'Structure');
+            });
+          function preview() {
+            var direct = document.getElementById('sDirect').checked;
+            document.getElementById('reasonCol').classList.toggle('d-none', !direct);
+            document.getElementById('sA').readOnly = !direct;
+            if (!direct) { var a = +val('sL') * +val('sW'); document.getElementById('sA').value = a ? Math.round(a * 100) / 100 : ''; }
+            var area = +val('sA');
+            var from = val('sFrom');
+            if (!area) { document.getElementById('sPreview').textContent = 'Enter the measurement to preview the rent.'; return; }
+            var test = S.clone(site);
+            test.structures.push({ type: 'x', areaSqft: area, chargeableFromFy: from, chargeableToFy: null });
+            var oldR = S.rentForFy(site, from), newR = S.rentForFy(test, from);
+            document.getElementById('sPreview').innerHTML = '<i class="bi bi-calculator me-1" aria-hidden="true"></i>Annual rent <strong>' + inr(oldR) + ' → ' + inr(newR) + '</strong> from FY ' + esc(from) + ' (+' + App.sqft(area) + ')';
+          }
+          ['sL', 'sW', 'sA', 'sFrom', 'sDirect'].forEach(function (id) { document.getElementById(id).addEventListener('input', preview); document.getElementById(id).addEventListener('change', preview); });
+          document.getElementById('sDate').addEventListener('change', function () {
+            var def = S.defaultFromFy(val('sDate'));
+            var sel = document.getElementById('sFrom');
+            if ([].some.call(sel.options, function (o) { return o.value === def; })) sel.value = def;
+            preview();
+          });
+        });
+
+        // S5 – end a structure
+        document.querySelectorAll('[data-end]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var i = +btn.getAttribute('data-end'), x = site.structures[i];
+            var fys = S.fyOptions(site, 2);
+            var def = T.fyLabel(S.currentFy() + (D.config.settings.structureRemovalStops === 'NEXT_FY' ? 0 : -1));
+            openModal('End structure', mcNote() + '<p class="small">' + esc(x.type) + ' &bull; ' + App.sqft(x.areaSqft) + '. The structure stays on record; the charge stops after the chosen FY.</p>' +
+              '<div class="mb-2"><label for="eTo" class="form-label small fw-semibold">Chargeable up to <span class="text-danger">*</span></label><select id="eTo" class="form-select form-select-sm">' + fyOptionsHtml(fys, def) + '</select></div>' +
+              fileField('Supporting order / report', true) + commentField('Reason (demolished, surrendered…)'), 'End Structure', function () {
+                var ok = fileReq('mFile', true) & req('mComment', 'A reason is required.');
+                if (!ok) return false;
+                var file = App.addAttachment(site.grId, 'Other', document.getElementById('mFile'));
+                done(S.submitChange(session, 'structureEnd', site, { index: i, toFy: val('eTo'), reason: val('mComment') }, val('mComment'), file), 'Structure end');
+              }, 'danger');
+          });
+        });
+
+        // W4.6 – correct a measurement error
+        document.querySelectorAll('[data-correct]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var i = +btn.getAttribute('data-correct'), x = site.structures[i];
+            var from = S.firstOpenFy(site);
+            openModal('Correct structure area', mcNote() + '<p class="small">Current: ' + esc(x.type) + ' &bull; ' + (x.lengthFt ? x.lengthFt + "' × " + x.widthFt + "' = " : '') + App.sqft(x.areaSqft) + '. The correction applies from FY ' + esc(from) + ' (first unpaid year); paid years are not recomputed.</p>' +
+              '<div class="row g-2"><div class="col-4"><label for="cL" class="form-label small fw-semibold">Length (ft)</label><input id="cL" type="number" step="0.01" min="0" class="form-control form-control-sm" value="' + (x.lengthFt || '') + '"></div>' +
+              '<div class="col-4"><label for="cW" class="form-label small fw-semibold">Width (ft)</label><input id="cW" type="number" step="0.01" min="0" class="form-control form-control-sm" value="' + (x.widthFt || '') + '"></div>' +
+              '<div class="col-4"><label for="cA" class="form-label small fw-semibold">Area (sq ft) <span class="text-danger">*</span></label><input id="cA" type="number" step="0.01" min="0" class="form-control form-control-sm" value="' + x.areaSqft + '"></div></div>' +
+              '<div class="alert alert-light border small my-2" id="cPreview"></div>' + commentField('Reason for correction'), 'Save Correction', function () {
+                var a = +val('cA');
+                var ok = App.fieldError(document.getElementById('cA'), a > 0 && a !== x.areaSqft ? '' : 'Enter the corrected area.') & req('mComment', 'A reason is required.');
+                if (!ok) return false;
+                done(S.submitChange(session, 'structureCorrect', site, { index: i, lengthFt: +val('cL') || null, widthFt: +val('cW') || null, areaSqft: a, fromFy: from, reason: val('mComment') }, val('mComment'), null), 'Area correction');
+              });
+            function prev() {
+              if (+val('cL') && +val('cW')) document.getElementById('cA').value = Math.round(+val('cL') * +val('cW') * 100) / 100;
+              var test = S.clone(site);
+              S.applyChange('structureCorrect', test, { index: i, lengthFt: +val('cL') || null, widthFt: +val('cW') || null, areaSqft: +val('cA') || x.areaSqft, fromFy: from, reason: '' });
+              var before = App.dues(site).totalPayable;
+              var after = T.computeDues(test, D.demoToday, D).totalPayable;
+              document.getElementById('cPreview').innerHTML = 'Effect on outstanding dues: <strong>' + inr(before) + ' → ' + inr(after) + '</strong>';
+            }
+            ['cL', 'cW', 'cA'].forEach(function (id) { document.getElementById(id).addEventListener('input', prev); });
+            prev();
+          });
+        });
+
+        // S6 – record transfer
+        if ((b = document.getElementById('btnTransfer'))) b.addEventListener('click', function () {
+          var d = App.dues(site);
+          var ownerRow = function (n) {
+            return '<div class="row g-2 border rounded p-2 mb-2 gr-owner-row"><div class="col-md-4"><label class="form-label small fw-semibold" for="oN' + n + '">Name <span class="text-danger">*</span></label><input id="oN' + n + '" class="form-control form-control-sm" data-o="name"></div>' +
+              '<div class="col-4 col-md-2"><label class="form-label small fw-semibold" for="oR' + n + '">Relation</label><select id="oR' + n + '" class="form-select form-select-sm" data-o="relation"><option>S/o</option><option>D/o</option><option>W/o</option></select></div>' +
+              '<div class="col-8 col-md-3"><label class="form-label small fw-semibold" for="oG' + n + '">Father / husband <span class="text-danger">*</span></label><input id="oG' + n + '" class="form-control form-control-sm" data-o="guardian"></div>' +
+              '<div class="col-8 col-md-2"><label class="form-label small fw-semibold" for="oM' + n + '">Mobile</label><input id="oM' + n + '" class="form-control form-control-sm" inputmode="numeric" maxlength="10" data-o="mobile"></div>' +
+              '<div class="col-4 col-md-1"><label class="form-label small fw-semibold" for="oS' + n + '">Share %</label><input id="oS' + n + '" type="number" min="1" max="100" class="form-control form-control-sm" value="100" data-o="share"></div></div>';
+          };
+          openModal('Record transfer of allotment', mcNote() +
+            '<p class="small text-muted">Transfers are decided at HQ. Record the HQ order here; the GR ID, structures and payment history stay the same.</p>' +
+            '<div class="row g-2 mb-2"><div class="col-md-6"><label for="tReason" class="form-label small fw-semibold">Reason <span class="text-danger">*</span></label><select id="tReason" class="form-select form-select-sm">' + D.config.lists.transferReasons.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join('') + '</select></div>' +
+            '<div class="col-md-6"><label for="tOrder" class="form-label small fw-semibold">HQ order no. <span class="text-danger">*</span></label><input id="tOrder" class="form-control form-control-sm"></div>' +
+            '<div class="col-6"><label for="tOrderDate" class="form-label small fw-semibold">Order date <span class="text-danger">*</span></label><input id="tOrderDate" type="date" class="form-control form-control-sm" max="' + D.demoToday + '"></div>' +
+            '<div class="col-6"><label for="tEff" class="form-label small fw-semibold">Effective date <span class="text-danger">*</span></label><input id="tEff" type="date" class="form-control form-control-sm"></div></div>' +
+            '<div class="d-flex justify-content-between align-items-center mb-1"><span class="small fw-bold">New allottee(s)</span><button type="button" class="btn btn-sm btn-outline-secondary" id="btnAddOwner"><i class="bi bi-plus" aria-hidden="true"></i>Add joint allottee</button></div>' +
+            '<div id="ownerRows">' + ownerRow(1) + '</div>' +
+            '<div class="border rounded p-2 mb-2"><div class="small fw-bold mb-1">Dues check: ' + inr(d.totalPayable) + ' outstanding on this site</div>' +
+              '<div class="form-check"><input class="form-check-input" type="radio" name="tDues" id="tDues1" value="Dues stay with the site" checked><label class="form-check-label small" for="tDues1">Dues stay with the site (new allottee inherits them) &ndash; default</label></div>' +
+              '<div class="form-check"><input class="form-check-input" type="radio" name="tDues" id="tDues2" value="Dues to be cleared first"><label class="form-check-label small" for="tDues2">Dues must be cleared before the transfer is recorded</label></div></div>' +
+            fileField('HQ order', true) + commentField(), 'Save Transfer', function () {
+              var ok = req('tOrder', 'Enter the HQ order no.') & req('tOrderDate', 'Enter the order date.') & req('tEff', 'Enter the effective date.');
+              var owners = [];
+              document.querySelectorAll('.gr-owner-row').forEach(function (r) {
+                var o = {};
+                r.querySelectorAll('[data-o]').forEach(function (inp) { o[inp.getAttribute('data-o')] = inp.value.trim(); });
+                var nameEl = r.querySelector('[data-o="name"]'), gEl = r.querySelector('[data-o="guardian"]'), mEl = r.querySelector('[data-o="mobile"]');
+                ok = App.fieldError(nameEl, o.name ? '' : 'Enter the name.') & ok;
+                ok = App.fieldError(gEl, o.guardian ? '' : 'Enter the father\'s / husband\'s name.') & ok;
+                ok = App.fieldError(mEl, !o.mobile || /^[6-9]\d{9}$/.test(o.mobile) ? '' : 'Enter a valid 10-digit mobile.') & ok;
+                owners.push({ name: o.name, relation: o.relation, guardian: o.guardian, mobile: o.mobile || null, share: +o.share || 0 });
+              });
+              var shares = owners.reduce(function (a, o) { return a + o.share; }, 0);
+              if (shares !== 100) { App.toast('Shares of joint allottees must add up to 100%.', 'danger'); ok = false; }
+              var dues = document.querySelector('input[name="tDues"]:checked').value;
+              if (dues === 'Dues to be cleared first' && d.totalPayable > 0) { App.toast('Dues of ' + inr(d.totalPayable) + ' must be cleared before this transfer can be recorded.', 'danger'); ok = false; }
+              ok = fileReq('mFile', true) & req('mComment', 'A comment is required.') & ok;
+              if (!ok) return false;
+              var file = App.addAttachment(site.grId, 'HQ transfer order', document.getElementById('mFile'));
+              done(S.submitChange(session, 'transfer', site, { reason: val('tReason'), orderNo: val('tOrder'), orderDate: val('tOrderDate'), effectiveDate: val('tEff'), newOwners: owners, duesHandling: dues }, val('mComment'), file), 'Transfer');
+            });
+          var n = 1;
+          document.getElementById('btnAddOwner').addEventListener('click', function () {
+            n++;
+            document.getElementById('ownerRows').insertAdjacentHTML('beforeend', ownerRow(n));
+            var rows = document.querySelectorAll('.gr-owner-row [data-o="share"]');
+            rows.forEach(function (r) { r.value = Math.floor(100 / rows.length); });
+            rows[0].value = 100 - Math.floor(100 / rows.length) * (rows.length - 1);
+          });
+        });
+
+        // S9 – adjustment (Dept. Admin / System Admin)
+        if ((b = document.getElementById('btnAdjust'))) b.addEventListener('click', function () {
+          var d = App.dues(site);
+          var periods = '<option value="OB">Opening balance (' + inr(d.opening.balance) + ' due)</option>' + d.years.map(function (y) { return '<option value="' + y.label + '">FY ' + y.label + ' (' + inr(y.balance) + ' due)</option>'; }).join('');
+          openModal('Add adjustment', '<p class="small text-muted">Use only on a written order: a waiver approved by the Department, or a correction of an amount entered wrongly (for example the opening balance copied from the register).</p>' +
+            '<fieldset class="mb-2"><legend class="form-label small fw-semibold mb-1">What should this do? <span class="text-danger">*</span></legend>' +
+              '<div class="form-check"><input class="form-check-input" type="radio" name="aDir" id="aDirLess" value="-1" checked><label class="form-check-label small" for="aDirLess">Reduce the dues (waiver / amount charged wrongly)</label></div>' +
+              '<div class="form-check"><input class="form-check-input" type="radio" name="aDir" id="aDirMore" value="1"><label class="form-check-label small" for="aDirMore">Add to the dues (amount left out)</label></div></fieldset>' +
+            '<div class="row g-2"><div class="col-md-7"><label for="aFy" class="form-label small fw-semibold">Year <span class="text-danger">*</span></label><select id="aFy" class="form-select form-select-sm">' + periods + '</select></div>' +
+            '<div class="col-md-5"><label for="aAmt" class="form-label small fw-semibold">Amount (₹) <span class="text-danger">*</span></label><input id="aAmt" type="number" min="1" step="1" class="form-control form-control-sm" placeholder="500"></div></div>' +
+            '<div class="alert alert-light border small my-2" id="aPreview">Enter the amount to see the effect on the dues.</div>' +
+            fileField('Order / approval', true) + commentField('Reason'), 'Save Adjustment', function () {
+              var dir = +document.querySelector('input[name="aDir"]:checked').value;
+              var amt = Math.round(Math.abs(+val('aAmt'))) * dir;
+              var ok = App.fieldError(document.getElementById('aAmt'), amt ? '' : 'Enter the amount.') & fileReq('mFile', true) & req('mComment', 'A reason is required.');
+              if (!ok) return false;
+              var file = App.addAttachment(site.grId, 'Adjustment approval', document.getElementById('mFile'));
+              var a = { id: 'ADJ-' + String(D.adjustments.length + 1).padStart(4, '0'), grId: site.grId, fy: val('aFy'), amount: amt, type: dir < 0 ? 'Waiver / reduction' : 'Correction (added)', reason: val('mComment'), file: file, approvedBy: D.staffRoles[session.role].user, date: D.demoToday, status: 'Approved' };
+              var before = App.dues(site).totalPayable;
+              D.adjustments.unshift(a);
+              App.audit({ grId: site.grId, entity: 'Adjustment', action: a.type + ' ' + (amt < 0 ? '−' : '+') + inr(Math.abs(amt)) + ' on ' + (a.fy === 'OB' ? 'opening balance' : 'FY ' + a.fy), reason: a.reason, file: file, before: { outstanding: before } });
+              App.save(); App.toast('Adjustment ' + a.id + ' saved.');
+            });
+          function adjPreview() {
+            var amt = Math.round(Math.abs(+val('aAmt')));
+            var box = document.getElementById('aPreview');
+            if (!amt) { box.textContent = 'Enter the amount to see the effect on the dues.'; return; }
+            var dir = +document.querySelector('input[name="aDir"]:checked').value;
+            var test = Object.assign({}, D, { adjustments: [{ grId: site.grId, fy: val('aFy'), amount: amt * dir, status: 'Approved', date: D.demoToday }].concat(D.adjustments) });
+            var after = T.computeDues(site, D.demoToday, test).totalPayable;
+            box.innerHTML = '<i class="bi bi-calculator me-1" aria-hidden="true"></i>Outstanding dues <strong>' + inr(d.totalPayable) + ' → ' + inr(after) + '</strong>';
+          }
+          ['aAmt', 'aFy', 'aDirLess', 'aDirMore'].forEach(function (id) { document.getElementById(id).addEventListener('input', adjPreview); document.getElementById(id).addEventListener('change', adjPreview); });
+        });
+
+        // S9 – payment reversal
+        document.querySelectorAll('[data-reverse]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var p = D.payments.filter(function (x) { return x.receiptNo === btn.getAttribute('data-reverse'); })[0];
+            openModal('Reverse payment ' + esc(p.receiptNo), '<div class="alert alert-danger small py-2">The receipt stays visible, marked <strong>Reversed</strong>, and ' + inr(p.amount) + ' of dues reopen.</div>' +
+              '<div class="mb-2"><label for="rReason" class="form-label small fw-semibold">Reason <span class="text-danger">*</span></label><select id="rReason" class="form-select form-select-sm">' + D.config.lists.reversalReasons.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join('') + '</select></div>' +
+              fileField('Supporting file', true) + commentField(), 'Reverse Payment', function () {
+                var ok = fileReq('mFile', true) & req('mComment', 'A comment is required.');
+                if (!ok) return false;
+                var file = App.addAttachment(site.grId, 'Other', document.getElementById('mFile'));
+                p.status = 'Reversed'; p.reversedOn = D.demoToday; p.reversalReason = val('rReason') + ' – ' + val('mComment'); p.reversedBy = D.staffRoles[session.role].user;
+                App.audit({ grId: site.grId, entity: 'Payment', action: 'Payment reversed · ' + p.receiptNo + ' · ' + inr(p.amount), reason: p.reversalReason, file: file, before: { status: 'Success' }, after: { status: 'Reversed' } });
+                App.save(); App.toast('Payment ' + p.receiptNo + ' reversed. Dues reopened.', 'warning');
+              }, 'danger');
+          });
+        });
+
+        if ((b = document.getElementById('btnUpload'))) b.addEventListener('click', function () {
+          openModal('Upload document', '<div class="mb-2"><label for="dType" class="form-label small fw-semibold">Document type</label><select id="dType" class="form-select form-select-sm">' + D.config.lists.documentTypes.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</select></div>' + fileField('File', true) + commentField(), 'Upload', function () {
+            var ok = fileReq('mFile', true) & req('mComment', 'A comment is required.');
+            if (!ok) return false;
+            var file = App.addAttachment(site.grId, val('dType'), document.getElementById('mFile'));
+            App.audit({ grId: site.grId, entity: 'Attachment', action: 'Document uploaded · ' + val('dType'), reason: val('mComment'), file: file });
+            App.save(); App.toast('Document uploaded.');
+          });
+        });
+      }
+
+      function render() {
+        site = App.site(site.grId);
+        header();
+        tabsHtml();
+        pane.innerHTML = { summary: paneSummary, allottees: paneAllottees, structures: paneStructures, dues: paneDues, payments: panePayments, documents: paneDocuments, history: paneHistory }[current]();
+        bindActions();
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>

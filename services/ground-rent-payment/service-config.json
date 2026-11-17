@@ -1,0 +1,301 @@
+{
+  "serviceId": "ground-rent-payment",
+  "serviceName": "Online Ground Rent Payment System",
+  "currentStage": "Stages 01–06 Complete – awaiting review",
+  "screens": {
+    "landing": "index.html",
+    "C1_login": "index.html#login (popup)",
+    "C2_citizenDashboard": "dashboard.html",
+    "C3_searchAccount": "search.html",
+    "C4_billDetails": "bill.html",
+    "C5a_onlinePayment": "pay-online.html",
+    "C5b_offlineChallan": "challan.html",
+    "C6_paymentHistory": "dashboard.html#payments",
+    "receipt": "receipt.html",
+    "publicVerification": "verify.html",
+    "S1_staffDashboard": "dashboard-staff.html",
+    "S2_accountSearch": "accounts.html",
+    "S3_ledger_S5_structures_S6_transfer_S9_adjustment": "ledger.html",
+    "S4_createEditAccount": "account-form.html",
+    "S7_approveBankPayments": "payment-desk.html",
+    "S10_approvalQueue": "approvals.html",
+    "A1_to_A5_configuration": "config.html",
+    "R1_reports": "reports.html",
+    "citizen_upload_bank_receipt": "upload-br.html",
+    "uploaded_document_viewer": "document.html"
+  },
+  "scripts": {
+    "mockData": "mock-data.js",
+    "duesEngine": "dues-engine.js",
+    "pageHelpers": "gr-app.js",
+    "staffChanges": "gr-staff.js",
+    "documents": "gr-docs.js"
+  },
+  "externalLibraries": [
+    "qrcode-generator 1.4.4 (jsdelivr) – receipt and challan QR codes"
+  ],
+  "prototypeLogin": {
+    "citizen": "Login popup on index.html: one click on a demo citizen (no OTP, no Sikkim GO)",
+    "staffRoles": [
+      "supervisor",
+      "deptAdmin",
+      "hq",
+      "sysAdmin"
+    ],
+    "demoDate": "2026-11-16",
+    "offlineBrScan": "Uploaded by the citizen / allottee on the challan page; supervisor checks the original BR at the counter and approves (no data entry by staff)"
+  },
+  "departmentName": "Urban Development Department",
+  "departmentShortName": "UDD",
+  "governmentName": "Government of Sikkim",
+  "governmentNameNepali": "सिक्किम सरकार",
+  "theme": "teal",
+  "themeColors": {
+    "primary": "#0f766e",
+    "secondary": "#0369a1",
+    "accent": "#b45309",
+    "utilityBg": "#042f2e",
+    "footerBg": "#082827"
+  },
+  "servicePurpose": "Replaces the paper Assessment Chart of Ground Rents with a digital ledger. Allottees of urban sites can pay ground rent online or offline through a Bank Receipt (BR).",
+  "officeAddress": "Urban Development Department, NH-10, Gangtok, Sikkim",
+  "helplinePhone": null,
+  "officialEmail": null,
+  "webInformationManager": null,
+  "pendingDepartmentalConfirmation": [
+    "Helpline number and official email",
+    "Web Information Manager designation",
+    "ULB helpdesk contact details",
+    "Designated bank and account for offline BR payments (Q8)",
+    "Online payment gateway provided through Sikkim GO (Q8)",
+    "Surcharge method: once per overdue year or every year of delay (Q2)",
+    "Partial offline payments (Q7)",
+    "GMC ward list and locality mapping (Q9)",
+    "Migration cut-off date and go-live FY (Q10)"
+  ],
+  "sikkimGoLoginUrl": "https://sso.sikkim.gov.in/",
+  "pilot": {
+    "ulbCode": "GMC",
+    "cutOffDate": "2026-03-31",
+    "goLiveFy": "2026-27",
+    "allottedSites": 1578
+  },
+  "grIdFormat": "GR-<ULB code>-<Ward no.>-<5-digit serial>",
+  "grIdExample": "GR-GMC-W05-00123",
+  "rateCategories": [
+    {
+      "code": "MC",
+      "name": "Municipal Corporation",
+      "ratePer100SqFt": 500,
+      "effectiveFrom": "2024-09-01"
+    },
+    {
+      "code": "MCL",
+      "name": "Municipal Council",
+      "ratePer100SqFt": 200,
+      "effectiveFrom": "2024-09-01"
+    },
+    {
+      "code": "NP",
+      "name": "Nagar Panchayat",
+      "ratePer100SqFt": 200,
+      "effectiveFrom": "2024-09-01"
+    },
+    {
+      "code": "ONA",
+      "name": "Other Notified Area / Bazaar",
+      "ratePer100SqFt": 50,
+      "effectiveFrom": "2024-09-01"
+    }
+  ],
+  "rateNotification": {
+    "gazetteNo": "416",
+    "notificationNo": "17/UDD/2024",
+    "effectiveFrom": "2024-09-01"
+  },
+  "surcharge": {
+    "ratePercent": 5,
+    "effectiveFrom": "2024-09-01",
+    "method": "ONCE_PER_OVERDUE_YEAR",
+    "methodConfirmed": false
+  },
+  "rules": {
+    "financialYear": "1 April – 31 March",
+    "dueDate": "31 March closing the FY",
+    "advancePaymentAllowed": false,
+    "offlineChallanValidityDays": 15,
+    "challanNeverPast31March": true
+  },
+  "ulbs": [
+    {
+      "code": "GMC",
+      "district": "Gangtok",
+      "name": "Gangtok Municipal Corporation",
+      "category": "MC",
+      "wards": 21,
+      "active": true,
+      "migrationStatus": "Live"
+    },
+    {
+      "code": "SGT",
+      "district": "Gangtok",
+      "name": "Singtam Nagar Panchayat",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Data received"
+    },
+    {
+      "code": "RNG",
+      "district": "Gangtok",
+      "name": "Rangpo Nagar Panchayat",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "NMC",
+      "district": "Namchi",
+      "name": "Namchi Municipal Council",
+      "category": "MCL",
+      "wards": 7,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "NJN",
+      "district": "Namchi",
+      "name": "Nayabazar Jorethang Nagar Panchayat",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "GYL",
+      "district": "Gyalshing",
+      "name": "Gyalshing Nagar Panchayat (Geyzing)",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "SRG",
+      "district": "Soreng",
+      "name": "Soreng Nagar Panchayat",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "PKY",
+      "district": "Pakyong",
+      "name": "Pakyong Nagar Panchayat",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "MGN",
+      "district": "Mangan",
+      "name": "Mangan Nagar Panchayat",
+      "category": "NP",
+      "wards": 5,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "LDK",
+      "district": "Gangtok",
+      "name": "Lingdok / Penlong",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "MCP",
+      "district": "Gangtok",
+      "name": "32-Nos. / Middle Camp",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "MKH",
+      "district": "Gangtok",
+      "name": "Makha",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "RRT",
+      "district": "Pakyong",
+      "name": "Rorathang",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "RNK",
+      "district": "Pakyong",
+      "name": "Rhenock",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "RGL",
+      "district": "Pakyong",
+      "name": "Rongli",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    },
+    {
+      "code": "DKC",
+      "district": "Mangan",
+      "name": "Dikchu",
+      "category": "ONA",
+      "wards": 1,
+      "active": false,
+      "migrationStatus": "Not started"
+    }
+  ],
+  "paymentModes": [
+    {
+      "id": "online",
+      "name": "Pay Online",
+      "channels": [
+        "UPI",
+        "Debit / Credit Card",
+        "Net Banking"
+      ]
+    },
+    {
+      "id": "offline",
+      "name": "Pay Offline (Bank Receipt)",
+      "channels": [
+        "Offline challan paid at the designated bank"
+      ]
+    }
+  ],
+  "stagePlan": {
+    "stage01": "Landing page and public portal registration",
+    "stage02": "Role selection, Sikkim GO login stub, citizen dashboard (C1, C2) and staff dashboard (S1)",
+    "stage03": "Citizen account search, bill and payment (C3, C4, C5a, C5b, C6)",
+    "stage04": "Staff workflows: ledger, structures, transfer, BR approval (citizen uploads, supervisor approves), adjustment, approvals (S2–S10). S11 migration removed – register data is loaded manually by the Department.",
+    "stage05": "Receipt and offline challan documents with QR",
+    "stage06": "Configuration masters and reports (A1–A5, R1)"
+  }
+}

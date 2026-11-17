@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Create / Edit Account | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard-staff.html">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="accounts.html">Account Search</a></li>
+      <li class="breadcrumb-item active" aria-current="page" id="crumb">Create Account</li>
+    </ol></nav>
+    <h1 class="h4 fw-bold mb-1" id="pageTitle">Create Account</h1>
+    <p class="text-muted small mb-3" id="pageSub">For a register entry missed in the manual data load. New allotments are not made through this system.</p>
+
+    <form id="acctForm" novalidate>
+      <section class="card border-0 shadow-xs mb-3" aria-labelledby="h-site">
+        <div class="card-header bg-white"><h2 id="h-site" class="h6 fw-bold mb-0">1. Site</h2></div>
+        <div class="card-body row g-2">
+          <div class="col-md-4" id="ulbCol"><label for="fUlb" class="form-label small fw-semibold">ULB <span class="text-danger">*</span></label><select id="fUlb" class="form-select form-select-sm"></select></div>
+          <div class="col-md-4"><label for="fWard" class="form-label small fw-semibold">Ward <span class="text-danger">*</span></label><select id="fWard" class="form-select form-select-sm"></select></div>
+          <div class="col-md-4"><label for="fLoc" class="form-label small fw-semibold">Locality <span class="text-danger">*</span></label><select id="fLoc" class="form-select form-select-sm"></select></div>
+          <div class="col-md-8"><label for="fAddr" class="form-label small fw-semibold">Address <span class="text-danger">*</span></label><input id="fAddr" class="form-control form-control-sm"></div>
+          <div class="col-md-4"><label for="fPlot" class="form-label small fw-semibold">Plot / Holding No.</label><input id="fPlot" class="form-control form-control-sm" aria-describedby="plotHelp"><div id="plotHelp" class="form-text">Optional. Unique within the ULB if entered.</div></div>
+          <div class="col-4"><label for="fBook" class="form-label small fw-semibold">Register name</label><input id="fBook" class="form-control form-control-sm" placeholder="Gangtok-I"></div>
+          <div class="col-4"><label for="fPage" class="form-label small fw-semibold">Page no.</label><input id="fPage" type="number" min="1" class="form-control form-control-sm"></div>
+          <div class="col-4"><label for="fSl" class="form-label small fw-semibold">Sl. no.</label><input id="fSl" type="number" min="1" class="form-control form-control-sm"></div>
+        </div>
+      </section>
+
+      <section class="card border-0 shadow-xs mb-3" aria-labelledby="h-owner">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2"><h2 id="h-owner" class="h6 fw-bold mb-0">2. Allottee(s)</h2>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAddOwner"><i class="bi bi-plus" aria-hidden="true"></i>Add joint allottee</button></div>
+        <div class="card-body" id="owners"></div>
+        <div class="card-footer bg-white small text-muted" id="ownerNote">To change the allottee after an HQ order, use Record Transfer on the Allottees tab of the account instead.</div>
+      </section>
+
+      <section class="card border-0 shadow-xs mb-3" aria-labelledby="h-struct" id="structSection">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2"><h2 id="h-struct" class="h6 fw-bold mb-0">3. Structures</h2>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAddStruct"><i class="bi bi-plus" aria-hidden="true"></i>Add structure</button></div>
+        <div class="card-body" id="structs"></div>
+      </section>
+
+      <section class="card border-0 shadow-xs mb-3" aria-labelledby="h-ob" id="obSection">
+        <div class="card-header bg-white"><h2 id="h-ob" class="h6 fw-bold mb-0">4. Certified opening balance</h2></div>
+        <div class="card-body row g-2">
+          <div class="col-md-4"><label for="oUpTo" class="form-label small fw-semibold">Register paid up to FY <span class="text-danger">*</span></label><input id="oUpTo" class="form-control form-control-sm" placeholder="2025-26" pattern="\d{4}-\d{2}"></div>
+          <div class="col-6 col-md-4"><label for="oRent" class="form-label small fw-semibold">Arrear rent (₹)</label><input id="oRent" type="number" min="0" class="form-control form-control-sm" value="0"></div>
+          <div class="col-6 col-md-4"><label for="oSur" class="form-label small fw-semibold">Arrear surcharge (₹)</label><input id="oSur" type="number" min="0" class="form-control form-control-sm" value="0"></div>
+          <div class="col-md-8"><label for="oCert" class="form-label small fw-semibold">Signed certificate <span class="text-danger">*</span></label><input id="oCert" type="file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png"><div class="form-text">Certified by the Department as on the cut-off date. PDF, JPG or PNG, up to 5 MB.</div></div>
+        </div>
+      </section>
+
+      <section class="card border-0 shadow-xs mb-3"><div class="card-body">
+        <label for="fComment" class="form-label small fw-semibold">Reason / comment <span class="text-danger">*</span></label>
+        <textarea id="fComment" class="form-control form-control-sm" rows="2"></textarea>
+        <div class="d-flex flex-wrap gap-2 mt-3"><button type="submit" class="btn btn-sm btn-primary" id="btnSave"><i class="bi bi-check2 me-1" aria-hidden="true"></i>Save Account</button><a href="accounts.html" class="btn btn-sm btn-outline-secondary" id="btnCancel">Cancel</a></div>
+      </div></section>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-staff.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, S = window.GRStaff, D = App.data, esc = App.esc;
+      var session = App.requireSession('staff', 'editAccounts');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'create' });
+
+      var editing = App.qs('gr') ? App.site(App.qs('gr')) : null;
+      if (editing && !App.inScope(editing, session)) editing = null;
+      var scope = App.staffScope(session);
+      var $ = function (id) { return document.getElementById(id); };
+
+      if (editing) {
+        $('pageTitle').textContent = 'Edit Account ' + editing.grId;
+        $('crumb').textContent = 'Edit Account';
+        $('pageSub').textContent = 'Correct site or allottee details. Structures are changed from the Structures tab of the account so each mutation is recorded separately.';
+        $('structSection').classList.add('d-none');
+        $('obSection').classList.add('d-none');
+        $('btnCancel').href = 'ledger.html?gr=' + encodeURIComponent(editing.grId);
+      } else {
+        $('ownerNote').classList.add('d-none');
+      }
+
+      // ---------- Site ----------
+      var ulbs = D.config.ulbs.filter(function (u) { return u.active && (!scope || u.code === scope); });
+      $('fUlb').innerHTML = ulbs.map(function (u) { return '<option value="' + u.code + '">' + esc(u.name) + '</option>'; }).join('');
+      // Only one ULB to choose from: it is understood, so the field is not shown.
+      if (ulbs.length < 2) $('ulbCol').classList.add('d-none');
+      // ULB → Ward → Locality
+      function fillWards() {
+        $('fWard').innerHTML = App.wardsOf($('fUlb').value).map(function (w) { return '<option value="' + w.code + '">' + esc(w.name) + '</option>'; }).join('');
+        fillLocs();
+      }
+      function fillLocs() {
+        var locs = App.localitiesOf($('fUlb').value, $('fWard').value);
+        $('fLoc').innerHTML = locs.length ? locs.map(function (l) { return '<option>' + esc(l) + '</option>'; }).join('') : '<option value="">No localities set up for this ward</option>';
+      }
+      $('fUlb').addEventListener('change', fillWards);
+      $('fWard').addEventListener('change', fillLocs);
+      fillWards();
+      if (editing) {
+        $('fUlb').value = editing.ulb; $('fUlb').disabled = true; fillWards();
+        $('fWard').value = editing.ward; fillLocs(); $('fLoc').value = editing.locality;
+        $('fAddr').value = editing.address; $('fPlot').value = editing.plotNo || '';
+        var lg = editing.legacy || {};
+        $('fBook').value = lg.book || ''; $('fPage').value = lg.page || ''; $('fSl').value = lg.slNo || '';
+      }
+
+      // ---------- Allottees ----------
+      var oCount = 0;
+      function ownerRow(o) {
+        oCount++;
+        var n = oCount;
+        o = o || { relation: 'S/o', share: 100 };
+        return '<div class="row g-2 border rounded p-2 mb-2 gr-owner"><div class="col-md-3"><label class="form-label small fw-semibold" for="on' + n + '">Name <span class="text-danger">*</span></label><input id="on' + n + '" class="form-control form-control-sm" data-k="name" value="' + esc(o.name || '') + '"></div>' +
+          '<div class="col-4 col-md-2"><label class="form-label small fw-semibold" for="or' + n + '">Relation</label><select id="or' + n + '" class="form-select form-select-sm" data-k="relation">' + ['S/o', 'D/o', 'W/o'].map(function (r) { return '<option' + (r === o.relation ? ' selected' : '') + '>' + r + '</option>'; }).join('') + '</select></div>' +
+          '<div class="col-8 col-md-3"><label class="form-label small fw-semibold" for="og' + n + '">Father / husband <span class="text-danger">*</span></label><input id="og' + n + '" class="form-control form-control-sm" data-k="guardian" value="' + esc(o.guardian || '') + '"></div>' +
+          '<div class="col-8 col-md-3"><label class="form-label small fw-semibold" for="om' + n + '">Mobile</label><input id="om' + n + '" class="form-control form-control-sm" inputmode="numeric" maxlength="10" data-k="mobile" value="' + esc(o.mobile || '') + '"></div>' +
+          '<div class="col-4 col-md-1"><label class="form-label small fw-semibold" for="os' + n + '">Share %</label><input id="os' + n + '" type="number" min="1" max="100" class="form-control form-control-sm" data-k="share" value="' + (o.share || 100) + '"></div></div>';
+      }
+      $('owners').innerHTML = (editing ? editing.owners : [null]).map(ownerRow).join('');
+      $('btnAddOwner').addEventListener('click', function () { $('owners').insertAdjacentHTML('beforeend', ownerRow({ relation: 'S/o', share: 0 })); });
+
+      // ---------- Structures (create only) ----------
+      var sCount = 0;
+      function structRow() {
+        sCount++;
+        var n = sCount;
+        return '<div class="row g-2 border rounded p-2 mb-2 gr-struct"><div class="col-md-3"><label class="form-label small fw-semibold" for="st' + n + '">Kind</label><select id="st' + n + '" class="form-select form-select-sm" data-k="type">' + D.config.lists.structureTypes.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</select></div>' +
+          '<div class="col-4 col-md-2"><label class="form-label small fw-semibold" for="sl' + n + '">Length (ft)</label><input id="sl' + n + '" type="number" step="0.01" min="0" class="form-control form-control-sm" data-k="l"></div>' +
+          '<div class="col-4 col-md-2"><label class="form-label small fw-semibold" for="sw' + n + '">Width (ft)</label><input id="sw' + n + '" type="number" step="0.01" min="0" class="form-control form-control-sm" data-k="w"></div>' +
+          '<div class="col-4 col-md-2"><label class="form-label small fw-semibold" for="sa' + n + '">Area <span class="text-danger">*</span></label><input id="sa' + n + '" type="number" step="0.01" min="0" class="form-control form-control-sm" data-k="area"></div>' +
+          '<div class="col-6 col-md-3"><label class="form-label small fw-semibold" for="sm' + n + '">Mutation / order</label><input id="sm' + n + '" class="form-control form-control-sm" data-k="mutation" placeholder="Original allotment"></div></div>';
+      }
+      if (!editing) {
+        $('structs').innerHTML = structRow();
+        $('btnAddStruct').addEventListener('click', function () { $('structs').insertAdjacentHTML('beforeend', structRow()); });
+        $('structs').addEventListener('input', function (e) {
+          var row = e.target.closest('.gr-struct');
+          var l = +row.querySelector('[data-k="l"]').value, w = +row.querySelector('[data-k="w"]').value;
+          if ((e.target.getAttribute('data-k') === 'l' || e.target.getAttribute('data-k') === 'w') && l && w) row.querySelector('[data-k="area"]').value = Math.round(l * w * 100) / 100;
+        });
+      }
+
+      function nextGrId(ulbCode, wardCode) {
+        var max = 0;
+        D.sites.forEach(function (s) { if (s.ulb === ulbCode) max = Math.max(max, parseInt(s.grId.slice(-5), 10)); });
+        return 'GR-' + ulbCode + '-' + wardCode + '-' + String(max + 1).padStart(5, '0');
+      }
+
+      $('acctForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var ok = true;
+        function need(id, msg) { var v = $(id).value.trim(); ok = App.fieldError($(id), v ? '' : msg) && ok; return v; }
+        need('fLoc', 'Add localities for this ward in Configuration → Wards & Localities first.');
+        var addr = need('fAddr', 'Enter the address.');
+        var book = $('fBook').value.trim();
+        var page = $('fPage').value.trim();
+        var plot = $('fPlot').value.trim();
+        var dup = plot && D.sites.some(function (s) { return s.ulb === $('fUlb').value && s.plotNo && App.norm(s.plotNo) === App.norm(plot) && (!editing || s.grId !== editing.grId); });
+        ok = App.fieldError($('fPlot'), dup ? 'This plot no. is already used by another site in this ULB.' : '') && ok;
+        var owners = [];
+        document.querySelectorAll('.gr-owner').forEach(function (r) {
+          var o = {};
+          r.querySelectorAll('[data-k]').forEach(function (i) { o[i.getAttribute('data-k')] = i.value.trim(); });
+          ok = App.fieldError(r.querySelector('[data-k="name"]'), o.name ? '' : 'Enter the name.') && ok;
+          ok = App.fieldError(r.querySelector('[data-k="guardian"]'), o.guardian ? '' : 'Enter the father\'s / husband\'s name.') && ok;
+          ok = App.fieldError(r.querySelector('[data-k="mobile"]'), !o.mobile || /^[6-9]\d{9}$/.test(o.mobile) ? '' : 'Enter a valid 10-digit mobile.') && ok;
+          owners.push({ name: o.name, relation: o.relation, guardian: o.guardian, mobile: o.mobile || null, share: +o.share || 0 });
+        });
+        if (owners.reduce(function (a, o) { return a + o.share; }, 0) !== 100) { App.toast('Allottee shares must add up to 100%.', 'danger'); ok = false; }
+        var structures = [];
+        if (!editing) {
+          document.querySelectorAll('.gr-struct').forEach(function (r) {
+            var g = function (k) { return r.querySelector('[data-k="' + k + '"]').value.trim(); };
+            var area = +g('area');
+            ok = App.fieldError(r.querySelector('[data-k="area"]'), area > 0 ? '' : 'Enter the area.') && ok;
+            structures.push({ type: g('type'), lengthFt: +g('l') || null, widthFt: +g('w') || null, areaSqft: area, areaOverrideReason: +g('l') && +g('w') ? null : 'Area as per register',
+              mutationNo: g('mutation') || 'Original allotment', orderDate: null, chargeableFromFy: App.ulb($('fUlb').value).goLiveFy, chargeableToFy: null });
+          });
+          ok = App.fieldError($('oUpTo'), /^\d{4}-\d{2}$/.test($('oUpTo').value.trim()) ? '' : 'Enter the FY as 2025-26.') && ok;
+          ok = App.fieldError($('oCert'), App.checkFile($('oCert'), true)) && ok;
+        }
+        var comment = need('fComment', 'A reason is required.');
+        if (!ok) { var bad = document.querySelector('.is-invalid'); if (bad) bad.focus(); return; }
+
+        if (editing) {
+          var before = { ward: editing.ward, locality: editing.locality, address: editing.address, plotNo: editing.plotNo, legacy: editing.legacy, owners: editing.owners };
+          editing.ward = $('fWard').value; editing.locality = $('fLoc').value; editing.address = addr; editing.plotNo = plot || null;
+          editing.legacy = { book: book || null, page: +page || null, slNo: +$('fSl').value || null };
+          editing.owners = owners;
+          var after = { ward: editing.ward, locality: editing.locality, address: editing.address, plotNo: editing.plotNo, legacy: editing.legacy, owners: editing.owners };
+          var changed = Object.keys(before).filter(function (k) { return JSON.stringify(before[k]) !== JSON.stringify(after[k]); });
+          App.audit({ grId: editing.grId, entity: 'SiteAccount', action: 'Account edited · ' + (changed.join(', ') || 'no field changes'), reason: comment, before: before, after: after });
+          App.save();
+          window.location.href = 'ledger.html?gr=' + encodeURIComponent(editing.grId);
+          return;
+        }
+        var grId = nextGrId($('fUlb').value, $('fWard').value);
+        var site = { grId: grId, ulb: $('fUlb').value, ward: $('fWard').value, locality: $('fLoc').value, plotNo: plot || null,
+          legacy: { book: book || null, page: +page || null, slNo: +$('fSl').value || null }, address: addr, status: 'Active', dataVerified: false, owners: owners, structures: structures,
+          opening: { asOfFy: '2025-26', paidUpToFy: $('oUpTo').value.trim(), principal: Math.round(+$('oRent').value || 0), surcharge: Math.round(+$('oSur').value || 0), lastPayment: null, certifiedBy: 'Pending (Q14)' } };
+        D.sites.push(site);
+        var file = App.addAttachment(grId, 'Signed certificate', $('oCert'));
+        App.audit({ grId: grId, entity: 'SiteAccount', action: 'Account created with GR ID ' + grId, reason: comment, file: file, after: { owners: owners.map(function (o) { return o.name; }), area: structures.reduce(function (a, x) { return a + x.areaSqft; }, 0) } });
+        owners.forEach(function (o) { if (o.mobile) App.notify(o.mobile, 'Your ground rent account is online', 'Your site is now ' + grId + '. Use it to pay ground rent online.', grId); });
+        App.save();
+        App.filesReady().then(function () { window.location.href = 'ledger.html?gr=' + encodeURIComponent(grId); });
+      });
+    })();
+  </script>
+</body>
+</html>
