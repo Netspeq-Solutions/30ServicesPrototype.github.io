@@ -36,12 +36,12 @@
         permissionLetter: {
           applicable: true,
           issued: isApproved,
-          title: 'Form 3: Certificate of Registration (3-Year Validity)',
+          title: 'Form 3: Certificate of Registration (1-Year Validity)',
           statusText: isApproved ? 'Official Statutory Certificate Available' : 'Under Review',
           badgeClass: isApproved ? 'bg-success' : 'bg-secondary',
           certNo: (app && app.certificateNo) || `SK-TCD-REG-2026-${refNo.substring(refNo.length - 8)}`,
           issueDate: (app && app.submittedDate) ? app.submittedDate.split(',')[0] : '15 Oct 2026',
-          validUntil: (app && app.validUntil) || '14 Oct 2029',
+          validUntil: (app && app.validUntil) || '14 Oct 2027',
           issuer: 'District Tourism Officer, Government of Sikkim'
         }
       };
@@ -51,9 +51,11 @@
      * Generate HTML for the official statutory registration certificate
      */
     getCertificateHtml: function (refNo) {
-      const app = (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication)
-        ? TourismBusinessData.getApplication(refNo)
-        : null;
+      const app = (typeof WorkflowEngine !== 'undefined' && WorkflowEngine.getApplication)
+        ? WorkflowEngine.getApplication(refNo)
+        : ((typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication)
+          ? TourismBusinessData.getApplication(refNo)
+          : null);
 
       const firmName = (app && app.businessName) || 'Singalila Eco-Tours Sikkim';
       const applicantName = (app && app.applicantName) || 'Tenzing Norbu Lepcha';
@@ -61,7 +63,7 @@
       const address = (app && app.shopAddress ? app.shopAddress + ', ' : '') + ((app && app.district) || 'Gangtok') + ' Circle, Sikkim';
       const certNo = (app && app.certificateNo) || `SK-TCD-REG-2026-${refNo.substring(refNo.length - 8)}`;
       const issueDate = (app && app.submittedDate) ? app.submittedDate.split(',')[0] : '15 Oct 2026';
-      const validUntil = (app && app.validUntil) || '14 Oct 2029';
+      const validUntil = (app && app.validUntil) || '14 Oct 2027';
 
       return `
         <div class="bg-white p-4 p-md-5 rounded border shadow-sm mx-auto" style="border: 3px double #24476B !important; background-color: #FFFDF9 !important; max-width: 760px; font-family: 'Noto Serif', serif;">
@@ -97,18 +99,19 @@
                 <div class="col-sm-4 text-muted small">Registration Track:</div>
                 <div class="col-sm-8">
                   <span class="badge bg-primary px-2.5 py-1 text-white fw-bold">${categoryName}</span>
+                  ${(app && app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? '<span class="badge bg-warning text-dark fw-bold ms-1">' + app.registrationGrade + '</span>' : ''}
                 </div>
 
                 <div class="col-sm-4 text-muted small">Principal Premises:</div>
                 <div class="col-sm-8 text-dark">${address}</div>
 
                 <div class="col-sm-4 text-muted small">Statutory Validity:</div>
-                <div class="col-sm-8 text-success fw-bold">${issueDate} to ${validUntil} (3 Calendar Years)</div>
+                <div class="col-sm-8 text-success fw-bold">${issueDate} to ${validUntil} (1 Calendar Year)</div>
               </div>
             </div>
 
             <div class="small text-muted mt-3 mb-4" style="font-family: 'Noto Sans', sans-serif;">
-              <strong>Statutory Conditions:</strong> (1) Valid for three (3) calendar years from date of issue. (2) Non-transferable without prior departmental approval. (3) Must be displayed prominently at the principal business premises. (4) Subject to annual local trade license validity and compliance with Sikkim tourism standards.
+              <strong>Statutory Conditions:</strong> (1) Valid for one (1) calendar year from date of issue. (2) Non-transferable without prior departmental approval. (3) Must be displayed prominently at the principal business premises. (4) Subject to annual local trade license validity and compliance with Sikkim tourism standards.
             </div>
           </div>
 
@@ -137,6 +140,145 @@
     /**
      * Open Document Modal Viewer
      */
+
+    /**
+     * Generate HTML for official statutory fee payment receipt / e-Challan
+     */
+    getReceiptHtml: function (refNo) {
+      const app = (typeof WorkflowEngine !== 'undefined' && WorkflowEngine.getApplication)
+        ? WorkflowEngine.getApplication(refNo)
+        : ((typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication)
+          ? TourismBusinessData.getApplication(refNo)
+          : null);
+
+      const firmName = (app && app.businessName) || 'Sikkim Panoramic Expeditions';
+      const applicantName = (app && app.applicantName) || 'Norbu Wangdi Bhutia';
+      const categoryName = (app && app.categoryName) || 'Tour Operator / Travel Agent (TA/TO)';
+      const grade = (app && app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? app.registrationGrade : '';
+      const fee = (app && (app.amountPaid || app.registrationFee)) || 7000;
+      const txnId = (app && app.paymentTxnId) || ('TXN-SK-TBR-2026-' + Math.floor(100000 + Math.random() * 900000));
+      const receiptNo = (app && app.paymentReceiptNo) || ('RCPT-SK-TCD-2026-' + (refNo.slice(-5)));
+      const payDate = (app && app.paymentDate) || 'Today, 11:35 AM';
+      const payMethod = (app && app.paymentMethod) || 'Online Payment (Sikkim State Single Window Portal &bull; SBI e-Pay)';
+      const district = (app && app.district) || 'Gangtok';
+
+      return `
+        <div class="bg-white p-4 p-md-5 rounded border shadow-sm mx-auto" id="printableReceiptArea" style="max-width: 760px; font-family: 'Noto Sans', sans-serif;">
+          <!-- Official Sikkim Government Header -->
+          <div class="text-center border-bottom pb-3 mb-4">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Sikkim" style="height: 56px; width: auto;" class="mb-2">
+            <div class="h6 text-uppercase fw-bold text-dark mb-0" style="letter-spacing: 0.8px;">Government of Sikkim</div>
+            <div class="h5 fw-bold mb-1" style="color: #24476B;">Tourism &amp; Civil Aviation Department</div>
+            <div class="text-muted small">Paryatan Bhawan, Tadong, Gangtok – 737102</div>
+            <div class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 mt-2 fw-bold font-monospace" style="font-size: 0.8rem;">
+              OFFICIAL STATUTORY PAYMENT RECEIPT / E-CHALLAN
+            </div>
+          </div>
+
+          <!-- Transaction Summary Banner -->
+          <div class="row g-3 mb-4 p-3 bg-light rounded border small">
+            <div class="col-sm-6">
+              <span class="text-muted d-block">e-Receipt / Challan Number:</span>
+              <strong class="font-monospace text-primary fs-6">${receiptNo}</strong>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+              <span class="text-muted d-block">Transaction Reference ID:</span>
+              <strong class="font-monospace text-dark fs-6">${txnId}</strong>
+            </div>
+            <div class="col-sm-6">
+              <span class="text-muted d-block">Payment Date &amp; Time:</span>
+              <strong class="text-dark">${payDate}</strong>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+              <span class="text-muted d-block">Payment Channel &amp; Gateway:</span>
+              <strong class="text-dark">${payMethod}</strong>
+            </div>
+          </div>
+
+          <!-- Applicant & Business Details -->
+          <div class="table-responsive mb-4">
+            <table class="table table-bordered table-sm small align-middle mb-0">
+              <tbody>
+                <tr>
+                  <th class="bg-light text-muted" style="width: 35%;">Application Reference No. (ARN):</th>
+                  <td class="font-monospace fw-bold text-primary">${refNo}</td>
+                </tr>
+                <tr>
+                  <th class="bg-light text-muted">Registered Firm / Business Name:</th>
+                  <td class="fw-bold text-dark">${firmName}</td>
+                </tr>
+                <tr>
+                  <th class="bg-light text-muted">Applicant / Authorized Signatory:</th>
+                  <td class="fw-semibold text-dark">${applicantName}</td>
+                </tr>
+                <tr>
+                  <th class="bg-light text-muted">Service Category:</th>
+                  <td>
+                    <span class="fw-bold text-dark">${categoryName}</span>
+                    ${grade ? '<span class="badge bg-warning text-dark fw-bold ms-2">' + grade + '</span>' : ''}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-light text-muted">Jurisdiction Circle:</th>
+                  <td class="text-dark">${district} Circle Desk, Sikkim</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Fee Breakup Table -->
+          <div class="table-responsive mb-4">
+            <table class="table table-bordered small align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 8%;">#</th>
+                  <th>Fee Description</th>
+                  <th style="width: 25%;" class="text-end">Amount (INR)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>
+                    <strong>Statutory Registration Fee</strong> &bull; <em>The Sikkim Registration of Tourist Trade Rules</em>
+                    <div class="text-muted small">Validity: 1 Calendar Year from date of certificate issuance</div>
+                    ${grade ? '<div class="text-primary small fw-semibold">Registration Classification: ' + grade + '</div>' : ''}
+                  </td>
+                  <td class="text-end fw-bold font-monospace">₹${fee.toLocaleString('en-IN')}</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>
+                    <span>State Portal Processing Fee &amp; e-Challan Charges</span>
+                    <div class="text-muted small">Standard online transaction charge (Waived by State Government)</div>
+                  </td>
+                  <td class="text-end text-muted font-monospace">₹0</td>
+                </tr>
+                <tr class="table-light fw-bold">
+                  <td colspan="2" class="text-end text-uppercase">Total Amount Deposited:</td>
+                  <td class="text-end text-success fs-6 font-monospace">₹${fee.toLocaleString('en-IN')}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Verification Seal & Disclaimer -->
+          <div class="p-3 bg-light rounded border small text-muted d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-shield-check text-success fs-3"></i>
+              <div>
+                <strong class="text-dark d-block">Digitally Confirmed Payment</strong>
+                Verified through Sikkim Single Window Gateway &bull; SBI e-Pay. No physical signature required.
+              </div>
+            </div>
+            <div class="badge bg-success text-white px-3 py-2 fw-bold font-monospace">
+              <i class="bi bi-check2-circle me-1"></i> PAYMENT SUCCESSFUL
+            </div>
+          </div>
+        </div>
+      `;
+    },
+
     openDocumentModal: function (docType, refNo, roleContext) {
       const modalEl = document.getElementById('modalDocViewer');
       if (!modalEl) return;
