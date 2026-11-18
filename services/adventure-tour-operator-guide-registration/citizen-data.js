@@ -527,7 +527,7 @@ function getAdventureCitizenScenario() {
     localStorage.setItem("adv_citizen_scenario", scenarioFromUrl);
     return scenarioFromUrl;
   }
-  return localStorage.getItem("adv_citizen_scenario") || "scenarioB";
+  return localStorage.getItem("adv_citizen_scenario") || "scenarioA";
 }
 
 function setAdventureCitizenScenario(scenKey) {

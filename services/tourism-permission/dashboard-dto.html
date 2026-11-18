@@ -753,20 +753,26 @@
           let mobileActionClass = 'btn-outline-primary';
 
           if (app.currentStage === WorkflowEngine.STAGES.STAGE_2) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Verify</a>`;
-            mobileActionLabel = 'Verify Application';
-            mobileActionClass = 'btn-primary';
+            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.category);
+            actionBtnHtml = isHqFlow
+              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-send-check me-1"></i> Verify &amp; Forward</a>`
+              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Review &amp; Approve</a>`;
+            mobileActionLabel = isHqFlow ? 'Verify & Forward' : 'Review & Approve';
+            mobileActionClass = isHqFlow ? 'btn-primary' : 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_7) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Reverify</a>`;
+            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.category);
+            actionBtnHtml = isHqFlow
+              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Reverify &amp; Forward</a>`
+              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Reverify &amp; Approve</a>`;
             mobileActionLabel = 'Reverify Application';
-            mobileActionClass = 'btn-primary';
+            mobileActionClass = isHqFlow ? 'btn-primary' : 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_5) {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-danger py-1 px-3 fw-bold shadow-xs"><i class="bi bi-exclamation-triangle me-1"></i> Action Return</a>`;
             mobileActionLabel = 'Process HQ Return';
             mobileActionClass = 'btn-danger';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-award me-1"></i> Approve</a>`;
-            mobileActionLabel = 'Issue Final Approval';
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check me-1"></i> Final Approval</a>`;
+            mobileActionLabel = 'Final Approval & Issue Letter';
             mobileActionClass = 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_12) {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Letter</a>`;

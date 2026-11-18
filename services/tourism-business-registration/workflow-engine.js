@@ -323,9 +323,9 @@
     "ecoPractices": "Strict Leave-No-Trace trail ethics, zero single-use plastic, and solar-powered portable camp lighting.",
     "officeEquipment": "4 workstations, client consultation lounge, high-speed fiber internet, digital billing and fire extinguisher.",
     "requiresInspection": true,
-    "assignedRole": "TO",
-    "status": "Submitted",
-    "currentStage": "Level 0: Pending TO Verification",
+    "assignedRole": "DTO",
+    "status": "Under Verification",
+    "currentStage": "Level 2: Pending DTO Sanction",
     "submittedDate": "04 Nov 2026, 10:15 AM",
     "lastUpdated": "04 Nov 2026, 10:15 AM",
     "history": [
@@ -345,7 +345,15 @@
         "stage": "Level 0: Pending TO Verification",
         "remarks": "Application submitted via Single Sign-On. Statutory declaration accepted."
       }
-    ]
+    ],
+    "registrationGrade": "Grade A",
+    "selectedGrade": "Grade A",
+    "registrationFee": 20000,
+    "applicableFee": 20000,
+    "paymentActivated": false,
+    "paymentStatus": "Unpaid",
+    "inspectionFindings": "Verified commercial premises 420 sq.ft at M.G. Marg. Compliant with Grade A Tour Operator standards.",
+    "inspectionDocName": "IA_Field_Report_SK-TBR-2026-TO-00101.pdf"
   },
   {
     "refNo": "SK-TBR-2026-TO-00102",
@@ -590,7 +598,7 @@
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-TO-00104.pdf",
     "inspectionDocSize": "1.9 MB",
     "inspectionFindings": "Commercial premises inspected at Tadong Metro Point. Office measures 450 sq.ft, adequate client seating, high-speed fiber internet, compliant fire extinguishers and trained mountaineering staff verified. Recommended for Grade B Tour Operator Registration.",
-    "inspectionRemarks": "Premise fully compliant with Sikkim Registration of Tourist Trade Rules. Highly recommended for 3-Year statutory registration.",
+    "inspectionRemarks": "Premise fully compliant with Sikkim Registration of Tourist Trade Rules. Highly recommended for 1-Year statutory registration.",
     "inspectionRecommendation": "RECOMMENDED_FOR_APPROVAL",
     "submittedDate": "01 Nov 2026, 09:30 AM",
     "lastUpdated": "08 Nov 2026, 04:30 PM",
@@ -702,10 +710,10 @@
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-TCD-REG-2026-TO-00105",
-    "validUntil": "10 Nov 2029",
+    "validUntil": "10 Nov 2027",
     "approvalDate": "10 Nov 2026",
     "approvingOfficer": "Pema Dorjee Sherpa, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 3-Year Form 3 Registration Certificate issued.",
+    "dtoRemarks": "Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 1-Year Form 3 Registration Certificate issued.",
     "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
     "inspectionReportDate": "05 Nov 2026, 03:00 PM",
     "inspectionDocName": "Physical_Inspection_Report_SK-TBR-2026-TO-00105.pdf",
@@ -744,7 +752,7 @@
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Pema Dorjee Sherpa (District Tourism Officer, Level 2)",
         "date": "10 Nov 2026, 04:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TO-00105 generated with 3-year validity until 10 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TO-00105 generated with 1-year validity until 10 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -838,9 +846,9 @@
     "ecoPractices": "100% digital e-tickets and paperless client itineraries.",
     "officeEquipment": "3 desktop computers, multi-function laser printer, client chairs, and fire extinguisher.",
     "requiresInspection": true,
-    "assignedRole": "TO",
-    "status": "Submitted",
-    "currentStage": "Level 0: Pending TO Verification",
+    "assignedRole": "DTO",
+    "status": "Under Verification",
+    "currentStage": "Level 2: Pending DTO Sanction",
     "submittedDate": "05 Nov 2026, 11:20 AM",
     "lastUpdated": "05 Nov 2026, 11:20 AM",
     "history": [
@@ -860,7 +868,15 @@
         "stage": "Level 0: Pending TO Verification",
         "remarks": "Application submitted via Single Sign-On Portal."
       }
-    ]
+    ],
+    "registrationGrade": "Grade C",
+    "selectedGrade": "Grade C",
+    "registrationFee": 5000,
+    "applicableFee": 5000,
+    "paymentActivated": false,
+    "paymentStatus": "Unpaid",
+    "inspectionFindings": "Deorali ticketing office 280 sq.ft inspected and verified suitable for Grade C Travel Agency.",
+    "inspectionDocName": "IA_Report_SK-TBR-2026-TA-00201.pdf"
   },
   {
     "refNo": "SK-TBR-2026-TA-00202",
@@ -918,9 +934,9 @@
     "officeEquipment": "2 workstations, broadband internet, client sofas, and fire extinguisher.",
     "requiresInspection": true,
     "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "IA",
+    "assignedRole": "DTO",
     "status": "Under Verification",
-    "currentStage": "Level 1: Physical Inspection Scheduled",
+    "currentStage": "Level 2: Pending DTO Sanction",
     "inspectionStatus": "Visit Scheduled",
     "inspectionDate": "08 Nov 2026, 11:00 AM",
     "inspectingOfficer": "Phurba Tamang (Inspecting Authority, Namchi)",
@@ -971,7 +987,15 @@
         "stage": "Level 1: Physical Inspection Scheduled",
         "remarks": "Inspection scheduled for 15 Nov 2026, 11:30 AM."
       }
-    ]
+    ],
+    "registrationGrade": "Grade D",
+    "selectedGrade": "Grade D",
+    "registrationFee": 1500,
+    "applicableFee": 1500,
+    "paymentActivated": false,
+    "paymentStatus": "Unpaid",
+    "inspectionFindings": "Tadong office inspected. Basic counter and booking facilities verified for Grade D.",
+    "inspectionDocName": "IA_Report_SK-TBR-2026-TA-00202.pdf"
   },
   {
     "refNo": "SK-TBR-2026-TA-00203",
@@ -1239,10 +1263,10 @@
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-TA-GTK-2026-0031",
-    "validUntil": "08 Nov 2029",
+    "validUntil": "08 Nov 2027",
     "approvalDate": "08 Nov 2026",
     "approvingOfficer": "Rinzing Ongmu Bhutia, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Certificate issued with 3-year validity.",
+    "dtoRemarks": "Statutory sanction granted. Form 3 Certificate issued with 1-year validity.",
     "inspectingOfficer": "Dawa Tshering Lepcha (Inspecting Authority, Mangan)",
     "inspectionReportDate": "03 Nov 2026, 01:15 PM",
     "inspectionDocName": "Physical_Inspection_Report_SK-TBR-2026-TA-00205.pdf",
@@ -1280,7 +1304,7 @@
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Rinzing Ongmu Bhutia (District Tourism Officer, Level 2)",
         "date": "08 Nov 2026, 02:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TA-00205 generated with 3-year validity until 08 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TA-00205 generated with 1-year validity until 08 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -1579,7 +1603,7 @@
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00304.pdf",
     "inspectionDocSize": "2.3 MB",
     "inspectionFindings": "Showroom premise inspected. Adequate floor space of 420 sq.ft, fire safety extinguisher installed, climbing ropes and safety harnesses meet CE/UIAA safety standards. Recommended for Dealer Registration.",
-    "inspectionRemarks": "Stock inventory matches declared manifest. Highly recommended for statutory 3-year dealer registration.",
+    "inspectionRemarks": "Stock inventory matches declared manifest. Highly recommended for statutory 1-year dealer registration.",
     "inspectionRecommendation": "RECOMMENDED_FOR_APPROVAL",
     "submittedDate": "01 Nov 2026, 10:00 AM",
     "lastUpdated": "08 Nov 2026, 05:15 PM",
@@ -1665,10 +1689,10 @@
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-DLR-GTK-2026-0012",
-    "validUntil": "07 Nov 2029",
+    "validUntil": "07 Nov 2027",
     "approvalDate": "07 Nov 2026",
     "approvingOfficer": "Sonam Gyatso Lepcha, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Dealer Registration Certificate issued with 3-year validity.",
+    "dtoRemarks": "Statutory sanction granted. Form 3 Dealer Registration Certificate issued with 1-year validity.",
     "inspectingOfficer": "Sangay Chopel Bhutia (Inspecting Authority, Gyalshing)",
     "inspectionReportDate": "02 Nov 2026, 03:30 PM",
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00305.pdf",
@@ -1706,7 +1730,7 @@
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Sonam Gyatso Lepcha (District Tourism Officer, Level 2)",
         "date": "07 Nov 2026, 03:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-DLR-00305 generated with 3-year validity until 07 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-DLR-00305 generated with 1-year validity until 07 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -2028,14 +2052,14 @@
     "droneRegistered": true,
     "droneUin": "UIN-2026-SK-77341",
     "requiresInspection": false,
-    "assignedRole": "DTO",
+    "assignedRole": "Citizen",
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
-    "certificateNo": "SK-PHO-GTK-2026-0008",
-    "validUntil": "06 Nov 2029",
+    "certificateNo": "SK-TR-CERT-2026-PHO-0042",
+    "validUntil": "14 Nov 2027",
     "approvalDate": "06 Nov 2026",
     "approvingOfficer": "Nim Lhamu Lepcha, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Outdoor Photographer Registration Certificate issued with 3-year validity.",
+    "dtoRemarks": "Statutory sanction granted. Form 3 Outdoor Photographer Registration Certificate issued with 1-year validity.",
     "inspectionStatus": "Exempt (Direct Route)",
     "toRemarks": "Level 0 verification completed in order. Exempt from physical inspection. Forwarded to DTO for sanction.",
     "submittedDate": "27 Oct 2026, 02:00 PM",
@@ -2057,7 +2081,7 @@
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Nim Lhamu Lepcha (District Tourism Officer, Level 2)",
         "date": "06 Nov 2026, 03:30 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-PHO-00405 generated with 3-year validity until 06 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-PHO-00405 generated with 1-year validity until 06 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -2089,7 +2113,12 @@
     "paymentActivated": true,
     "paymentStatus": "Paid",
     "registrationFee": 1500,
-    "amountPaid": 1500
+    "amountPaid": 1500,
+    "registrationGrade": "Not Applicable",
+    "selectedGrade": "Not Applicable",
+    "applicableFee": 1500,
+    "paymentTxnId": "TXN-SK-TBR-2026-773105",
+    "paymentReceiptNo": "RCPT-SK-TCD-2026-00405"
   },
   {
     "refNo": "SK-TBR-2026-TO-00107",
@@ -2139,10 +2168,10 @@
     "ecoPractices": "Leave-No-Trace trail ethics, zero plastic policy.",
     "officeEquipment": "3 workstations, fire extinguisher, guest consultation zone.",
     "requiresInspection": true,
-    "assignedRole": "DTO",
+    "assignedRole": "Citizen",
     "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
+    "status": "Payment Pending",
+    "currentStage": "Payment Pending – Awaiting Citizen Fee Deposit",
     "submittedDate": "28 Oct 2026, 10:30 AM",
     "lastUpdated": "04 Nov 2026, 04:00 PM",
     "inspectionDate": "02 Nov 2026, 03:00 PM",
@@ -2210,7 +2239,14 @@
         "stage": "Level 2: Pending DTO Sanction",
         "remarks": "Forwarded to DTO for sanction."
       }
-    ]
+    ],
+    "registrationGrade": "Grade B",
+    "selectedGrade": "Grade B",
+    "applicableFee": 7000,
+    "paymentActivated": true,
+    "paymentStatus": "Payment Pending",
+    "paymentActivatedDate": "15 Nov 2026, 11:30 AM",
+    "paymentActivatedBy": "Pema Dorjee Sherpa (District Tourism Officer, Level 2)"
   },
   {
     "refNo": "SK-TBR-2026-DLR-00306",
@@ -2245,7 +2281,7 @@
     "assignedRole": "DTO",
     "assignedIaOfficer": "Tashi Wangdi Lepcha",
     "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
+    "currentStage": "Payment Successful – Awaiting DTO Final Review",
     "submittedDate": "29 Oct 2026, 11:00 AM",
     "lastUpdated": "04 Nov 2026, 04:30 PM",
     "inspectionDate": "02 Nov 2026, 02:30 PM",
@@ -2312,7 +2348,17 @@
         "stage": "Level 2: Pending DTO Sanction",
         "remarks": "Forwarded to DTO for sanction."
       }
-    ]
+    ],
+    "registrationGrade": "Not Applicable",
+    "selectedGrade": "Not Applicable",
+    "applicableFee": 2000,
+    "amountPaid": 2000,
+    "paymentActivated": true,
+    "paymentStatus": "Paid",
+    "paymentTxnId": "TXN-SK-TBR-2026-889102",
+    "paymentReceiptNo": "RCPT-SK-TCD-2026-00306",
+    "paymentDate": "15 Nov 2026, 10:15 AM",
+    "paymentMethod": "Online Payment (SBI e-Pay Single Window Gateway)"
   },
   {
     "refNo": "SK-TBR-2026-PHO-00406",
@@ -2449,7 +2495,7 @@
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-TA-00206.pdf",
     "certificateNo": "SK-TA-MNG-2026-0005",
     "certificateIssueDate": "25 Oct 2026",
-    "certificateExpiryDate": "24 Oct 2029",
+    "certificateExpiryDate": "24 Oct 2027",
     "paymentActivated": true,
     "paymentStatus": "Paid",
     "gradeAssigned": "Grade B",
@@ -2649,6 +2695,12 @@
     },
 
     getApplication: function (refNo) {
+      if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication) {
+        const tMatch = TourismBusinessData.getApplication(refNo);
+        if (tMatch && (tMatch.paymentActivated || tMatch.status === 'Payment Pending' || (typeof window !== 'undefined' && window.activeScenarioKey === 'scenarioPayment'))) {
+          return tMatch;
+        }
+      }
       const all = this.getAllApplications();
       let match = all.find(a => a.refNo === refNo);
       if (!match) {
@@ -3076,7 +3128,7 @@
       const certNo = 'SK-TCD-REG-2026-' + certSuffix;
 
       const d = new Date();
-      d.setFullYear(d.getFullYear() + 3);
+      d.setFullYear(d.getFullYear() + 1);
       const validUntil = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
       const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
@@ -3088,7 +3140,7 @@
       app.approvalDate = datePart;
       app.certificateNo = certNo;
       app.validUntil = validUntil;
-      app.dtoRemarks = remarks || 'Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 3-Year Registration Certificate issued.';
+      app.dtoRemarks = remarks || 'Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 1-Year Registration Certificate issued.';
       app.approvingOfficer = dtoOfficerName + ', District Tourism Officer (DTO)';
       app.lastUpdated = now;
 
@@ -3096,7 +3148,7 @@
         step: 'Final Approval Granted & Certificate Issued',
         actor: dtoOfficerName + ' (District Tourism Officer, Level 2)',
         date: now,
-        remarks: 'Statutory sanction granted. Registration Certificate #' + certNo + ' generated with 3-year validity until ' + validUntil + '.'
+        remarks: 'Statutory sanction granted. Registration Certificate #' + certNo + ' generated with 1-year validity until ' + validUntil + '.'
       });
       if (!app.auditHistory) app.auditHistory = [];
       app.auditHistory.push({

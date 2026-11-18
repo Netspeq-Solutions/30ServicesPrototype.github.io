@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
   <!-- Google Fonts: Noto Sans & Noto Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap"
+    rel="stylesheet">
 
   <!-- Bootstrap 5.3 CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -24,20 +27,24 @@
   <link rel="stylesheet" href="../../common/css/responsive.css">
 
   <style>
-    html, body {
+    html,
+    body {
       overflow-x: hidden !important;
       width: 100% !important;
       max-width: 100% !important;
     }
+
     .review-action-card {
       border: 2px solid #094738;
       border-radius: 10px;
       background: #ffffff;
     }
+
     .history-timeline {
       position: relative;
       padding-left: 1.5rem;
     }
+
     .history-timeline::before {
       content: '';
       position: absolute;
@@ -47,10 +54,12 @@
       width: 2px;
       background: #e2e8f0;
     }
+
     .history-item {
       position: relative;
       margin-bottom: 1.25rem;
     }
+
     .history-point {
       position: absolute;
       left: -1.5rem;
@@ -62,16 +71,27 @@
       border: 3px solid #ffffff;
       box-shadow: 0 0 0 1px #cbd5e1;
     }
+
     .history-item:last-child {
       margin-bottom: 0;
     }
-    .cursor-pointer { cursor: pointer; }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
     @media print {
-      .no-print { display: none !important; }
-      .print-only { display: block !important; }
+      .no-print {
+        display: none !important;
+      }
+
+      .print-only {
+        display: block !important;
+      }
     }
   </style>
 </head>
+
 <body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
 
   <!-- Skip Link -->
@@ -81,32 +101,30 @@
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
   <!-- Reviewer Quick Mode Switcher -->
-  <aside class="gov-scenario-bar no-print" aria-label="Reviewer Controls" style="background: #0f172a; color: #f8fafc; font-size: 0.8125rem; padding: 0.35rem 0;">
+  <aside class="gov-scenario-bar no-print" aria-label="Reviewer Controls"
+    style="background: #0f172a; color: #f8fafc; font-size: 0.8125rem; padding: 0.35rem 0;">
     <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <span class="badge bg-warning text-dark fw-bold px-2 py-1">
           <i class="bi bi-flask-fill me-1"></i> STAGE 04 VERIFICATION DESK
         </span>
         <span class="fw-semibold text-white">Role:</span>
-        <select id="roleViewSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 240px; font-size: 0.775rem;" onchange="switchReviewerRole(this.value)">
+        <select id="roleViewSelect"
+          class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs"
+          style="max-width: 240px; font-size: 0.775rem;" onchange="switchReviewerRole(this.value)">
           <option value="dto">District Tourism Officer (DTO Desk)</option>
           <option value="hq">Headquarters Administrator (HQ Desk)</option>
         </select>
         <span class="fw-semibold text-white ms-1">Jump to Application:</span>
-        <select id="quickArnReviewSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 310px; font-size: 0.775rem;" onchange="location.href='review.html?arn=' + encodeURIComponent(this.value) + '&role=' + encodeURIComponent(activeRole)">
-          <option value="SK-TP-2026-APP-00481">[New Trekking] SK-TP-00481 (Stage 2)</option>
-          <option value="SK-TP-2026-APP-00560">[Direct Approve] SK-TP-00560 &bull; Adventure (Stage 2)</option>
-          <option value="SK-TP-2026-APP-00635">[Reverification] SK-TP-00635 &bull; Events (Stage 7)</option>
-          <option value="SK-TP-2026-APP-00890">[Awaiting HQ] SK-TP-00890 &bull; Expedition (Stage 3)</option>
-          <option value="SK-TP-2026-APP-00620">[Under HQ Review] SK-TP-00620 &bull; Drone (Stage 4)</option>
-          <option value="SK-TP-2026-APP-00914">[Awaiting Sheet] SK-TP-00914 &bull; Trekking (Stage 9)</option>
-          <option value="SK-TP-2026-APP-00778">[Returned by HQ] SK-TP-00778 &bull; Expedition (Stage 5)</option>
-          <option value="SK-TP-2026-APP-00329">[Returned Citizen] SK-TP-00329 &bull; Events (Stage 6)</option>
-          <option value="SK-TP-2026-APP-00512">[Awaiting Final Approval] SK-TP-00512 (Stage 11)</option>
-          <option value="SK-TP-2026-APP-00215">[Approved] SK-TP-00215 &bull; Trekking (Stage 12)</option>
-          <option value="SK-TP-2026-APP-00712">[Rejected] SK-TP-00712 &bull; Drone (Stage 13)</option>
+        <select id="quickArnReviewSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px; font-size: 0.775rem;" onchange="location.href='review.html?arn=' + encodeURIComponent(this.value) + '&role=' + encodeURIComponent(window.activeRole || 'dto')">
+          <option value="SK-TP-2026-APP-00481">[Flow B: DTO] 00481 &bull; Trekking (Stage 2)</option>
+          <option value="SK-TP-2026-APP-00621">[Flow A: HQ] 00621 &bull; Drone (Stage 2)</option>
+          <option value="SK-TP-2026-APP-00710">[Flow A: HQ] 00710 &bull; Events (Stage 3)</option>
+          <option value="SK-TP-2026-APP-00622">[Flow A: HQ] 00622 &bull; Commercial Drone (Stage 9)</option>
+          <option value="SK-TP-2026-APP-00713">[Flow A: HQ] 00713 &bull; State Marathon (Stage 11)</option>
+          <option value="SK-TP-2026-APP-00484">[Flow B: DTO] 00484 &bull; High-Altitude Trek (Stage 12)</option>
         </select>
-        <span class="badge bg-secondary text-white" id="flowBadge">Flow 1</span>
+        <span class="badge bg-secondary text-white flowBadge" id="topFlowBadge">Flow B: Direct DTO</span>
       </div>
 
       <div class="d-flex align-items-center gap-2">
@@ -125,17 +143,22 @@
     <div class="container-fluid px-lg-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center gap-3">
-          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim"
+            class="gov-header-emblem" style="height: 50px; width: auto;">
           <div>
-            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim</span>
-            <div class="fw-bold fs-6 text-dark" id="reviewHeaderOfficeTitle">Tourism &amp; Civil Aviation Department</div>
-            <span class="small text-muted" style="font-size: 0.75rem;">Tourism Permission &bull; Application Verification &amp; Workflow Review Desk</span>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small"
+              style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim</span>
+            <div class="fw-bold fs-6 text-dark" id="reviewHeaderOfficeTitle">Tourism &amp; Civil Aviation Department
+            </div>
+            <span class="small text-muted" style="font-size: 0.75rem;">Tourism Permission &bull; Application
+              Verification &amp; Workflow Review Desk</span>
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
           <div class="text-end d-none d-sm-block">
             <div class="fw-bold text-dark small" id="reviewOfficerName">Karma Lhendup Bhutia</div>
-            <div class="text-muted" style="font-size: 0.75rem;" id="reviewOfficerDesignation">District Tourism Officer (DTO)</div>
+            <div class="text-muted" style="font-size: 0.75rem;" id="reviewOfficerDesignation">District Tourism Officer
+              (DTO)</div>
           </div>
           <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
             <i class="bi bi-box-arrow-right"></i>
@@ -148,7 +171,7 @@
 
   <!-- Main Verification Split-Screen Content -->
   <main id="main-review-content" class="container-fluid px-lg-4 py-3 flex-grow-1">
-    
+
     <!-- Top Alert Messages Container -->
     <div id="reviewAlertContainer"></div>
 
@@ -157,7 +180,8 @@
       <div class="card-body p-3">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div class="d-flex align-items-center gap-3">
-            <a href="dashboard-dto.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1" id="backToQueueBtn">
+            <a href="dashboard-dto.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1"
+              id="backToQueueBtn">
               <i class="bi bi-arrow-left"></i>
               <span id="backToQueueLabel">Back to Queue</span>
             </a>
@@ -165,8 +189,9 @@
               <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span class="fs-5 fw-bold font-monospace text-primary" id="headerArn">SK-TP-2026-APP-00481</span>
                 <span class="badge bg-primary px-2 py-1" id="headerStatusBadge">Submitted</span>
-                <span class="badge bg-light text-dark border px-2 py-1" id="headerStageBadge">Stage 2: Awaiting Verification</span>
-                <span class="badge bg-secondary text-white" id="flowBadge">Flow 1</span>
+                <span class="badge bg-light text-dark border px-2 py-1" id="headerStageBadge">Stage 2: Awaiting
+                  Verification</span>
+                <span class="badge bg-secondary text-white flowBadge" id="headerFlowBadge">Flow B: Direct DTO</span>
               </div>
 
             </div>
@@ -184,7 +209,8 @@
                 <i class="bi bi-three-dots-vertical"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><button class="dropdown-item text-danger small" type="button" onclick="resetThisApplication()"><i class="bi bi-arrow-counterclockwise me-2"></i> Reset Application State</button></li>
+                <li><button class="dropdown-item text-danger small" type="button" onclick="resetThisApplication()"><i
+                      class="bi bi-arrow-counterclockwise me-2"></i> Reset Application State</button></li>
               </ul>
             </div>
           </div>
@@ -194,29 +220,32 @@
 
     <!-- 2-Column Balanced Workspace -->
     <div class="row g-4">
-      
+
       <!-- ==============================================================
            LEFT COLUMN: CLEAN TABBED INFORMATION WORKSPACE (7 cols)
            ============================================================== -->
       <div class="col-lg-8">
         <div class="card border-0 shadow-sm bg-white mb-4">
-          
+
           <!-- Modern Tab Navigation Header -->
           <div class="card-header bg-white border-bottom p-0">
             <ul class="nav nav-tabs card-header-tabs m-0 px-3 border-bottom-0" id="reviewDetailTabs" role="tablist">
               <li class="nav-item" role="presentation">
-                <button class="nav-link active py-3 fw-semibold small text-dark d-flex align-items-center gap-2" id="tab-details-btn" data-bs-toggle="tab" data-bs-target="#tab-details" type="button" role="tab">
+                <button class="nav-link active py-3 fw-semibold small text-dark d-flex align-items-center gap-2"
+                  id="tab-details-btn" data-bs-toggle="tab" data-bs-target="#tab-details" type="button" role="tab">
                   <i class="bi bi-file-earmark-person text-primary"></i> Application Details
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link py-3 fw-semibold small text-dark d-flex align-items-center gap-2" id="tab-documents-btn" data-bs-toggle="tab" data-bs-target="#tab-documents" type="button" role="tab">
+                <button class="nav-link py-3 fw-semibold small text-dark d-flex align-items-center gap-2"
+                  id="tab-documents-btn" data-bs-toggle="tab" data-bs-target="#tab-documents" type="button" role="tab">
                   <i class="bi bi-paperclip text-primary"></i> Documents &amp; Clearances
                   <span class="badge bg-light text-secondary border ms-1" id="dispDocCount">3</span>
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link py-3 fw-semibold small text-dark d-flex align-items-center gap-2" id="tab-history-btn" data-bs-toggle="tab" data-bs-target="#tab-history" type="button" role="tab">
+                <button class="nav-link py-3 fw-semibold small text-dark d-flex align-items-center gap-2"
+                  id="tab-history-btn" data-bs-toggle="tab" data-bs-target="#tab-history" type="button" role="tab">
                   <i class="bi bi-clock-history text-primary"></i> Processing History
                   <span class="badge bg-light text-secondary border ms-1" id="historyCount">1</span>
                 </button>
@@ -226,10 +255,10 @@
 
           <div class="card-body p-4">
             <div class="tab-content" id="reviewDetailTabsContent">
-              
+
               <!-- TAB 1: APPLICATION & APPLICANT DETAILS -->
               <div class="tab-pane fade show active" id="tab-details" role="tabpanel">
-                
+
                 <!-- 1. Applicant Details -->
                 <div class="mb-4">
                   <h4 class="h6 fw-bold text-dark border-bottom pb-2 mb-3">
@@ -250,11 +279,12 @@
                     </div>
                     <div class="col-sm-6">
                       <span class="text-muted d-block">Jurisdiction District:</span>
-                      <strong class="text-dark" id="dispDistrict">Gyalshing District</strong>
+                      <strong class="text-dark" id="dispDistrict">Gangtok District</strong>
                     </div>
                     <div class="col-12 pt-1">
                       <span class="text-muted d-block">Residential / Registered Address in Sikkim:</span>
-                      <span class="text-secondary" id="dispAddress">Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim - 737101</span>
+                      <span class="text-secondary" id="dispAddress">Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim -
+                        737101</span>
                     </div>
                   </div>
                 </div>
@@ -265,33 +295,45 @@
                     <h4 class="h6 fw-bold text-dark mb-0">
                       <i class="bi bi-geo-alt-fill text-primary me-2"></i> Proposed Activity Particulars
                     </h4>
-                    <span class="badge bg-primary-subtle text-primary border" id="dispCategoryBadge">Trekking (₹100)</span>
+                    <span class="badge bg-primary-subtle text-primary border" id="dispCategoryBadge">Trekking
+                      (₹100)</span>
                   </div>
 
                   <div class="row g-3 small">
                     <div class="col-12">
                       <span class="text-muted d-block">Subject / Title of Permission:</span>
-                      <strong class="text-dark fs-6" id="dispSubject">Singalila Ridge Scenic Eco-Trek (8 Indian Trekkers)</strong>
+                      <strong class="text-dark fs-6" id="dispSubject">Singalila Ridge Scenic Eco-Trek (8 Indian
+                        Trekkers)</strong>
                     </div>
                     <div class="col-sm-6">
                       <span class="text-muted d-block">Statutory Fee &amp; Payment:</span>
                       <div id="dispFeeStatus">
-                        <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i> Paid ₹100</span>
+                        <span class="badge bg-success-subtle text-success border"><i
+                            class="bi bi-check-circle-fill me-1"></i> Paid ₹100</span>
                       </div>
                     </div>
                     <div class="col-12">
                       <span class="text-muted d-block mb-1">Detailed Description &amp; Itinerary:</span>
-                      <div class="p-3 bg-light rounded border text-secondary" id="dispDescription" style="white-space: pre-wrap;">-</div>
+                      <div class="p-3 bg-light rounded border text-secondary" id="dispDescription" style="white-space: pre-wrap;">Proposed 6-day eco-trekking expedition along the approved Singalila Ridge trail with certified local guides and 8 participants. Strict waste management protocols compliant with Forest Department guidelines will be maintained.</div>
                     </div>
 
                     <!-- Conditional Liaison Officer -->
                     <div class="col-12 d-none" id="dispLoContainer">
-                      <div class="p-3 bg-warning-subtle rounded border border-warning-subtle d-flex align-items-center gap-3">
-                        <i class="bi bi-person-badge-fill text-warning fs-3"></i>
-                        <div>
-                          <span class="text-muted d-block small">Mandatory Departmental Liaison Officer:</span>
-                          <strong class="text-dark fs-6" id="dispLoName">Tashi (Alpine Expeditions Leader)</strong>
-                          <div class="small text-muted" style="font-size: 0.75rem;">Assigned under Sikkim Mountaineering Regulations</div>
+                      <div class="p-3 bg-warning-subtle rounded border border-warning-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-3">
+                          <i class="bi bi-person-badge-fill text-warning fs-3"></i>
+                          <div>
+                            <span class="text-muted d-block small">Mandatory Departmental Liaison Officer:</span>
+                            <strong class="text-dark fs-6" id="dispLoName">Tashi (Alpine Expeditions Leader)</strong>
+                            <div class="small text-muted" style="font-size: 0.75rem;">Assigned under Sikkim Mountaineering Regulations</div>
+                            <div id="dispLoRemarksNotice" class="small text-primary mt-1 fst-italic d-none"></div>
+                          </div>
+                        </div>
+                        <div id="dtoLoActionBtnContainer">
+                          <button type="button" class="btn btn-sm btn-outline-dark fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#modalChangeLiaisonOfficer">
+                            <i class="bi bi-person-gear"></i>
+                            <span>Change Liaison Officer</span>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -302,7 +344,7 @@
 
               <!-- TAB 2: SUPPORTING DOCUMENTS & CLEARANCES -->
               <div class="tab-pane fade" id="tab-documents" role="tabpanel">
-                
+
                 <!-- Supporting Attachments Table -->
                 <div class="mb-4">
                   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -334,19 +376,24 @@
 
                 <!-- Headquarters Clearances & Sanction Sheet Box -->
                 <div class="card border bg-light mt-4" id="hqSectionCard">
-                  <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center border-bottom">
-                    <strong class="small text-dark"><i class="bi bi-building-check text-primary me-1"></i> Headquarters Clearances &amp; Approval Record</strong>
+                  <div
+                    class="card-header bg-white py-2 d-flex justify-content-between align-items-center border-bottom">
+                    <strong class="small text-dark"><i class="bi bi-building-check text-primary me-1"></i> Headquarters
+                      Clearances &amp; Approval Record</strong>
                     <span class="badge bg-secondary" id="hqSectionBadge">HQ Review</span>
                   </div>
                   <div class="card-body p-3">
                     <!-- e-Office Concurrence Box -->
                     <div class="p-3 bg-white rounded border mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong class="small text-dark"><i class="bi bi-laptop text-primary me-1"></i> Sikkim e-Office Concurrence:</strong>
-                        <span id="eOfficeStatusBadge"><span class="badge bg-secondary-subtle text-secondary border">Not Recorded</span></span>
+                        <strong class="small text-dark"><i class="bi bi-laptop text-primary me-1"></i> Sikkim e-Office
+                          Concurrence:</strong>
+                        <span id="eOfficeStatusBadge"><span class="badge bg-secondary-subtle text-secondary border">Not
+                            Recorded</span></span>
                       </div>
                       <div class="small text-dark" id="eOfficeDetailsBox">
-                        <span class="fst-italic text-muted">Awaiting state-level inter-departmental security concurrence.</span>
+                        <span class="fst-italic text-muted">Awaiting state-level inter-departmental security
+                          concurrence.</span>
                       </div>
                     </div>
 
@@ -356,8 +403,10 @@
                         <div class="d-flex align-items-center gap-3">
                           <i class="bi bi-file-earmark-pdf-fill fs-2 text-muted" id="approvalSheetIcon"></i>
                           <div>
-                            <strong class="text-dark d-block" id="approvalSheetTitle">Headquarters Approval Sheet</strong>
-                            <span class="text-muted small" id="approvalSheetSubText">Awaiting upload by Headquarters Administrator</span>
+                            <strong class="text-dark d-block" id="approvalSheetTitle">Headquarters Approval
+                              Sheet</strong>
+                            <span class="text-muted small" id="approvalSheetSubText">Awaiting upload by Headquarters
+                              Administrator</span>
                           </div>
                         </div>
                         <div id="approvalSheetActions">
@@ -392,7 +441,7 @@
            RIGHT COLUMN: DEDICATED WORKFLOW ACTION PANEL (4 cols)
            ============================================================== -->
       <div class="col-lg-4">
-        
+
         <!-- Dedicated Action Desk -->
         <div class="gov-workflow-panel sticky-top mb-4" style="top: 80px;">
           <div class="gov-workflow-panel-header d-flex justify-content-between align-items-center">
@@ -402,17 +451,8 @@
             <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="activeRoleIndicator">DTO Desk</span>
           </div>
 
-          <!-- Current Processing Stage Callout -->
-          <div class="mb-3">
-            <span class="text-muted small d-block mb-1">Current Stage:</span>
-            <div class="p-2 bg-light rounded border fw-bold text-primary small d-flex align-items-center gap-2" id="currentStageDisplay">
-              <i class="bi bi-hourglass-split"></i>
-              <span id="currentStageText">Awaiting DTO Verification</span>
-            </div>
-          </div>
-
           <!-- Dynamic Action Buttons (Gated by Role & Stage) -->
-          <div id="workflowActionsContainer" class="d-flex flex-column align-items-start gap-2">
+          <div id="workflowActionsContainer" class="d-flex flex-column align-items-start gap-2 mt-3">
             <!-- Dynamically populated based on active role and application stage -->
           </div>
 
@@ -421,10 +461,6 @@
             <div class="d-flex justify-content-between py-1 border-bottom">
               <span>Application ID:</span>
               <strong class="font-monospace text-dark" id="summaryArn">SK-TP-2026-APP-00481</strong>
-            </div>
-            <div class="d-flex justify-content-between py-1 border-bottom">
-              <span>Status:</span>
-              <span id="summaryStatus"><span class="badge bg-primary">Submitted</span></span>
             </div>
             <div class="d-flex justify-content-between py-1 border-bottom">
               <span>Submission Date:</span>
@@ -462,18 +498,93 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4 small">
+          <div class="p-3 bg-light rounded border mb-3">
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size: 0.75rem;">Application ID:</span>
+                <strong class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00621</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size: 0.75rem;">Application Category:</span>
+                <strong class="text-dark modalCategoryDisplay">Drone</strong>
+              </div>
+            </div>
+          </div>
           <p class="text-muted mb-3">
-            You are forwarding application <strong class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00481</strong> to <strong>Headquarters, Paryatan Bhawan, Gangtok</strong> for state-level clearance and approval sheet preparation.
+            You are forwarding this application to <strong>Headquarters, Paryatan Bhawan, Gangtok</strong> for
+            state-level review and Approval Sheet issuance.
           </p>
           <div class="mb-3">
-            <label for="fwdRemarksInput" class="form-label fw-semibold text-dark">Verification &amp; Transmittal Remarks (Optional):</label>
-            <textarea class="form-control" id="fwdRemarksInput" rows="3" placeholder="Applicant credentials and local trail/venue feasibility verified. Forwarded for HQ sanction."></textarea>
+            <label for="fwdRemarksInput" class="form-label fw-semibold text-dark">Verification &amp; Transmittal Remarks
+              (Optional):</label>
+            <textarea class="form-control" id="fwdRemarksInput" rows="3"
+              placeholder="Applicant credentials and local feasibility verified. Forwarded for HQ sanction."></textarea>
           </div>
         </div>
         <div class="modal-footer bg-light py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary btn-sm px-3 fw-semibold" onclick="executeDtoForwardToHq()">
             <i class="bi bi-send-fill me-1"></i> Confirm &amp; Transmit to HQ
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Reassign Departmental Liaison Officer (Expedition Category Specific) -->
+  <div class="modal fade" id="modalChangeLiaisonOfficer" tabindex="-1" aria-labelledby="modalChangeLoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-warning-subtle text-dark py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-person-gear text-warning-emphasis fs-4"></i>
+            <div>
+              <h5 class="modal-title fs-6 fw-bold mb-0" id="modalChangeLoLabel">
+                Reassign Departmental Liaison Officer (LO)
+              </h5>
+              <div class="small text-muted" style="font-size: 0.75rem;">Expedition Category &bull; DTO Delegated Authority</div>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div class="p-2.5 bg-light rounded border mb-3 small">
+            <div class="text-muted small">Current Assigned Liaison Officer:</div>
+            <strong class="text-dark fs-6" id="modalCurrentLoDisplay">-</strong>
+            <div class="text-muted" style="font-size: 0.725rem;">Statutory Escort under Sikkim Mountaineering Regulations</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small text-dark mb-1">
+              New Departmental Liaison Officer <span class="text-danger">*</span>
+            </label>
+            <select class="form-select form-select-sm" id="modalNewLoSelect" onchange="toggleCustomLoInput(this.value)">
+              <option value="">-- Select Authorized Departmental Liaison Officer --</option>
+              <option value="Sikkim Police Mountaineering Liaison Officer Appointed">Sikkim Police Mountaineering Liaison Officer Appointed</option>
+              <option value="Pemba Tshering Bhutia (Sikkim Police Mountaineering Unit)">Pemba Tshering Bhutia (Sikkim Police Mountaineering Unit)</option>
+              <option value="Tashi (Alpine Expeditions Leader)">Tashi (Alpine Expeditions Leader)</option>
+              <option value="Roshni (Alpine Logistics &amp; Safety Specialist)">Roshni (Alpine Logistics &amp; Safety Specialist)</option>
+              <option value="Ganesh (Restricted High Altitude Clearance Officer)">Ganesh (Restricted High Altitude Clearance Officer)</option>
+              <option value="Tashi Gyatso Lepcha (Forest &amp; Wildlife Range Officer / LO)">Tashi Gyatso Lepcha (Forest &amp; Wildlife Range Officer / LO)</option>
+              <option value="Dawa Sherpa (Certified Government Mountaineering LO)">Dawa Sherpa (Certified Government Mountaineering LO)</option>
+              <option value="custom">Other / Custom LO Designation...</option>
+            </select>
+            <input type="text" id="modalCustomLoInput" class="form-control form-control-sm mt-2 d-none" placeholder="Enter full name and official departmental designation">
+            <div class="invalid-feedback" id="modalLoSelectFeedback">Please select or provide a valid Liaison Officer.</div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label fw-semibold small text-dark mb-1">
+              Official Remarks / Reason for Change <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control form-control-sm" id="modalLoChangeRemarks" rows="3" placeholder="Enter official reason for changing the Liaison Officer (e.g. Previous officer deployed on official duties; reassigned as per Sikkim Mountaineering Regulations 2026)..."></textarea>
+            <div class="invalid-feedback">Please provide remarks explaining the reason for changing the Liaison Officer.</div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-sm btn-primary fw-semibold" onclick="executeChangeLiaisonOfficer()">
+            <i class="bi bi-check-circle-fill me-1"></i> Update &amp; Record Change
           </button>
         </div>
       </div>
@@ -493,17 +604,22 @@
         <div class="modal-body p-4 small">
           <div class="alert alert-warning border-0 small py-2 px-3 mb-3">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
-            <strong>Mandatory Requirement:</strong> You must state clear instructions specifying which documents, certificates, or details need correction.
+            <strong>Mandatory Requirement:</strong> You must state clear instructions specifying which documents,
+            certificates, or details need correction.
           </div>
           <div class="mb-3">
-            <label for="returnRemarksInput" class="form-label fw-bold text-dark">Required Correction Instructions <span class="text-danger">*</span>:</label>
-            <textarea class="form-control" id="returnRemarksInput" rows="4" required placeholder="e.g. Fire Safety NOC is missing or expired. Please upload valid certificate from Fire Department and resubmit."></textarea>
-            <div class="invalid-feedback" id="returnRemarksFeedback">Mandatory remarks explaining the correction are required.</div>
+            <label for="returnRemarksInput" class="form-label fw-bold text-dark">Required Correction Instructions <span
+                class="text-danger">*</span>:</label>
+            <textarea class="form-control" id="returnRemarksInput" rows="4" required
+              placeholder="e.g. Fire Safety NOC is missing or expired. Please upload valid certificate from Fire Department and resubmit."></textarea>
+            <div class="invalid-feedback" id="returnRemarksFeedback">Mandatory remarks explaining the correction are
+              required.</div>
           </div>
         </div>
         <div class="modal-footer bg-light py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-warning text-dark btn-sm px-3 fw-bold" onclick="executeDtoReturnToCitizen()">
+          <button type="button" class="btn btn-warning text-dark btn-sm px-3 fw-bold"
+            onclick="executeDtoReturnToCitizen()">
             <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
           </button>
         </div>
@@ -512,7 +628,8 @@
   </div>
 
   <!-- Modal 3: Reject Application Dialog (MANDATORY REMARKS) -->
-  <div class="modal fade" id="modalRejectApplication" tabindex="-1" aria-labelledby="modalRejectLabel" aria-hidden="true">
+  <div class="modal fade" id="modalRejectApplication" tabindex="-1" aria-labelledby="modalRejectLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-danger text-white py-3">
@@ -524,11 +641,14 @@
         <div class="modal-body p-4 small">
           <div class="alert alert-danger border-0 small py-2 px-3 mb-3">
             <i class="bi bi-shield-x me-1"></i>
-            <strong>Irreversible Decision:</strong> Rejection permanently concludes application processing. Mandatory departmental justification is required.
+            <strong>Irreversible Decision:</strong> Rejection permanently concludes application processing. Mandatory
+            departmental justification is required.
           </div>
           <div class="mb-3">
-            <label for="rejectRemarksInput" class="form-label fw-bold text-dark">Departmental Rejection Justification <span class="text-danger">*</span>:</label>
-            <textarea class="form-control" id="rejectRemarksInput" rows="4" required placeholder="State exact statutory or regulatory grounds under which this request cannot be granted..."></textarea>
+            <label for="rejectRemarksInput" class="form-label fw-bold text-dark">Departmental Rejection Justification
+              <span class="text-danger">*</span>:</label>
+            <textarea class="form-control" id="rejectRemarksInput" rows="4" required
+              placeholder="State exact statutory or regulatory grounds under which this request cannot be granted..."></textarea>
             <div class="invalid-feedback" id="rejectRemarksFeedback">Mandatory rejection remarks must be provided.</div>
           </div>
         </div>
@@ -554,15 +674,20 @@
         </div>
         <div class="modal-body p-4 small">
           <p class="text-muted mb-3">
-            Record that external verification and inter-departmental security concurrence has taken place in the Sikkim e-Office portal:
+            Record that external verification and inter-departmental security concurrence has taken place in the Sikkim
+            e-Office portal:
           </p>
           <div class="mb-3">
-            <label for="eOfficeFileRefInput" class="form-label fw-semibold text-dark">External e-Office File Number / Reference:</label>
-            <input type="text" class="form-control" id="eOfficeFileRefInput" placeholder="e.g. e-OFFICE/TOUR/SK/2026/8912">
+            <label for="eOfficeFileRefInput" class="form-label fw-semibold text-dark">External e-Office File Number /
+              Reference:</label>
+            <input type="text" class="form-control" id="eOfficeFileRefInput"
+              placeholder="e.g. e-OFFICE/TOUR/SK/2026/8912">
           </div>
           <div class="mb-3">
-            <label for="eOfficeRemarksInput" class="form-label fw-semibold text-dark">Verification Notes &amp; Concurrence Details:</label>
-            <textarea class="form-control" id="eOfficeRemarksInput" rows="3" placeholder="Home Department border clearance and DGCA verification verified under e-Office file."></textarea>
+            <label for="eOfficeRemarksInput" class="form-label fw-semibold text-dark">Verification Notes &amp;
+              Concurrence Details:</label>
+            <textarea class="form-control" id="eOfficeRemarksInput" rows="3"
+              placeholder="Home Department border clearance and DGCA verification verified under e-Office file."></textarea>
           </div>
         </div>
         <div class="modal-footer bg-light py-2">
@@ -576,7 +701,8 @@
   </div>
 
   <!-- Modal 5: HQ Upload Approval Sheet Dialog -->
-  <div class="modal fade" id="modalUploadApprovalSheet" tabindex="-1" aria-labelledby="modalUploadLabel" aria-hidden="true">
+  <div class="modal fade" id="modalUploadApprovalSheet" tabindex="-1" aria-labelledby="modalUploadLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-success text-white py-3">
@@ -587,21 +713,25 @@
         </div>
         <div class="modal-body p-4 small">
           <p class="text-muted mb-3">
-            Upload the externally prepared and signed Headquarters Sanction/Approval Sheet for application <strong class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00481</strong>:
+            Upload the externally prepared and signed Headquarters Sanction/Approval Sheet for application <strong
+              class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00481</strong>:
           </p>
           <div class="mb-3">
-            <label for="sheetFileInput" class="form-label fw-semibold text-dark">Choose Signed Approval Sheet PDF:</label>
+            <label for="sheetFileInput" class="form-label fw-semibold text-dark">Choose Signed Approval Sheet
+              PDF:</label>
             <input type="file" class="form-control form-control-sm" id="sheetFileInput" accept=".pdf">
             <div class="form-text">Simulated attachment of signed departmental sanction sheet.</div>
           </div>
           <div class="mb-3">
             <label for="sheetCustomNameInput" class="form-label fw-semibold text-dark">Approval Sheet Title:</label>
-            <input type="text" class="form-control form-control-sm" id="sheetCustomNameInput" value="HQ_Sanction_Approval_Sheet.pdf">
+            <input type="text" class="form-control form-control-sm" id="sheetCustomNameInput"
+              value="HQ_Sanction_Approval_Sheet.pdf">
           </div>
         </div>
         <div class="modal-footer bg-light py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-success btn-sm px-3 fw-semibold" onclick="executeHqUploadApprovalSheet()">
+          <button type="button" class="btn btn-success btn-sm px-3 fw-semibold"
+            onclick="executeHqUploadApprovalSheet()">
             <i class="bi bi-upload me-1"></i> Upload &amp; Attach Sheet
           </button>
         </div>
@@ -622,11 +752,14 @@
         <div class="modal-body p-4 small">
           <div class="alert alert-warning border-0 small py-2 px-3 mb-3">
             <i class="bi bi-info-circle me-1"></i>
-            <strong>Flow 5 (HQ Return via DTO):</strong> The application will return to the responsible District DTO with your instructions so the DTO can guide the applicant accordingly.
+            <strong>Flow 5 (HQ Return via DTO):</strong> The application will return to the responsible District DTO
+            with your instructions so the DTO can guide the applicant accordingly.
           </div>
           <div class="mb-3">
-            <label for="hqReturnRemarksInput" class="form-label fw-bold text-dark">Headquarters Objection / Correction Remarks <span class="text-danger">*</span>:</label>
-            <textarea class="form-control" id="hqReturnRemarksInput" rows="4" required placeholder="Specify why the application cannot be cleared at state level and what the DTO must get rectified from applicant..."></textarea>
+            <label for="hqReturnRemarksInput" class="form-label fw-bold text-dark">Headquarters Objection / Correction
+              Remarks <span class="text-danger">*</span>:</label>
+            <textarea class="form-control" id="hqReturnRemarksInput" rows="4" required
+              placeholder="Specify why the application cannot be cleared at state level and what the DTO must get rectified from applicant..."></textarea>
             <div class="invalid-feedback" id="hqReturnRemarksFeedback">Mandatory HQ remarks must be provided.</div>
           </div>
         </div>
@@ -656,21 +789,26 @@
           <div class="card p-4 mx-auto bg-white shadow-xs text-start" style="max-width: 680px; min-height: 380px;">
             <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
               <div class="d-flex align-items-center gap-2">
-                <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem" style="height: 38px;">
+                <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem"
+                  style="height: 38px;">
                 <div>
                   <strong class="d-block text-dark small" style="letter-spacing: 0.5px;">GOVERNMENT OF SIKKIM</strong>
                   <span class="text-muted" style="font-size: 0.75rem;">Official Supporting Enclosure Verification</span>
                 </div>
               </div>
-              <span class="badge bg-success-subtle text-success border"><i class="bi bi-shield-check me-1"></i> Tamper-Proof Upload</span>
+              <span class="badge bg-success-subtle text-success border"><i class="bi bi-shield-check me-1"></i>
+                Tamper-Proof Upload</span>
             </div>
-            
+
             <div class="p-3 bg-light rounded-2 border mb-3">
               <div class="row g-2 small">
-                <div class="col-6"><span class="text-muted">Document Name:</span> <strong id="docModalName">-</strong></div>
-                <div class="col-6"><span class="text-muted">File Name:</span> <span class="font-monospace text-primary" id="docModalFileName">-</span></div>
+                <div class="col-6"><span class="text-muted">Document Name:</span> <strong id="docModalName">-</strong>
+                </div>
+                <div class="col-6"><span class="text-muted">File Name:</span> <span class="font-monospace text-primary"
+                    id="docModalFileName">-</span></div>
                 <div class="col-6"><span class="text-muted">File Size:</span> <span id="docModalFileSize">-</span></div>
-                <div class="col-6"><span class="text-muted">Uploaded Date:</span> <span id="docModalFileDate">-</span></div>
+                <div class="col-6"><span class="text-muted">Uploaded Date:</span> <span id="docModalFileDate">-</span>
+                </div>
               </div>
             </div>
 
@@ -678,7 +816,9 @@
               <i class="bi bi-file-earmark-check-fill text-success fs-1 mb-2 d-block"></i>
               <h6 class="fw-bold text-dark mb-1">Official Statutory Document Verified</h6>
               <p class="text-muted small mb-3">
-                This document was submitted as part of application <span class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00481</span> and has been cryptographically registered on the Sikkim GO portal.
+                This document was submitted as part of application <span
+                  class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00481</span> and has been
+                cryptographically registered on the Sikkim GO portal.
               </p>
               <button type="button" class="btn btn-sm btn-outline-primary" onclick="simulateDocDownload()">
                 <i class="bi bi-download me-1"></i> Download Copy
@@ -699,7 +839,8 @@
       <div class="row align-items-center g-3 small">
         <div class="col-md-8">
           <p class="mb-1 text-white-50">
-            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
+            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>,
+            Government of Sikkim.
           </p>
           <p class="mb-0 text-white-50">
             Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
@@ -713,7 +854,7 @@
   </footer>
 
   <!-- Scripts -->
-    <!-- Modal 8: High-Fidelity In-Page Document Viewer Modal (Stage 06) -->
+  <!-- Modal 8: High-Fidelity In-Page Document Viewer Modal (Stage 06) -->
   <div class="modal fade" id="modalDocViewer" tabindex="-1" aria-labelledby="docViewerTitle" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" style="max-width: 920px;">
       <div class="modal-content border-0 shadow-lg" style="height: 90vh;">
@@ -722,17 +863,21 @@
             <i class="bi bi-file-earmark-check text-success me-2"></i> Document Viewer
           </h5>
           <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 font-monospace" id="docViewerPrintBtn" title="Print document" style="font-size: 0.75rem;">
+            <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 font-monospace" id="docViewerPrintBtn"
+              title="Print document" style="font-size: 0.75rem;">
               <i class="bi bi-printer me-1"></i> Print / PDF
             </button>
-            <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 font-monospace" id="docViewerExternalBtn" title="Open in dedicated tab" style="font-size: 0.75rem;">
+            <button type="button" class="btn btn-sm btn-outline-light py-0 px-2 font-monospace"
+              id="docViewerExternalBtn" title="Open in dedicated tab" style="font-size: 0.75rem;">
               <i class="bi bi-box-arrow-up-right me-1"></i> New Tab
             </button>
-            <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"
+              aria-label="Close"></button>
           </div>
         </div>
         <div class="modal-body p-0 bg-secondary-subtle">
-          <iframe id="docViewerIframe" src="about:blank" style="width: 100%; height: 100%; border: none; min-height: 600px;"></iframe>
+          <iframe id="docViewerIframe" src="about:blank"
+            style="width: 100%; height: 100%; border: none; min-height: 600px;"></iframe>
         </div>
       </div>
     </div>
@@ -791,7 +936,15 @@
         const roleSelect = document.getElementById('roleViewSelect');
         if (roleSelect) roleSelect.value = activeRole;
         const arnSelect = document.getElementById('quickArnReviewSelect');
-        if (arnSelect) arnSelect.value = activeArn;
+        if (arnSelect) {
+          const allApps = WorkflowEngine.getAllApplications();
+          arnSelect.innerHTML = allApps.map(a => {
+            const isHqReq = WorkflowEngine.isHqApprovalRequired(a.category);
+            const flowTag = isHqReq ? '[Flow A: HQ]' : '[Flow B: DTO]';
+            const shortRef = a.refNo.replace('SK-TP-2026-', '');
+            return `<option value="${a.refNo}" ${a.refNo === activeArn ? 'selected' : ''}>${flowTag} ${shortRef} • ${a.category} (${a.currentStage})</option>`;
+          }).join('');
+        }
 
         const roleIndicator = document.getElementById('activeRoleIndicator');
         const deskTitle = document.getElementById('reviewHeaderOfficeTitle');
@@ -818,7 +971,8 @@
             roleIndicator.className = 'badge bg-warning text-dark fw-bold px-2 py-1';
           }
           if (deskTitle) deskTitle.textContent = currentApp.dtoOffice || `District Tourism Office (${currentApp.district} Circle)`;
-          const officeInfo = DISTRICT_OFFICES[currentApp.district] || DISTRICT_OFFICES['Gangtok'];
+          const districtOffices = WorkflowEngine.DISTRICT_OFFICES || {};
+          const officeInfo = districtOffices[currentApp.district] || districtOffices['Gangtok'] || {};
           if (officerName) officerName.textContent = officeInfo.dtoName || 'Karma Lhendup Bhutia';
           if (officerDesig) officerDesig.textContent = officeInfo.designation || 'District Tourism Officer (DTO)';
           if (backBtn) backBtn.href = `dashboard-dto.html?district=${encodeURIComponent(currentApp.district)}`;
@@ -829,50 +983,80 @@
         document.getElementById('headerArn').textContent = currentApp.refNo;
         document.getElementById('summaryArn').textContent = currentApp.refNo;
         document.querySelectorAll('.modalArnDisplay').forEach(el => el.textContent = currentApp.refNo);
+        document.querySelectorAll('.modalCategoryDisplay').forEach(el => el.textContent = currentApp.category);
 
         if (document.getElementById('headerApplicantName')) document.getElementById('headerApplicantName').textContent = currentApp.applicantName;
         if (document.getElementById('headerDistrict')) document.getElementById('headerDistrict').textContent = currentApp.district;
-        document.getElementById('flowBadge').textContent = currentApp.flowTitle || currentApp.flowType.toUpperCase();
+        
+        const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.category);
+        const flowLabel = isHqFlow ? 'Flow A: HQ Approval' : 'Flow B: Direct DTO';
+        const flowBadgeClass = isHqFlow ? 'badge bg-primary text-white flowBadge' : 'badge bg-success text-white flowBadge';
+        document.querySelectorAll('.flowBadge').forEach(el => {
+          el.textContent = flowLabel;
+          el.className = flowBadgeClass;
+        });
 
         renderStatusAndStageBadges();
 
         // 3. Applicant Details
-        document.getElementById('dispFullName').textContent = currentApp.applicantName;
-        document.getElementById('dispPhone').textContent = currentApp.phone || '9800123456';
-        document.getElementById('dispEmail').textContent = currentApp.email || 'tenzing.lepcha@example.in';
-        document.getElementById('dispDistrict').textContent = `${currentApp.district} District`;
-        document.getElementById('dispAddress').textContent = currentApp.address || '-';
+        const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        const setHtml = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+
+        setTxt('dispFullName', currentApp.applicantName || '-');
+        setTxt('dispPhone', currentApp.phone || '9800123456');
+        setTxt('dispEmail', currentApp.email || 'tenzing.lepcha@example.in');
+        setTxt('dispDistrict', `${currentApp.district} District`);
+        setTxt('dispAddress', currentApp.address || '-');
 
         // 4. Activity Details
         let catText = currentApp.category;
         if (currentApp.categoryKey === 'other' && currentApp.customCategoryName) {
           catText = `Any Other (${currentApp.customCategoryName})`;
         }
-        if (document.getElementById('dispCategory')) document.getElementById('dispCategory').textContent = catText;
-        document.getElementById('dispCategoryBadge').textContent = `${catText} (${currentApp.fee})`;
-        document.getElementById('dispSubject').textContent = currentApp.activityTitle;
-        document.getElementById('dispDescription').textContent = currentApp.activityDescription;
+        setTxt('dispCategory', catText);
+        setTxt('dispCategoryBadge', `${catText} (${currentApp.fee})`);
+        setTxt('dispSubject', currentApp.activityTitle || '-');
+        setTxt('dispDescription', currentApp.activityDescription || '-');
 
-        // Liaison Officer
+        // Liaison Officer (Expedition Category Specific)
         const loContainer = document.getElementById('dispLoContainer');
-        if (currentApp.categoryKey === 'expedition' && currentApp.liaisonOfficer) {
-          loContainer.classList.remove('d-none');
-          document.getElementById('dispLoName').textContent = `${currentApp.liaisonOfficer} (Assigned Departmental Liaison Officer)`;
-        } else {
-          loContainer.classList.add('d-none');
+        const dtoLoBtnContainer = document.getElementById('dtoLoActionBtnContainer');
+        const loRemarksNotice = document.getElementById('dispLoRemarksNotice');
+        if (loContainer) {
+          if (currentApp.categoryKey === 'expedition' && currentApp.liaisonOfficer) {
+            loContainer.classList.remove('d-none');
+            setTxt('dispLoName', `${currentApp.liaisonOfficer} (Assigned Departmental Liaison Officer)`);
+
+            if (currentApp.loChangeRemarks && loRemarksNotice) {
+              loRemarksNotice.classList.remove('d-none');
+              loRemarksNotice.innerHTML = `<i class="bi bi-info-circle me-1"></i> <strong>Reassignment Note:</strong> "${currentApp.loChangeRemarks}" <span class="text-muted fst-normal">(by ${currentApp.loChangedBy || 'DTO'} on ${currentApp.loChangeDate || ''})</span>`;
+            } else if (loRemarksNotice) {
+              loRemarksNotice.classList.add('d-none');
+            }
+
+            if (dtoLoBtnContainer) {
+              if (activeRole === 'dto') {
+                dtoLoBtnContainer.classList.remove('d-none');
+              } else {
+                dtoLoBtnContainer.classList.add('d-none');
+              }
+            }
+          } else {
+            loContainer.classList.add('d-none');
+          }
         }
 
         // Fee Display
         if (currentApp.isPaid) {
-          document.getElementById('dispFeeStatus').innerHTML = `<span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i> Paid (${currentApp.fee}) &bull; Ref: ${currentApp.paymentTxnRef}</span>`;
+          setHtml('dispFeeStatus', `<span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i> Paid (${currentApp.fee}) &bull; Ref: ${currentApp.paymentTxnRef}</span>`);
         } else {
-          document.getElementById('dispFeeStatus').innerHTML = `<span class="badge bg-light text-secondary border"><i class="bi bi-dash-circle me-1"></i> Fee Exempt / Free Category</span>`;
+          setHtml('dispFeeStatus', `<span class="badge bg-light text-secondary border"><i class="bi bi-dash-circle me-1"></i> Fee Exempt / Free Category</span>`);
         }
 
         // Summary Dates
-        document.getElementById('summarySubDate').textContent = currentApp.submissionDate;
-        document.getElementById('summaryLastUpdated').textContent = currentApp.lastUpdated || currentApp.submissionDate;
-        document.getElementById('summaryDesk').textContent = currentApp.dtoOffice;
+        setTxt('summarySubDate', currentApp.submissionDate || '-');
+        setTxt('summaryLastUpdated', currentApp.lastUpdated || currentApp.submissionDate || '-');
+        setTxt('summaryDesk', currentApp.dtoOffice || '-');
 
         // 5. Supporting Documents Table
         renderSupportingDocsTable();
@@ -893,12 +1077,19 @@
         const summaryStatus = document.getElementById('summaryStatus');
         const currentStageText = document.getElementById('currentStageText');
 
-        headerStatus.className = 'badge ' + getStatusBadgeClass(currentApp.status);
-        headerStatus.textContent = currentApp.status;
-        summaryStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(currentApp.status)}">${currentApp.status}</span>`;
-
-        headerStage.textContent = currentApp.currentStage;
-        currentStageText.textContent = currentApp.currentStage;
+        if (headerStatus) {
+          headerStatus.className = 'badge ' + getStatusBadgeClass(currentApp.status);
+          headerStatus.textContent = currentApp.status;
+        }
+        if (summaryStatus) {
+          summaryStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(currentApp.status)}">${currentApp.status}</span>`;
+        }
+        if (headerStage) {
+          headerStage.textContent = currentApp.currentStage;
+        }
+        if (currentStageText) {
+          currentStageText.textContent = currentApp.currentStage;
+        }
       }
 
       function getStatusBadgeClass(status) {
@@ -948,26 +1139,42 @@
         const approvalSheetActions = document.getElementById('approvalSheetActions');
         const approvalSheetIcon = document.getElementById('approvalSheetIcon');
 
+        const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.category);
+
+        if (!isHqFlow) {
+          // Flow B: Direct DTO Approval - HQ referral not applicable
+          if (eOfficeBadge) eOfficeBadge.innerHTML = '<span class="badge bg-secondary-subtle text-secondary border">Not Applicable</span>';
+          if (eOfficeDetails) eOfficeDetails.innerHTML = `<span class="text-muted">Direct district-level delegated authority applies. External state-level HQ concurrence is not required for <strong>${currentApp.category}</strong>.</span>`;
+
+          if (approvalSheetBox) approvalSheetBox.className = 'p-3 rounded-3 border bg-light';
+          if (approvalSheetIcon) approvalSheetIcon.className = 'bi bi-file-earmark-x fs-2 text-secondary';
+          if (approvalSheetTitle) approvalSheetTitle.textContent = 'HQ Approval Sheet – Not Applicable';
+          if (approvalSheetSubText) approvalSheetSubText.textContent = 'Direct DTO Approval Flow (Flow B). This category does not require Headquarters sanction.';
+          if (approvalSheetActions) approvalSheetActions.innerHTML = '<span class="badge bg-light text-secondary border">Direct DTO Jurisdiction</span>';
+          return;
+        }
+
+        // Flow A: HQ Approval Required
         // External e-Office status
         if (currentApp.hqVerification && currentApp.hqVerification.verified) {
-          eOfficeBadge.innerHTML = '<span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i> Concurrence Verified</span>';
-          eOfficeDetails.innerHTML = `
+          if (eOfficeBadge) eOfficeBadge.innerHTML = '<span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle-fill me-1"></i> Concurrence Verified</span>';
+          if (eOfficeDetails) eOfficeDetails.innerHTML = `
             <div><strong>e-Office File Ref:</strong> <span class="font-monospace text-primary">${currentApp.hqVerification.eOfficeFileNo}</span></div>
             <div><strong>Verified On:</strong> ${currentApp.hqVerification.verifiedDate}</div>
             <div class="mt-1"><strong>Verification Remarks:</strong> <em>"${currentApp.hqVerification.remarks}"</em></div>
           `;
         } else {
-          eOfficeBadge.innerHTML = '<span class="badge bg-secondary-subtle text-secondary border">Not Recorded</span>';
-          eOfficeDetails.innerHTML = `<span class="fst-italic text-muted">Awaiting state-level inter-departmental security concurrence.</span>`;
+          if (eOfficeBadge) eOfficeBadge.innerHTML = '<span class="badge bg-secondary-subtle text-secondary border">Not Recorded</span>';
+          if (eOfficeDetails) eOfficeDetails.innerHTML = `<span class="fst-italic text-muted">Awaiting state-level inter-departmental security concurrence.</span>`;
         }
 
         // HQ Approval Sheet Status
         if (currentApp.approvalSheet) {
-          approvalSheetBox.className = 'p-3 rounded-3 border border-success bg-success-subtle bg-opacity-25';
-          approvalSheetIcon.className = 'bi bi-file-earmark-check-fill fs-2 text-success';
-          approvalSheetTitle.textContent = currentApp.approvalSheet.fileName;
-          approvalSheetSubText.textContent = `Attached by ${currentApp.approvalSheet.uploadedBy} on ${currentApp.approvalSheet.uploadDate} (${currentApp.approvalSheet.size})`;
-          approvalSheetActions.innerHTML = `
+          if (approvalSheetBox) approvalSheetBox.className = 'p-3 rounded-3 border border-success bg-success-subtle bg-opacity-25';
+          if (approvalSheetIcon) approvalSheetIcon.className = 'bi bi-file-earmark-check-fill fs-2 text-success';
+          if (approvalSheetTitle) approvalSheetTitle.textContent = currentApp.approvalSheet.fileName;
+          if (approvalSheetSubText) approvalSheetSubText.textContent = `Attached by ${currentApp.approvalSheet.uploadedBy} on ${currentApp.approvalSheet.uploadDate} (${currentApp.approvalSheet.size || '1.4 MB'})`;
+          if (approvalSheetActions) approvalSheetActions.innerHTML = `
             <button type="button" class="btn btn-sm btn-outline-success me-1" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
               <i class="bi bi-eye"></i> View Sheet
             </button>
@@ -976,24 +1183,24 @@
             </button>
           `;
         } else {
-          approvalSheetBox.className = 'p-3 rounded-3 border bg-light';
-          approvalSheetIcon.className = 'bi bi-file-earmark-pdf-fill fs-2 text-muted';
-          approvalSheetTitle.textContent = 'Headquarters Approval Sheet';
-          approvalSheetSubText.textContent = 'Awaiting upload by Headquarters Administrator';
+          if (approvalSheetBox) approvalSheetBox.className = 'p-3 rounded-3 border bg-light';
+          if (approvalSheetIcon) approvalSheetIcon.className = 'bi bi-file-earmark-pdf-fill fs-2 text-muted';
+          if (approvalSheetTitle) approvalSheetTitle.textContent = 'Headquarters Approval Sheet';
+          if (approvalSheetSubText) approvalSheetSubText.textContent = 'Awaiting upload by Headquarters Administrator';
           if (activeRole === 'hq') {
-            approvalSheetActions.innerHTML = `
+            if (approvalSheetActions) approvalSheetActions.innerHTML = `
               <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
                 <i class="bi bi-upload me-1"></i> Attach Approval Sheet
               </button>
             `;
           } else {
-            approvalSheetActions.innerHTML = `<span class="badge bg-light text-muted border">Pending HQ Upload</span>`;
+            if (approvalSheetActions) approvalSheetActions.innerHTML = `<span class="badge bg-light text-muted border">Pending HQ Upload</span>`;
           }
         }
       }
 
       // ==============================================================
-      // RENDER WORKFLOW ACTIONS (Strictly Role & Stage Gated)
+      // RENDER WORKFLOW ACTIONS (Strictly Role & Stage Gated - Flow A & Flow B)
       // Standardized to compact, natural-width buttons (no w-100 / d-grid bloat)
       // ==============================================================
       function renderWorkflowActions() {
@@ -1008,28 +1215,77 @@
         // ------------------------------------------------------------
         if (role === 'dto') {
 
-          // STAGE 2: Awaiting DTO Verification (New Application)
-          if (st === WorkflowEngine.STAGES.STAGE_2) {
-            container.innerHTML = `
-              <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalForwardToHq">
-                <i class="bi bi-send-check"></i>
-                <span>Verify &amp; Forward to HQ (Flow 1 / 5)</span>
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="promptDtoDirectApprove()">
-                <i class="bi bi-check-circle"></i>
-                <span>Direct Final Approval (Flow 4)</span>
-              </button>
-              <div class="gov-action-subgroup pt-1">
-                <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
-                  <i class="bi bi-arrow-return-left"></i>
-                  <span>Return for Correction</span>
+          // STAGE 2: Awaiting DTO Verification (New Application) OR STAGE 7: Reverification
+          if (st === WorkflowEngine.STAGES.STAGE_2 || st === WorkflowEngine.STAGES.STAGE_7) {
+            const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.category);
+
+            if (isHqFlow) {
+              // Flow A (Drone, Events): MUST forward to HQ Admin; direct approval NOT available here
+              container.innerHTML = `
+                ${st === WorkflowEngine.STAGES.STAGE_7 ? `
+                  <div class="alert alert-info small p-2 mb-2 w-100">
+                    <i class="bi bi-check-circle-fill me-1"></i> <strong>Corrected Resubmission Received:</strong>
+                    <div class="fst-italic mt-1 text-dark">"${currentApp.citizenRemarks || 'Updated requested files.'}"</div>
+                  </div>
+                ` : ''}
+                <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalForwardToHq">
+                  <i class="bi bi-send-check"></i>
+                  <span>Forward to HQ Admin</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Reject</span>
+                <div class="gov-action-subgroup pt-1">
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
+                    <i class="bi bi-arrow-return-left"></i>
+                    <span>Return for Correction</span>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
+                    <i class="bi bi-x-circle"></i>
+                    <span>Reject</span>
+                  </button>
+                </div>
+                <div class="pt-2 border-top mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer"></i>
+                    <span>Print / Download Summary</span>
+                  </button>
+                </div>
+              `;
+            } else {
+              // Flow B (Trekking, Expedition, Adventure, Other, Sat Phone): Direct DTO Approval; NO Forward to HQ
+              container.innerHTML = `
+                ${st === WorkflowEngine.STAGES.STAGE_7 ? `
+                  <div class="alert alert-info small p-2 mb-2 w-100">
+                    <i class="bi bi-check-circle-fill me-1"></i> <strong>Corrected Resubmission Received:</strong>
+                    <div class="fst-italic mt-1 text-dark">"${currentApp.citizenRemarks || 'Updated requested files.'}"</div>
+                  </div>
+                ` : ''}
+                <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="promptDtoDirectApprove()">
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Approve &amp; Issue Approval Letter</span>
                 </button>
-              </div>
-            `;
+                <div class="gov-action-subgroup pt-1">
+                  ${currentApp.categoryKey === 'expedition' ? `
+                    <button type="button" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1 w-100 justify-content-center mb-1.5" data-bs-toggle="modal" data-bs-target="#modalChangeLiaisonOfficer">
+                      <i class="bi bi-person-gear"></i>
+                      <span>Change Liaison Officer (LO)</span>
+                    </button>
+                  ` : ''}
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
+                    <i class="bi bi-arrow-return-left"></i>
+                    <span>Return for Correction</span>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
+                    <i class="bi bi-x-circle"></i>
+                    <span>Reject</span>
+                  </button>
+                </div>
+                <div class="pt-2 border-top mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer"></i>
+                    <span>Print / Download Summary</span>
+                  </button>
+                </div>
+              `;
+            }
           }
 
           // STAGE 5: Returned by HQ to DTO (Flow 5)
@@ -1052,45 +1308,33 @@
             `;
           }
 
-          // STAGE 7: Awaiting DTO Reverification (Citizen Resubmitted)
-          else if (st === WorkflowEngine.STAGES.STAGE_7) {
-            container.innerHTML = `
-              <div class="alert alert-info small p-2 mb-2 w-100">
-                <i class="bi bi-check-circle-fill me-1"></i> <strong>Corrected Resubmission Received:</strong>
-                <div class="fst-italic mt-1 text-dark">"${currentApp.citizenRemarks || 'Updated requested files.'}"</div>
-              </div>
-              <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalForwardToHq">
-                <i class="bi bi-send-check"></i>
-                <span>Re-verify &amp; Forward to HQ (Flow 5)</span>
-              </button>
-              <div class="gov-action-subgroup pt-1">
-                <button type="button" class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" onclick="promptDtoDirectApprove()">
-                  <i class="bi bi-check-circle"></i>
-                  <span>Grant Direct Approval</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
-                  <i class="bi bi-arrow-return-left"></i>
-                  <span>Return for Correction Again</span>
-                </button>
-              </div>
-            `;
-          }
-
-          // STAGE 11: Awaiting Final DTO Approval (HQ Approval Sheet Attached!)
+          // STAGE 11: Awaiting Final DTO Approval (Application Returned from HQ with Approval Sheet)
           else if (st === WorkflowEngine.STAGES.STAGE_11) {
             container.innerHTML = `
-              <div class="alert alert-success small p-2 mb-2 w-100">
-                <i class="bi bi-check-all me-1"></i> <strong>Headquarters Verification Complete:</strong>
-                <div class="mt-1">Approval Sheet attached. Ready for DTO final sanction and issuance.</div>
+              <div class="alert alert-success small p-2.5 mb-2 w-100 border border-success-subtle">
+                <div class="d-flex align-items-center gap-1.5 fw-bold text-success mb-1">
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Headquarters Approval Granted</span>
+                </div>
+                <div class="small text-dark">
+                  Approved by <strong>${currentApp.hqApprovedBy || 'Dr. Tshering Yangchen Lepcha'}</strong>
+                  ${currentApp.hqApprovalDate ? `<div class="text-muted" style="font-size:0.75rem;"><i class="bi bi-clock me-1"></i>${currentApp.hqApprovalDate}</div>` : ''}
+                </div>
               </div>
-              <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="executeDtoFinalApproval()">
+              <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs w-100 justify-content-center" onclick="executeDtoFinalApproval()">
                 <i class="bi bi-patch-check-fill"></i>
-                <span>Final Approve &amp; Issue Permission Letter</span>
+                <span>Approve &amp; Issue Approval Letter</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 d-inline-flex align-items-center gap-1.5" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
-                <i class="bi bi-eye"></i>
-                <span>Review HQ Approval Sheet First</span>
-              </button>
+              <div class="d-flex gap-2 pt-2">
+                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
+                  <i class="bi bi-file-earmark-check"></i>
+                  <span>View Approval Sheet</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
+                  <i class="bi bi-printer"></i>
+                  <span>Summary</span>
+                </button>
+              </div>
             `;
           }
 
@@ -1100,11 +1344,18 @@
               <div class="alert alert-success small p-3 text-center mb-0 w-100">
                 <i class="bi bi-patch-check-fill text-success fs-3 d-block mb-1"></i>
                 <strong class="d-block text-dark fs-6">Permission Approved &amp; Issued</strong>
-                <span class="text-muted">The statutory permission letter has been generated and issued to the applicant.</span>
-                <div class="mt-2">
-                  <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="showPermissionPlaceholder()">
-                    <i class="bi bi-file-earmark-check"></i>
-                    <span>View Permission Letter</span>
+                <div class="text-muted small mt-1 font-monospace">${currentApp.permissionNumber || 'SK-TOUR-2026-PERM'}</div>
+                <div class="mt-3 d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="DocumentService.openPermissionLetter('${currentApp.refNo}', activeRole)">
+                    <i class="bi bi-download me-1"></i> Download Approval Letter
+                  </button>
+                  ${currentApp.approvalSheet ? `
+                    <button type="button" class="btn btn-sm btn-outline-success" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
+                      <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
+                    </button>
+                  ` : ''}
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Print / Download Summary
                   </button>
                 </div>
               </div>
@@ -1123,14 +1374,19 @@
           }
 
           // STAGE 3, 4, 8, 9, 10: Currently with HQ
-          else if (st === WorkflowEngine.STAGES.STAGE_3 || st === WorkflowEngine.STAGES.STAGE_4 || st === WorkflowEngine.STAGES.STAGE_8 || st === WorkflowEngine.STAGES.STAGE_9 || st === WorkflowEngine.STAGES.STAGE_10) {
+          else if ([WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(st)) {
             container.innerHTML = `
               <div class="alert alert-primary small p-3 mb-0 w-100">
                 <i class="bi bi-send-check text-primary fs-4 d-block mb-1"></i>
                 <strong class="d-block text-dark">Under Headquarters Processing</strong>
-                <span class="text-muted">This application has been forwarded to Paryatan Bhawan and is undergoing state-level inter-departmental verification.</span>
+                <span class="text-muted">This application has been forwarded to Paryatan Bhawan and is undergoing state-level review.</span>
                 <div class="mt-2 text-primary small">
-                  <i class="bi bi-info-circle me-1"></i> <em>Awaiting HQ e-Office clearance and Approval Sheet transmission.</em>
+                  <i class="bi bi-info-circle me-1"></i> <em>Awaiting HQ review and Approval Sheet transmission.</em>
+                </div>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Download Summary
+                  </button>
                 </div>
               </div>
             `;
@@ -1146,6 +1402,11 @@
                 <div class="mt-2 text-muted small">
                   <em>The applicant has been notified through their portal dashboard to resubmit.</em>
                 </div>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Download Summary
+                  </button>
+                </div>
               </div>
             `;
           }
@@ -1153,7 +1414,12 @@
           else {
             container.innerHTML = `
               <div class="p-3 bg-light rounded text-muted small text-center w-100">
-                No direct DTO actions required at this stage (${st}).
+                Currently with <strong>${currentApp.assignedRole.toUpperCase()}</strong> (${st}).
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Download Summary
+                  </button>
+                </div>
               </div>
             `;
           }
@@ -1164,83 +1430,119 @@
         // ROLE 2: HQ ADMIN (Headquarters Administrator)
         // ------------------------------------------------------------
         else if (role === 'hq') {
+          const hasSheet = !!currentApp.approvalSheet;
 
-          // STAGE 3 or 8: Awaiting HQ Verification / Review
-          if (st === WorkflowEngine.STAGES.STAGE_3 || st === WorkflowEngine.STAGES.STAGE_8) {
+          // Stages where HQ acts: STAGE_3, STAGE_4, STAGE_8, STAGE_9, STAGE_10
+          if ([WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(st)) {
             container.innerHTML = `
-              <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="executeHqStartReview()">
-                <i class="bi bi-folder2-open"></i>
-                <span>Start Headquarters Review (e-Office)</span>
-              </button>
-              <div class="gov-action-subgroup pt-1">
-                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 d-inline-flex align-items-center gap-1.5" onclick="printApplicationSummary()">
-                  <i class="bi bi-printer"></i>
-                  <span>Download Summary</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
-                  <i class="bi bi-arrow-left-right"></i>
-                  <span>Return to DTO (Flow 5)</span>
-                </button>
+              <!-- Dedicated HQ Approval Sheet Status Card -->
+              <div class="p-2.5 rounded border mb-2.5 ${hasSheet ? 'bg-success-subtle border-success' : 'bg-light'}">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="fw-bold small text-dark"><i class="bi bi-file-earmark-check text-primary me-1"></i> HQ Approval Sheet</span>
+                  ${hasSheet
+                ? '<span class="badge bg-success"><i class="bi bi-check me-1"></i> Uploaded</span>'
+                : '<span class="badge bg-warning text-dark">Pending Upload</span>'}
+                </div>
+                ${hasSheet ? `
+                  <div class="small text-truncate text-muted mb-2 font-monospace" style="font-size: 0.75rem;" title="${currentApp.approvalSheet.fileName}">
+                    ${currentApp.approvalSheet.fileName} (${currentApp.approvalSheet.size || '1.4 MB'})
+                  </div>
+                  <div class="d-flex gap-1.5">
+                    <button type="button" class="btn btn-xs btn-outline-success py-1 px-2 small flex-grow-1" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
+                      <i class="bi bi-eye me-1"></i> View Sheet
+                    </button>
+                    <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 small" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
+                      <i class="bi bi-arrow-repeat me-1"></i> Replace
+                    </button>
+                  </div>
+                ` : `
+                  <p class="small text-muted mb-2" style="font-size: 0.75rem;">
+                    Upload the externally processed and signed sanction sheet to enable HQ-level approval.
+                  </p>
+                  <button type="button" class="btn btn-sm btn-primary w-100 py-1.5 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
+                    <i class="bi bi-upload"></i>
+                    <span>Upload Approval Sheet</span>
+                  </button>
+                `}
               </div>
-            `;
-          }
 
-          // STAGE 4: Under HQ Review
-          else if (st === WorkflowEngine.STAGES.STAGE_4) {
-            container.innerHTML = `
-              <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalEOfficeRecord">
-                <i class="bi bi-laptop"></i>
-                <span>Record e-Office Concurrence</span>
-              </button>
-              <div class="gov-action-subgroup pt-1">
-                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                  <i class="bi bi-upload"></i>
-                  <span>Upload Approval Sheet</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
-                  <i class="bi bi-arrow-left-right"></i>
-                  <span>Return to DTO (Flow 5)</span>
-                </button>
-              </div>
-            `;
-          }
-
-          // STAGE 9 or 10: e-Office recorded / Approval Sheet Uploaded
-          else if (st === WorkflowEngine.STAGES.STAGE_9 || st === WorkflowEngine.STAGES.STAGE_10) {
-            const hasSheet = !!currentApp.approvalSheet;
-            container.innerHTML = `
-              ${!hasSheet ? `
-                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                  <i class="bi bi-upload"></i>
-                  <span>Upload HQ Approval Sheet</span>
+              <!-- Main HQ Action: Approve at HQ Level -->
+              ${hasSheet ? `
+                <button type="button" class="btn btn-sm btn-success w-100 py-2 fw-bold d-inline-flex align-items-center justify-content-center gap-1.5 shadow-xs" onclick="executeHqApproveAtHqLevel()">
+                  <i class="bi bi-patch-check-fill"></i>
+                  <span>Approve at HQ Level</span>
                 </button>
               ` : `
-                <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="executeHqForwardBackToDto()">
-                  <i class="bi bi-send-check-fill"></i>
-                  <span>Transmit Back to DTO with Approval Sheet</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                  <i class="bi bi-arrow-repeat"></i>
-                  <span>Replace Approval Sheet</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-2 fw-bold d-inline-flex align-items-center justify-content-center gap-1.5" onclick="showToastAlert('Mandatory HQ Approval Sheet must be uploaded before granting HQ-level approval.', 'warning')">
+                  <i class="bi bi-lock-fill"></i>
+                  <span>Approve at HQ Level (Upload Sheet First)</span>
                 </button>
               `}
-              <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 pt-1" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
-                <i class="bi bi-arrow-left-right"></i>
-                <span>Return to DTO for Correction (Flow 5)</span>
-              </button>
+
+              <!-- Secondary HQ Actions -->
+              <div class="gov-action-subgroup pt-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5 mb-1.5" onclick="printApplicationSummary()">
+                  <i class="bi bi-printer"></i>
+                  <span>Download Application Summary</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning text-dark w-100 py-1.5 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
+                  <i class="bi bi-arrow-left-right"></i>
+                  <span>Return to DTO</span>
+                </button>
+              </div>
             `;
           }
-
-          // Other Stages for HQ
+          // After HQ has approved and returned to DTO
+          else if (st === WorkflowEngine.STAGES.STAGE_11) {
+            container.innerHTML = `
+              <div class="alert alert-info small p-3 text-center mb-0 w-100">
+                <i class="bi bi-send-check-fill fs-3 text-primary d-block mb-1"></i>
+                <strong class="d-block text-dark">Approved at HQ Level</strong>
+                <div class="text-muted small mt-1">Application transmitted back to DTO for final approval and issuance.</div>
+                <div class="mt-3 d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
+                    <i class="bi bi-file-earmark-check me-1"></i> View Uploaded Approval Sheet
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Download Application Summary
+                  </button>
+                </div>
+              </div>
+            `;
+          }
+          else if (st === WorkflowEngine.STAGES.STAGE_12) {
+            container.innerHTML = `
+              <div class="alert alert-success small p-3 text-center mb-0 w-100">
+                <i class="bi bi-award-fill fs-3 text-success d-block mb-1"></i>
+                <strong class="d-block text-dark">Permission Completed &amp; Letter Issued</strong>
+                <div class="text-muted small mt-1 font-monospace">${currentApp.permissionNumber || ''}</div>
+                <div class="mt-3 d-flex flex-column gap-2">
+                  <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="DocumentService.openPermissionLetter('${currentApp.refNo}', activeRole)">
+                    <i class="bi bi-download me-1"></i> Download Approval Letter
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-success" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
+                    <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Download Application Summary
+                  </button>
+                </div>
+              </div>
+            `;
+          }
           else {
             container.innerHTML = `
               <div class="p-3 bg-light rounded text-muted small text-center w-100">
                 Currently with <strong>${currentApp.assignedRole.toUpperCase()}</strong> (${st}).
                 <div class="mt-2 text-secondary small">HQ action is not required at this point.</div>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
+                    <i class="bi bi-printer me-1"></i> Download Summary
+                  </button>
+                </div>
               </div>
             `;
           }
-
         }
       }
 
@@ -1276,6 +1578,95 @@
       // ==============================================================
       // ACTION EXECUTION HANDLERS
       // ==============================================================
+
+      // LO Management: Toggle Custom LO Input
+      window.toggleCustomLoInput = function (val) {
+        const customInput = document.getElementById('modalCustomLoInput');
+        if (!customInput) return;
+        if (val === 'custom') {
+          customInput.classList.remove('d-none');
+          customInput.focus();
+        } else {
+          customInput.classList.add('d-none');
+          customInput.value = '';
+        }
+      };
+
+      // LO Management: Execute Reassign LO
+      window.executeChangeLiaisonOfficer = function () {
+        const select = document.getElementById('modalNewLoSelect');
+        const customInput = document.getElementById('modalCustomLoInput');
+        const remarksInput = document.getElementById('modalLoChangeRemarks');
+
+        let newLo = select.value;
+        if (newLo === 'custom') {
+          newLo = customInput.value.trim();
+        }
+
+        const remarks = remarksInput.value.trim();
+
+        let hasError = false;
+        if (!newLo) {
+          select.classList.add('is-invalid');
+          if (select.value === 'custom') customInput.classList.add('is-invalid');
+          hasError = true;
+        } else {
+          select.classList.remove('is-invalid');
+          customInput.classList.remove('is-invalid');
+        }
+
+        if (!remarks) {
+          remarksInput.classList.add('is-invalid');
+          hasError = true;
+        } else {
+          remarksInput.classList.remove('is-invalid');
+        }
+
+        if (hasError) return;
+
+        const modalEl = document.getElementById('modalChangeLiaisonOfficer');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+
+        const districtOffices = WorkflowEngine.DISTRICT_OFFICES || {};
+        const officeInfo = districtOffices[currentApp.district] || districtOffices['Gangtok'] || {};
+        const officerName = officeInfo.dtoName || 'District Tourism Officer (DTO)';
+
+        const res = WorkflowEngine.changeLiaisonOfficer(activeArn, officerName, newLo, remarks);
+        if (res.success) {
+          showToastAlert(`Liaison Officer updated to "${newLo}". Reassignment remarks logged in processing history.`, 'success');
+          loadAndRenderReviewScreen();
+        } else {
+          showToastAlert(res.message, 'danger');
+        }
+      };
+
+      // Populate current LO when modal opens
+      document.addEventListener('DOMContentLoaded', function () {
+        const changeLoModalEl = document.getElementById('modalChangeLiaisonOfficer');
+        if (changeLoModalEl) {
+          changeLoModalEl.addEventListener('show.bs.modal', function () {
+            const currentLoDisplay = document.getElementById('modalCurrentLoDisplay');
+            if (currentLoDisplay && currentApp) {
+              currentLoDisplay.textContent = currentApp.liaisonOfficer || 'Not Assigned';
+            }
+            const select = document.getElementById('modalNewLoSelect');
+            if (select) select.value = '';
+            const customInput = document.getElementById('modalCustomLoInput');
+            if (customInput) {
+              customInput.value = '';
+              customInput.classList.add('d-none');
+              customInput.classList.remove('is-invalid');
+            }
+            const remarks = document.getElementById('modalLoChangeRemarks');
+            if (remarks) {
+              remarks.value = '';
+              remarks.classList.remove('is-invalid');
+            }
+            if (select) select.classList.remove('is-invalid');
+          });
+        }
+      });
 
       // 1. DTO Forward to HQ
       window.executeDtoForwardToHq = function () {
@@ -1506,5 +1897,5 @@
     })();
   </script>
 </body>
-</html>
 
+</html>
