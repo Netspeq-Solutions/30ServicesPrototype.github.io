@@ -1068,17 +1068,58 @@
     },
 
     // Action 2: Submit Inspection Report (IO -> TA HQ) [ATO Only]
-    submitInspectionReport: function (arn, summary, remarks, isCompliant, officerName) {
+    submitInspectionReport: function (arn, reportDataOrSummary, remarks, isCompliant, officerName) {
       const app = this.getApplicationByArn(arn);
       if (!app || app.type !== 'adventure-tour-operator') return false;
 
       const nowStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+      let docName = 'OnSite_Gear_Safety_Inspection_Report.pdf';
+      let docSize = '2.4 MB';
+      let reportRemarks = '';
+      let statusStr = 'Compliant & Recommended';
+      let summaryText = 'On-site physical inspection of adventure equipment, safety gear, and operational standards completed.';
+      let officer = officerName;
+
+      if (reportDataOrSummary && typeof reportDataOrSummary === 'object') {
+        docName = reportDataOrSummary.docName || docName;
+        docSize = reportDataOrSummary.docSize || docSize;
+        reportRemarks = reportDataOrSummary.remarks || '';
+        statusStr = reportDataOrSummary.status || statusStr;
+        summaryText = reportDataOrSummary.summary || summaryText;
+        officer = officerName || reportDataOrSummary.officer;
+      } else {
+        summaryText = reportDataOrSummary || summaryText;
+        reportRemarks = remarks || '';
+        statusStr = isCompliant ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged';
+      }
+
       app.inspectionReport = {
         submittedDate: nowStr,
-        status: isCompliant ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged',
-        summary: summary || 'Equipment verified on site.',
-        remarks: remarks || ''
+        status: statusStr,
+        docName: docName,
+        docSize: docSize,
+        summary: summaryText,
+        remarks: reportRemarks || 'Physical inspection verified compliant with safety standards.',
+        officer: officer || (app.assignedIO && app.assignedIO.name ? app.assignedIO.name : 'Tashi Wangdi Lepcha (IO)')
       };
+
+      // Add or update document in application's Documents & Clearances
+      if (!app.documents) app.documents = [];
+      const existingDocIdx = app.documents.findIndex(d => (d.type && d.type.includes('Inspection')) || (d.name && d.name.toLowerCase().includes('inspection')));
+      const docEntry = {
+        name: docName,
+        type: 'On-Site Physical Inspection Report (IO Signed)',
+        size: docSize,
+        uploadedDate: nowStr,
+        status: 'Verified'
+      };
+      if (existingDocIdx >= 0) {
+        app.documents[existingDocIdx] = docEntry;
+      } else {
+        app.documents.push(docEntry);
+      }
+
       app.currentRole = 'ta-hq';
       app.stage = STAGES.ATO_REPORT_SUBMITTED;
       app.status = STATUSES.UNDER_REVIEW;
@@ -1087,8 +1128,8 @@
         app,
         'Inspection Report Submitted to TA',
         'Inspecting Officer (IO)',
-        officerName || 'Tashi Wangdi Lepcha (IO)',
-        `Findings: ${app.inspectionReport.status}. ${remarks}`
+        app.inspectionReport.officer,
+        `Physical report attached: ${docName}. ${reportRemarks ? 'Remarks: ' + reportRemarks : 'Equipment verified compliant.'}`
       );
 
       this.saveApplication(app);

@@ -490,50 +490,84 @@
     </div>
   </div>
 
-  <!-- Modal 2: Submit Physical Inspection Report (IO Only) -->
+  <!-- Modal 2: Submit On-Site Gear & Safety Inspection Report (IO Only) -->
   <div class="modal fade" id="submitReportModal" tabindex="-1" aria-labelledby="submitReportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-success text-white py-3">
           <h5 class="modal-title fs-6 fw-bold" id="submitReportModalLabel">
-            <i class="bi bi-clipboard2-check-fill me-2"></i> Submit On-Site Gear &amp; Safety Inspection Report
+            <i class="bi bi-clipboard-check me-2"></i> Submit On-Site Gear &amp; Safety Inspection Report
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4 small">
-          <p class="text-muted mb-3">
-            Record physical inspection findings for application <strong class="font-monospace text-primary modalArnDisplay">SK-ATO-2026-0042</strong>:
-          </p>
-          <div class="mb-3">
-            <label class="form-label fw-bold text-dark">Statutory Safety Compliance Finding <span class="text-danger">*</span>:</label>
-            <div class="d-flex gap-3 mt-1">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="ioComplianceRadio" id="ioCompYes" value="yes" checked>
-                <label class="form-check-label fw-semibold text-success" for="ioCompYes">
-                  <i class="bi bi-check-circle-fill me-1"></i> Compliant with Safety Protocols
-                </label>
+          <!-- Mandatory Inspection Notice -->
+          <div class="alert alert-warning border-0 small py-2 px-3 mb-3">
+            <i class="bi bi-info-circle me-1"></i>
+            <strong>Mandatory Physical Inspection:</strong> On-site physical inspection of adventure equipment, safety gear, and operational standards is mandatory under applicable Sikkim Adventure Tourism regulations.
+          </div>
+
+          <!-- Application Information Summary (Read-Only) -->
+          <div class="p-3 bg-light rounded border mb-3">
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <span class="text-muted small">Application ID:</span>
+                <strong class="font-monospace text-primary d-block modalArnDisplay" id="modalIoArnDisplay">-</strong>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="ioComplianceRadio" id="ioCompNo" value="no">
-                <label class="form-check-label fw-semibold text-danger" for="ioCompNo">
-                  <i class="bi bi-x-circle-fill me-1"></i> Non-Compliant / Deficiencies Found
-                </label>
+              <div class="col-sm-6">
+                <span class="text-muted small">Applicant / Enterprise Name:</span>
+                <strong class="text-dark d-block" id="modalIoApplicantDisplay">-</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted small">Assigned Inspecting Officer:</span>
+                <strong class="text-dark d-block" id="modalIoOfficerDisplay">Tashi Wangdi Lepcha (IO)</strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted small">District / Jurisdiction:</span>
+                <strong class="text-dark d-block" id="modalIoDistrictDisplay">Gangtok Circle</strong>
               </div>
             </div>
           </div>
-          <div class="mb-3">
-            <label for="ioReportSummaryText" class="form-label fw-bold text-dark">Inspection Findings Summary <span class="text-danger">*</span>:</label>
-            <textarea class="form-control" id="ioReportSummaryText" rows="3" placeholder="Physical on-site inspection conducted. All equipment (harnesses, helmets, carabiners, life jackets) verified with valid UIAA/CE certifications. First Aid kits verified."></textarea>
+
+          <!-- Mandatory Inspection Report Document Upload -->
+          <div class="mb-3 p-3 bg-white rounded border">
+            <label class="form-label fw-bold text-dark mb-1">
+              Physical Inspection Report Document <span class="text-danger">*</span>
+            </label>
+            <div class="text-muted small mb-2">
+              Upload the signed physical inspection report documenting the verification of adventure equipment, safety gear, operational standards, and applicable safety compliance requirements.
+            </div>
+            <input type="file" class="form-control form-control-sm" id="ioInspectionReportFile" accept=".pdf,.docx,.doc" onchange="handleIoReportFileSelected(this)">
+            
+            <div class="mt-2 d-none" id="ioUploadedFileBadge">
+              <span class="badge bg-light text-dark border p-2 d-inline-flex align-items-center gap-2">
+                <i class="bi bi-file-earmark-pdf-fill text-danger fs-6"></i>
+                <span id="ioUploadedFileName">OnSite_Gear_Safety_Inspection_Report.pdf</span>
+                <button type="button" class="btn-close ms-1" style="font-size: 0.65rem;" aria-label="Remove" onclick="removeIoReportFile()"></button>
+              </span>
+              <span class="badge bg-success-subtle text-success ms-2">
+                <i class="bi bi-check-circle me-1"></i> Report Ready to Submit
+              </span>
+            </div>
+            
+            <div class="text-danger small mt-1 d-none" id="ioFileError">
+              <i class="bi bi-exclamation-circle me-1"></i> Physical Inspection Report Document is mandatory for submission.
+            </div>
           </div>
+
+          <!-- Optional Inspection Remarks -->
           <div class="mb-3">
-            <label for="ioReportRemarksText" class="form-label fw-bold text-dark">Recommendation &amp; Notes to TA:</label>
-            <textarea class="form-control" id="ioReportRemarksText" rows="2" placeholder="Recommended for statutory registration as Adventure Tour Operator."></textarea>
+            <label for="ioRemarksInput" class="form-label fw-bold text-dark">
+              Inspection Remarks <span class="text-muted fw-normal">(Optional)</span>:
+            </label>
+            <textarea class="form-control" id="ioRemarksInput" rows="3" placeholder="Enter additional observations, safety compliance findings, equipment verification details, or recommendations regarding the physical inspection..."></textarea>
+            <div class="form-text text-muted small">You may submit the inspection report without entering remarks.</div>
           </div>
         </div>
         <div class="modal-footer bg-light py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-success btn-sm px-3 fw-semibold" onclick="confirmSubmitReport()">
-            <i class="bi bi-clipboard2-check me-1"></i> Submit Report to TA
+            <i class="bi bi-send-check me-1"></i> Submit Inspection Report to Tourism Authority (TA)
           </button>
         </div>
       </div>
@@ -964,25 +998,36 @@
         const badge = document.getElementById('dispDocCount');
         tbody.innerHTML = '';
 
-        const docs = app.documents || [
+        const docs = (app.documents && app.documents.length > 0) ? [...app.documents] : [
           { name: 'Certificate_of_Identification.pdf', type: 'Certificate of Identification (COI)', size: '1.4 MB' },
           { name: 'Trade_License_Commercial.pdf', type: 'Local Municipal Trade License', size: '1.8 MB' },
           { name: 'Adventure_Lead_Technical_Cert.pdf', type: 'Lead Mountaineering / Guide Certification', size: '2.1 MB' },
           { name: 'First_Aid_CPR_Compliance.pdf', type: 'Emergency Wilderness First Aid Certificate', size: '980 KB' }
         ];
 
+        // If physical inspection report exists and not already listed, display it in the documents table
+        if (app.inspectionReport && !docs.some(d => (d.type && d.type.includes('Inspection')) || (d.name && d.name.toLowerCase().includes('inspection')))) {
+          docs.push({
+            name: app.inspectionReport.docName || 'OnSite_Gear_Safety_Inspection_Report.pdf',
+            type: 'On-Site Physical Inspection Report (IO Signed)',
+            size: app.inspectionReport.docSize || '2.4 MB',
+            verified: true
+          });
+        }
+
         badge.textContent = docs.length;
 
         docs.forEach((doc, idx) => {
           const tr = document.createElement('tr');
+          const isInspReport = (doc.type && doc.type.includes('Inspection'));
           tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>
               <div class="fw-semibold text-dark text-truncate" style="max-width: 260px;">
-                <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i>${doc.name}
+                <i class="bi ${isInspReport ? 'bi-file-earmark-check-fill text-success' : 'bi-file-earmark-pdf-fill text-danger'} me-1"></i>${doc.name}
               </div>
             </td>
-            <td><span class="badge bg-light text-secondary border">${doc.type}</span></td>
+            <td><span class="badge ${isInspReport ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-light text-secondary border'}">${doc.type}</span></td>
             <td class="text-muted small">${doc.size || '1.2 MB'}</td>
             <td class="text-end">
               <div class="d-inline-flex gap-1.5">
@@ -1018,47 +1063,78 @@
           } else if (app.assignedIO && !app.inspectionReport) {
             inspBadge.className = 'badge bg-warning text-dark';
             inspBadge.textContent = 'Inspection Mandated';
+            const ioName = (typeof app.assignedIO === 'object') ? (app.assignedIO.name || 'Tashi Wangdi Lepcha') : app.assignedIO;
+            const assignDate = (typeof app.assignedIO === 'object') ? (app.assignedIO.assignedDate || 'Recent') : 'Recent';
+            const directives = (typeof app.assignedIO === 'object') ? (app.assignedIO.instructions || 'Physical safety gear and equipment inspection scheduled.') : 'Physical safety gear and equipment inspection scheduled.';
             inspBody.innerHTML = `
               <div class="row g-2 small">
                 <div class="col-sm-6">
                   <span class="text-muted d-block">Assigned Inspecting Officer (IO):</span>
-                  <strong class="text-primary fs-6">${app.assignedIO.name}</strong>
+                  <strong class="text-primary fs-6">${ioName}</strong>
                 </div>
                 <div class="col-sm-6">
                   <span class="text-muted d-block">Assignment Date:</span>
-                  <strong class="text-dark">${app.assignedIO.assignedDate || 'Recent'}</strong>
+                  <strong class="text-dark">${assignDate}</strong>
                 </div>
                 <div class="col-12 mt-2">
                   <span class="text-muted d-block">Inspection Directives:</span>
-                  <div class="p-2.5 bg-white rounded border text-secondary">${app.assignedIO.instructions || 'Physical safety gear and equipment inspection scheduled.'}</div>
+                  <div class="p-2.5 bg-white rounded border text-secondary">${directives}</div>
                 </div>
               </div>
             `;
           } else if (app.inspectionReport) {
             const isComp = (app.inspectionReport.status || '').includes('Compliant');
             inspBadge.className = isComp ? 'badge bg-success' : 'badge bg-danger';
-            inspBadge.textContent = isComp ? 'Compliant' : 'Non-Compliant';
+            inspBadge.textContent = isComp ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged';
+            const ioName = (typeof app.assignedIO === 'object') ? (app.assignedIO.name || 'Tashi Wangdi Lepcha') : (app.assignedIO || app.inspectionReport.officer || 'Tashi Wangdi Lepcha (IO)');
+            const reportDocName = app.inspectionReport.docName || 'OnSite_Gear_Safety_Inspection_Report.pdf';
+            const reportDocSize = app.inspectionReport.docSize || '2.4 MB';
+            const reportRemarks = app.inspectionReport.remarks || '';
+
             inspBody.innerHTML = `
               <div class="row g-2 small">
                 <div class="col-sm-6">
                   <span class="text-muted d-block">Inspecting Officer (IO):</span>
-                  <strong class="text-dark fs-6">${app.assignedIO ? app.assignedIO.name : 'Tashi Wangdi Lepcha'}</strong>
+                  <strong class="text-dark fs-6">${ioName}</strong>
                 </div>
                 <div class="col-sm-6">
                   <span class="text-muted d-block">Inspection Date &amp; Status:</span>
                   <span class="text-dark">${app.inspectionReport.submittedDate || 'Recent'} &bull; </span>
                   <span class="badge ${isComp ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}">
-                    ${app.inspectionReport.status}
+                    <i class="bi bi-shield-check me-1"></i>${app.inspectionReport.status || 'Compliant & Recommended'}
                   </span>
                 </div>
                 <div class="col-12 mt-2">
-                  <span class="text-muted d-block">On-Site Inspection Findings:</span>
-                  <div class="p-2.5 bg-white rounded border text-dark">${app.inspectionReport.summary}</div>
+                  <span class="text-muted d-block">Physical Inspection Report Document:</span>
+                  <div class="p-2.5 bg-white rounded border d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <i class="bi bi-file-earmark-pdf-fill text-danger fs-5"></i>
+                      <div>
+                        <strong class="text-dark d-block font-monospace">${reportDocName}</strong>
+                        <span class="text-muted" style="font-size: 0.75rem;">Signed Physical Inspection Report &bull; ${reportDocSize}</span>
+                      </div>
+                    </div>
+                    <div class="d-flex gap-1.5">
+                      <button type="button" class="btn btn-sm btn-outline-primary py-0.5 px-2" onclick="showDocPreviewModal('${reportDocName}', 'On-Site Physical Inspection Report')">
+                        <i class="bi bi-eye"></i> View Report
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" onclick="simulateDocDownload('${reportDocName}')">
+                        <i class="bi bi-download"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-12 mt-1">
-                  <span class="text-muted d-block">Inspector Directives / Remarks:</span>
-                  <div class="p-2 bg-light rounded text-muted">${app.inspectionReport.remarks}</div>
-                </div>
+                ${reportRemarks ? `
+                  <div class="col-12 mt-1">
+                    <span class="text-muted d-block">Inspecting Officer Remarks / Observations:</span>
+                    <div class="p-2 bg-light rounded text-dark">${reportRemarks}</div>
+                  </div>
+                ` : `
+                  <div class="col-12 mt-1">
+                    <span class="text-muted d-block">Inspection Findings:</span>
+                    <div class="p-2 bg-light rounded text-secondary">${app.inspectionReport.summary || 'On-site physical inspection of adventure equipment, safety gear, and operational standards completed. Verified compliant.'}</div>
+                  </div>
+                `}
               </div>
             `;
           }
@@ -1426,21 +1502,108 @@
         showToastAlert(`Inspecting Officer ${ioName} has been assigned for physical gear inspection.`, 'success');
       };
 
+      let selectedIoReportFile = null;
+
       window.openSubmitReportModal = function () {
+        selectedIoReportFile = null;
+        const fileInput = document.getElementById('ioInspectionReportFile');
+        if (fileInput) fileInput.value = '';
+
+        const badgeEl = document.getElementById('ioUploadedFileBadge');
+        if (badgeEl) badgeEl.classList.add('d-none');
+
+        const errEl = document.getElementById('ioFileError');
+        if (errEl) errEl.classList.add('d-none');
+
+        const remarksInput = document.getElementById('ioRemarksInput');
+        if (remarksInput) remarksInput.value = '';
+
+        // Dynamically populate Application Information Summary
+        const arnDisp = document.getElementById('modalIoArnDisplay');
+        if (arnDisp) arnDisp.textContent = currentApp ? currentApp.arn : currentArn;
+
+        const applicantDisp = document.getElementById('modalIoApplicantDisplay');
+        if (applicantDisp) {
+          const ent = currentApp ? (currentApp.enterpriseName || currentApp.applicantName) : '-';
+          const appName = currentApp ? currentApp.applicantName : '';
+          applicantDisp.textContent = (ent && appName && ent !== appName) ? `${appName} (${ent})` : (ent || appName || '-');
+        }
+
+        const officerDisp = document.getElementById('modalIoOfficerDisplay');
+        if (officerDisp) {
+          let ioName = 'Tashi Wangdi Lepcha (IO)';
+          if (currentApp && currentApp.assignedIO) {
+            ioName = typeof currentApp.assignedIO === 'object' ? (currentApp.assignedIO.name || ioName) : currentApp.assignedIO;
+          }
+          officerDisp.textContent = ioName;
+        }
+
+        const districtDisp = document.getElementById('modalIoDistrictDisplay');
+        if (districtDisp) {
+          districtDisp.textContent = (currentApp ? currentApp.district : activeDistrict) + ' Circle';
+        }
+
         new bootstrap.Modal(document.getElementById('submitReportModal')).show();
       };
 
+      window.handleIoReportFileSelected = function (input) {
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          const sizeStr = (file.size >= 1024 * 1024)
+            ? (file.size / (1024 * 1024)).toFixed(1) + ' MB'
+            : (file.size / 1024).toFixed(0) + ' KB';
+
+          selectedIoReportFile = {
+            name: file.name,
+            size: sizeStr
+          };
+
+          const nameEl = document.getElementById('ioUploadedFileName');
+          if (nameEl) nameEl.textContent = selectedIoReportFile.name;
+
+          const badgeEl = document.getElementById('ioUploadedFileBadge');
+          if (badgeEl) badgeEl.classList.remove('d-none');
+
+          const errEl = document.getElementById('ioFileError');
+          if (errEl) errEl.classList.add('d-none');
+        }
+      };
+
+      window.removeIoReportFile = function () {
+        selectedIoReportFile = null;
+        const fileInput = document.getElementById('ioInspectionReportFile');
+        if (fileInput) fileInput.value = '';
+
+        const badgeEl = document.getElementById('ioUploadedFileBadge');
+        if (badgeEl) badgeEl.classList.add('d-none');
+      };
+
       window.confirmSubmitReport = function () {
-        const summary = document.getElementById('ioReportSummaryText').value;
-        const remarks = document.getElementById('ioReportRemarksText').value;
-        const isComp = document.getElementById('ioCompYes').checked;
-        const officer = document.getElementById('reviewOfficerName').textContent;
-        AdventureWorkflowEngine.submitInspectionReport(currentArn, summary, remarks, isComp, officer);
+        if (!selectedIoReportFile) {
+          const errEl = document.getElementById('ioFileError');
+          if (errEl) errEl.classList.remove('d-none');
+          showToastAlert('Physical Inspection Report Document is mandatory for submission.', 'danger');
+          return;
+        }
+
+        const remarks = document.getElementById('ioRemarksInput') ? document.getElementById('ioRemarksInput').value.trim() : '';
+        const officerDisp = document.getElementById('modalIoOfficerDisplay');
+        const officerName = officerDisp ? officerDisp.textContent : 'Tashi Wangdi Lepcha (IO)';
+
+        AdventureWorkflowEngine.submitInspectionReport(currentArn, {
+          docName: selectedIoReportFile.name,
+          docSize: selectedIoReportFile.size,
+          remarks: remarks,
+          status: 'Compliant & Recommended',
+          officer: officerName
+        }, remarks, true, officerName);
+
         const modalEl = document.getElementById('submitReportModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
+
         loadApplicationReview(currentArn);
-        showToastAlert('Physical gear inspection report submitted and returned to TA – Headquarters.', 'success');
+        showToastAlert('On-Site Gear & Safety Inspection Report submitted successfully to Tourism Authority (TA).', 'success');
       };
 
       window.openForwardModal = function (targetRole, targetTitle) {
