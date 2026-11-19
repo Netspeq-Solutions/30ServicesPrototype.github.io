@@ -681,7 +681,12 @@
           if (app.status === 'Approved' || (app.status || '').toLowerCase().includes('approv')) {
             statusBadgeClass = 'badge bg-success text-white';
             statusText = 'Approved';
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> View Certificate</a>`;
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Review</a>
+                <a href="certificate.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-success py-1 px-2.5 fw-bold shadow-xs"><i class="bi bi-printer me-1"></i> Form 3</a>
+              </div>
+            `;
             mobileActionLabel = 'View Certificate';
           } else if (app.paymentStatus === 'Paid') {
             statusBadgeClass = 'badge bg-success-subtle text-success border border-success-subtle';
@@ -1088,7 +1093,26 @@
             const role = (a.assignedRole || '').toUpperCase();
             const stage = (a.currentStage || '').toUpperCase();
             const st = (a.status || '').toLowerCase();
-            return (role === 'DTO' || stage.includes('DTO')) && (st.includes('verif') || st.includes('submit') || st.includes('pend'));
+            const isApproved = st.includes('approv');
+            const isRejected = st.includes('reject');
+            const isReturned = st.includes('return');
+            const isPaid = a.paymentStatus === 'Paid';
+            const isPaymentPending = (a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending';
+            return (role === 'DTO' || stage.includes('DTO')) && !isApproved && !isRejected && !isReturned && !isPaid && !isPaymentPending;
+          });
+        } else if (currentTab === 'paymentPending') {
+          apps = apps.filter(a => {
+            const isPaid = a.paymentStatus === 'Paid';
+            const isApproved = (a.status || '').toLowerCase().includes('approv');
+            const isRejected = (a.status || '').toLowerCase().includes('reject');
+            return ((a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending') && !isApproved && !isRejected;
+          });
+        } else if (currentTab === 'paymentReceived') {
+          apps = apps.filter(a => {
+            const isPaid = a.paymentStatus === 'Paid';
+            const isApproved = (a.status || '').toLowerCase().includes('approv');
+            const isRejected = (a.status || '').toLowerCase().includes('reject');
+            return isPaid && !isApproved && !isRejected;
           });
         } else if (currentTab === 'iaReports') {
           apps = apps.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer' && (!!a.inspectionDocName || !!a.inspectionFindings));
@@ -1111,8 +1135,28 @@
           const role = (a.assignedRole || '').toUpperCase();
           const stage = (a.currentStage || '').toUpperCase();
           const st = (a.status || '').toLowerCase();
-          return (role === 'DTO' || stage.includes('DTO')) && (st.includes('verif') || st.includes('submit') || st.includes('pend'));
+          const isApproved = st.includes('approv');
+          const isRejected = st.includes('reject');
+          const isReturned = st.includes('return');
+          const isPaid = a.paymentStatus === 'Paid';
+          const isPaymentPending = (a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending';
+          return (role === 'DTO' || stage.includes('DTO')) && !isApproved && !isRejected && !isReturned && !isPaid && !isPaymentPending;
         }).length;
+
+        const paymentPending = scoped.filter(a => {
+          const isPaid = a.paymentStatus === 'Paid';
+          const isApproved = (a.status || '').toLowerCase().includes('approv');
+          const isRejected = (a.status || '').toLowerCase().includes('reject');
+          return ((a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending') && !isApproved && !isRejected;
+        }).length;
+
+        const paymentReceived = scoped.filter(a => {
+          const isPaid = a.paymentStatus === 'Paid';
+          const isApproved = (a.status || '').toLowerCase().includes('approv');
+          const isRejected = (a.status || '').toLowerCase().includes('reject');
+          return isPaid && !isApproved && !isRejected;
+        }).length;
+
         const iaReports = scoped.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer' && (!!a.inspectionDocName || !!a.inspectionFindings)).length;
         const approved = scoped.filter(a => (a.status || '').toLowerCase().includes('approv')).length;
         const returned = scoped.filter(a => (a.status || '').toLowerCase().includes('return')).length;
@@ -1120,11 +1164,23 @@
         const total = scoped.length;
 
         document.getElementById('statDtoPending').textContent = pendingSanction;
+        if (document.getElementById('statDtoPaymentPending')) {
+          document.getElementById('statDtoPaymentPending').textContent = paymentPending;
+        }
+        if (document.getElementById('statDtoPaymentReceived')) {
+          document.getElementById('statDtoPaymentReceived').textContent = paymentReceived;
+        }
         document.getElementById('statDtoIaReports').textContent = iaReports;
         document.getElementById('statDtoApproved').textContent = approved;
         document.getElementById('statDtoTotal').textContent = total;
 
         document.getElementById('dtoBadgeSanction').textContent = pendingSanction;
+        if (document.getElementById('dtoBadgePaymentPending')) {
+          document.getElementById('dtoBadgePaymentPending').textContent = paymentPending;
+        }
+        if (document.getElementById('dtoBadgePaymentReceived')) {
+          document.getElementById('dtoBadgePaymentReceived').textContent = paymentReceived;
+        }
         document.getElementById('dtoBadgeIaReports').textContent = iaReports;
         document.getElementById('dtoBadgeReturnedCitizen').textContent = returned;
         document.getElementById('dtoBadgeApproved').textContent = approved;
@@ -1141,7 +1197,9 @@
         const circleLabel = (currentDistrict === 'ALL') ? 'All Circles' : currentDistrict + ' Circle';
 
         const tabTitles = {
-          sanction: { title: 'Pending Verification Queue', sub: 'Applications verified by TO or inspected by IA awaiting final DTO statutory approval.' },
+          sanction: { title: 'Pending Fee Activation Queue', sub: 'Applications verified by TO or inspected by IA awaiting DTO statutory fee activation.' },
+          paymentPending: { title: 'Payment Pending Queue (With Citizen)', sub: 'Applications with activated statutory registration fee awaiting citizen online payment deposit.' },
+          paymentReceived: { title: 'Payment Received Queue (Ready for Final Sanction)', sub: 'Statutory registration fee verified paid online. Ready for Level 2 DTO final approval and Form 3 certificate issuance.' },
           iaReports: { title: 'IA Inspection Reports Ready Queue', sub: 'Tour Operator, Travel Agent & Dealer applications with completed physical premise reports recommended for sanction.' },
           returnedCitizen: { title: 'Returned to Citizen Queue', sub: 'Applications currently with citizens for document re-upload or clarification.' },
           approved: { title: 'Approved Registrations Repository', sub: 'Sanctioned registrations with generated Form 3 statutory certificates.' },
@@ -1179,12 +1237,34 @@
           let mobileActionLabel = 'Verify & Sanction';
 
           if (app.status === 'Approved') {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Certificate</a>`;
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Review</a>
+                <a href="certificate.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-success py-1 px-2.5 fw-bold shadow-xs"><i class="bi bi-printer me-1"></i> Form 3</a>
+              </div>
+            `;
             mobileActionLabel = 'View Certificate';
-          } else if (app.currentStage === 'Level 2: Pending DTO Sanction' || (app.assignedRole === 'DTO' && app.inspectionFindings)) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-award me-1"></i> Approve</a>`;
-            mobileActionLabel = 'Sanction & Issue';
-          } else if (app.assignedRole !== 'DTO') {
+            statusBadgeClass = 'badge bg-success text-white';
+          } else if (app.paymentStatus === 'Paid') {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check-fill me-1"></i> Final Sanction</a>`;
+            mobileActionLabel = 'Grant Sanction';
+            statusBadgeClass = 'badge bg-success text-white';
+          } else if (app.paymentStatus === 'Payment Pending' || (app.paymentActivated && app.paymentStatus !== 'Paid')) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-hourglass-split me-1"></i> Fee Pending</a>`;
+            mobileActionLabel = 'Awaiting Fee';
+            statusBadgeClass = 'badge bg-warning text-dark';
+          } else if (app.status === 'Returned for Clarification') {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Check</a>`;
+            mobileActionLabel = 'Check Status';
+            statusBadgeClass = 'badge bg-warning text-dark';
+          } else if (app.status === 'Rejected') {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-danger py-1 px-3 fw-semibold"><i class="bi bi-x-circle me-1"></i> Details</a>`;
+            mobileActionLabel = 'View Rejected';
+            statusBadgeClass = 'badge bg-danger text-white';
+          } else if (!app.paymentActivated) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-credit-card-2-front me-1"></i> Activate Fee</a>`;
+            mobileActionLabel = 'Activate Fee';
+          } else {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-primary py-1 px-3 fw-semibold"><i class="bi bi-eye me-1"></i> View</a>`;
             mobileActionLabel = 'View Application';
           }

@@ -800,11 +800,32 @@
             mobileActionLabel = 'Process HQ Return';
             mobileActionClass = 'btn-danger';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check me-1"></i> Final Approval</a>`;
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                <a href="approval-sheet.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" title="View HQ Approval Sheet">
+                  <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                </a>
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs">
+                  <i class="bi bi-patch-check me-1"></i> Final Approval
+                </a>
+              </div>`;
             mobileActionLabel = 'Final Approval & Issue Letter';
             mobileActionClass = 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_12) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Letter</a>`;
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                ${app.approvalSheet ? `
+                  <a href="approval-sheet.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" title="View HQ Approval Sheet">
+                    <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                  </a>
+                ` : ''}
+                <a href="permission-letter.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold" title="View Permission Letter">
+                  <i class="bi bi-file-earmark-check me-1"></i> Letter
+                </a>
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-secondary py-1 px-2" title="Review Dossier">
+                  <i class="bi bi-folder2-open"></i>
+                </a>
+              </div>`;
             mobileActionLabel = 'View Permission Letter';
             mobileActionClass = 'btn-outline-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_13) {
@@ -847,6 +868,7 @@
             <td>
               <span class="${statusBadgeClass}">${app.status}</span>
               <div class="text-muted small text-truncate" style="font-size: 0.75rem; max-width: 160px;" title="${app.currentStage}">${app.currentStage}</div>
+              ${app.approvalSheet ? `<div class="mt-0.5"><span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5" style="font-size: 0.7rem;"><i class="bi bi-file-earmark-check me-1"></i>HQ Sheet Attached</span></div>` : ''}
             </td>
             <td class="text-end text-nowrap">
               ${actionBtnHtml}

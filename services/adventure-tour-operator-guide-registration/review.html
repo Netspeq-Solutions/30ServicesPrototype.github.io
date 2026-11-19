@@ -988,7 +988,8 @@
           pStatus.innerHTML = `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle fw-semibold">Payment Activated &bull; Pending Citizen Deposit</span>`;
           pTxn.textContent = 'Fee activated by ' + (app.payment.activatedBy || 'District Tourism Officer (DTO)');
         } else if (app.payment.paid) {
-          pStatus.innerHTML = `<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Paid ₹1,500</span>`;
+          const feeAmt = (app.payment && app.payment.amount) ? app.payment.amount : ((app.type === 'guide-registration' || (app.arn && app.arn.includes('GR'))) ? 500 : 1500);
+          pStatus.innerHTML = `<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Paid ₹${feeAmt.toLocaleString('en-IN')}</span>`;
           pTxn.textContent = (app.payment.transactionRef || 'TXN-SK-ATO-2026-884102') + ' (' + (app.payment.paidDate || 'Today') + ')';
         }
       }

@@ -2676,7 +2676,7 @@
           return this.resetToSeedData();
         }
 
-        const parsed = JSON.parse(raw);
+        let parsed = JSON.parse(raw);
         if (!Array.isArray(parsed) || parsed.length < 20) {
           return this.resetToSeedData();
         }
@@ -2687,6 +2687,63 @@
           return this.resetToSeedData();
         }
 
+        // Ensure newly submitted applications from citizen storage are synced into the list
+        if (hasStorage) {
+          const citizenRaw = localStorage.getItem(SUBMITTED_STORAGE_KEY);
+          if (citizenRaw) {
+            try {
+              const citizenApps = JSON.parse(citizenRaw);
+              if (Array.isArray(citizenApps) && citizenApps.length > 0) {
+                let mergedAny = false;
+                citizenApps.forEach(cApp => {
+                  if (cApp && cApp.refNo && !parsed.some(d => d.refNo === cApp.refNo)) {
+                    parsed.unshift({
+                      refNo: cApp.refNo,
+                      formConfig: (cApp.category === 'dealer' ? 'B' : (cApp.category === 'outdoor-photographer' ? 'C' : 'A')),
+                      category: cApp.category,
+                      categoryName: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'Travel Agent / Tour Operator (TA/TO)' : (cApp.categoryName || 'Tourism Registration')),
+                      categoryCode: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'TA/TO' : (cApp.category === 'dealer' ? 'DLR' : 'PHO')),
+                      applicantName: cApp.applicantName || 'Citizen Applicant',
+                      businessName: cApp.businessName || 'Tourism Enterprise',
+                      district: cApp.district || 'Gangtok',
+                      phone: cApp.phone || '9832000000',
+                      email: cApp.email || 'applicant@example.in',
+                      requiresInspection: (cApp.category !== 'outdoor-photographer'),
+                      assignedRole: cApp.assignedRole || 'TO',
+                      status: cApp.status || 'Submitted',
+                      currentStage: cApp.currentStage || 'Level 0: Pending TO Verification',
+                      submittedDate: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
+                      lastUpdated: new Date().toLocaleDateString('en-GB'),
+                      history: cApp.history || [
+                        {
+                          step: 'Application Submitted Online',
+                          actor: 'Citizen (' + (cApp.applicantName || 'Applicant') + ')',
+                          date: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
+                          remarks: 'Application submitted via Sikkim Single Sign-On portal.'
+                        }
+                      ],
+                      auditHistory: cApp.auditHistory || [
+                        {
+                          timestamp: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
+                          actorRole: 'Citizen',
+                          actorName: cApp.applicantName || 'Applicant',
+                          action: 'Application Submitted Online',
+                          stage: 'Level 0: Pending TO Verification',
+                          remarks: 'Application submitted via Single Sign-On.'
+                        }
+                      ]
+                    });
+                    mergedAny = true;
+                  }
+                });
+                if (mergedAny) {
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+                }
+              }
+            } catch (err) {}
+          }
+        }
+
         return parsed;
       } catch (e) {
         console.error('Error loading applications:', e);
@@ -2694,19 +2751,58 @@
       }
     },
 
+    createApplication: function (appData) {
+      if (!appData || !appData.refNo) return null;
+      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+      const isPhotographer = (appData.category === 'outdoor-photographer');
+      const catCode = isPhotographer ? 'PHO' : (appData.category === 'dealer' ? 'DLR' : 'TA/TO');
+      const catName = isPhotographer ? 'Outdoor Photographer Registration' : (appData.category === 'dealer' ? 'Dealer Registration' : 'Travel Agent / Tour Operator (TA/TO)');
+
+      const app = {
+        refNo: appData.refNo,
+        formConfig: (appData.category === 'dealer' ? 'B' : (isPhotographer ? 'C' : 'A')),
+        category: appData.category,
+        categoryName: appData.categoryName || catName,
+        categoryCode: catCode,
+        applicantName: appData.applicantName || 'Citizen Applicant',
+        businessName: appData.businessName || appData.applicantName || 'Tourism Enterprise',
+        district: appData.district || 'Gangtok',
+        phone: appData.phone || '9832000000',
+        email: appData.email || 'applicant@example.in',
+        requiresInspection: !isPhotographer,
+        assignedRole: 'TO',
+        status: 'Submitted',
+        currentStage: 'Level 0: Pending TO Verification',
+        submittedDate: appData.submittedDate || now,
+        lastUpdated: now,
+        history: [
+          {
+            step: 'Application Submitted Online',
+            actor: (appData.applicantName || 'Citizen Applicant') + ' (Citizen)',
+            date: appData.submittedDate || now,
+            remarks: 'Application submitted via Sikkim Single Sign-On portal.'
+          }
+        ],
+        auditHistory: [
+          {
+            timestamp: appData.submittedDate || now,
+            actorRole: 'Citizen',
+            actorName: appData.applicantName || 'Citizen Applicant',
+            action: 'Application Submitted Online',
+            stage: 'Level 0: Pending TO Verification',
+            remarks: 'Application submitted via Single Sign-On.'
+          }
+        ]
+      };
+      this.saveApplication(app);
+      return app;
+    },
+
     getApplication: function (refNo) {
-      let result = null;
-      if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication) {
-        const tMatch = TourismBusinessData.getApplication(refNo);
-        if (tMatch && (tMatch.paymentActivated || tMatch.status === 'Payment Pending' || (typeof window !== 'undefined' && window.activeScenarioKey === 'scenarioPayment'))) {
-          result = tMatch;
-        }
-      }
-      if (!result) {
-        const all = this.getAllApplications();
-        result = all.find(a => a.refNo === refNo);
-      }
-      if (!result && typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication) {
+      if (!refNo) return null;
+      const all = this.getAllApplications();
+      let result = all.find(a => a && a.refNo === refNo);
+      if (!result && typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
         result = TourismBusinessData.getApplication(refNo);
       }
       if (result) {
@@ -2717,11 +2813,11 @@
     },
 
     saveApplication: function (app) {
-      if (!app) return;
+      if (!app || !app.refNo) return;
       if (!Array.isArray(app.history)) app.history = [];
       if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       const all = this.getAllApplications();
-      const idx = all.findIndex(a => a.refNo === app.refNo);
+      const idx = all.findIndex(a => a && a.refNo === app.refNo);
       if (idx >= 0) {
         all[idx] = app;
       } else {
@@ -2729,6 +2825,38 @@
       }
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      } catch (e) {}
+
+      // Keep citizen submitted storage in sync
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const raw = localStorage.getItem(SUBMITTED_STORAGE_KEY);
+          if (raw) {
+            let list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              const sIdx = list.findIndex(s => s && s.refNo === app.refNo);
+              if (sIdx >= 0) {
+                list[sIdx] = Object.assign({}, list[sIdx], app);
+                localStorage.setItem(SUBMITTED_STORAGE_KEY, JSON.stringify(list));
+              }
+            }
+          }
+        }
+      } catch (e) {}
+
+      // Sync in-memory TourismBusinessData scenarios if present
+      try {
+        if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios) {
+          for (let sKey in TourismBusinessData.scenarios) {
+            const sc = TourismBusinessData.scenarios[sKey];
+            if (sc && Array.isArray(sc.applications)) {
+              const scIdx = sc.applications.findIndex(a => a && a.refNo === app.refNo);
+              if (scIdx >= 0) {
+                Object.assign(sc.applications[scIdx], app);
+              }
+            }
+          }
+        }
       } catch (e) {}
     },
 
@@ -3232,6 +3360,70 @@
 
       this.saveApplication(app);
       return { success: true, message: 'Application ' + refNo + ' has been returned to the citizen with clarification instructions.' };
+    },
+
+    // Citizen Resubmits Corrected Application
+    citizenResubmit: function (refNo, updatedData, citizenRemarks) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+
+      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+
+      // Determine return target officer
+      const returnedByStr = (app.returnedBy || '').toUpperCase();
+      let targetStage = 'Level 0: Pending TO Verification';
+      let targetRole = 'TO';
+
+      if (returnedByStr.includes('DTO') || returnedByStr.includes('LEVEL 2')) {
+        targetStage = 'Level 2: Pending DTO Sanction';
+        targetRole = 'DTO';
+      } else if (returnedByStr.includes('IA') || returnedByStr.includes('LEVEL 1')) {
+        targetStage = 'Level 1: Assigned for IA Physical Inspection';
+        targetRole = 'IA';
+      }
+
+      app.status = 'Under Verification';
+      app.currentStage = targetStage;
+      app.assignedRole = targetRole;
+      app.citizenRemarks = citizenRemarks || 'Requested corrections made and additional supporting documents attached.';
+      app.resubmittedDate = now;
+      app.lastUpdated = now;
+
+      if (updatedData) {
+        if (updatedData.newDoc) {
+          if (!Array.isArray(app.documents)) app.documents = [];
+          app.documents.push(updatedData.newDoc);
+        }
+        if (updatedData.businessName) app.businessName = updatedData.businessName;
+      }
+
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
+
+      const resubmitNote = 'Applicant resubmitted application with clarifications: "' + (citizenRemarks || 'Updated documents uploaded.') + '". Resumed at ' + targetStage + '.';
+      app.history.push({
+        step: 'Clarification Resubmitted by Citizen',
+        actor: (app.applicantName || 'Citizen Applicant') + ' (Citizen)',
+        date: now,
+        remarks: resubmitNote
+      });
+
+      app.auditHistory.push({
+        timestamp: now,
+        actorRole: 'Citizen Applicant',
+        actorName: app.applicantName || 'Citizen Applicant',
+        action: 'Resubmitted Application with Requested Clarifications',
+        stage: targetStage,
+        remarks: resubmitNote
+      });
+
+      this.saveApplication(app);
+      return {
+        success: true,
+        message: 'Application ' + refNo + ' has been resubmitted successfully and returned to ' + targetRole + ' queue for review.',
+        stage: targetStage,
+        role: targetRole
+      };
     },
 
     // Reject Application

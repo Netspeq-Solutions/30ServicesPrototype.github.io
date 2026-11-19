@@ -1412,6 +1412,9 @@
             <a href="dashboard.html" class="btn btn-sm btn-gov-primary btn-action-compact">
               <i class="bi bi-speedometer2"></i> Go to Citizen Dashboard
             </a>
+            <a id="ackTaDeskLink" href="dashboard-ta.html" class="btn btn-sm btn-primary btn-action-compact">
+              <i class="bi bi-person-check"></i> Open in TA Scrutiny Desk
+            </a>
             <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="startNewApplication()">
               <i class="bi bi-plus-lg"></i> New Application
             </button>
@@ -1502,12 +1505,29 @@
     // INITIALIZATION & CATEGORY SWITCHING
     // ========================================================================
     document.addEventListener('DOMContentLoaded', function () {
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.init();
+      }
+
       renderActivityCheckboxes();
       renderAllEquipmentTables();
 
       const urlParams = new URLSearchParams(window.location.search);
       const catParam = urlParams.get('category') || urlParams.get('type');
-      if (catParam === 'guide-registration') {
+      const refParam = urlParams.get('ref');
+
+      if (refParam && window.AdventureWorkflowEngine) {
+        const existingApp = AdventureWorkflowEngine.getApplicationByArn(refParam);
+        if (existingApp) {
+          activeCorrectionApp = existingApp;
+          const targetCat = (existingApp.type === 'guide-registration' || refParam.includes('GR')) ? 'guide-registration' : 'adventure-tour-operator';
+          switchCategory(targetCat, true);
+          injectCorrectionModeUI(existingApp);
+          return;
+        }
+      }
+
+      if (catParam === 'guide-registration' || catParam === 'GR') {
         switchCategory('guide-registration');
       } else {
         switchCategory('adventure-tour-operator');
@@ -1517,7 +1537,79 @@
       checkAndRestoreDraft();
     });
 
-    function switchCategory(cat) {
+    function injectCorrectionModeUI(app) {
+      const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
+      const container = isGuide ? document.getElementById('formContainerGR') : document.getElementById('formContainerATO');
+      if (!container) return;
+
+      const bannerHtml = `
+        <div class="alert alert-warning border border-warning shadow-xs mb-4" id="correctionBanner">
+          <div class="d-flex align-items-start gap-3">
+            <div class="bg-warning text-dark p-2 rounded-2 fs-4 flex-shrink-0">
+              <i class="bi bi-pencil-square"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h5 class="h6 fw-bold text-dark mb-0">Application Correction &amp; Clarification Mode</h5>
+                <span class="badge bg-dark text-warning font-monospace fs-6">${app.arn}</span>
+              </div>
+              <p class="small text-danger-emphasis mt-2 mb-1 fw-semibold">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Official Scrutiny Remarks: "${app.returnRemarks || 'Clarification required regarding uploaded credentials.'}"
+              </p>
+              <div class="small text-muted">
+                Returned by: <strong>${app.returnedBy || 'Scrutiny Officer'}</strong> &bull; Please update the requested particulars/documents below and resubmit.
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const existingBanner = document.getElementById('correctionBanner');
+      if (existingBanner) existingBanner.remove();
+      container.insertAdjacentHTML('afterbegin', bannerHtml);
+
+      // Pre-fill existing data
+      if (isGuide) {
+        if (app.applicantName) document.getElementById('grApplicantName').value = app.applicantName;
+        if (app.district) document.getElementById('grDistrict').value = app.district;
+        if (app.details) {
+          if (app.details.dob) document.getElementById('grDob').value = app.details.dob;
+          if (app.details.residentialAddress) document.getElementById('grAddress').value = app.details.residentialAddress;
+          if (app.details.pincode) document.getElementById('grPincode').value = app.details.pincode;
+          if (app.details.mobile) document.getElementById('grContactNumber').value = app.details.mobile;
+          if (app.details.email) document.getElementById('grEmail').value = app.details.email;
+          if (app.details.eduQual) document.getElementById('grEduQual').value = app.details.eduQual;
+          if (app.details.workExp) document.getElementById('grWorkExp').value = app.details.workExp;
+          if (app.details.languages) document.getElementById('grLangKnown').value = app.details.languages;
+        }
+        const submitBtn = document.getElementById('grSubmitBtn');
+        if (submitBtn) {
+          submitBtn.innerHTML = `<i class="bi bi-send-check me-1"></i> Resubmit Corrected Application (${app.arn})`;
+        }
+      } else {
+        if (app.applicantName) document.getElementById('atoApplicantName').value = app.applicantName;
+        if (app.enterpriseName) document.getElementById('atoOrgName').value = app.enterpriseName;
+        if (app.district) document.getElementById('atoDistrict').value = app.district;
+        if (app.details) {
+          if (app.details.guardian) document.getElementById('atoGuardianName').value = app.details.guardian;
+          if (app.details.coiNumber) document.getElementById('atoCoiNumber').value = app.details.coiNumber;
+          if (app.details.registeredAddress) document.getElementById('atoRegisteredAddress').value = app.details.registeredAddress;
+          if (app.details.mobile) document.getElementById('atoContactNumber').value = app.details.mobile;
+          if (app.details.email) document.getElementById('atoEmail').value = app.details.email;
+          if (app.details.orgType) document.getElementById('atoOrgType').value = app.details.orgType;
+          if (app.details.gstin) document.getElementById('atoGstNumber').value = app.details.gstin;
+          if (app.details.pan) document.getElementById('atoPanNumber').value = app.details.pan;
+          if (app.details.academicQual) document.getElementById('atoQualAcademic').value = app.details.academicQual;
+          if (app.details.techQual) document.getElementById('atoQualTechnical').value = app.details.techQual;
+        }
+        const submitBtn = document.getElementById('atoSubmitBtn');
+        if (submitBtn) {
+          submitBtn.innerHTML = `<i class="bi bi-send-check me-1"></i> Resubmit Corrected Application (${app.arn})`;
+        }
+      }
+    }
+
+    function switchCategory(cat, skipDemoPrefill) {
       currentCategory = cat;
       currentStep = 1;
 
@@ -2243,22 +2335,116 @@
       document.getElementById('grSubmitBtn').disabled = !isAgreed;
     }
 
-    function submitFinalAtoApplication() {
-      const arn = generateArn('ATO');
-      const applicantName = document.getElementById('atoApplicantName').value;
-      const district = document.getElementById('atoDistrict').value;
+    let activeCorrectionApp = null;
 
-      displayAcknowledgement(arn, 'Adventure Tour Operator', applicantName, district);
-      recordSubmittedApplication(arn, 'adventure-tour-operator', applicantName, district);
+    function submitFinalAtoApplication() {
+      const applicantName = document.getElementById('atoApplicantName').value.trim() || 'Tenzing Norbu Lepcha';
+      const district = document.getElementById('atoDistrict').value || 'Gangtok';
+      const enterpriseName = document.getElementById('atoOrgName') ? document.getElementById('atoOrgName').value.trim() : (applicantName + ' Expeditions');
+
+      const detailsData = {
+        guardian: document.getElementById('atoGuardianName')?.value || '',
+        coiNumber: document.getElementById('atoCoiNumber')?.value || '',
+        registeredAddress: document.getElementById('atoRegisteredAddress')?.value || '',
+        district: district,
+        mobile: document.getElementById('atoContactNumber')?.value || '',
+        email: document.getElementById('atoEmail')?.value || '',
+        orgName: enterpriseName,
+        orgType: document.getElementById('atoOrgType')?.value || 'Limited Liability Partnership (LLP)',
+        ownership: document.getElementById('atoBuildingOwnership')?.value || 'Rented / Leased',
+        gstin: document.getElementById('atoGstNumber')?.value || '',
+        pan: document.getElementById('atoPanNumber')?.value || '',
+        academicQual: document.getElementById('atoQualAcademic')?.value || '',
+        techQual: document.getElementById('atoQualTechnical')?.value || '',
+        staffStrength: parseInt(document.getElementById('atoStaffStrength')?.value || '6', 10),
+        insurance: document.getElementById('atoInsuranceDetails')?.value || '',
+        medical: document.getElementById('atoMedicalFacilities')?.value || ''
+      };
+
+      if (activeCorrectionApp) {
+        const arn = activeCorrectionApp.arn;
+        const remarks = document.getElementById('atoCorrectionRemarks')?.value || 'Applicant revised documentation and resubmitted application for verification.';
+        if (window.AdventureWorkflowEngine) {
+          AdventureWorkflowEngine.citizenResubmit(arn, {
+            applicantName: applicantName,
+            enterpriseName: enterpriseName,
+            district: district,
+            details: detailsData
+          }, remarks);
+        }
+        displayAcknowledgement(arn, 'Adventure Tour Operator', applicantName, district, true);
+        return;
+      }
+
+      const arn = generateArn('ATO');
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.createApplication({
+          arn: arn,
+          type: 'adventure-tour-operator',
+          applicantName: applicantName,
+          enterpriseName: enterpriseName,
+          district: district,
+          details: detailsData
+        });
+      } else {
+        recordSubmittedApplication(arn, 'adventure-tour-operator', applicantName, district);
+      }
+
+      try { localStorage.setItem('adv_latest_submitted_arn', arn); localStorage.setItem('adv_citizen_active_arn', arn); } catch(e){}
+      displayAcknowledgement(arn, 'Adventure Tour Operator', applicantName, district, false);
     }
 
     function submitFinalGrApplication() {
-      const arn = generateArn('GR');
-      const applicantName = document.getElementById('grApplicantName').value;
-      const district = document.getElementById('grDistrict').value;
+      const applicantName = document.getElementById('grApplicantName').value.trim() || 'Sonam Gyatso Sherpa';
+      const district = document.getElementById('grDistrict').value || 'Gangtok';
 
-      displayAcknowledgement(arn, 'Guide Registration', applicantName, district);
-      recordSubmittedApplication(arn, 'guide-registration', applicantName, district);
+      const selectedCats = Array.from(document.querySelectorAll('#grStep2 input[type="checkbox"]:checked')).map(c => c.value);
+
+      const detailsData = {
+        dob: document.getElementById('grDob')?.value || '',
+        gender: document.getElementById('grGenderM')?.checked ? 'Male' : 'Female',
+        residentialAddress: document.getElementById('grAddress')?.value || '',
+        pincode: document.getElementById('grPincode')?.value || '737101',
+        mobile: document.getElementById('grContactNumber')?.value || '',
+        email: document.getElementById('grEmail')?.value || '',
+        eduQual: document.getElementById('grEduQual')?.value || '',
+        certAdditional: document.getElementById('grCertAdditional')?.value || '',
+        workExp: document.getElementById('grWorkExp')?.value || '',
+        categories: selectedCats.length > 0 ? selectedCats : ['Tour Guide', 'Trekking Guide'],
+        languages: document.getElementById('grLangKnown')?.value || 'English, Hindi, Nepali',
+        foreignLang: document.getElementById('grLangForeign')?.value || 'None'
+      };
+
+      if (activeCorrectionApp) {
+        const arn = activeCorrectionApp.arn;
+        const remarks = document.getElementById('grCorrectionRemarks')?.value || 'Applicant corrected required credentials and resubmitted application for scrutiny.';
+        if (window.AdventureWorkflowEngine) {
+          AdventureWorkflowEngine.citizenResubmit(arn, {
+            applicantName: applicantName,
+            district: district,
+            details: detailsData
+          }, remarks);
+        }
+        displayAcknowledgement(arn, 'Guide Registration', applicantName, district, true);
+        return;
+      }
+
+      const arn = generateArn('GR');
+      if (window.AdventureWorkflowEngine) {
+        AdventureWorkflowEngine.createApplication({
+          arn: arn,
+          type: 'guide-registration',
+          applicantName: applicantName,
+          enterpriseName: applicantName + ' (Guide)',
+          district: district,
+          details: detailsData
+        });
+      } else {
+        recordSubmittedApplication(arn, 'guide-registration', applicantName, district);
+      }
+
+      try { localStorage.setItem('adv_latest_submitted_arn', arn); localStorage.setItem('adv_citizen_active_arn', arn); } catch(e){}
+      displayAcknowledgement(arn, 'Guide Registration', applicantName, district, false);
     }
 
     function generateArn(catCode) {
@@ -2266,7 +2452,7 @@
       return `SK-${catCode}-2026-${randomDigits}`;
     }
 
-    function displayAcknowledgement(arn, catName, applicantName, district) {
+    function displayAcknowledgement(arn, catName, applicantName, district, isResubmission) {
       document.getElementById('formContainerATO').style.display = 'none';
       document.getElementById('formContainerGR').style.display = 'none';
       document.getElementById('stepperContainer').style.display = 'none';
@@ -2280,6 +2466,29 @@
       const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
       document.getElementById('ackTimestamp').textContent = now.toLocaleDateString('en-GB', options);
 
+      const statusBadge = document.querySelector('#acknowledgementScreen .badge.bg-info-subtle');
+      if (statusBadge) {
+        statusBadge.textContent = isResubmission ? 'Correction Resubmitted • Under Review' : 'Stage 1: Scrutiny Active';
+      }
+
+      const topBadge = document.querySelector('#acknowledgementScreen > div > span.badge');
+      if (topBadge && isResubmission) {
+        topBadge.textContent = 'Corrected Dossier Successfully Resubmitted';
+        topBadge.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1 mb-2 align-self-center small fw-semibold';
+      }
+
+      const ackTaLink = document.getElementById('ackTaDeskLink');
+      if (ackTaLink) {
+        const isAto = catName.includes('Operator');
+        const cleanDist = (district || '').trim();
+        if (isAto || cleanDist.toLowerCase() === 'gangtok') {
+          ackTaLink.href = 'dashboard-ta.html?district=hq';
+          ackTaLink.innerHTML = '<i class="bi bi-person-check me-1"></i> Open in HQ TA Queue';
+        } else {
+          ackTaLink.href = 'dashboard-ta.html?district=' + encodeURIComponent(cleanDist);
+          ackTaLink.innerHTML = '<i class="bi bi-person-check me-1"></i> Open in District TA (' + cleanDist + ')';
+        }
+      }
       document.getElementById('acknowledgementScreen').style.display = 'block';
       window.scrollTo({ top: 50, behavior: 'smooth' });
 
@@ -2299,30 +2508,6 @@
         stage: 'Stage 1: TA Scrutiny'
       });
       localStorage.setItem('adv_submitted_applications', JSON.stringify(existing));
-
-      // Synchronize with Central Workflow Engine
-      if (window.AdventureWorkflowEngine) {
-        AdventureWorkflowEngine.saveApplication({
-          arn: arn,
-          category: typeKey,
-          categoryName: typeKey === 'adventure-tour-operator' ? 'Adventure Tour Operator' : 'Guide Registration',
-          applicantName: applicantName,
-          enterpriseName: typeKey === 'adventure-tour-operator' ? applicantName : (applicantName + ' (Guide)'),
-          district: district,
-          status: 'Under Scrutiny',
-          stage: typeKey === 'adventure-tour-operator' ? 'Awaiting TA Verification' : (district === 'Gangtok' ? 'Awaiting TA Verification' : 'Awaiting District TA'),
-          submittedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-          auditTrail: [
-            {
-              stage: 'Application Submission',
-              action: 'Submitted Online by Citizen',
-              by: applicantName + ' (Citizen)',
-              date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-              remarks: 'Initial online filing submitted via Sikkim Single-Window Citizen Portal.'
-            }
-          ]
-        });
-      }
     }
 
     function startNewApplication() {

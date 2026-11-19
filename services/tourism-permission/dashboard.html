@@ -391,14 +391,20 @@
 
               <!-- Instant Direct Actions -->
               <div class="d-flex flex-column align-items-start align-items-sm-end gap-2 ms-auto">
-                <button type="button" class="btn btn-success px-3.5 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-2" id="btnDownloadApprovedCert" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
-                  <i class="bi bi-file-earmark-arrow-down-fill fs-6"></i>
-                  <span>Download Permission Letter</span>
-                </button>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <button type="button" class="btn btn-success px-3.5 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-2" id="btnDownloadApprovedCert" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                    <i class="bi bi-file-earmark-arrow-down-fill fs-6"></i>
+                    <span>Download Permission Letter</span>
+                  </button>
+                  <button type="button" class="btn btn-outline-primary px-3.5 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-2" id="btnDownloadApprovedSheet" onclick="downloadApprovalSheetDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                    <i class="bi bi-file-earmark-text-fill fs-6"></i>
+                    <span>Download Approval Sheet</span>
+                  </button>
+                </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                   <button type="button" class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewApprovedModal" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
                     <i class="bi bi-eye"></i>
-                    <span>View Online</span>
+                    <span>View Letter</span>
                   </button>
                   <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewDossier" onclick="openDepartmentDocuments(window.activeApprovedArn || 'SK-TP-2026-APP-00215')" title="View All Department Documents &amp; HQ Concurrence">
                     <i class="bi bi-folder-check"></i>
@@ -576,7 +582,11 @@
               <div class="d-flex align-items-center gap-2 flex-wrap">
                 <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
                   <i class="bi bi-file-earmark-arrow-down-fill"></i>
-                  <span>Download Certificate</span>
+                  <span>Download Letter</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnTableBannerDownloadSheet" onclick="downloadApprovalSheetDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-file-earmark-text"></i>
+                  <span>Approval Sheet</span>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
                   <i class="bi bi-eye"></i>
@@ -710,7 +720,11 @@
               <div class="d-flex align-items-center gap-2 flex-wrap">
                 <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnFullTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
                   <i class="bi bi-file-earmark-arrow-down-fill"></i>
-                  <span>Download Certificate</span>
+                  <span>Download Letter</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnFullTableBannerDownloadSheet" onclick="downloadApprovalSheetDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <i class="bi bi-file-earmark-text"></i>
+                  <span>Approval Sheet</span>
                 </button>
                 <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnFullTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
                   <i class="bi bi-eye"></i>
@@ -1334,6 +1348,7 @@
 
       // Active state
       let activeScenarioKey = 'scenarioA';
+      let currentActiveApps = [];
 
       // Check URL query param for scenario override
       const urlParams = new URLSearchParams(window.location.search);
@@ -1372,6 +1387,15 @@
         selector.addEventListener('change', function () {
           activeScenarioKey = this.value;
           renderActiveScenario(activeScenarioKey);
+
+          // Reset filters on applications page
+          const searchInput = document.getElementById('appSearchInput');
+          if (searchInput) searchInput.value = '';
+          const catFilter = document.getElementById('appCategoryFilter');
+          if (catFilter) catFilter.value = 'all';
+          const statusFilter = document.getElementById('appStatusFilter');
+          if (statusFilter) statusFilter.value = 'all';
+
           if (window.GovApp && GovApp.showNotification) {
             GovApp.showNotification(`Switched to ${TourismCitizenData.scenarios[activeScenarioKey].name}`, 'info');
           }
@@ -1385,10 +1409,41 @@
 
         const citizen = scenario.citizen;
         const stats = scenario.stats;
-        const storedSubmissions = getStoredSubmissions();
-        const existingRefs = new Set(scenario.applications.map(a => a.refNo));
-        const extraSubmitted = storedSubmissions.filter(s => !existingRefs.has(s.refNo));
-        const apps = [...extraSubmitted, ...scenario.applications];
+        let apps = [];
+
+        // Build applications strictly according to the active scenario level
+        if (scenarioKey === 'scenarioA') {
+          // Scenario A: First-time citizen has 0 applications
+          apps = [];
+        } else if (scenarioKey === 'scenarioB') {
+          // Scenario B: Citizen with 1 Draft application
+          apps = JSON.parse(JSON.stringify(scenario.applications));
+        } else if (scenarioKey === 'scenarioC') {
+          // Scenario C: Citizen with Submitted / Ongoing / Approved applications
+          apps = JSON.parse(JSON.stringify(scenario.applications));
+          // Prepend any session citizen submissions that match this citizen or are newly submitted
+          const storedSubs = getStoredSubmissions();
+          const existingRefs = new Set(apps.map(a => a.refNo));
+          storedSubs.forEach(sub => {
+            if (sub && sub.refNo && !existingRefs.has(sub.refNo)) {
+              existingRefs.add(sub.refNo);
+              apps.unshift(sub);
+            }
+          });
+        } else {
+          // Scenario D (Returned), E (Approved), F (Rejected)
+          apps = JSON.parse(JSON.stringify(scenario.applications));
+        }
+
+        // Hydrate live updates from WorkflowEngine for applications in this scenario
+        if (typeof WorkflowEngine !== 'undefined') {
+          apps = apps.map(a => {
+            const live = WorkflowEngine.getApplication(a.refNo);
+            return live ? Object.assign({}, a, live) : a;
+          });
+        }
+
+        currentActiveApps = apps;
         const notifs = scenario.notifications;
 
         // Header / Profile details
@@ -1409,11 +1464,11 @@
 
         // Update Navigation Counters safely
         const navAppEl = document.getElementById('navAppCount');
-        if (navAppEl) navAppEl.textContent = stats.total;
+        if (navAppEl) navAppEl.textContent = apps.length;
         const navNotifEl = document.getElementById('navNotifCount');
         if (navNotifEl) navNotifEl.textContent = notifs.filter(n => !n.read).length;
 
-        // Priority 1: Action Required Card (Scenario D)
+        // Priority 1: Action Required Card (Scenario D: Returned Application)
         const actionBanner = document.getElementById('actionRequiredBanner');
         if (scenario.actionRequired) {
           actionBanner.classList.remove('d-none');
@@ -1423,63 +1478,76 @@
           document.getElementById('actionRequiredRemarks').textContent = scenario.actionRequired.remarks;
           document.getElementById('actionRequiredDate').textContent = scenario.actionRequired.returnedDate;
           document.getElementById('actionRequiredDeadline').textContent = scenario.actionRequired.deadline || '7 Days to respond';
+          window.activeReturnedRef = scenario.actionRequired.refNo;
         } else {
           actionBanner.classList.add('d-none');
+          window.activeReturnedRef = null;
         }
 
-        // Priority 2.5: Draft / Payment Pending Application Card (Scenario B / LocalStorage)
+        // Priority 2.5: Draft Application Card (Scenario B only)
         const draftCard = document.getElementById('draftApplicationCard');
-        const storedDrafts = getStoredDrafts();
-        const defaultDraft = scenario.applications.find(a => a.status === 'DRAFT');
-        const activeDraft = (storedDrafts.length > 0) ? storedDrafts[0] : (scenarioKey === 'scenarioB' ? defaultDraft : null);
-
         if (draftCard) {
-          if (activeDraft && scenarioKey !== 'scenarioA') {
-            draftCard.classList.remove('d-none');
-            const dId = activeDraft.draftId || activeDraft.refNo;
-            const dCat = activeDraft.categoryName || activeDraft.category || 'Trekking';
-            const dTitle = activeDraft.subjectTitle || activeDraft.activityTitle || 'Tourism Permission Application';
-            const dFee = activeDraft.fee || (activeDraft.feeAmount ? `₹${activeDraft.feeAmount} Fee` : 'Free');
-            const dUpdated = activeDraft.lastUpdated || activeDraft.createdDate || 'Recently';
+          if (scenarioKey === 'scenarioB') {
+            const storedDrafts = getStoredDrafts();
+            const defaultDraft = scenario.applications.find(a => a.status === 'DRAFT');
+            const activeDraft = (storedDrafts.length > 0) ? storedDrafts[0] : defaultDraft;
 
-            document.getElementById('draftAppRef').textContent = dId;
-            document.getElementById('draftAppCat').textContent = dCat;
-            document.getElementById('draftAppFee').textContent = dFee;
-            document.getElementById('draftAppTitle').textContent = dTitle;
-            document.getElementById('draftAppUpdated').textContent = dUpdated;
+            if (activeDraft) {
+              draftCard.classList.remove('d-none');
+              const dId = activeDraft.draftId || activeDraft.refNo;
+              const dCat = activeDraft.categoryName || activeDraft.category || 'Trekking';
+              const dTitle = activeDraft.subjectTitle || activeDraft.activityTitle || 'Tourism Permission Application';
+              const dFee = activeDraft.fee || (activeDraft.feeAmount ? `₹${activeDraft.feeAmount} Fee` : 'Free');
+              const dUpdated = activeDraft.lastUpdated || activeDraft.createdDate || 'Recently';
 
-            const isPaymentPending = (activeDraft.applicationStatus === 'PAYMENT_PENDING' || (activeDraft.isPaid && !activeDraft.paymentComplete && activeDraft.declarationAccepted));
+              document.getElementById('draftAppRef').textContent = dId;
+              document.getElementById('draftAppCat').textContent = dCat;
+              document.getElementById('draftAppFee').textContent = dFee;
+              document.getElementById('draftAppTitle').textContent = dTitle;
+              document.getElementById('draftAppUpdated').textContent = dUpdated;
 
-            if (isPaymentPending) {
-              document.getElementById('draftCardBadge').className = 'badge bg-danger text-white fw-bold px-2 py-1';
-              document.getElementById('draftCardBadge').textContent = 'PAYMENT PENDING';
-              document.getElementById('draftCardNotice').innerHTML = '<i class="bi bi-credit-card text-danger me-1"></i> <strong>Payment Pending:</strong> Declaration accepted. Statutory fee payment of ₹100 is pending to complete your submission.';
-              document.getElementById('btnContinueDraft').href = `apply.html?draftId=${encodeURIComponent(dId)}&step=4`;
-              document.getElementById('btnContinueDraftLabel').textContent = 'Complete Payment (₹100)';
+              const isPaymentPending = (activeDraft.applicationStatus === 'PAYMENT_PENDING' || (activeDraft.isPaid && !activeDraft.paymentComplete && activeDraft.declarationAccepted));
+
+              if (isPaymentPending) {
+                document.getElementById('draftCardBadge').className = 'badge bg-danger text-white fw-bold px-2 py-1';
+                document.getElementById('draftCardBadge').textContent = 'PAYMENT PENDING';
+                document.getElementById('draftCardNotice').innerHTML = '<i class="bi bi-credit-card text-danger me-1"></i> <strong>Payment Pending:</strong> Declaration accepted. Statutory fee payment of ₹100 is pending to complete your submission.';
+                document.getElementById('btnContinueDraft').href = `apply.html?draftId=${encodeURIComponent(dId)}&step=4`;
+                document.getElementById('btnContinueDraftLabel').textContent = 'Complete Payment (₹100)';
+              } else {
+                document.getElementById('draftCardBadge').className = 'badge bg-warning text-dark fw-bold px-2 py-1';
+                document.getElementById('draftCardBadge').textContent = 'DRAFT IN PROGRESS';
+                document.getElementById('draftCardNotice').innerHTML = '<i class="bi bi-info-circle-fill text-primary me-1"></i> You have an unsaved application in progress. You can resume at the step you left off.';
+                document.getElementById('btnContinueDraft').href = `apply.html?draftId=${encodeURIComponent(dId)}`;
+                document.getElementById('btnContinueDraftLabel').textContent = 'Continue Application';
+              }
+              window.activeDraftRef = dId;
             } else {
-              document.getElementById('draftCardBadge').className = 'badge bg-warning text-dark fw-bold px-2 py-1';
-              document.getElementById('draftCardBadge').textContent = 'DRAFT IN PROGRESS';
-              document.getElementById('draftCardNotice').innerHTML = '<i class="bi bi-info-circle-fill text-primary me-1"></i> You have an unsaved application in progress. You can resume at the step you left off.';
-              document.getElementById('btnContinueDraft').href = `apply.html?draftId=${encodeURIComponent(dId)}`;
-              document.getElementById('btnContinueDraftLabel').textContent = 'Continue Application';
+              draftCard.classList.add('d-none');
+              window.activeDraftRef = null;
             }
-            window.activeDraftRef = dId;
           } else {
             draftCard.classList.add('d-none');
             window.activeDraftRef = null;
           }
         }
 
-        // Priority 2: Ongoing Application Under Process Card
+        // Priority 2: Ongoing Application Under Process Card (Scenario C & Scenario D)
         const ongoingCard = document.getElementById('ongoingApplicationCard');
-        const ongoingApp = apps.find(a => a.status === 'UNDER_REVIEW' || a.status === 'SUBMITTED');
-        if (ongoingApp && scenarioKey !== 'scenarioA') {
+        const ongoingApp = (scenarioKey === 'scenarioC' || scenarioKey === 'scenarioD')
+          ? apps.find(a => {
+              const st = (a.status || '').toUpperCase();
+              return (st === 'UNDER_REVIEW' || st === 'SUBMITTED' || st === 'IN_PROCESS') && a.status !== 'DRAFT';
+            })
+          : null;
+
+        if (ongoingApp) {
           ongoingCard.classList.remove('d-none');
           document.getElementById('ongoingAppRef').textContent = ongoingApp.refNo;
           document.getElementById('ongoingAppCat').textContent = ongoingApp.categoryName || ongoingApp.category;
           document.getElementById('ongoingAppTitle').textContent = ongoingApp.activityTitle;
-          document.getElementById('ongoingAppStage').innerHTML = `<i class="bi bi-hourglass-split text-primary me-1"></i> Stage ${ongoingApp.currentStage || 2}: ${ongoingApp.statusLabel || 'Under Process'}`;
-          document.getElementById('ongoingAppStatus').textContent = `${ongoingApp.statusLabel} (${ongoingApp.district || 'District DTO'})`;
+          document.getElementById('ongoingAppStage').innerHTML = `<i class="bi bi-hourglass-split text-primary me-1"></i> Stage ${ongoingApp.currentStage || 2}: ${ongoingApp.statusLabel || ongoingApp.status || 'Under Process'}`;
+          document.getElementById('ongoingAppStatus').textContent = `${ongoingApp.statusLabel || ongoingApp.status} (${ongoingApp.district || 'District DTO'})`;
           document.getElementById('ongoingAppUpdated').textContent = ongoingApp.lastUpdated || ongoingApp.submissionDate;
           window.activeOngoingRef = ongoingApp.refNo;
         } else {
@@ -1487,13 +1555,19 @@
           window.activeOngoingRef = null;
         }
 
-        // Priority 2: Approved Application Card & Table Banners
+        // Priority 2: Approved Application Card & Table Banners (Scenario C & Scenario E)
         const approvedCard = document.getElementById('approvedApplicationCard');
-        const approvedApp = apps.find(a => a.status === 'APPROVED');
+        const approvedApp = (scenarioKey === 'scenarioC' || scenarioKey === 'scenarioE')
+          ? apps.find(a => {
+              const st = (a.status || '').toUpperCase();
+              return st === 'APPROVED' || (typeof WorkflowEngine !== 'undefined' && a.currentStage === WorkflowEngine.STAGES.STAGE_12);
+            })
+          : null;
+
         const tableBanner = document.getElementById('tableApprovedCertBanner');
         const fullTableBanner = document.getElementById('fullTableApprovedCertBanner');
 
-        if (approvedApp && scenarioKey !== 'scenarioA') {
+        if (approvedApp) {
           const certNum = approvedApp.certRef || approvedApp.permissionNumber || `SK-TOUR-2026-TRE-${approvedApp.refNo.split('-').pop()}`;
           const distName = approvedApp.district || 'Gangtok';
 
@@ -1512,10 +1586,9 @@
             const badgeEl = document.getElementById('approvedCertRefBadge');
             if (badgeEl) badgeEl.textContent = certNum;
             const officerEl = document.getElementById('approvedAppOfficer');
-            if (officerEl) officerEl.textContent = `District Tourism Officer (DTO, ${distName} Circle)`;
+            if (officerEl) officerEl.textContent = approvedApp.approvingOfficer ? `${approvedApp.approvingOfficer} (${approvedApp.approvingDesignation || 'DTO'}, ${distName} Circle)` : `District Tourism Officer (DTO, ${distName} Circle)`;
           }
 
-          // Near-Table Quick-Access Banner (Recent Table)
           if (tableBanner) {
             tableBanner.classList.remove('d-none');
             const tbCert = document.getElementById('tableBannerCertNo');
@@ -1526,7 +1599,6 @@
             if (tbDesc) tbDesc.textContent = `${approvedApp.activityTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
           }
 
-          // Near-Table Quick-Access Banner (Full Table)
           if (fullTableBanner) {
             fullTableBanner.classList.remove('d-none');
             const fbCert = document.getElementById('fullTableBannerCertNo');
@@ -1571,15 +1643,22 @@
         // Render Notifications
         renderNotifications(notifs);
 
-        // Render Tracking Section with top application
-        if (apps.length > 0) {
-          renderTrackingView(apps[0].refNo);
-        } else {
+        // Render Tracking Section with top application for this scenario
+        if (scenarioKey === 'scenarioA' || apps.length === 0) {
           renderEmptyTrackingView();
+          renderTrackingQuickChips([]);
+        } else {
+          let targetArn = apps[0].refNo;
+          if (scenario.actionRequired) {
+            targetArn = scenario.actionRequired.refNo;
+          } else if (scenarioKey === 'scenarioE' && approvedApp) {
+            targetArn = approvedApp.refNo;
+          } else if (ongoingApp) {
+            targetArn = ongoingApp.refNo;
+          }
+          renderTrackingView(targetArn);
+          renderTrackingQuickChips(apps);
         }
-
-        // Render Tracking Quick Selection Chips
-        renderTrackingQuickChips(apps);
       };
 
       // 3. Render Recent Applications Table
@@ -1596,15 +1675,21 @@
         if (mobileContainer) mobileContainer.innerHTML = '';
 
         apps.forEach(app => {
-          const isApproved = app.status === 'APPROVED';
+          const isApproved = (app.status || '').toUpperCase() === 'APPROVED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_12);
+          const hasSheet = !!app.approvalSheet;
           const permitBadgeHtml = isApproved ? `
             <div class="mt-1 d-flex align-items-center gap-1.5 flex-wrap">
               <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-1.5" style="font-size: 0.72rem;">
                 <i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'SK-TOUR-2026-TRE-00215'}
               </span>
               <a href="javascript:void(0)" onclick="downloadCertificateDirect('${app.refNo}')" class="text-success text-decoration-none fw-semibold small" style="font-size: 0.74rem;" title="Direct Download Permission Letter">
-                <i class="bi bi-file-earmark-arrow-down-fill"></i> Download
+                <i class="bi bi-file-earmark-arrow-down-fill"></i> Letter
               </a>
+              ${hasSheet ? `
+                <a href="javascript:void(0)" onclick="downloadApprovalSheetDirect('${app.refNo}')" class="text-primary text-decoration-none fw-semibold small" style="font-size: 0.74rem;" title="Download HQ Approval Sheet">
+                  <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                </a>
+              ` : ''}
             </div>
           ` : '';
 
@@ -1660,15 +1745,22 @@
         if (mobileFullContainer) mobileFullContainer.innerHTML = '';
 
         apps.forEach(app => {
-          const isApprovedFull = app.status === 'APPROVED';
+          const isApprovedFull = (app.status || '').toUpperCase() === 'APPROVED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_12);
+          const isApproved = isApprovedFull;
+          const hasSheetFull = !!app.approvalSheet;
           const permitBadgeFullHtml = isApprovedFull ? `
             <div class="mt-1 d-flex align-items-center gap-1.5 flex-wrap">
               <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-1.5" style="font-size: 0.72rem;">
                 <i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'SK-TOUR-2026-TRE-00215'}
               </span>
               <a href="javascript:void(0)" onclick="downloadCertificateDirect('${app.refNo}')" class="text-success text-decoration-none fw-semibold small" style="font-size: 0.74rem;" title="Direct Download Permission Letter">
-                <i class="bi bi-file-earmark-arrow-down-fill"></i> Download
+                <i class="bi bi-file-earmark-arrow-down-fill"></i> Letter
               </a>
+              ${hasSheetFull ? `
+                <a href="javascript:void(0)" onclick="downloadApprovalSheetDirect('${app.refNo}')" class="text-primary text-decoration-none fw-semibold small" style="font-size: 0.74rem;" title="Download HQ Approval Sheet">
+                  <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                </a>
+              ` : ''}
             </div>
           ` : '';
 
@@ -1715,13 +1807,14 @@
 
       // Helper: Render Status Badge
       function renderStatusBadge(app) {
-        if (app.status === 'APPROVED') {
+        const s = (app.status || '').toUpperCase();
+        if (s === 'APPROVED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_12)) {
           return `<span class="gov-badge gov-badge-approved"><i class="bi bi-check-circle"></i> Approved</span>`;
-        } else if (app.status === 'RETURNED') {
+        } else if (s === 'RETURNED' || (typeof WorkflowEngine !== 'undefined' && (app.currentStage === WorkflowEngine.STAGES.STAGE_5 || app.currentStage === WorkflowEngine.STAGES.STAGE_6))) {
           return `<span class="gov-badge gov-badge-returned"><i class="bi bi-exclamation-triangle"></i> Returned</span>`;
-        } else if (app.status === 'DRAFT') {
+        } else if (s === 'DRAFT') {
           return `<span class="gov-badge gov-badge-draft"><i class="bi bi-file-earmark-diff"></i> Draft</span>`;
-        } else if (app.status === 'REJECTED') {
+        } else if (s === 'REJECTED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_13)) {
           return `<span class="gov-badge gov-badge-rejected"><i class="bi bi-x-circle"></i> Rejected</span>`;
         } else {
           return `<span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span>`;
@@ -1731,6 +1824,9 @@
       // Helper: Render Row Action Buttons
       function renderActionButtons(app) {
         let html = '';
+        const st = (app.status || '').toUpperCase();
+        const isAppApproved = st === 'APPROVED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_12);
+
         if (app.status === 'DRAFT') {
           const isPayPending = app.applicationStatus === 'PAYMENT_PENDING';
           const resumeUrl = isPayPending ? `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}&step=4` : `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}`;
@@ -1745,13 +1841,19 @@
               <i class="bi bi-trash"></i>
             </button>
           `;
-        } else if (app.status === 'APPROVED') {
+        } else if (isAppApproved) {
           html += `
             <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
               <button type="button" class="btn btn-sm btn-success py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Download Official Permission Letter" onclick="downloadCertificateDirect('${app.refNo}')">
                 <i class="bi bi-file-earmark-arrow-down-fill"></i>
-                <span>Certificate</span>
+                <span>Letter</span>
               </button>
+              ${app.approvalSheet ? `
+                <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Download HQ Approval Sheet" onclick="downloadApprovalSheetDirect('${app.refNo}')">
+                  <i class="bi bi-file-earmark-text"></i>
+                  <span>Sheet</span>
+                </button>
+              ` : ''}
               <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Track Application Lifecycle" onclick="openTrackingFor('${app.refNo}')">
                 <i class="bi bi-geo-alt"></i>
                 <span>Track</span>
@@ -1820,14 +1922,18 @@
 
       // 6. Workflow Tracking Renderer (Synchronized with Live WorkflowEngine - Flow A & Flow B)
       function renderTrackingView(refNo) {
+        if (activeScenarioKey === 'scenarioA') {
+          renderEmptyTrackingView();
+          return;
+        }
+
         const scenario = TourismCitizenData.scenarios[activeScenarioKey];
-        const storedSubmissions = getStoredSubmissions();
-        const liveApp = (typeof WorkflowEngine !== 'undefined') ? WorkflowEngine.getApplication(refNo) : null;
-        const app = liveApp ||
-                    scenario.applications.find(a => a.refNo === refNo) ||
-                    storedSubmissions.find(s => s.refNo === refNo) ||
-                    scenario.applications[0] ||
-                    storedSubmissions[0];
+        const liveApp = (typeof WorkflowEngine !== 'undefined' && refNo) ? WorkflowEngine.getApplication(refNo) : null;
+        const app = (currentActiveApps && currentActiveApps.find(a => a.refNo === refNo)) ||
+                    liveApp ||
+                    (scenario && scenario.applications && scenario.applications.find(a => a.refNo === refNo)) ||
+                    (currentActiveApps && currentActiveApps[0]) ||
+                    (scenario && scenario.applications && scenario.applications[0]);
         if (!app) {
           renderEmptyTrackingView();
           return;
@@ -1966,12 +2072,15 @@
           nextText = "Permission document has been approved and issued by the District Tourism Officer. Official Approval Letter is available for download.";
           nextActionHtml = `
             <div class="d-flex gap-2 flex-wrap mt-1">
-              <button class="btn btn-sm btn-success px-3 py-1.5 fw-semibold" onclick="downloadCertificateDirect('${app.refNo}')">
-                <i class="bi bi-download me-1"></i> Download Approval Letter
+              <button class="btn btn-sm btn-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="downloadCertificateDirect('${app.refNo}')">
+                <i class="bi bi-file-earmark-arrow-down-fill"></i> Download Approval Letter
               </button>
               ${app.approvalSheet ? `
-                <button class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold" onclick="DocumentService.openDocumentModal('approval_sheet', '${app.refNo}', 'citizen')">
-                  <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
+                <button class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="downloadApprovalSheetDirect('${app.refNo}')">
+                  <i class="bi bi-file-earmark-text"></i> Download Approval Sheet
+                </button>
+                <button class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="DocumentService.openDocumentModal('approval_sheet', '${app.refNo}', 'citizen')">
+                  <i class="bi bi-eye"></i> View HQ Sheet
                 </button>
               ` : ''}
             </div>
@@ -2027,6 +2136,12 @@
             No tracking progression available for this scenario.
           </div>
         `;
+        const whatNextTextEl = document.getElementById('whatHappensNextText');
+        if (whatNextTextEl) whatNextTextEl.textContent = 'No active application is under process for this citizen profile.';
+        const whatNextActionEl = document.getElementById('whatHappensNextAction');
+        if (whatNextActionEl) whatNextActionEl.innerHTML = '<a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1"><i class="bi bi-plus-lg me-1"></i> Apply for New Permission</a>';
+        const trackDocBox = document.getElementById('trackDeptDocsContainer');
+        if (trackDocBox) trackDocBox.innerHTML = '';
       }
 
       function renderTrackingQuickChips(apps) {
@@ -2058,14 +2173,13 @@
           const category = catFilter.value;
           const status = statusFilter.value;
 
-          const scenario = TourismCitizenData.scenarios[activeScenarioKey];
-          const filtered = scenario.applications.filter(app => {
+          const filtered = currentActiveApps.filter(app => {
             const matchesQuery = !query ||
               app.refNo.toLowerCase().includes(query) ||
               app.activityTitle.toLowerCase().includes(query) ||
               (app.category && app.category.toLowerCase().includes(query));
             const matchesCategory = (category === 'all' || app.category === category);
-            const matchesStatus = (status === 'all' || app.status === status);
+            const matchesStatus = (status === 'all' || (app.status || '').toUpperCase() === status.toUpperCase());
             return matchesQuery && matchesCategory && matchesStatus;
           });
 
@@ -2080,8 +2194,7 @@
             searchInput.value = '';
             catFilter.value = 'all';
             statusFilter.value = 'all';
-            const scenario = TourismCitizenData.scenarios[activeScenarioKey];
-            renderFullApplicationsTable(scenario.applications);
+            renderFullApplicationsTable(currentActiveApps);
           });
         }
       }
@@ -2168,12 +2281,21 @@
         modal.show();
       };
 
-            function downloadCertificateDirect(arn) {
+      function downloadCertificateDirect(arn) {
         const ref = (arn && arn.startsWith('SK-TP')) ? arn : (window.activeApprovedArn || 'SK-TP-2026-APP-00215');
         if (typeof DocumentService !== 'undefined') {
           DocumentService.openPermissionLetter(ref, 'citizen');
         } else {
           window.open('permission-letter.html?arn=' + encodeURIComponent(ref) + '&role=citizen', '_blank');
+        }
+      };
+
+      function downloadApprovalSheetDirect(arn) {
+        const ref = (arn && arn.startsWith('SK-TP')) ? arn : (window.activeApprovedArn || 'SK-TP-2026-APP-00215');
+        if (typeof DocumentService !== 'undefined') {
+          DocumentService.openApprovalSheet(ref, 'citizen');
+        } else {
+          window.open('approval-sheet.html?arn=' + encodeURIComponent(ref) + '&role=citizen', '_blank');
         }
       };
 
@@ -2311,6 +2433,7 @@
       window.renderTrackingView = renderTrackingView;
       window.openTrackingForActive = openTrackingForActive;
       window.downloadCertificateDirect = downloadCertificateDirect;
+      window.downloadApprovalSheetDirect = downloadApprovalSheetDirect;
       window.openDepartmentDocuments = openDepartmentDocuments;
       window.previewActiveCertificate = previewActiveCertificate;
       window.switchView = switchView;
