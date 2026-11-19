@@ -353,13 +353,361 @@ const TourismBusinessData = {
           currentAuthority: "District Tourism Officer (Level 2)",
           stageDescription: "Physical premises verified by IA; final approval granted by DTO.",
           certificateNo: "SK-TR-CERT-2026-DLR-0019",
-          validUntil: "31 Oct 2029",
+          validUntil: "31 Oct 2027",
           hasCertificate: true,
           inspectionSummary: "Satisfactory: Commercial retail space 310 sq.ft, certified safety stock, valid Shop Act."
         }
       ],
       notifications: [
         { id: "notif-07", date: "25 Oct 2026", title: "Dealer Certificate Generated", message: "Official Registration Certificate with QR verification code is ready for download.", type: "success", read: true }
+      ]    },
+
+    // Scenario F: Statutory Registration Fee Due (Stage 05 Payment Activated)
+    scenarioPayment: {
+      id: "scenarioPayment",
+      name: "Scenario F: Statutory Registration Fee Due (₹7,000 Payment Activated)",
+      badge: "Fee Payment Due",
+      description: "Norbu Wangdi Bhutia whose TA/TO application documents and physical inspection were approved by Tourism Department, and DTO has activated the Grade B registration fee of ₹7,000 awaiting online payment.",
+      citizen: {
+        fullName: "Norbu Wangdi Bhutia",
+        citizenId: "CIT-SK-804107",
+        mobile: "9832101129",
+        email: "norbu.bhutia@sikkimholidays.in",
+        district: "Gangtok",
+        address: "Development Area, Gangtok, Sikkim – 737101",
+        applicantType: "Proprietor"
+      },
+      stats: { total: 6, draft: 0, underProcess: 6, approved: 0, returned: 0, rejected: 0 },
+      actionRequired: {
+        type: "PAYMENT_PENDING",
+        refNo: "SK-TBR-2026-TO-00107",
+        title: "Statutory Registration Fee Payment Activated by Tourism Department",
+        fee: 7000,
+        grade: "Grade B",
+        categoryName: "Travel Agent / Tour Operator (TA/TO)",
+        date: "Today",
+        deadline: "Within 15 Days",
+        remarks: "District Tourism Officer (DTO) has approved your preliminary documents and physical inspection clearances. Statutory registration fee of ₹7,000 (Grade B) is now activated. Please complete online fee deposit via SBI e-Pay to proceed to final registration approval."
+      },
+      applications: [
+        {
+                "refNo": "SK-TBR-2026-TO-00107",
+                "category": "ta-to",
+                "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+                "categoryCode": "TA/TO",
+                "businessName": "Sikkim Panoramic Expeditions",
+                "applicantName": "Norbu Wangdi Bhutia",
+                "registrationGrade": "Grade B",
+                "selectedGrade": "Grade B",
+                "submittedDate": "04 Nov 2026, 11:30 AM",
+                "status": "Payment Pending",
+                "statusLabel": "Payment Pending – Awaiting Citizen Fee Deposit",
+                "paymentStatus": "Payment Pending",
+                "paymentActivated": true,
+                "registrationFee": 7000,
+                "applicableFee": 7000,
+                "statutoryValidity": "1 Year",
+                "district": "Gangtok",
+                "currentAuthority": "District Tourism Officer (Level 2)",
+                "paymentActivatedBy": "Pema Dorjee Sherpa (DTO)",
+                "paymentActivatedDate": "Today",
+                "stageDescription": "Preliminary verification and IA physical inspection cleared. DTO has activated statutory registration fee deposit of ₹7,000 (Grade B).",
+                "hasPaymentDue": true,
+                "history": [
+                        {
+                                "step": "Application Submitted Online",
+                                "actor": "Norbu Wangdi Bhutia (Citizen)",
+                                "date": "04 Nov 2026, 11:30 AM",
+                                "remarks": "Application submitted."
+                        },
+                        {
+                                "step": "Preliminary Verification Cleared",
+                                "actor": "Karma Lhendup Bhutia (TO)",
+                                "date": "05 Nov 2026, 02:00 PM",
+                                "remarks": "Credentials verified."
+                        },
+                        {
+                                "step": "IA Physical Inspection Cleared",
+                                "actor": "Tashi Wangdi Lepcha (IA)",
+                                "date": "06 Nov 2026, 11:30 AM",
+                                "remarks": "Inspection completed and endorsed."
+                        },
+                        {
+                                "step": "Statutory Registration Fee Activated",
+                                "actor": "Pema Dorjee Sherpa (DTO)",
+                                "date": "Today",
+                                "remarks": "Fee activated for Grade B (₹7,000)."
+                        }
+                ],
+                "auditHistory": [
+                        {
+                                "timestamp": "Today",
+                                "actorRole": "DTO",
+                                "actorName": "Pema Dorjee Sherpa",
+                                "action": "Activated Statutory Registration Fee",
+                                "stage": "Payment Pending – Awaiting Citizen Fee Deposit",
+                                "remarks": "Statutory fee ₹7,000 activated."
+                        }
+                ]
+        },
+        {
+                "refNo": "SK-TBR-2026-TO-00105",
+                "category": "ta-to",
+                "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+                "categoryCode": "TA/TO",
+                "businessName": "Himalayan Apex Expeditions",
+                "applicantName": "Norbu Wangdi Bhutia",
+                "registrationGrade": "Grade A",
+                "selectedGrade": "Grade A",
+                "submittedDate": "03 Nov 2026, 10:15 AM",
+                "status": "Payment Pending",
+                "statusLabel": "Payment Pending – Awaiting Citizen Fee Deposit",
+                "paymentStatus": "Payment Pending",
+                "paymentActivated": true,
+                "registrationFee": 20000,
+                "applicableFee": 20000,
+                "statutoryValidity": "1 Year",
+                "district": "Gangtok",
+                "currentAuthority": "District Tourism Officer (Level 2)",
+                "paymentActivatedBy": "Pema Dorjee Sherpa (DTO)",
+                "paymentActivatedDate": "Today",
+                "stageDescription": "Preliminary verification and IA physical inspection cleared. DTO has activated statutory registration fee deposit of ₹20,000 (Grade A).",
+                "hasPaymentDue": true,
+                "history": [
+                        {
+                                "step": "Application Submitted Online",
+                                "actor": "Norbu Wangdi Bhutia (Citizen)",
+                                "date": "03 Nov 2026, 10:15 AM",
+                                "remarks": "Application submitted."
+                        },
+                        {
+                                "step": "Statutory Registration Fee Activated",
+                                "actor": "Pema Dorjee Sherpa (DTO)",
+                                "date": "Today",
+                                "remarks": "Fee activated for Grade A (₹20,000)."
+                        }
+                ],
+                "auditHistory": [
+                        {
+                                "timestamp": "Today",
+                                "actorRole": "DTO",
+                                "actorName": "Pema Dorjee Sherpa",
+                                "action": "Activated Statutory Registration Fee",
+                                "stage": "Payment Pending – Awaiting Citizen Fee Deposit",
+                                "remarks": "Statutory fee ₹20,000 activated."
+                        }
+                ]
+        },
+        {
+                "refNo": "SK-TBR-2026-TO-00109",
+                "category": "ta-to",
+                "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+                "categoryCode": "TA/TO",
+                "businessName": "Alpine Trails & Tours",
+                "applicantName": "Norbu Wangdi Bhutia",
+                "registrationGrade": "Grade C",
+                "selectedGrade": "Grade C",
+                "submittedDate": "02 Nov 2026, 02:40 PM",
+                "status": "Payment Pending",
+                "statusLabel": "Payment Pending – Awaiting Citizen Fee Deposit",
+                "paymentStatus": "Payment Pending",
+                "paymentActivated": true,
+                "registrationFee": 5000,
+                "applicableFee": 5000,
+                "statutoryValidity": "1 Year",
+                "district": "Namchi",
+                "currentAuthority": "District Tourism Officer (Level 2)",
+                "paymentActivatedBy": "Karma Pintso Bhutia (DTO)",
+                "paymentActivatedDate": "Today",
+                "stageDescription": "Preliminary verification and IA physical inspection cleared. DTO has activated statutory registration fee deposit of ₹5,000 (Grade C).",
+                "hasPaymentDue": true,
+                "history": [
+                        {
+                                "step": "Application Submitted Online",
+                                "actor": "Norbu Wangdi Bhutia (Citizen)",
+                                "date": "02 Nov 2026, 02:40 PM",
+                                "remarks": "Application submitted."
+                        },
+                        {
+                                "step": "Statutory Registration Fee Activated",
+                                "actor": "Karma Pintso Bhutia (DTO)",
+                                "date": "Today",
+                                "remarks": "Fee activated for Grade C (₹5,000)."
+                        }
+                ],
+                "auditHistory": [
+                        {
+                                "timestamp": "Today",
+                                "actorRole": "DTO",
+                                "actorName": "Karma Pintso Bhutia",
+                                "action": "Activated Statutory Registration Fee",
+                                "stage": "Payment Pending – Awaiting Citizen Fee Deposit",
+                                "remarks": "Statutory fee ₹5,000 activated."
+                        }
+                ]
+        },
+        {
+                "refNo": "SK-TBR-2026-TO-00111",
+                "category": "ta-to",
+                "categoryName": "Travel Agent / Tour Operator (TA/TO)",
+                "categoryCode": "TA/TO",
+                "businessName": "Teesta Valley Travel Hub",
+                "applicantName": "Norbu Wangdi Bhutia",
+                "registrationGrade": "Grade D",
+                "selectedGrade": "Grade D",
+                "submittedDate": "01 Nov 2026, 04:15 PM",
+                "status": "Payment Pending",
+                "statusLabel": "Payment Pending – Awaiting Citizen Fee Deposit",
+                "paymentStatus": "Payment Pending",
+                "paymentActivated": true,
+                "registrationFee": 1500,
+                "applicableFee": 1500,
+                "statutoryValidity": "1 Year",
+                "district": "Pakyong",
+                "currentAuthority": "District Tourism Officer (Level 2)",
+                "paymentActivatedBy": "Sonam Tobgay Lepcha (DTO)",
+                "paymentActivatedDate": "Today",
+                "stageDescription": "Preliminary verification and IA physical inspection cleared. DTO has activated statutory registration fee deposit of ₹1,500 (Grade D).",
+                "hasPaymentDue": true,
+                "history": [
+                        {
+                                "step": "Application Submitted Online",
+                                "actor": "Norbu Wangdi Bhutia (Citizen)",
+                                "date": "01 Nov 2026, 04:15 PM",
+                                "remarks": "Application submitted."
+                        },
+                        {
+                                "step": "Statutory Registration Fee Activated",
+                                "actor": "Sonam Tobgay Lepcha (DTO)",
+                                "date": "Today",
+                                "remarks": "Fee activated for Grade D (₹1,500)."
+                        }
+                ],
+                "auditHistory": [
+                        {
+                                "timestamp": "Today",
+                                "actorRole": "DTO",
+                                "actorName": "Sonam Tobgay Lepcha",
+                                "action": "Activated Statutory Registration Fee",
+                                "stage": "Payment Pending – Awaiting Citizen Fee Deposit",
+                                "remarks": "Statutory fee ₹1,500 activated."
+                        }
+                ]
+        },
+        {
+                "refNo": "SK-TBR-2026-DLR-00204",
+                "category": "equipment-dealer",
+                "categoryName": "Equipment Dealer",
+                "categoryCode": "Dealer",
+                "businessName": "Kanchenjunga Gear & Trek Equipment",
+                "applicantName": "Norbu Wangdi Bhutia",
+                "registrationGrade": "Not Applicable",
+                "selectedGrade": "Not Applicable",
+                "submittedDate": "29 Oct 2026, 09:30 AM",
+                "status": "Payment Pending",
+                "statusLabel": "Payment Pending – Awaiting Citizen Fee Deposit",
+                "paymentStatus": "Payment Pending",
+                "paymentActivated": true,
+                "registrationFee": 2000,
+                "applicableFee": 2000,
+                "statutoryValidity": "1 Year",
+                "district": "Gyalshing",
+                "currentAuthority": "District Tourism Officer (Level 2)",
+                "paymentActivatedBy": "Passang Gyatso Bhutia (DTO)",
+                "paymentActivatedDate": "Today",
+                "stageDescription": "Preliminary verification and IA physical inspection cleared. DTO has activated statutory registration fee deposit of ₹2,000 (Dealer).",
+                "hasPaymentDue": true,
+                "history": [
+                        {
+                                "step": "Application Submitted Online",
+                                "actor": "Norbu Wangdi Bhutia (Citizen)",
+                                "date": "29 Oct 2026, 09:30 AM",
+                                "remarks": "Application submitted."
+                        },
+                        {
+                                "step": "Statutory Registration Fee Activated",
+                                "actor": "Passang Gyatso Bhutia (DTO)",
+                                "date": "Today",
+                                "remarks": "Fee activated for Equipment Dealer (₹2,000)."
+                        }
+                ],
+                "auditHistory": [
+                        {
+                                "timestamp": "Today",
+                                "actorRole": "DTO",
+                                "actorName": "Passang Gyatso Bhutia",
+                                "action": "Activated Statutory Registration Fee",
+                                "stage": "Payment Pending – Awaiting Citizen Fee Deposit",
+                                "remarks": "Statutory fee ₹2,000 activated."
+                        }
+                ]
+        },
+        {
+                "refNo": "SK-TBR-2026-PHT-00302",
+                "category": "outdoor-photographer",
+                "categoryName": "Outdoor Photographer",
+                "categoryCode": "Photographer",
+                "businessName": "Sikkim High Lens Studio",
+                "applicantName": "Norbu Wangdi Bhutia",
+                "registrationGrade": "Not Applicable",
+                "selectedGrade": "Not Applicable",
+                "submittedDate": "28 Oct 2026, 03:00 PM",
+                "status": "Payment Pending",
+                "statusLabel": "Payment Pending – Awaiting Citizen Fee Deposit",
+                "paymentStatus": "Payment Pending",
+                "paymentActivated": true,
+                "registrationFee": 1500,
+                "applicableFee": 1500,
+                "statutoryValidity": "1 Year",
+                "district": "Mangan",
+                "currentAuthority": "District Tourism Officer (Level 2)",
+                "paymentActivatedBy": "Mangan DTO Desk",
+                "paymentActivatedDate": "Today",
+                "stageDescription": "Level 0 TO verification cleared (Exempt from Physical Inspection). DTO has activated statutory registration fee deposit of ₹1,500 (Photographer).",
+                "hasPaymentDue": true,
+                "history": [
+                        {
+                                "step": "Application Submitted Online",
+                                "actor": "Norbu Wangdi Bhutia (Citizen)",
+                                "date": "28 Oct 2026, 03:00 PM",
+                                "remarks": "Application submitted."
+                        },
+                        {
+                                "step": "Statutory Registration Fee Activated",
+                                "actor": "Mangan DTO Desk",
+                                "date": "Today",
+                                "remarks": "Fee activated for Outdoor Photographer (₹1,500)."
+                        }
+                ],
+                "auditHistory": [
+                        {
+                                "timestamp": "Today",
+                                "actorRole": "DTO",
+                                "actorName": "Mangan DTO Desk",
+                                "action": "Activated Statutory Registration Fee",
+                                "stage": "Payment Pending – Awaiting Citizen Fee Deposit",
+                                "remarks": "Statutory fee ₹1,500 activated."
+                        }
+                ]
+        }
+],
+      notifications: [
+        {
+          id: "notif-pay-due",
+          date: "Today",
+          title: "Statutory Registration Fee Payment Activated",
+          message: "The District Tourism Officer (DTO) has approved your preliminary documents and activated the registration fee of ₹7,000 (Grade B) for Sikkim Panoramic Expeditions. Please pay online to complete registration.",
+          type: "warning",
+          read: false
+        },
+        {
+          id: "notif-pay-info",
+          date: "Yesterday",
+          title: "Physical Inspection Cleared",
+          message: "Level 1 Inspecting Authority has cleared the physical premises inspection report.",
+          type: "success",
+          read: true
+        }
       ]
     }
   },
@@ -694,7 +1042,7 @@ const TourismBusinessData = {
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-TO-00104.pdf",
     "inspectionDocSize": "1.9 MB",
     "inspectionFindings": "Commercial premises inspected at Tadong Metro Point. Office measures 450 sq.ft, adequate client seating, high-speed fiber internet, compliant fire extinguishers and trained mountaineering staff verified. Recommended for Grade B Tour Operator Registration.",
-    "inspectionRemarks": "Premise fully compliant with Sikkim Registration of Tourist Trade Rules. Highly recommended for 3-Year statutory registration.",
+    "inspectionRemarks": "Premise fully compliant with Sikkim Registration of Tourist Trade Rules. Highly recommended for 1-Year statutory registration.",
     "inspectionRecommendation": "RECOMMENDED_FOR_APPROVAL",
     "submittedDate": "01 Nov 2026, 09:30 AM",
     "lastUpdated": "08 Nov 2026, 04:30 PM",
@@ -806,10 +1154,10 @@ const TourismBusinessData = {
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-TCD-REG-2026-TO-00105",
-    "validUntil": "10 Nov 2029",
+    "validUntil": "10 Nov 2027",
     "approvalDate": "10 Nov 2026",
     "approvingOfficer": "Pema Dorjee Sherpa, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 3-Year Form 3 Registration Certificate issued.",
+    "dtoRemarks": "Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 1-Year Form 3 Registration Certificate issued.",
     "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
     "inspectionReportDate": "05 Nov 2026, 03:00 PM",
     "inspectionDocName": "Physical_Inspection_Report_SK-TBR-2026-TO-00105.pdf",
@@ -848,7 +1196,7 @@ const TourismBusinessData = {
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Pema Dorjee Sherpa (District Tourism Officer, Level 2)",
         "date": "10 Nov 2026, 04:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TO-00105 generated with 3-year validity until 10 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TO-00105 generated with 1-year validity until 10 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -1343,10 +1691,10 @@ const TourismBusinessData = {
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-TA-GTK-2026-0031",
-    "validUntil": "08 Nov 2029",
+    "validUntil": "08 Nov 2027",
     "approvalDate": "08 Nov 2026",
     "approvingOfficer": "Rinzing Ongmu Bhutia, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Certificate issued with 3-year validity.",
+    "dtoRemarks": "Statutory sanction granted. Form 3 Certificate issued with 1-year validity.",
     "inspectingOfficer": "Dawa Tshering Lepcha (Inspecting Authority, Mangan)",
     "inspectionReportDate": "03 Nov 2026, 01:15 PM",
     "inspectionDocName": "Physical_Inspection_Report_SK-TBR-2026-TA-00205.pdf",
@@ -1384,7 +1732,7 @@ const TourismBusinessData = {
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Rinzing Ongmu Bhutia (District Tourism Officer, Level 2)",
         "date": "08 Nov 2026, 02:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TA-00205 generated with 3-year validity until 08 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TA-00205 generated with 1-year validity until 08 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -1683,7 +2031,7 @@ const TourismBusinessData = {
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00304.pdf",
     "inspectionDocSize": "2.3 MB",
     "inspectionFindings": "Showroom premise inspected. Adequate floor space of 420 sq.ft, fire safety extinguisher installed, climbing ropes and safety harnesses meet CE/UIAA safety standards. Recommended for Dealer Registration.",
-    "inspectionRemarks": "Stock inventory matches declared manifest. Highly recommended for statutory 3-year dealer registration.",
+    "inspectionRemarks": "Stock inventory matches declared manifest. Highly recommended for statutory 1-year dealer registration.",
     "inspectionRecommendation": "RECOMMENDED_FOR_APPROVAL",
     "submittedDate": "01 Nov 2026, 10:00 AM",
     "lastUpdated": "08 Nov 2026, 05:15 PM",
@@ -1769,10 +2117,10 @@ const TourismBusinessData = {
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-DLR-GTK-2026-0012",
-    "validUntil": "07 Nov 2029",
+    "validUntil": "07 Nov 2027",
     "approvalDate": "07 Nov 2026",
     "approvingOfficer": "Sonam Gyatso Lepcha, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Dealer Registration Certificate issued with 3-year validity.",
+    "dtoRemarks": "Statutory sanction granted. Form 3 Dealer Registration Certificate issued with 1-year validity.",
     "inspectingOfficer": "Sangay Chopel Bhutia (Inspecting Authority, Gyalshing)",
     "inspectionReportDate": "02 Nov 2026, 03:30 PM",
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00305.pdf",
@@ -1810,7 +2158,7 @@ const TourismBusinessData = {
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Sonam Gyatso Lepcha (District Tourism Officer, Level 2)",
         "date": "07 Nov 2026, 03:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-DLR-00305 generated with 3-year validity until 07 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-DLR-00305 generated with 1-year validity until 07 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -2136,10 +2484,10 @@ const TourismBusinessData = {
     "status": "Approved",
     "currentStage": "Approved – Certificate Issued",
     "certificateNo": "SK-PHO-GTK-2026-0008",
-    "validUntil": "06 Nov 2029",
+    "validUntil": "06 Nov 2027",
     "approvalDate": "06 Nov 2026",
     "approvingOfficer": "Nim Lhamu Lepcha, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Outdoor Photographer Registration Certificate issued with 3-year validity.",
+    "dtoRemarks": "Statutory sanction granted. Form 3 Outdoor Photographer Registration Certificate issued with 1-year validity.",
     "inspectionStatus": "Exempt (Direct Route)",
     "toRemarks": "Level 0 verification completed in order. Exempt from physical inspection. Forwarded to DTO for sanction.",
     "submittedDate": "27 Oct 2026, 02:00 PM",
@@ -2161,7 +2509,7 @@ const TourismBusinessData = {
         "step": "Final Approval Granted & Certificate Issued",
         "actor": "Nim Lhamu Lepcha (District Tourism Officer, Level 2)",
         "date": "06 Nov 2026, 03:30 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-PHO-00405 generated with 3-year validity until 06 Nov 2029."
+        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-PHO-00405 generated with 1-year validity until 06 Nov 2027."
       }
     ],
     "auditHistory": [
@@ -2553,7 +2901,7 @@ const TourismBusinessData = {
     "inspectionDocName": "Inspection_Report_SK-TBR-2026-TA-00206.pdf",
     "certificateNo": "SK-TA-MNG-2026-0005",
     "certificateIssueDate": "25 Oct 2026",
-    "certificateExpiryDate": "24 Oct 2029",
+    "certificateExpiryDate": "24 Oct 2027",
     "paymentActivated": true,
     "paymentStatus": "Paid",
     "gradeAssigned": "Grade B",
@@ -2608,21 +2956,33 @@ const TourismBusinessData = {
   },
 
   getApplication: function (refNo) {
-    if (typeof window !== 'undefined' && window.WorkflowEngine && typeof window.WorkflowEngine.getApplication === 'function') {
-      const weApp = window.WorkflowEngine.getApplication(refNo);
-      if (weApp) return weApp;
+    // 1. Check in currently active scenario if present
+    if (typeof window !== 'undefined' && window.activeScenarioKey && this.scenarios && this.scenarios[window.activeScenarioKey]) {
+      const activeApps = this.scenarios[window.activeScenarioKey].applications || [];
+      const activeMatch = activeApps.find(a => a.refNo === refNo);
+      if (activeMatch) return activeMatch;
     }
-    // Check in allApplications
-    let app = (this.allApplications || []).find(a => a.refNo === refNo);
-    if (app) return app;
-
-    // Check across scenarios
+    // 2. Check in scenarioPayment for statutory fee payment scenarios
+    if (this.scenarios && this.scenarios.scenarioPayment && Array.isArray(this.scenarios.scenarioPayment.applications)) {
+      const payMatch = this.scenarios.scenarioPayment.applications.find(a => a.refNo === refNo);
+      if (payMatch) return payMatch;
+    }
+    // 3. Check across all other scenarios
     for (let sKey in this.scenarios) {
       const scen = this.scenarios[sKey];
-      if (scen.applications) {
+      if (scen && Array.isArray(scen.applications)) {
         const match = scen.applications.find(a => a.refNo === refNo);
         if (match) return match;
       }
+    }
+    // 4. Check in allApplications
+    let app = (this.allApplications || []).find(a => a.refNo === refNo);
+    if (app) return app;
+
+    // 5. Check in WorkflowEngine
+    if (typeof window !== 'undefined' && window.WorkflowEngine && typeof window.WorkflowEngine.getApplication === 'function') {
+      const weApp = window.WorkflowEngine.getApplication(refNo);
+      if (weApp) return weApp;
     }
     return null;
   }
