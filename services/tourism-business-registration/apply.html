@@ -2145,18 +2145,34 @@
       // FINAL SUBMISSION EXECUTION
       // ------------------------------------------------------------------
       window.executeFinalSubmission = function () {
-        let code = 'TATO';
+        let code = 'TO';
         let entName = 'Registered Entity';
+        let applicant = 'Applicant';
+        let district = 'Gangtok';
+        let phone = '9832000000';
+        let email = 'applicant@example.in';
 
         if (activeType === 'ta-to' || activeType === 'tour-operator' || activeType === 'travel-agent') {
-          code = 'TATO';
-          entName = document.getElementById('fieldA_firmName').value || document.getElementById('fieldA_applicantName').value || 'Sikkim Travel Agent / Tour Operator';
+          code = 'TO';
+          entName = (document.getElementById('fieldA_firmName') && document.getElementById('fieldA_firmName').value) || 'Sikkim Travel Agent / Tour Operator';
+          applicant = (document.getElementById('fieldA_applicantName') && document.getElementById('fieldA_applicantName').value) || entName;
+          district = (document.getElementById('fieldA_district') && document.getElementById('fieldA_district').value) || 'Gangtok';
+          phone = (document.getElementById('fieldA_phone') && document.getElementById('fieldA_phone').value) || phone;
+          email = (document.getElementById('fieldA_email') && document.getElementById('fieldA_email').value) || email;
         } else if (activeType === 'dealer') {
           code = 'DLR';
-          entName = document.getElementById('fieldB_premisesName').value || document.getElementById('fieldB_proprietor').value || 'Outdoor Equipment Hub';
+          entName = (document.getElementById('fieldB_premisesName') && document.getElementById('fieldB_premisesName').value) || 'Outdoor Equipment Hub';
+          applicant = (document.getElementById('fieldB_proprietor') && document.getElementById('fieldB_proprietor').value) || entName;
+          district = (document.getElementById('fieldB_district') && document.getElementById('fieldB_district').value) || 'Gangtok';
+          phone = (document.getElementById('fieldB_phone') && document.getElementById('fieldB_phone').value) || phone;
+          email = (document.getElementById('fieldB_email') && document.getElementById('fieldB_email').value) || email;
         } else if (activeType === 'outdoor-photographer') {
           code = 'PHO';
-          entName = document.getElementById('fieldC_applicantName').value || 'Professional Photographer';
+          applicant = (document.getElementById('fieldC_applicantName') && document.getElementById('fieldC_applicantName').value) || 'Professional Photographer';
+          entName = (document.getElementById('fieldC_studioName') && document.getElementById('fieldC_studioName').value) || (applicant + ' Photography');
+          district = (document.getElementById('fieldC_district') && document.getElementById('fieldC_district').value) || 'Gangtok';
+          phone = (document.getElementById('fieldC_phone') && document.getElementById('fieldC_phone').value) || phone;
+          email = (document.getElementById('fieldC_email') && document.getElementById('fieldC_email').value) || email;
         }
 
         const finalArn = generateArn(code);
@@ -2176,20 +2192,27 @@
         });
         document.getElementById('ackDocsList').innerHTML = docListHtml;
 
-        // Save submitted record to localStorage
+        // Save submitted record to localStorage & WorkflowEngine
         try {
           const submittedRecord = {
             refNo: finalArn,
             category: activeType,
             categoryName: document.getElementById('formHeaderTitle').textContent,
             businessName: entName,
-            applicantName: entName,
+            applicantName: applicant,
+            district: district,
+            phone: phone,
+            email: email,
             submittedDate: dateStr,
-            status: "SUBMITTED",
-            processingStage: "Level 0: Pending TO Verification",
-            assignedRole: "TO",
-            district: "Gangtok"
+            status: "Submitted",
+            currentStage: "Level 0: Pending TO Verification",
+            assignedRole: "TO"
           };
+
+          if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.createApplication === 'function') {
+            WorkflowEngine.createApplication(submittedRecord);
+          }
+
           const existing = JSON.parse(localStorage.getItem('tourism_business_submitted') || '[]');
           existing.unshift(submittedRecord);
           localStorage.setItem('tourism_business_submitted', JSON.stringify(existing));

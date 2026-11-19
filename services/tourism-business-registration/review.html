@@ -1170,6 +1170,9 @@
         </div>
         <div class="modal-footer bg-white py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <a href="#" id="btnReviewOpenCertPage" target="_blank" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Open Full Page
+          </a>
           <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i> Print Official Certificate
           </button>
@@ -2299,6 +2302,20 @@
         modal.show();
       };
 
+      window.executeToReviewIaReportSubmit = function () {
+        const remarks = document.getElementById('toEndorsementRemarksInput')
+          ? document.getElementById('toEndorsementRemarksInput').value.trim()
+          : '';
+        const res = WorkflowEngine.toForwardIaReportToDto(currentApp.refNo, remarks);
+        const modalEl = document.getElementById('modalToReviewIaReport');
+        if (modalEl) {
+          const inst = bootstrap.Modal.getInstance(modalEl);
+          if (inst) inst.hide();
+        }
+        showAlert(res.message, 'success');
+        loadAndRenderReviewScreen();
+      };
+
       window.openToReinspectModalFromReview = function () {
         const reviewModalEl = document.getElementById('modalToReviewIaReport');
         if (reviewModalEl) {
@@ -2620,6 +2637,8 @@
       window.viewCertificate = function () {
         const certHtml = DocumentService.getCertificateHtml(currentApp.refNo);
         document.getElementById('certViewerBody').innerHTML = certHtml;
+        const pageBtn = document.getElementById('btnReviewOpenCertPage');
+        if (pageBtn) pageBtn.href = `certificate.html?arn=${encodeURIComponent(currentApp.refNo)}&role=review`;
         const modal = new bootstrap.Modal(document.getElementById('modalCertViewer'));
         modal.show();
       };

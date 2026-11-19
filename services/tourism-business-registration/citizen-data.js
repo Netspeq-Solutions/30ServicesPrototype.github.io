@@ -709,6 +709,84 @@ const TourismBusinessData = {
           read: true
         }
       ]
+    },
+
+    // Scenario G: Rejected Application (Statutory Non-Compliance)
+    scenarioF: {
+      id: "scenarioF",
+      name: "Scenario G: Citizen with Rejected Application (Non-Compliance)",
+      badge: "Application Rejected",
+      description: "Tenzing Doma Lepcha whose Travel Agent registration was rejected by Tourism Department due to invalid commercial lease deed and failure to meet minimum office premise size under Sikkim Tourist Trade Rules.",
+      citizen: {
+        fullName: "Tenzing Doma Lepcha",
+        citizenId: "CIT-SK-804109",
+        mobile: "9832889900",
+        email: "tenzing.doma@lepchatravels.in",
+        district: "Gangtok",
+        address: "Near Deorali Bazaar, Gangtok – 737102",
+        applicantType: "Proprietor / Travel Agency"
+      },
+      stats: { total: 1, draft: 0, underProcess: 0, approved: 0, returned: 0, rejected: 1 },
+      actionRequired: null,
+      applications: [
+        {
+          refNo: "SK-TBR-2026-TO-00199",
+          category: "ta-to",
+          categoryName: "Travel Agent / Tour Operator (TA/TO)",
+          categoryCode: "TA/TO",
+          businessName: "Kanchenjunga Vista Travels",
+          applicantName: "Tenzing Doma Lepcha",
+          submittedDate: "10 Oct 2026, 02:15 PM",
+          status: "Rejected",
+          statusLabel: "Rejected on Statutory Grounds",
+          district: "Gangtok",
+          currentAuthority: "District Tourism Officer (Level 2)",
+          rejectionGrounds: "Commercial premise lease deed is expired and unnotarized. Premises inspection revealed carpet area of 120 sq.ft, which is below the mandatory 250 sq.ft threshold under Rule 4(2) of Sikkim Registration of Tourist Trade Rules. Registration withheld.",
+          rejectedBy: "Pema Dorjee Sherpa (District Tourism Officer, Level 2)",
+          rejectedDate: "20 Oct 2026, 04:30 PM",
+          stageDescription: "Statutory registration application officially rejected following preliminary verification and premise inspection non-compliance.",
+          hasCertificate: false,
+          history: [
+            {
+              step: "Application Submitted Online",
+              actor: "Tenzing Doma Lepcha (Citizen)",
+              date: "10 Oct 2026, 02:15 PM",
+              remarks: "Application submitted via Sikkim Single Sign-On."
+            },
+            {
+              step: "Level 0 TO Initial Verification",
+              actor: "Karma Lhendup Bhutia (TO)",
+              date: "12 Oct 2026, 11:00 AM",
+              remarks: "Forwarded for physical premises verification."
+            },
+            {
+              step: "Level 1 IA Physical Premises Inspection",
+              actor: "Tashi Wangdi Lepcha (IA)",
+              date: "16 Oct 2026, 03:00 PM",
+              remarks: "Inspected premise at Deorali. Area is 120 sq.ft, below statutory requirement of 250 sq.ft. Lease deed expired."
+            },
+            {
+              step: "Application Officially Rejected by DTO",
+              actor: "Pema Dorjee Sherpa (DTO)",
+              date: "20 Oct 2026, 04:30 PM",
+              remarks: "Commercial premise lease deed is expired and unnotarized. Carpet area of 120 sq.ft fails mandatory minimum size rule. Application rejected."
+            }
+          ],
+          auditHistory: [
+            {
+              timestamp: "20 Oct 2026, 04:30 PM",
+              actorRole: "DTO",
+              actorName: "Pema Dorjee Sherpa",
+              action: "Rejected Application on Statutory Grounds",
+              stage: "Rejected",
+              remarks: "Premise size below minimum statutory standard. Application closed."
+            }
+          ]
+        }
+      ],
+      notifications: [
+        { id: "notif-rej-01", date: "20 Oct 2026", title: "Registration Application Rejected", message: "Application SK-TBR-2026-TO-00199 for Kanchenjunga Vista Travels has been rejected due to commercial lease deed expiration and non-compliant office size.", type: "danger", read: false }
+      ]
     }
   },
 
@@ -2956,35 +3034,48 @@ const TourismBusinessData = {
   },
 
   getApplication: function (refNo) {
+    if (!refNo) return null;
+    let match = null;
+
     // 1. Check in currently active scenario if present
     if (typeof window !== 'undefined' && window.activeScenarioKey && this.scenarios && this.scenarios[window.activeScenarioKey]) {
       const activeApps = this.scenarios[window.activeScenarioKey].applications || [];
-      const activeMatch = activeApps.find(a => a.refNo === refNo);
-      if (activeMatch) return activeMatch;
+      match = activeApps.find(a => a && a.refNo === refNo);
     }
     // 2. Check in scenarioPayment for statutory fee payment scenarios
-    if (this.scenarios && this.scenarios.scenarioPayment && Array.isArray(this.scenarios.scenarioPayment.applications)) {
-      const payMatch = this.scenarios.scenarioPayment.applications.find(a => a.refNo === refNo);
-      if (payMatch) return payMatch;
+    if (!match && this.scenarios && this.scenarios.scenarioPayment && Array.isArray(this.scenarios.scenarioPayment.applications)) {
+      match = this.scenarios.scenarioPayment.applications.find(a => a && a.refNo === refNo);
     }
     // 3. Check across all other scenarios
-    for (let sKey in this.scenarios) {
-      const scen = this.scenarios[sKey];
-      if (scen && Array.isArray(scen.applications)) {
-        const match = scen.applications.find(a => a.refNo === refNo);
-        if (match) return match;
+    if (!match) {
+      for (let sKey in this.scenarios) {
+        const scen = this.scenarios[sKey];
+        if (scen && Array.isArray(scen.applications)) {
+          match = scen.applications.find(a => a && a.refNo === refNo);
+          if (match) break;
+        }
       }
     }
     // 4. Check in allApplications
-    let app = (this.allApplications || []).find(a => a.refNo === refNo);
-    if (app) return app;
-
-    // 5. Check in WorkflowEngine
-    if (typeof window !== 'undefined' && window.WorkflowEngine && typeof window.WorkflowEngine.getApplication === 'function') {
-      const weApp = window.WorkflowEngine.getApplication(refNo);
-      if (weApp) return weApp;
+    if (!match) {
+      match = (this.allApplications || []).find(a => a && a.refNo === refNo);
     }
-    return null;
+
+    // 5. Merge / Hydrate from WorkflowEngine live storage if available
+    if (typeof window !== 'undefined' && window.WorkflowEngine && typeof window.WorkflowEngine.getApplication === 'function') {
+      try {
+        const weApp = window.WorkflowEngine.getApplication(refNo);
+        if (weApp) {
+          match = match ? Object.assign({}, match, weApp) : weApp;
+        }
+      } catch (e) {}
+    }
+
+    if (match) {
+      if (!Array.isArray(match.history)) match.history = [];
+      if (!Array.isArray(match.auditHistory)) match.auditHistory = [];
+    }
+    return match || null;
   }
 };
 
