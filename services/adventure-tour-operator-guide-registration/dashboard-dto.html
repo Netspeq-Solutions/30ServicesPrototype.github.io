@@ -389,7 +389,22 @@
   <script src="document-service.js"></script>
 
   <script>
-    let activeOfficeContext = 'hq'; // 'hq' or district name (Mangan, Namchi, etc.)
+    let activeOfficeContext = 'hq';
+
+    function normalizeDistrict(d) {
+      if (!d) return 'hq';
+      const clean = String(d).trim();
+      const lower = clean.toLowerCase();
+      if (lower === 'hq' || lower === 'headquarters') return 'hq';
+      if (lower === 'east' || lower === 'gangtok (hq)') return 'Gangtok';
+      if (lower === 'south') return 'Namchi';
+      if (lower === 'north') return 'Mangan';
+      if (lower === 'west') return 'Gyalshing';
+      for (const key of Object.keys(AdventureWorkflowEngine.DISTRICT_OFFICES)) {
+        if (key.toLowerCase() === lower) return key;
+      }
+      return clean;
+    } // 'hq' or district name (Mangan, Namchi, etc.)
     let activeQueueFilter = 'all';
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -436,7 +451,7 @@
         document.getElementById('sidebarOfficerName').textContent = distInfo.dtoName;
         document.getElementById('sidebarOfficeLabel').textContent = `DTO ${activeOfficeContext} Circle`;
         document.getElementById('mainDeskTitle').textContent = `District Tourism Officer &bull; ${activeOfficeContext} Circle`;
-        document.getElementById('mainDeskSubtitle').textContent = `Payment activation (₹1,500) and forwarding payment-submitted applications to HQ Assistant Director for ${activeOfficeContext} District`;
+        document.getElementById('mainDeskSubtitle').textContent = `Payment activation (₹500) and forwarding payment-submitted applications to HQ Assistant Director for ${activeOfficeContext} District`;
         document.getElementById('navActionQueueTitle').textContent = 'Forward to HQ Asst. Dir.';
         document.getElementById('kpiSanctionTitle').textContent = 'Forward to HQ Asst. Dir.';
         const reportsLink = document.getElementById('sidebarReportsLink');
@@ -460,7 +475,7 @@
           }
           return false;
         } else {
-          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+          return (app.type === 'guide-registration' && (app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 

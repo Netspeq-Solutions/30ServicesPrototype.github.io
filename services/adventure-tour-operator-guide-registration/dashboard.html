@@ -200,10 +200,12 @@
           <span class="fw-semibold text-white">Select Citizen Scenario:</span>
           <label for="citizenScenarioSelect" class="visually-hidden">Select Citizen Scenario</label>
           <select id="citizenScenarioSelect" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 370px; font-size: 0.825rem;" onchange="switchCitizenScenario(this.value)">
+            <option value="liveSubmission">Live Submitted Applications (Real-Time)</option>
             <option value="scenarioA" selected>Scenario A: First-Time Citizen (0 Applications)</option>
             <option value="scenarioB">Scenario B: Ongoing Application (Under Review)</option>
             <option value="scenarioC">Scenario C: Action Required (Returned for Remarks)</option>
             <option value="scenarioPayment">Scenario F: Statutory Fee Due (₹1,500 Payment)</option>
+            <option value="scenarioGuidePayment">Scenario H: Guide Statutory Fee Due (₹500 Payment)</option>
             <option value="scenarioD">Scenario D: Approved Application (Certificate Issued)</option>
             <option value="scenarioGuideDistrict">Scenario G: Other-District Guide (Digital ID &amp; Logbook)</option>
             <option value="scenarioE">Scenario E: Rejected Application (Ineligible)</option>
@@ -1076,9 +1078,99 @@
     let currentPayingArn = null;
 
     function renderCitizenDashboard(scenarioKey) {
-      const scenario = AdventureServiceData.scenarios[scenarioKey] || AdventureServiceData.scenarios.scenarioA;
+      const activeKey = (scenarioKey === 'liveSubmission') ? 'scenarioA' : scenarioKey;
+      const baseScenario = AdventureServiceData.scenarios[activeKey] || AdventureServiceData.scenarios.scenarioA;
+      const scenario = JSON.parse(JSON.stringify(baseScenario));
       currentScenarioData = scenario;
       setAdventureCitizenScenario(scenarioKey);
+
+      // Collect any live applications created or submitted in this session
+      const liveApps = [];
+      try {
+        const engineApps = (window.AdventureWorkflowEngine) ? AdventureWorkflowEngine.getAllApplications() : [];
+        const rawSubs = JSON.parse(localStorage.getItem('adv_submitted_applications') || '[]');
+        
+        // Add all engine apps that are newly filed or in rawSubs
+        engineApps.forEach(ea => {
+          if (rawSubs.some(s => (s.arn || s.id) === ea.arn) || (ea.history && ea.history.some(h => h.role === 'Citizen Applicant'))) {
+            if (!liveApps.some(l => l.arn === ea.arn)) liveApps.push(ea);
+          }
+        });
+        rawSubs.forEach(sub => {
+          const sArn = sub.arn || sub.id;
+          if (sArn && !liveApps.some(l => l.arn === sArn)) {
+            const foundInEngine = engineApps.find(e => e.arn === sArn);
+            liveApps.push(foundInEngine || sub);
+          }
+        });
+      } catch (e) {}
+
+      // If live applications exist, format and prepend them
+      if (liveApps.length > 0) {
+        liveApps.forEach(liveApp => {
+          const arn = liveApp.arn || liveApp.id || liveApp.refNo;
+          const isGuide = (liveApp.type === 'guide-registration' || (arn && arn.includes('GR')));
+          const fee = isGuide ? 500 : 1500;
+          const isPaymentPending = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.PAYMENT_PENDING || liveApp.status === 'Payment Pending' || (liveApp.payment && liveApp.payment.activated && !liveApp.payment.paid));
+          const isApproved = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.APPROVED || liveApp.status === 'Approved');
+          const isReturned = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.RETURNED || liveApp.status === 'Returned for Correction');
+
+          let badgeClass = 'bg-info-subtle text-info border border-info-subtle';
+          if (isPaymentPending) badgeClass = 'bg-warning text-dark';
+          else if (isApproved) badgeClass = 'bg-success text-white';
+          else if (isReturned) badgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
+
+          const formatted = {
+            refNo: arn,
+            arn: arn,
+            title: liveApp.enterpriseName || liveApp.applicantName || (isGuide ? 'Adventure Guide Registration' : 'Adventure Tour Operator'),
+            applicantName: liveApp.applicantName || 'Citizen Applicant',
+            enterpriseName: liveApp.enterpriseName || (isGuide ? 'Adventure Guide Registration' : 'Adventure Tour Operator'),
+            category: liveApp.type || (isGuide ? 'guide-registration' : 'adventure-tour-operator'),
+            typeId: liveApp.type || (isGuide ? 'guide-registration' : 'adventure-tour-operator'),
+            typeName: liveApp.typeName || (isGuide ? 'Guide Registration' : 'Adventure Tour Operator'),
+            district: liveApp.district || 'Gangtok',
+            submittedDate: liveApp.submittedDate || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+            lastUpdated: liveApp.lastUpdated || liveApp.submittedDate,
+            status: liveApp.status || 'Under Review',
+            statusLabel: liveApp.status || 'Under Review',
+            statusBadge: badgeClass,
+            currentStage: liveApp.stage || 'Stage 1: Technical Scrutiny Active',
+            stage: liveApp.stage || 'Stage 1: Technical Scrutiny Active',
+            payment: liveApp.payment || { amount: fee, activated: false, paid: false },
+            timeline: (liveApp.history && liveApp.history.length > 0) ? liveApp.history.map(h => ({
+              stage: h.action,
+              date: h.timestamp,
+              status: 'Completed',
+              remarks: h.remarks,
+              by: h.officer || h.role
+            })) : [
+              { stage: 'Application Submitted Online', date: liveApp.submittedDate || 'Today', status: 'Completed', remarks: 'Initial filing recorded in department registry.', by: liveApp.applicantName || 'Citizen Applicant' }
+            ],
+            nextExpectedStep: isPaymentPending 
+              ? 'Statutory fee of ₹' + fee + ' is due for payment.' 
+              : (isApproved ? 'Registration Certificate has been issued.' : 'Application dossier is currently under technical review at the ' + (isGuide && liveApp.district !== 'Gangtok' ? (liveApp.district + ' District') : 'HQ') + ' TA Desk.')
+          };
+
+          if (!scenario.applications.some(a => (a.refNo || a.arn) === arn)) {
+            scenario.applications.unshift(formatted);
+          }
+        });
+
+        // Set activeApplication for Ongoing banner if in scenarioA or liveSubmission
+        if ((scenarioKey === 'scenarioA' || scenarioKey === 'liveSubmission') && scenario.applications.length > 0) {
+          scenario.activeApplication = scenario.applications[0];
+          scenario.citizen = {
+            fullName: scenario.activeApplication.applicantName || 'Citizen Applicant',
+            citizenId: 'SK-CTZ-2026-LIVE',
+            mobile: '9832145698',
+            email: 'applicant@sikkim.gov.in',
+            district: scenario.activeApplication.district || 'Gangtok'
+          };
+          scenario.badge = 'Active Filing: ' + scenario.activeApplication.refNo;
+          scenario.description = 'Tracking your live submitted application (' + scenario.activeApplication.refNo + ') across Sikkim Tourism departmental verification desks.';
+        }
+      }
 
       // Update Header & Profile
       document.getElementById('headerCitizenName').textContent = scenario.citizen.fullName;
@@ -1102,7 +1194,7 @@
       if (navAppCount) {
         navAppCount.textContent = (scenario.applications) ? scenario.applications.length : 0;
       }
-      if (scenarioKey === 'scenarioA' || !scenario.applications || scenario.applications.length === 0) {
+      if (!scenario.applications || scenario.applications.length === 0) {
         if (emptyBanner) emptyBanner.classList.remove('d-none');
         if (appsSection) appsSection.classList.add('d-none');
       } else {
@@ -1112,15 +1204,15 @@
 
       const container = document.getElementById('actionOrientedContainer');
       container.innerHTML = '';
-      if (scenarioKey === 'scenarioA') {
-        // Empty state banner handles scenario A
+      if (!scenario.applications || scenario.applications.length === 0) {
         renderNotifications(scenario.notifications);
         return;
       }
 
-      // Priority 1: Statutory Fee Payment Due Card (₹1,500)
+      // Priority 1: Statutory Fee Payment Due Card
       if (scenario.paymentRequired) {
         const pay = scenario.paymentRequired;
+        const feeAmt = pay.feeAmount || (pay.typeId === 'guide-registration' ? '500' : '1,500');
         container.innerHTML += `
           <div class="action-card action-priority mb-3 border-warning" style="background: #fffbeb; border-left: 5px solid #d97706 !important;">
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
@@ -1134,7 +1226,7 @@
                     <span class="text-muted small">Application ID: <strong>${pay.refNo}</strong></span>
                     <span class="badge bg-light text-secondary border small">${pay.typeName}</span>
                   </div>
-                  <h4 class="h6 fw-bold text-dark mb-1">${pay.enterpriseName} &bull; Statutory Fee: &#8377;${pay.feeAmount || '1,500'}</h4>
+                  <h4 class="h6 fw-bold text-dark mb-1">${pay.enterpriseName} &bull; Statutory Fee: &#8377;${feeAmt}</h4>
                   <p class="small text-secondary mb-2">${pay.remarks}</p>
                   <div class="small text-muted">
                     <i class="bi bi-clock me-1 text-danger"></i>Fee Activated by: <strong>${pay.activatedBy}</strong> on ${pay.activatedDate} &bull; Due within: <strong>${pay.dueDate}</strong>
@@ -1144,7 +1236,7 @@
               <div>
                 <button type="button" class="btn btn-sm btn-success px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs" onclick="openCitizenPaymentModal('${pay.refNo}')">
                   <i class="bi bi-credit-card"></i>
-                  <span>Make Payment (&#8377;1,500)</span>
+                  <span>Make Payment (&#8377;${feeAmt})</span>
                 </button>
               </div>
             </div>
@@ -1169,17 +1261,17 @@
                     <span class="text-muted small">Application ID: <strong>${act.refNo}</strong></span>
                     <span class="badge bg-light text-secondary border small">${act.typeName}</span>
                   </div>
-                  <h4 class="h6 fw-bold text-dark mb-1">Application Returned for Applicant Clarification</h4>
-                  <p class="small text-danger-emphasis mb-2 fw-medium">${act.remarks}</p>
+                  <h4 class="h6 fw-bold text-dark mb-1">${act.enterpriseName}</h4>
+                  <p class="small text-secondary mb-2">${act.remarks}</p>
                   <div class="small text-muted">
-                    <i class="bi bi-person-badge me-1"></i>Returned by: <strong>${act.returnedBy}</strong> on ${act.returnDate}
+                    Returned by: <strong>${act.returnedBy}</strong> on ${act.returnedDate} &bull; Deadline: <strong>${act.deadline}</strong>
                   </div>
                 </div>
               </div>
               <div>
-                <a href="${targetUrl}" class="btn btn-sm btn-warning px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                <a href="${targetUrl}" class="btn btn-sm btn-warning px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
                   <i class="bi bi-pencil-square"></i>
-                  <span>Correct &amp; Resubmit</span>
+                  <span>${act.ctaText || 'Resubmit Corrected Application'}</span>
                 </a>
               </div>
             </div>
@@ -1187,34 +1279,34 @@
         `;
       }
 
-      // Priority 3: Ongoing Application Card
-      if (scenario.activeApplication) {
+      // Priority 3: Ongoing Application In Progress Card
+      if (scenario.activeApplication && !scenario.paymentRequired && !scenario.actionRequired) {
         const app = scenario.activeApplication;
         container.innerHTML += `
-          <div class="action-card action-ongoing mb-3">
+          <div class="action-card action-ongoing mb-3" style="border-left: 4px solid #0284c7 !important; background: #f0f9ff !important;">
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
               <div class="d-flex align-items-start gap-3">
                 <div class="bg-primary text-white p-2 rounded-2 fs-4 flex-shrink-0">
                   <i class="bi bi-hourglass-split"></i>
                 </div>
                 <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="badge bg-info-subtle text-info border border-info-subtle fw-semibold">Under Process</span>
-                    <span class="text-muted small">Application ID: <strong>${app.refNo}</strong></span>
-                    <span class="badge bg-light text-secondary border small">${app.typeName}</span>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-primary text-white fw-bold">Application In Progress</span>
+                    <span class="text-muted small">Application ID: <strong>${app.refNo || app.arn}</strong></span>
+                    <span class="badge bg-light text-secondary border small">${app.typeName || 'Registration'}</span>
                   </div>
-                  <h4 class="h6 fw-bold text-dark mb-1">${app.enterpriseName}</h4>
+                  <h4 class="h6 fw-bold text-dark mb-1">${app.title || app.enterpriseName || app.applicantName}</h4>
                   <div class="small text-secondary mb-2">
-                    <strong>Current Stage:</strong> <span class="text-primary fw-semibold">${app.currentStage}</span> &bull; Last updated ${app.lastUpdated}
+                    <strong>Current Stage:</strong> <span class="text-primary fw-semibold">${app.currentStage || app.stage}</span> &bull; Submitted on ${app.submittedDate}
                   </div>
                   <div class="small text-dark bg-white p-2 rounded-2 border">
                     <i class="bi bi-arrow-right-circle text-primary me-1"></i>
-                    <strong>Next Action:</strong> ${app.nextExpectedStep}
+                    <strong>Next Action:</strong> ${app.nextExpectedStep || 'Review by Department Officers is in progress.'}
                   </div>
                 </div>
               </div>
               <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold" onclick="openTrackingModal('${app.refNo}')">
+                <button class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold" onclick="openTrackingModal('${app.refNo || app.arn}')">
                   <i class="bi bi-search me-1"></i>Track Application
                 </button>
               </div>
@@ -1222,149 +1314,6 @@
           </div>
         `;
       }
-
-      // Priority 4: Approved Application Card & Document Deliverables (Stage 05)
-      if (scenario.approvedApplication) {
-        const app = scenario.approvedApplication;
-        const isGuide = (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || (app.refNo && app.refNo.includes('GR')));
-        const arn = app.refNo || 'SK-ATO-2026-0009';
-
-        container.innerHTML += `
-          <div class="action-card action-approved mb-3" style="border-left: 4px solid #16a34a !important; background: #f0fdf4 !important;">
-            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
-              <div class="d-flex align-items-start gap-3">
-                <div class="bg-success text-white p-2 rounded-2 fs-4 flex-shrink-0">
-                  <i class="bi bi-award-fill"></i>
-                </div>
-                <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="badge bg-success text-white fw-bold">Approved &amp; Certified</span>
-                    <span class="text-muted small">Application ID: <strong>${arn}</strong></span>
-                  </div>
-                  <h4 class="h6 fw-bold text-dark mb-1">${app.enterpriseName}</h4>
-                  <p class="small text-muted mb-1">
-                    Official statutory registration granted under The Sikkim Registration of Tourist Trade Rules, 2025.
-                  </p>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle small">
-                    <i class="bi bi-patch-check-fill me-1"></i>Official Documents Ready
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Stage 05 Document Deliverables Cards Grid -->
-            <div class="row g-3">
-              <!-- Document 1: Registration Certificate (ATO & Guide) -->
-              <div class="${isGuide ? 'col-md-6' : 'col-12'}">
-                <div class="p-3 bg-white border rounded-3 shadow-xs h-100 d-flex flex-column justify-content-between">
-                  <div>
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                      <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-bold">
-                        ${isGuide ? 'Annexure XVIII' : 'Annexure XVII'}
-                      </span>
-                      <span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i>Generated</span>
-                    </div>
-                    <div class="fw-bold text-dark small mb-1">
-                      ${isGuide ? 'Certificate of Registration of a Guide' : 'Certificate of Registration of Adventure Tour Operator'}
-                    </div>
-                    <div class="text-muted small font-monospace mb-2" style="font-size: 0.72rem;">Ref No: ${app.certificateNo || 'RC-SK-2026-0009'}</div>
-                  </div>
-                  <div class="d-flex gap-2 flex-wrap pt-2 border-top">
-                    <a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 text-nowrap fw-semibold">
-                      <i class="bi bi-eye me-1"></i>View Certificate
-                    </a>
-                    <a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2.5 text-nowrap">
-                      <i class="bi bi-download me-1"></i>Download PDF
-                    </a>
-                    <a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2.5 text-nowrap">
-                      <i class="bi bi-printer me-1"></i>Print
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Document 2: Tour Guide ID Card (Strictly ONLY for Guide Registration) -->
-              ${isGuide ? `
-                <div class="col-md-6">
-                  <div class="p-3 bg-white border border-primary rounded-3 shadow-xs h-100 d-flex flex-column justify-content-between">
-                    <div>
-                      <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle small fw-bold">
-                          Identity Card
-                        </span>
-                        <span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i>Generated</span>
-                      </div>
-                      <div class="fw-bold text-dark small mb-1">
-                        Tour Guide Identity Card (Front &amp; Back)
-                      </div>
-                      <div class="text-muted small font-monospace mb-2" style="font-size: 0.72rem;">Card Ref: ${app.certificateNo ? '133/DoT&CAv/GTK/23/TG' : (app.logbookSerial ? '082/DoT&CAv/NMC/26/TG' : '133/DoT&CAv/GTK/23/TG')}</div>
-                    </div>
-                    <div class="d-flex gap-2 flex-wrap pt-2 border-top">
-                      <a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 text-nowrap fw-semibold">
-                        <i class="bi bi-person-badge me-1"></i>View ID Card
-                      </a>
-                      <a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2.5 text-nowrap">
-                        <i class="bi bi-download me-1"></i>Download
-                      </a>
-                      <a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2.5 text-nowrap">
-                        <i class="bi bi-printer me-1"></i>Print ID Card
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              ` : ''}
-            </div>
-
-          </div>
-        `;
-      }
-
-      // Priority 5: Rejected Application Card
-      if (scenario.rejectedApplication) {
-        const app = scenario.rejectedApplication;
-        container.innerHTML += `
-          <div class="action-card action-rejected mb-3">
-            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
-              <div class="d-flex align-items-start gap-3">
-                <div class="bg-danger text-white p-2 rounded-2 fs-4 flex-shrink-0">
-                  <i class="bi bi-x-circle-fill"></i>
-                </div>
-                <div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="badge bg-danger text-white fw-bold">Ineligible Outcome</span>
-                    <span class="text-muted small">Application ID: <strong>${app.refNo}</strong></span>
-                  </div>
-                  <h4 class="h6 fw-bold text-dark mb-1">${app.enterpriseName}</h4>
-                  <p class="small text-danger-emphasis mb-2">${app.reasons}</p>
-                  <div class="small text-muted">Order issued by: <strong>${app.decisionBy}</strong> on ${app.rejectedDate}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      // Priority 6: Empty State for First-Time Citizen
-      if (scenario.emptyState && scenario.applications.length === 0) {
-        container.innerHTML += `
-          <div class="card border rounded-3 bg-white p-4 text-center shadow-xs mb-3">
-            <div class="py-3">
-              <div class="bg-primary-subtle text-primary mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 58px; height: 58px; font-size: 1.6rem;">
-                <i class="bi bi-folder-plus"></i>
-              </div>
-              <h4 class="h5 fw-bold text-dark mb-2">${scenario.emptyState.title}</h4>
-              <p class="text-muted small mx-auto mb-3" style="max-width: 550px;">
-                ${scenario.emptyState.description}
-              </p>
-              <button class="btn btn-sm btn-gov-primary px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#registrationTypeModal">
-                <i class="bi bi-plus-lg me-1"></i>${scenario.emptyState.ctaText}
-              </button>
-            </div>
-          </div>
-        `;
-      }
-
-      // Render Applications Table & Mobile Cards
       renderApplications(scenario.applications);
 
       // Render Notifications
@@ -1801,40 +1750,68 @@
       const stepper = document.getElementById('trackingStepperList');
 
       if (appRecord) {
+        const isGuide = (appRecord.type === 'guide-registration' || (appRecord.arn && appRecord.arn.includes('GR')));
+        const fee = (appRecord.payment && appRecord.payment.amount) ? appRecord.payment.amount : (isGuide ? 500 : 1500);
+
         titleEl.textContent = `Application ID: ${appRecord.arn} • ${appRecord.applicantName || appRecord.enterpriseName} (${appRecord.district})`;
         
         if (appRecord.status === 'Approved') {
-          nextEl.textContent = appRecord.category === 'guide-registration' && appRecord.district !== 'Gangtok' 
-            ? 'Digital ID card and Manual Physical Logbook have been issued by HQ DTO. Collect logbook from Paryatan Bhawan.' 
-            : 'Registration certificate has been issued. Download digital QR certificate.';
-        } else if (appRecord.stage === 'Payment Activated') {
-          nextEl.innerHTML = '<span class="text-danger fw-bold"><i class="bi bi-exclamation-circle me-1"></i>Immediate Action Required:</span> Please pay the statutory fee of ₹1,500 using the button on your dashboard.';
-        } else if (appRecord.stage === 'Payment Submitted') {
+          nextEl.innerHTML = isGuide
+            ? '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Approved:</span> Official Registration Certificate (Annexure XVIII) and Tour Guide Digital ID Card have been released.'
+            : '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Approved:</span> Official Registration Certificate (Annexure XVII) has been released.';
+        } else if (appRecord.status === 'Payment Pending' || (appRecord.stage && appRecord.stage.includes('Payment Activated'))) {
+          nextEl.innerHTML = `<span class="text-danger fw-bold"><i class="bi bi-exclamation-circle me-1"></i>Immediate Action Required:</span> Please pay the statutory fee of ₹${fee.toLocaleString('en-IN')} using the payment button on your dashboard.`;
+        } else if (appRecord.stage && appRecord.stage.includes('Payment Submitted')) {
           nextEl.textContent = 'Statutory fee received. Application forwarded to DTO for final scrutiny and certificate issuance.';
         } else if (appRecord.status === 'Returned for Correction') {
-          nextEl.textContent = 'Application returned with remarks. Please review comments and re-submit.';
-        } else if (appRecord.stage === 'Under Inspection') {
-          nextEl.textContent = `Inspecting Officer ${appRecord.inspectionDetails?.assignedOfficer || 'IO'} is conducting field safety inspection.`;
+          nextEl.innerHTML = `<span class="text-warning-emphasis fw-bold"><i class="bi bi-pencil-square me-1"></i>Clarification Required:</span> "${appRecord.returnRemarks || 'Review remarks and re-submit.'}"`;
+        } else if (appRecord.status === 'Rejected') {
+          nextEl.innerHTML = `<span class="text-danger fw-bold"><i class="bi bi-x-circle me-1"></i>Application Rejected:</span> "${appRecord.rejectionRemarks || 'Statutory criteria not met.'}"`;
+        } else if (appRecord.stage && (appRecord.stage.includes('IO') || appRecord.stage.includes('Inspection'))) {
+          nextEl.textContent = `Inspecting Officer ${appRecord.assignedIO?.name || 'IO'} is conducting physical safety gear and equipment inspection.`;
         } else {
-          nextEl.textContent = `Current Stage: ${appRecord.stage}. Scrutiny under process by Department officers.`;
+          nextEl.textContent = `Current Stage: ${appRecord.stage || 'Under Review'}. Verification under process by Department officers.`;
         }
 
         stepper.innerHTML = '';
-        (appRecord.auditTrail || []).forEach((item, idx) => {
-          stepper.innerHTML += `
+        const historyList = (appRecord.history && appRecord.history.length > 0) ? appRecord.history : (appRecord.auditTrail || []);
+        
+        if (historyList.length === 0) {
+          stepper.innerHTML = `
             <div class="d-flex align-items-start gap-3">
               <div class="tracking-step-circle completed"><i class="bi bi-check-lg"></i></div>
               <div class="flex-grow-1 border-bottom pb-2">
                 <div class="d-flex justify-content-between align-items-center">
-                  <strong class="text-dark">${item.stage}</strong>
-                  <span class="badge bg-success-subtle text-success small">${item.action}</span>
+                  <strong class="text-dark">Application Lodged</strong>
+                  <span class="badge bg-success-subtle text-success small">Submitted</span>
                 </div>
-                <div class="small text-muted">${item.remarks || ''}</div>
-                <div class="text-muted" style="font-size: 0.72rem;">${item.by || 'Department Officer'} &bull; ${item.date}</div>
+                <div class="small text-muted">Application filed online via Single Window Citizen Portal.</div>
+                <div class="text-muted" style="font-size: 0.72rem;">${appRecord.submittedDate}</div>
               </div>
             </div>
           `;
-        });
+        } else {
+          historyList.forEach((item, idx) => {
+            const isCompleted = idx > 0 || appRecord.status === 'Approved';
+            stepper.innerHTML += `
+              <div class="d-flex align-items-start gap-3">
+                <div class="tracking-step-circle ${idx === 0 ? 'active' : 'completed'}">
+                  ${idx === 0 && appRecord.status !== 'Approved' ? '<i class="bi bi-hourglass-split"></i>' : '<i class="bi bi-check-lg"></i>'}
+                </div>
+                <div class="flex-grow-1 border-bottom pb-2">
+                  <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <strong class="text-dark">${item.action || item.stage || 'Workflow Action'}</strong>
+                    <span class="badge bg-primary-subtle text-primary border small">${item.role || item.by || 'Department Officer'}</span>
+                  </div>
+                  <div class="small text-muted mt-0.5">${item.remarks || ''}</div>
+                  <div class="text-muted mt-0.5" style="font-size: 0.72rem;">
+                    <i class="bi bi-person me-1"></i>${item.officer || item.by || 'Authority'} &bull; <i class="bi bi-clock me-1"></i>${item.timestamp || item.date || ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        }
       } else {
         const scenario = currentScenarioData || AdventureServiceData.scenarios.scenarioA;
         const activeApp = scenario.activeApplication || (scenario.applications.length > 0 ? scenario.applications[0] : null);
@@ -1899,6 +1876,18 @@
     function switchCitizenScenario(scenKey) {
       renderCitizenDashboard(scenKey);
     }
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'adv_workflow_applications_v6' || e.key === 'adv_submitted_applications' || e.key === 'adv_latest_submitted_arn') {
+        const cur = getAdventureCitizenScenario();
+        renderCitizenDashboard(cur);
+      }
+    });
+
+    window.addEventListener('focus', function() {
+      const cur = getAdventureCitizenScenario();
+      renderCitizenDashboard(cur);
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
       const currentScen = getAdventureCitizenScenario();
