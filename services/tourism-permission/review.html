@@ -116,7 +116,10 @@
           <option value="hq">Headquarters Administrator (HQ Desk)</option>
         </select>
         <span class="fw-semibold text-white ms-1">Jump to Application:</span>
-        <select id="quickArnReviewSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 320px; font-size: 0.775rem;" onchange="location.href='review.html?arn=' + encodeURIComponent(this.value) + '&role=' + encodeURIComponent(window.activeRole || 'dto')">
+        <select id="quickArnReviewSelect"
+          class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs"
+          style="max-width: 320px; font-size: 0.775rem;"
+          onchange="location.href='review.html?arn=' + encodeURIComponent(this.value) + '&role=' + encodeURIComponent(window.activeRole || 'dto')">
           <option value="SK-TP-2026-APP-00481">[Flow B: DTO] 00481 &bull; Trekking (Stage 2)</option>
           <option value="SK-TP-2026-APP-00621">[Flow A: HQ] 00621 &bull; Drone (Stage 2)</option>
           <option value="SK-TP-2026-APP-00710">[Flow A: HQ] 00710 &bull; Events (Stage 3)</option>
@@ -314,26 +317,22 @@
                     </div>
                     <div class="col-12">
                       <span class="text-muted d-block mb-1">Detailed Description &amp; Itinerary:</span>
-                      <div class="p-3 bg-light rounded border text-secondary" id="dispDescription" style="white-space: pre-wrap;">Proposed 6-day eco-trekking expedition along the approved Singalila Ridge trail with certified local guides and 8 participants. Strict waste management protocols compliant with Forest Department guidelines will be maintained.</div>
+                      <div class="p-3 bg-light rounded border text-secondary" id="dispDescription"
+                        style="white-space: pre-wrap;">Proposed 6-day eco-trekking expedition along the approved
+                        Singalila Ridge trail with certified local guides and 8 participants. Strict waste management
+                        protocols compliant with Forest Department guidelines will be maintained.</div>
                     </div>
 
                     <!-- Conditional Liaison Officer -->
                     <div class="col-12 d-none" id="dispLoContainer">
-                      <div class="p-3 bg-warning-subtle rounded border border-warning-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <div class="d-flex align-items-center gap-3">
-                          <i class="bi bi-person-badge-fill text-warning fs-3"></i>
-                          <div>
-                            <span class="text-muted d-block small">Mandatory Departmental Liaison Officer:</span>
-                            <strong class="text-dark fs-6" id="dispLoName">Tashi (Alpine Expeditions Leader)</strong>
-                            <div class="small text-muted" style="font-size: 0.75rem;">Assigned under Sikkim Mountaineering Regulations</div>
-                            <div id="dispLoRemarksNotice" class="small text-primary mt-1 fst-italic d-none"></div>
-                          </div>
-                        </div>
-                        <div id="dtoLoActionBtnContainer">
-                          <button type="button" class="btn btn-sm btn-outline-dark fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" data-bs-toggle="modal" data-bs-target="#modalChangeLiaisonOfficer">
-                            <i class="bi bi-person-gear"></i>
-                            <span>Change Liaison Officer</span>
-                          </button>
+                      <div
+                        class="p-3 bg-warning-subtle rounded border border-warning-subtle d-flex align-items-center gap-3">
+                        <i class="bi bi-person-badge-fill text-warning fs-3"></i>
+                        <div>
+                          <span class="text-muted d-block small">Mandatory Departmental Liaison Officer:</span>
+                          <strong class="text-dark fs-6" id="dispLoName">Tashi (Alpine Expeditions Leader)</strong>
+                          <div class="small text-muted" style="font-size: 0.75rem;">Assigned under Sikkim Mountaineering
+                            Regulations</div>
                         </div>
                       </div>
                     </div>
@@ -451,8 +450,18 @@
             <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="activeRoleIndicator">DTO Desk</span>
           </div>
 
+          <!-- Current Processing Stage Callout -->
+          <div class="mb-3">
+            <span class="text-muted small d-block mb-1">Current Stage:</span>
+            <div class="p-2 bg-light rounded border fw-bold text-primary small d-flex align-items-center gap-2"
+              id="currentStageDisplay">
+              <i class="bi bi-hourglass-split"></i>
+              <span id="currentStageText">Awaiting DTO Verification</span>
+            </div>
+          </div>
+
           <!-- Dynamic Action Buttons (Gated by Role & Stage) -->
-          <div id="workflowActionsContainer" class="d-flex flex-column align-items-start gap-2 mt-3">
+          <div id="workflowActionsContainer" class="d-flex flex-column align-items-start gap-2">
             <!-- Dynamically populated based on active role and application stage -->
           </div>
 
@@ -461,6 +470,10 @@
             <div class="d-flex justify-content-between py-1 border-bottom">
               <span>Application ID:</span>
               <strong class="font-monospace text-dark" id="summaryArn">SK-TP-2026-APP-00481</strong>
+            </div>
+            <div class="d-flex justify-content-between py-1 border-bottom">
+              <span>Status:</span>
+              <span id="summaryStatus"><span class="badge bg-primary">Submitted</span></span>
             </div>
             <div class="d-flex justify-content-between py-1 border-bottom">
               <span>Submission Date:</span>
@@ -525,66 +538,6 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary btn-sm px-3 fw-semibold" onclick="executeDtoForwardToHq()">
             <i class="bi bi-send-fill me-1"></i> Confirm &amp; Transmit to HQ
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Reassign Departmental Liaison Officer (Expedition Category Specific) -->
-  <div class="modal fade" id="modalChangeLiaisonOfficer" tabindex="-1" aria-labelledby="modalChangeLoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-warning-subtle text-dark py-3">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-person-gear text-warning-emphasis fs-4"></i>
-            <div>
-              <h5 class="modal-title fs-6 fw-bold mb-0" id="modalChangeLoLabel">
-                Reassign Departmental Liaison Officer (LO)
-              </h5>
-              <div class="small text-muted" style="font-size: 0.75rem;">Expedition Category &bull; DTO Delegated Authority</div>
-            </div>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-3">
-          <div class="p-2.5 bg-light rounded border mb-3 small">
-            <div class="text-muted small">Current Assigned Liaison Officer:</div>
-            <strong class="text-dark fs-6" id="modalCurrentLoDisplay">-</strong>
-            <div class="text-muted" style="font-size: 0.725rem;">Statutory Escort under Sikkim Mountaineering Regulations</div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label fw-semibold small text-dark mb-1">
-              New Departmental Liaison Officer <span class="text-danger">*</span>
-            </label>
-            <select class="form-select form-select-sm" id="modalNewLoSelect" onchange="toggleCustomLoInput(this.value)">
-              <option value="">-- Select Authorized Departmental Liaison Officer --</option>
-              <option value="Sikkim Police Mountaineering Liaison Officer Appointed">Sikkim Police Mountaineering Liaison Officer Appointed</option>
-              <option value="Pemba Tshering Bhutia (Sikkim Police Mountaineering Unit)">Pemba Tshering Bhutia (Sikkim Police Mountaineering Unit)</option>
-              <option value="Tashi (Alpine Expeditions Leader)">Tashi (Alpine Expeditions Leader)</option>
-              <option value="Roshni (Alpine Logistics &amp; Safety Specialist)">Roshni (Alpine Logistics &amp; Safety Specialist)</option>
-              <option value="Ganesh (Restricted High Altitude Clearance Officer)">Ganesh (Restricted High Altitude Clearance Officer)</option>
-              <option value="Tashi Gyatso Lepcha (Forest &amp; Wildlife Range Officer / LO)">Tashi Gyatso Lepcha (Forest &amp; Wildlife Range Officer / LO)</option>
-              <option value="Dawa Sherpa (Certified Government Mountaineering LO)">Dawa Sherpa (Certified Government Mountaineering LO)</option>
-              <option value="custom">Other / Custom LO Designation...</option>
-            </select>
-            <input type="text" id="modalCustomLoInput" class="form-control form-control-sm mt-2 d-none" placeholder="Enter full name and official departmental designation">
-            <div class="invalid-feedback" id="modalLoSelectFeedback">Please select or provide a valid Liaison Officer.</div>
-          </div>
-
-          <div class="mb-2">
-            <label class="form-label fw-semibold small text-dark mb-1">
-              Official Remarks / Reason for Change <span class="text-danger">*</span>
-            </label>
-            <textarea class="form-control form-control-sm" id="modalLoChangeRemarks" rows="3" placeholder="Enter official reason for changing the Liaison Officer (e.g. Previous officer deployed on official duties; reassigned as per Sikkim Mountaineering Regulations 2026)..."></textarea>
-            <div class="invalid-feedback">Please provide remarks explaining the reason for changing the Liaison Officer.</div>
-          </div>
-        </div>
-        <div class="modal-footer bg-light py-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-sm btn-primary fw-semibold" onclick="executeChangeLiaisonOfficer()">
-            <i class="bi bi-check-circle-fill me-1"></i> Update &amp; Record Change
           </button>
         </div>
       </div>
@@ -987,7 +940,7 @@
 
         if (document.getElementById('headerApplicantName')) document.getElementById('headerApplicantName').textContent = currentApp.applicantName;
         if (document.getElementById('headerDistrict')) document.getElementById('headerDistrict').textContent = currentApp.district;
-        
+
         const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.category);
         const flowLabel = isHqFlow ? 'Flow A: HQ Approval' : 'Flow B: Direct DTO';
         const flowBadgeClass = isHqFlow ? 'badge bg-primary text-white flowBadge' : 'badge bg-success text-white flowBadge';
@@ -1018,29 +971,12 @@
         setTxt('dispSubject', currentApp.activityTitle || '-');
         setTxt('dispDescription', currentApp.activityDescription || '-');
 
-        // Liaison Officer (Expedition Category Specific)
+        // Liaison Officer
         const loContainer = document.getElementById('dispLoContainer');
-        const dtoLoBtnContainer = document.getElementById('dtoLoActionBtnContainer');
-        const loRemarksNotice = document.getElementById('dispLoRemarksNotice');
         if (loContainer) {
           if (currentApp.categoryKey === 'expedition' && currentApp.liaisonOfficer) {
             loContainer.classList.remove('d-none');
             setTxt('dispLoName', `${currentApp.liaisonOfficer} (Assigned Departmental Liaison Officer)`);
-
-            if (currentApp.loChangeRemarks && loRemarksNotice) {
-              loRemarksNotice.classList.remove('d-none');
-              loRemarksNotice.innerHTML = `<i class="bi bi-info-circle me-1"></i> <strong>Reassignment Note:</strong> "${currentApp.loChangeRemarks}" <span class="text-muted fst-normal">(by ${currentApp.loChangedBy || 'DTO'} on ${currentApp.loChangeDate || ''})</span>`;
-            } else if (loRemarksNotice) {
-              loRemarksNotice.classList.add('d-none');
-            }
-
-            if (dtoLoBtnContainer) {
-              if (activeRole === 'dto') {
-                dtoLoBtnContainer.classList.remove('d-none');
-              } else {
-                dtoLoBtnContainer.classList.add('d-none');
-              }
-            }
           } else {
             loContainer.classList.add('d-none');
           }
@@ -1077,19 +1013,12 @@
         const summaryStatus = document.getElementById('summaryStatus');
         const currentStageText = document.getElementById('currentStageText');
 
-        if (headerStatus) {
-          headerStatus.className = 'badge ' + getStatusBadgeClass(currentApp.status);
-          headerStatus.textContent = currentApp.status;
-        }
-        if (summaryStatus) {
-          summaryStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(currentApp.status)}">${currentApp.status}</span>`;
-        }
-        if (headerStage) {
-          headerStage.textContent = currentApp.currentStage;
-        }
-        if (currentStageText) {
-          currentStageText.textContent = currentApp.currentStage;
-        }
+        headerStatus.className = 'badge ' + getStatusBadgeClass(currentApp.status);
+        headerStatus.textContent = currentApp.status;
+        summaryStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(currentApp.status)}">${currentApp.status}</span>`;
+
+        headerStage.textContent = currentApp.currentStage;
+        currentStageText.textContent = currentApp.currentStage;
       }
 
       function getStatusBadgeClass(status) {
@@ -1141,7 +1070,7 @@
 
         const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.category);
 
-        if (!isHqFlow) {
+        if (!isHqFlow && !currentApp.approvalSheet) {
           // Flow B: Direct DTO Approval - HQ referral not applicable
           if (eOfficeBadge) eOfficeBadge.innerHTML = '<span class="badge bg-secondary-subtle text-secondary border">Not Applicable</span>';
           if (eOfficeDetails) eOfficeDetails.innerHTML = `<span class="text-muted">Direct district-level delegated authority applies. External state-level HQ concurrence is not required for <strong>${currentApp.category}</strong>.</span>`;
@@ -1263,12 +1192,6 @@
                   <span>Approve &amp; Issue Approval Letter</span>
                 </button>
                 <div class="gov-action-subgroup pt-1">
-                  ${currentApp.categoryKey === 'expedition' ? `
-                    <button type="button" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1 w-100 justify-content-center mb-1.5" data-bs-toggle="modal" data-bs-target="#modalChangeLiaisonOfficer">
-                      <i class="bi bi-person-gear"></i>
-                      <span>Change Liaison Officer (LO)</span>
-                    </button>
-                  ` : ''}
                   <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
                     <i class="bi bi-arrow-return-left"></i>
                     <span>Return for Correction</span>
@@ -1323,16 +1246,22 @@
               </div>
               <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs w-100 justify-content-center" onclick="executeDtoFinalApproval()">
                 <i class="bi bi-patch-check-fill"></i>
-                <span>Approve &amp; Issue Approval Letter</span>
+                <span>Approve &amp; Issue Permission Letter</span>
               </button>
               <div class="d-flex gap-2 pt-2">
-                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
+                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)" title="Preview HQ Approval Sheet">
                   <i class="bi bi-file-earmark-check"></i>
-                  <span>View Approval Sheet</span>
+                  <span>View Sheet</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
+                <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-success flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" title="Open Print-Ready A4 Approval Sheet">
+                  <i class="bi bi-box-arrow-up-right"></i>
+                  <span>Print Sheet</span>
+                </a>
+              </div>
+              <div class="pt-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
                   <i class="bi bi-printer"></i>
-                  <span>Summary</span>
+                  <span>Download Summary</span>
                 </button>
               </div>
             `;
@@ -1353,7 +1282,13 @@
                     <button type="button" class="btn btn-sm btn-outline-success" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
                       <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
                     </button>
+                    <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=${activeRole}" target="_blank" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-printer me-1"></i> Print HQ Approval Sheet
+                    </a>
                   ` : ''}
+                  <a href="dashboard.html?arn=${encodeURIComponent(currentApp.refNo)}&view=tracking" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-person me-1"></i> View in Citizen Dashboard
+                  </a>
                   <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
                     <i class="bi bi-printer me-1"></i> Print / Download Summary
                   </button>
@@ -1498,11 +1433,17 @@
               <div class="alert alert-info small p-3 text-center mb-0 w-100">
                 <i class="bi bi-send-check-fill fs-3 text-primary d-block mb-1"></i>
                 <strong class="d-block text-dark">Approved at HQ Level</strong>
-                <div class="text-muted small mt-1">Application transmitted back to DTO for final approval and issuance.</div>
+                <div class="text-muted small mt-1">Application transmitted back to DTO (${currentApp.district} Circle) for final approval and issuance.</div>
                 <div class="mt-3 d-flex flex-column gap-2">
                   <button type="button" class="btn btn-sm btn-outline-primary" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
                     <i class="bi bi-file-earmark-check me-1"></i> View Uploaded Approval Sheet
                   </button>
+                  <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=hq" target="_blank" class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-printer me-1"></i> Print HQ Approval Sheet
+                  </a>
+                  <a href="review.html?arn=${encodeURIComponent(currentApp.refNo)}&role=dto" class="btn btn-sm btn-success fw-semibold shadow-xs">
+                    <i class="bi bi-person-check me-1"></i> Switch to DTO Desk &amp; Grant Approval &rarr;
+                  </a>
                   <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
                     <i class="bi bi-printer me-1"></i> Download Application Summary
                   </button>
@@ -1523,6 +1464,9 @@
                   <button type="button" class="btn btn-sm btn-outline-success" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
                     <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
                   </button>
+                  <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=hq" target="_blank" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-printer me-1"></i> Print HQ Approval Sheet
+                  </a>
                   <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
                     <i class="bi bi-printer me-1"></i> Download Application Summary
                   </button>
@@ -1578,95 +1522,6 @@
       // ==============================================================
       // ACTION EXECUTION HANDLERS
       // ==============================================================
-
-      // LO Management: Toggle Custom LO Input
-      window.toggleCustomLoInput = function (val) {
-        const customInput = document.getElementById('modalCustomLoInput');
-        if (!customInput) return;
-        if (val === 'custom') {
-          customInput.classList.remove('d-none');
-          customInput.focus();
-        } else {
-          customInput.classList.add('d-none');
-          customInput.value = '';
-        }
-      };
-
-      // LO Management: Execute Reassign LO
-      window.executeChangeLiaisonOfficer = function () {
-        const select = document.getElementById('modalNewLoSelect');
-        const customInput = document.getElementById('modalCustomLoInput');
-        const remarksInput = document.getElementById('modalLoChangeRemarks');
-
-        let newLo = select.value;
-        if (newLo === 'custom') {
-          newLo = customInput.value.trim();
-        }
-
-        const remarks = remarksInput.value.trim();
-
-        let hasError = false;
-        if (!newLo) {
-          select.classList.add('is-invalid');
-          if (select.value === 'custom') customInput.classList.add('is-invalid');
-          hasError = true;
-        } else {
-          select.classList.remove('is-invalid');
-          customInput.classList.remove('is-invalid');
-        }
-
-        if (!remarks) {
-          remarksInput.classList.add('is-invalid');
-          hasError = true;
-        } else {
-          remarksInput.classList.remove('is-invalid');
-        }
-
-        if (hasError) return;
-
-        const modalEl = document.getElementById('modalChangeLiaisonOfficer');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-
-        const districtOffices = WorkflowEngine.DISTRICT_OFFICES || {};
-        const officeInfo = districtOffices[currentApp.district] || districtOffices['Gangtok'] || {};
-        const officerName = officeInfo.dtoName || 'District Tourism Officer (DTO)';
-
-        const res = WorkflowEngine.changeLiaisonOfficer(activeArn, officerName, newLo, remarks);
-        if (res.success) {
-          showToastAlert(`Liaison Officer updated to "${newLo}". Reassignment remarks logged in processing history.`, 'success');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
-      };
-
-      // Populate current LO when modal opens
-      document.addEventListener('DOMContentLoaded', function () {
-        const changeLoModalEl = document.getElementById('modalChangeLiaisonOfficer');
-        if (changeLoModalEl) {
-          changeLoModalEl.addEventListener('show.bs.modal', function () {
-            const currentLoDisplay = document.getElementById('modalCurrentLoDisplay');
-            if (currentLoDisplay && currentApp) {
-              currentLoDisplay.textContent = currentApp.liaisonOfficer || 'Not Assigned';
-            }
-            const select = document.getElementById('modalNewLoSelect');
-            if (select) select.value = '';
-            const customInput = document.getElementById('modalCustomLoInput');
-            if (customInput) {
-              customInput.value = '';
-              customInput.classList.add('d-none');
-              customInput.classList.remove('is-invalid');
-            }
-            const remarks = document.getElementById('modalLoChangeRemarks');
-            if (remarks) {
-              remarks.value = '';
-              remarks.classList.remove('is-invalid');
-            }
-            if (select) select.classList.remove('is-invalid');
-          });
-        }
-      });
 
       // 1. DTO Forward to HQ
       window.executeDtoForwardToHq = function () {
@@ -1792,16 +1647,23 @@
         }
       };
 
-      // 8. HQ Forward Back to DTO
-      window.executeHqForwardBackToDto = function () {
-        const res = WorkflowEngine.hqForwardBackToDto(activeArn, null, 'Headquarters verification complete. Transmitted back to concerned DTO with Approval Sheet.');
-        if (res.success) {
-          showToastAlert('Application transmitted back to District DTO with Approval Sheet.', 'success');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
+      // 8. HQ Approves at HQ Level & Transmits Back to DTO
+      window.executeHqApproveAtHqLevel = function () {
+        if (!currentApp || !currentApp.approvalSheet) {
+          showToastAlert('Mandatory HQ Approval Sheet must be uploaded before granting HQ-level approval.', 'warning');
+          return;
+        }
+        if (confirm(`Confirm approval at Headquarters Level for application ${activeArn}?\n\nThis will record the Directorate Sanction Approval Sheet and transmit the file back to District Tourism Officer (${currentApp.district} Circle) for final sanction and Permission Letter issuance.`)) {
+          const res = WorkflowEngine.hqApproveAtHqLevel(activeArn, 'Dr. Tshering Yangchen Lepcha', 'Headquarters verification complete. Directorate Sanction & Approval Sheet attached. Transmitted back to concerned DTO for final approval and Approval Letter issuance.');
+          if (res.success) {
+            showToastAlert(`Application ${activeArn} successfully approved at HQ Level and transmitted to District DTO!`, 'success');
+            loadAndRenderReviewScreen();
+          } else {
+            showToastAlert(res.message, 'danger');
+          }
         }
       };
+      window.executeHqForwardBackToDto = window.executeHqApproveAtHqLevel;
 
       // 9. HQ Return to DTO (Flow 5)
       window.executeHqReturnToDto = function () {
