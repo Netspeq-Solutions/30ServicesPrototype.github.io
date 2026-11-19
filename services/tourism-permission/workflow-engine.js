@@ -10,7 +10,7 @@
 
   const STORAGE_KEY = 'tourism_department_applications';
   const STORAGE_VERSION_KEY = 'tourism_dept_apps_version';
-  const CURRENT_SEED_VERSION = 'v7_stage04_lo_reassignment_clean';
+  const CURRENT_SEED_VERSION = 'v8_date_loading_standardized_clean';
   const SUBMITTED_STORAGE_KEY = 'tourism_permission_submitted';
 
   // The 4 Official Statuses
@@ -1521,13 +1521,76 @@
         // Check if citizen submissions exist in live session
         const rawCitizen = localStorage.getItem(SUBMITTED_STORAGE_KEY);
         if (rawCitizen) {
-          const citizenSubs = JSON.parse(rawCitizen);
-          if (Array.isArray(citizenSubs) && citizenSubs.length > 0) {
-            citizenSubs.forEach(sub => {
-              this.ingestCitizenSubmission(sub);
-            });
-            // Reload after potential ingestion
-            apps = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          try {
+            const citizenSubs = JSON.parse(rawCitizen);
+            if (Array.isArray(citizenSubs) && citizenSubs.length > 0) {
+              let modified = false;
+              citizenSubs.forEach(sub => {
+                if (sub && sub.refNo && !apps.some(a => a.refNo === sub.refNo)) {
+                  const dist = sub.district || 'Gangtok';
+                  const distInfo = DISTRICT_OFFICES[dist] || DISTRICT_OFFICES['Gangtok'];
+                  const requiresHq = this.isHqApprovalRequired(sub.category || sub.categoryKey);
+                  const subDate = sub.submissionDate || sub.submittedDate || sub.createdDate || sub.appliedDate || sub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                  const newApp = {
+                    refNo: sub.refNo,
+                    flowType: requiresHq ? 'flow_a' : 'flow_b',
+                    flowTitle: requiresHq ? 'Flow A: Requires HQ Approval' : 'Flow B: Direct DTO Approval',
+                    category: sub.category || 'Trekking',
+                    categoryKey: sub.categoryKey || 'trekking',
+                    customCategoryName: sub.customCategoryName || '',
+                    district: dist,
+                    dtoOffice: distInfo.office,
+                    status: STATUSES.SUBMITTED,
+                    currentStage: STAGES.STAGE_2,
+                    currentStageNum: 2,
+                    assignedRole: 'dto', // Immediately assigned to District DTO
+                    applicantName: sub.applicantName || 'Citizen Applicant',
+                    phone: sub.phone || '',
+                    email: sub.email || '',
+                    address: sub.address || '',
+                    activityTitle: sub.activityTitle || 'Permission Request',
+                    activityDescription: sub.activityDescription || sub.description || '',
+                    liaisonOfficer: sub.liaisonOfficer || null,
+                    fee: sub.fee || 'Free',
+                    feeAmount: sub.feeAmount || 0,
+                    isPaid: sub.isPaid || false,
+                    paymentStatus: sub.paymentStatus || 'PAID',
+                    paymentTxnRef: sub.paymentTxnRef || 'TXN-SK-2026-90142',
+                    submissionDate: subDate,
+                    lastUpdated: subDate,
+                    requiresHqVerification: requiresHq,
+                    documents: sub.documents || [
+                      { id: 'doc_sub_1', name: 'Applicant Identity / Supporting NOC', fileName: 'Citizen_Upload.pdf', size: '1.2 MB', date: subDate }
+                    ],
+                    hqVerification: { verified: false, verifiedDate: null, eOfficeFileNo: null, remarks: null },
+                    approvalSheet: null,
+                    dtoRemarks: null,
+                    hqRemarks: null,
+                    citizenRemarks: null,
+                    history: [
+                      {
+                        action: 'Application Submitted',
+                        role: 'Citizen',
+                        officer: sub.applicantName || 'Citizen Applicant',
+                        office: 'Applicant Portal',
+                        date: subDate,
+                        previousStage: 'New Submission',
+                        newStage: STAGES.STAGE_2,
+                        remarks: 'Application submitted via citizen online service portal.'
+                      }
+                    ]
+                  };
+                  apps.unshift(newApp);
+                  modified = true;
+                }
+              });
+              if (modified) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+              }
+            }
+          } catch (e) {
+            console.warn('WorkflowEngine: Failed to ingest citizen submissions', e);
           }
         }
 
@@ -1578,12 +1641,15 @@
 
     // Ingest new application submitted from citizen journey
     ingestCitizenSubmission: function (sub) {
-      const existing = this.getApplication(sub.refNo);
+      if (!sub || !sub.refNo) return null;
+      const apps = this.getAllApplications();
+      const existing = apps.find(a => a.refNo === sub.refNo);
       if (existing) return existing;
 
       const dist = sub.district || 'Gangtok';
       const distInfo = DISTRICT_OFFICES[dist] || DISTRICT_OFFICES['Gangtok'];
       const requiresHq = this.isHqApprovalRequired(sub.category || sub.categoryKey);
+      const subDate = sub.submissionDate || sub.submittedDate || sub.createdDate || sub.appliedDate || sub.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
       const newApp = {
         refNo: sub.refNo,
@@ -1610,11 +1676,11 @@
         isPaid: sub.isPaid || false,
         paymentStatus: sub.paymentStatus || 'PAID',
         paymentTxnRef: sub.paymentTxnRef || 'TXN-SK-2026-90142',
-        submissionDate: sub.submissionDate || new Date().toLocaleString('en-GB'),
-        lastUpdated: new Date().toLocaleString('en-GB'),
+        submissionDate: subDate,
+        lastUpdated: subDate,
         requiresHqVerification: requiresHq,
         documents: sub.documents || [
-          { id: 'doc_sub_1', name: 'Applicant Identity / Supporting NOC', fileName: 'Citizen_Upload.pdf', size: '1.2 MB', date: new Date().toLocaleDateString('en-GB') }
+          { id: 'doc_sub_1', name: 'Applicant Identity / Supporting NOC', fileName: 'Citizen_Upload.pdf', size: '1.2 MB', date: subDate }
         ],
         hqVerification: { verified: false, verifiedDate: null, eOfficeFileNo: null, remarks: null },
         approvalSheet: null,
@@ -1627,7 +1693,7 @@
             role: 'Citizen',
             officer: sub.applicantName || 'Citizen Applicant',
             office: 'Applicant Portal',
-            date: sub.submissionDate || new Date().toLocaleString('en-GB'),
+            date: subDate,
             previousStage: 'New Submission',
             newStage: STAGES.STAGE_2,
             remarks: 'Application submitted via citizen online service portal.'
@@ -1635,7 +1701,6 @@
         ]
       };
 
-      const apps = this.getAllApplications();
       apps.unshift(newApp);
       this.saveAllApplications(apps);
       return newApp;

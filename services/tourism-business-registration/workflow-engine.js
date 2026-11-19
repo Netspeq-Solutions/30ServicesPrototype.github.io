@@ -16,7 +16,7 @@
 
   const STORAGE_KEY = 'tourism_business_department_applications';
   const STORAGE_VERSION_KEY = 'tourism_business_dept_apps_version';
-  const CURRENT_SEED_VERSION = 'v13_merged_tato_2026';
+  const CURRENT_SEED_VERSION = 'v15_safe_history_payment_2026';
   const SUBMITTED_STORAGE_KEY = 'tourism_business_submitted';
 
   // The 4 Official Statuses
@@ -2695,23 +2695,31 @@
     },
 
     getApplication: function (refNo) {
+      let result = null;
       if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication) {
         const tMatch = TourismBusinessData.getApplication(refNo);
         if (tMatch && (tMatch.paymentActivated || tMatch.status === 'Payment Pending' || (typeof window !== 'undefined' && window.activeScenarioKey === 'scenarioPayment'))) {
-          return tMatch;
+          result = tMatch;
         }
       }
-      const all = this.getAllApplications();
-      let match = all.find(a => a.refNo === refNo);
-      if (!match) {
-        if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication) {
-          match = TourismBusinessData.getApplication(refNo);
-        }
+      if (!result) {
+        const all = this.getAllApplications();
+        result = all.find(a => a.refNo === refNo);
       }
-      return match || null;
+      if (!result && typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication) {
+        result = TourismBusinessData.getApplication(refNo);
+      }
+      if (result) {
+        if (!Array.isArray(result.history)) result.history = [];
+        if (!Array.isArray(result.auditHistory)) result.auditHistory = [];
+      }
+      return result || null;
     },
 
     saveApplication: function (app) {
+      if (!app) return;
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       const all = this.getAllApplications();
       const idx = all.findIndex(a => a.refNo === app.refNo);
       if (idx >= 0) {
@@ -2754,6 +2762,8 @@
         app.toRemarks = remarks || 'Level 0 verification completed. Assigned to ' + designatedIa + ' for mandatory on-site physical inspection.';
         app.lastUpdated = now;
 
+        if (!Array.isArray(app.history)) app.history = [];
+        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
         app.history.push({
           step: 'Level 0 TO Verification Completed & Assigned to IA ' + designatedIa,
           actor: (distOffice.toName || 'Karma Lhendup Bhutia') + ' (Tourism Officer, Level 0)',
@@ -2781,6 +2791,8 @@
         app.toRemarks = remarks || 'Level 0 verification satisfactory. Category exempt from physical inspection. Recommended for DTO approval.';
         app.lastUpdated = now;
 
+        if (!Array.isArray(app.history)) app.history = [];
+        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
         app.history.push({
           step: 'Level 0 TO Verification Completed & Forwarded to DTO',
           actor: (distOffice.toName || 'Karma Lhendup Bhutia') + ' (Tourism Officer, Level 0)',
@@ -2835,6 +2847,8 @@
 
       const remarksSummary = app.inspectionRemarks ? (' Remarks: "' + app.inspectionRemarks + '".') : ' No additional remarks provided.';
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Level 1 IA Physical Inspection Report Submitted to TO',
         actor: effectiveIaOfficer + ' (Inspecting Authority, Level 1)',
@@ -2873,6 +2887,8 @@
       app.toInspectionReviewRemarks = remarks || 'Level 0 TO reviewed IA Physical Inspection Report. Endorsed and forwarded to DTO for final statutory sanction.';
       app.lastUpdated = now;
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Level 0 TO Reviewed IA Report & Forwarded to DTO',
         actor: toOfficerName + ' (Tourism Officer, Level 0)',
@@ -2942,6 +2958,8 @@
       app.reinspectionRequestedDate = now;
       app.lastUpdated = now;
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Level 0 TO Requested Physical Re-inspection',
         actor: toOfficerName + ' (Tourism Officer, Level 0)',
@@ -2999,6 +3017,8 @@
       const gradeInfo = (selectedGrade !== 'Not Applicable') ? (' (' + selectedGrade + ')') : '';
       const stepRemarks = 'Statutory fee payment activated. Category: ' + (app.categoryName || app.category) + gradeInfo + '. Applicable Registration Fee: ₹' + calculatedFee.toLocaleString('en-IN') + '. Transmitted to applicant for online fee deposit.';
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Registration Fee Payment Activated by Level 2 DTO',
         actor: dtoName + ' (District Tourism Officer, Level 2)',
@@ -3039,6 +3059,8 @@
         app.lastPaymentError = details.error || 'Transaction declined by bank / payment gateway timeout.';
         app.lastUpdated = now;
 
+        if (!Array.isArray(app.history)) app.history = [];
+        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
         app.history.push({
           step: 'Online Payment Transaction Failed',
           actor: app.applicantName + ' (Citizen Applicant)',
@@ -3084,6 +3106,8 @@
       const gradeInfo = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? (' (' + app.registrationGrade + ')') : '';
       const payRemarks = 'Paid ₹' + amountPaid.toLocaleString('en-IN') + gradeInfo + ' via ' + method + '. Transaction Ref: #' + txnId + ', Receipt #' + receiptNo + '. Application returned directly to Level 2 DTO for final review and statutory sanction.';
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Registration Fee Payment Completed by Citizen',
         actor: app.applicantName + ' (Citizen Applicant)',
@@ -3144,6 +3168,8 @@
       app.approvingOfficer = dtoOfficerName + ', District Tourism Officer (DTO)';
       app.lastUpdated = now;
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Final Approval Granted & Certificate Issued',
         actor: dtoOfficerName + ' (District Tourism Officer, Level 2)',
@@ -3186,6 +3212,8 @@
       app.returnedDate = now;
       app.lastUpdated = now;
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: 'Application Returned to Citizen for Clarification by ' + (role ? role.toUpperCase() : 'Department'),
         actor: actorName,
@@ -3231,6 +3259,8 @@
       app.rejectedDate = now;
       app.lastUpdated = now;
 
+      if (!Array.isArray(app.history)) app.history = [];
+      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
       app.history.push({
         step: isTo ? 'Level 0 TO Rejected Application' : 'Application Rejected',
         actor: actorName,

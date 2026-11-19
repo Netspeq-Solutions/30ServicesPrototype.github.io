@@ -94,6 +94,26 @@
       max-height: 42px !important;
       font-size: 1.25rem !important;
     }
+  
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #ackSlipPrintable, #ackSlipPrintable * {
+        visibility: visible !important;
+      }
+      #ackSlipPrintable {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 24px !important;
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+      }
+    }
   </style>
 </head>
 <body data-theme="alpine-blue" class="d-flex flex-column min-vh-100">
@@ -345,7 +365,7 @@
               </div>
             </div>
             <div class="d-flex flex-column align-items-sm-end justify-content-center">
-              <button type="button" class="btn btn-success px-4 py-2.5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm" id="btnPayNowBanner" onclick="openCitizenPaymentModal(window.activePaymentDueRef || 'SK-TBR-2026-TO-00107')" data-bs-toggle="modal" data-bs-target="#citizenPaymentModal">
+              <button type="button" class="btn btn-success px-4 py-2.5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm" id="btnPayNowBanner" onclick="openCitizenPaymentModal(window.activePaymentDueRef || 'SK-TBR-2026-TO-00107')">
                 <i class="bi bi-credit-card"></i>
                 <span id="btnPayNowBannerLabel">Pay Now (₹7,000)</span>
               </button>
@@ -389,6 +409,10 @@
                 </div>
               </div>
               <div class="d-flex flex-column align-items-sm-end gap-2">
+                <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="showPaymentAcknowledgement(window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107')">
+                  <i class="bi bi-file-earmark-check"></i>
+                  <span>View Acknowledgement Slip</span>
+                </button>
                 <button type="button" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="viewPaymentReceipt(window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107')">
                   <i class="bi bi-receipt"></i>
                   <span>View Payment Receipt</span>
@@ -714,6 +738,106 @@
           </div>
         </div>
 
+      </section>
+
+      
+      <!-- ==============================================================
+           VIEW: STANDARDIZED PAYMENT SUCCESS & ACKNOWLEDGEMENT
+           (Standardized with Tourism Permission Reference Design)
+           ============================================================== -->
+      <section id="section-acknowledgement" class="workspace-section d-none">
+        <div class="text-center py-3 mb-4">
+          <div class="gov-icon-circle gov-icon-circle-lg bg-success text-white mx-auto mb-3 shadow-sm d-flex align-items-center justify-content-center">
+            <i class="bi bi-check-lg" style="font-size: 2.5rem;"></i>
+          </div>
+          <h2 class="h3 fw-bold text-dark mb-2">Application Submitted Successfully!</h2>
+          <p class="text-muted mx-auto mb-0" style="max-width: 640px;">
+            Your statutory registration fee payment has been completed successfully. Please keep the Application Reference Number (ARN) for future tracking and official reference.
+          </p>
+        </div>
+
+        <!-- Official Acknowledgement Slip Box -->
+        <div class="card border p-4 rounded-3 mb-4 bg-white shadow-xs" id="ackSlipPrintable">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 border-bottom pb-3 mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <img src="../../common/assets/images/sikkim-government-logo-dark.png" onerror="this.src='../../common/images/sikkim-logo.png'" alt="Sikkim Emblem" style="height: 48px; width: auto;">
+              <div>
+                <span class="small text-uppercase fw-bold text-muted d-block" style="letter-spacing: 0.5px;">Government of Sikkim</span>
+                <div class="fw-bold text-dark">Tourism &amp; Civil Aviation Department</div>
+                <span class="small text-muted" id="ackSlipServiceTitle">Statutory Registration Fee &amp; Application Acknowledgement Slip</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                <i class="bi bi-check-circle-fill me-1"></i> PAYMENT SUCCESSFUL
+              </span>
+              <div class="small text-muted mt-1" id="ackDateDisplay">-</div>
+            </div>
+          </div>
+
+          <!-- Application Reference Callout -->
+          <div class="p-3 bg-light rounded-3 mb-4 text-center border">
+            <span class="text-muted small d-block">Official Application Reference Number (ARN):</span>
+            <span class="fs-4 fw-bold font-monospace text-primary d-inline-block mt-1" id="ackArnDisplay">-</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2 py-0 px-2" onclick="copyArnToClipboard()" title="Copy ARN">
+              <i class="bi bi-copy"></i> Copy
+            </button>
+          </div>
+
+          <!-- Slip Field Grid -->
+          <div class="row g-3 small" id="ackDetailsGrid">
+            <div class="col-md-6">
+              <span class="text-muted d-block">Applicant / Enterprise Name:</span>
+              <strong class="text-dark" id="ackNameDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Registration Category:</span>
+              <strong class="text-dark" id="ackCatDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Designated District Tourism Office:</span>
+              <strong class="text-dark" id="ackDistrictDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Head of Account:</span>
+              <span class="font-monospace text-dark">0070-02-105-01 (Statutory Registration)</span>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Statutory Validity:</span>
+              <strong class="text-dark" id="ackValidityDisplay">1 Year</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Statutory Registration Fee Paid:</span>
+              <strong class="text-success" id="ackFeeAmountDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Payment Status:</span>
+              <strong class="text-success" id="ackPaymentDisplay">Paid</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Payment Mode &amp; Gateway:</span>
+              <span class="text-dark fw-semibold" id="ackGatewayDisplay">Online Payment &bull; SBI e-Pay Single Window</span>
+            </div>
+          </div>
+
+          <div class="alert alert-light border small mt-4 mb-0" id="ackNextStepsAlert">
+            <i class="bi bi-info-circle text-primary me-1"></i>
+            <strong>What Happens Next:</strong> <span id="ackNextStepsText">Payment completed; application forwarded to the District Tourism Officer (DTO) for final statutory review and certificate issuance. You can track live updates on your dashboard.</span>
+          </div>
+        </div>
+
+        <!-- Acknowledgement Actions -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Print Slip
+          </button>
+          <button type="button" class="btn btn-gov-primary px-4 py-2 fw-semibold" onclick="returnToCitizenDashboard()" id="ackBtnDashboard">
+            <i class="bi bi-speedometer2 me-1"></i> Go to Citizen Dashboard
+          </button>
+          <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold" onclick="trackFromAck()" id="ackBtnTrack">
+            <i class="bi bi-geo-alt me-1"></i> Track Application
+          </button>
+        </div>
       </section>
 
       <!-- ==============================================================
@@ -1518,12 +1642,17 @@
             </div>
           </div>
           <div class="modal-footer bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <button type="button" class="btn btn-sm btn-outline-primary" id="btnPaySuccessViewReceipt" onclick="viewPaymentReceiptFromSuccess()">
-              <i class="bi bi-receipt me-1"></i> View / Print e-Challan Receipt
+            <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" id="btnPaySuccessViewAck" onclick="showPaymentAcknowledgementFromModal()">
+              <i class="bi bi-file-earmark-check me-1"></i> View Official Acknowledgement Slip
             </button>
-            <button type="button" class="btn btn-sm btn-primary px-4 py-2 fw-semibold shadow-xs" data-bs-dismiss="modal">
-              <i class="bi bi-check2-circle me-1"></i> Continue to Dashboard
-            </button>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPaySuccessViewReceipt" onclick="viewPaymentReceiptFromSuccess()">
+                <i class="bi bi-receipt me-1"></i> e-Challan Receipt
+              </button>
+              <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-semibold shadow-xs" onclick="closePayModalAndGoToDashboard()">
+                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -2084,7 +2213,7 @@
                 ${renderStatusBadge(app)}
               </div>
               <div class="small fw-semibold text-dark mb-1">${app.activityTitle || app.businessName || app.applicantName || 'Tourism Registration'}</div>
-              ${isApproved ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
+              ${isApprovedFull ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
               <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
                 <span><i class="bi bi-geo-alt me-1"></i>${app.district || 'State'}</span>
                 <span><i class="bi bi-tag me-1"></i>${app.categoryName || app.category}</span>
@@ -2140,6 +2269,10 @@
         } else if (isPaidAwaiting) {
           html += `
             <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button type="button" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="showPaymentAcknowledgement('${app.refNo}')" title="View Official Payment Acknowledgement Slip">
+                <i class="bi bi-file-earmark-check"></i>
+                <span>Slip</span>
+              </button>
               <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="viewPaymentReceipt('${app.refNo}')" title="View Official Payment Receipt">
                 <i class="bi bi-receipt"></i>
                 <span>Receipt</span>
@@ -2701,44 +2834,67 @@
 
         // Update active pill styling
         document.querySelectorAll('.pay-cat-pill').forEach(p => {
-          p.classList.remove('btn-warning', 'fw-bold', 'active');
-          p.classList.add('btn-outline-dark', 'fw-semibold');
+          if (!p.classList.contains('btn-success')) {
+            p.classList.remove('btn-warning', 'fw-bold', 'active');
+            p.classList.add('btn-outline-dark', 'fw-semibold');
+          }
         });
         const activePill = document.getElementById('pill-' + arn);
-        if (activePill) {
+        if (activePill && !activePill.classList.contains('btn-success')) {
           activePill.classList.remove('btn-outline-dark', 'fw-semibold');
           activePill.classList.add('btn-warning', 'fw-bold', 'active');
         }
 
-        // Update Banner Details
-        const refEl = document.getElementById('paymentDueRef');
-        if (refEl) refEl.textContent = app.refNo;
-        const catEl = document.getElementById('paymentDueCat');
-        if (catEl) catEl.textContent = app.categoryName || app.category;
-        const gradeEl = document.getElementById('paymentDueGradeBadge');
-        if (gradeEl) {
-          if (app.registrationGrade && app.registrationGrade !== 'Not Applicable') {
-            gradeEl.classList.remove('d-none');
-            gradeEl.textContent = app.registrationGrade;
-          } else {
-            gradeEl.classList.add('d-none');
-          }
-        }
-        const feeVal = app.registrationFee || app.applicableFee || 7000;
-        const feeFmt = '₹' + feeVal.toLocaleString('en-IN');
-        const amtHead = document.getElementById('paymentDueAmountHeading');
-        if (amtHead) amtHead.textContent = feeFmt;
-        const entEl = document.getElementById('paymentDueEnterprise');
-        if (entEl) entEl.textContent = app.businessName || app.applicantName;
-        const btnLbl = document.getElementById('btnPayNowBannerLabel');
-        if (btnLbl) btnLbl.textContent = 'Pay Now (' + feeFmt + ')';
-        const offUserEl = document.getElementById('paymentDueOfficerDisplay');
-        if (offUserEl) offUserEl.textContent = app.paymentActivatedBy ? app.paymentActivatedBy.split('(')[0].trim() : 'Pema Dorjee Sherpa (DTO)';
-        const actDateEl = document.getElementById('paymentDueActivatedDateDisplay');
-        if (actDateEl) actDateEl.textContent = app.paymentActivatedDate || 'Today';
+        const isPaid = (app.paymentStatus === 'Paid' || app.status === 'Payment Received' || app.status === 'APPROVED');
+        const dueBanner = document.getElementById('paymentDueBanner');
+        const recBanner = document.getElementById('paymentReceivedBanner');
 
-        const banner = document.getElementById('paymentDueBanner');
-        if (banner) banner.classList.remove('d-none');
+        if (isPaid) {
+          if (dueBanner) dueBanner.classList.add('d-none');
+          if (recBanner) {
+            recBanner.classList.remove('d-none');
+            const rRef = document.getElementById('paymentReceivedRef');
+            if (rRef) rRef.textContent = app.refNo;
+            const rCat = document.getElementById('paymentReceivedCat');
+            if (rCat) rCat.textContent = app.categoryName || app.category;
+            const rTxn = document.getElementById('paymentReceivedTxnDisplay');
+            if (rTxn) rTxn.textContent = app.paymentTxnId || 'TXN-ONLINE-984210';
+            const rRcpt = document.getElementById('paymentReceivedRcptDisplay');
+            if (rRcpt) rRcpt.textContent = app.paymentReceiptNo || 'RCPT-SK-TCD-2026-' + app.refNo.slice(-5);
+            const rAmt = document.getElementById('paymentReceivedAmtDisplay');
+            if (rAmt) rAmt.textContent = '₹' + (app.amountPaid || app.registrationFee || 7000).toLocaleString('en-IN');
+          }
+          window.activePaymentReceivedRef = app.refNo;
+        } else {
+          if (recBanner) recBanner.classList.add('d-none');
+          if (dueBanner) dueBanner.classList.remove('d-none');
+
+          const refEl = document.getElementById('paymentDueRef');
+          if (refEl) refEl.textContent = app.refNo;
+          const catEl = document.getElementById('paymentDueCat');
+          if (catEl) catEl.textContent = app.categoryName || app.category;
+          const gradeEl = document.getElementById('paymentDueGradeBadge');
+          if (gradeEl) {
+            if (app.registrationGrade && app.registrationGrade !== 'Not Applicable') {
+              gradeEl.classList.remove('d-none');
+              gradeEl.textContent = app.registrationGrade;
+            } else {
+              gradeEl.classList.add('d-none');
+            }
+          }
+          const feeVal = app.registrationFee || app.applicableFee || 7000;
+          const feeFmt = '₹' + feeVal.toLocaleString('en-IN');
+          const amtHead = document.getElementById('paymentDueAmountHeading');
+          if (amtHead) amtHead.textContent = feeFmt;
+          const entEl = document.getElementById('paymentDueEnterprise');
+          if (entEl) entEl.textContent = app.businessName || app.applicantName;
+          const btnLbl = document.getElementById('btnPayNowBannerLabel');
+          if (btnLbl) btnLbl.textContent = 'Pay Now (' + feeFmt + ')';
+          const offUserEl = document.getElementById('paymentDueOfficerDisplay');
+          if (offUserEl) offUserEl.textContent = app.paymentActivatedBy ? app.paymentActivatedBy.split('(')[0].trim() : 'Pema Dorjee Sherpa (DTO)';
+          const actDateEl = document.getElementById('paymentDueActivatedDateDisplay');
+          if (actDateEl) actDateEl.textContent = app.paymentActivatedDate || 'Today';
+        }
       }
 
       function openCitizenPaymentModal(refNo) {
@@ -2823,6 +2979,178 @@
         }
       }
 
+      
+      // ==============================================================
+      // STANDARDIZED PAYMENT SUCCESS & ACKNOWLEDGEMENT ENGINE
+      // (Standardized with Tourism Permission Reference Design)
+      // ==============================================================
+      function copyArnToClipboard() {
+        const arnEl = document.getElementById('ackArnDisplay');
+        const arn = arnEl ? arnEl.textContent.trim() : '';
+        if (arn && navigator.clipboard) {
+          navigator.clipboard.writeText(arn).then(() => {
+            alert('Application Reference Number (' + arn + ') copied to clipboard!');
+          }).catch(() => {});
+        }
+      }
+
+      function showPaymentAcknowledgement(refNo, paymentData) {
+        const targetRef = refNo || window.currentPayingArn || window.activePaymentDueRef || 'SK-TBR-2026-TO-00107';
+        let app = null;
+        if (typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(targetRef);
+        }
+        if (!app && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(targetRef);
+        }
+        if (!app) {
+          app = (paymentData && paymentData.app) || window.currentPaymentApp || {
+            refNo: targetRef,
+            applicantName: 'Norbu Wangdi Bhutia',
+            businessName: 'Sikkim Panoramic Expeditions',
+            categoryName: 'Travel Agent / Tour Operator (TA/TO)',
+            category: 'ta-to',
+            registrationGrade: 'Grade B',
+            registrationFee: 7000,
+            district: 'Gangtok'
+          };
+        }
+
+        window.activeAckArn = targetRef;
+
+        // Hide payment modal if open
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance(modalEl);
+              if (inst) inst.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
+
+        // Hide all workspace sections and show acknowledgement
+        document.querySelectorAll('.workspace-section').forEach(s => s.classList.add('d-none'));
+        const ackSection = document.getElementById('section-acknowledgement');
+        if (ackSection) {
+          ackSection.classList.remove('d-none');
+        }
+
+        // Current formatted date and time
+        const now = new Date();
+        const dateFormatted = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' +
+          now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        // Populate fields
+        const arnEl = document.getElementById('ackArnDisplay');
+        if (arnEl) arnEl.textContent = targetRef;
+
+        const dateEl = document.getElementById('ackDateDisplay');
+        if (dateEl) dateEl.textContent = (paymentData && paymentData.paymentDate) || app.paymentDate || dateFormatted;
+
+        const nameEl = document.getElementById('ackNameDisplay');
+        if (nameEl) nameEl.textContent = app.businessName || app.applicantName || 'Tourism Enterprise';
+
+        const catEl = document.getElementById('ackCatDisplay');
+        if (catEl) {
+          const gradeTxt = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? ' • ' + app.registrationGrade : '';
+          catEl.textContent = (app.categoryName || app.category || 'Travel Agent / Tour Operator (TA/TO)') + gradeTxt;
+        }
+
+        const distEl = document.getElementById('ackDistrictDisplay');
+        if (distEl) distEl.textContent = (app.district || 'Gangtok') + ' District (Paryatan Bhawan, Tadong)';
+
+        const feeVal = (paymentData && (paymentData.fee || paymentData.amount)) || app.registrationFee || app.applicableFee || app.amountPaid || 7000;
+        const feeEl = document.getElementById('ackFeeAmountDisplay');
+        if (feeEl) feeEl.textContent = '₹' + feeVal.toLocaleString('en-IN');
+
+        const txnId = (paymentData && paymentData.txnId) || app.paymentTxnId || ('TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000));
+        const payEl = document.getElementById('ackPaymentDisplay');
+        if (payEl) {
+          payEl.innerHTML = '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Paid (₹' + feeVal.toLocaleString('en-IN') + ') &bull; Ref: ' + txnId + '</span>';
+        }
+
+        const methodTxt = (paymentData && paymentData.method) || app.paymentMethod || 'Online Payment • SBI e-Pay Single Window';
+        const gwEl = document.getElementById('ackGatewayDisplay');
+        if (gwEl) gwEl.textContent = methodTxt;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showPaymentAcknowledgementFromModal() {
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance(modalEl);
+              if (inst) inst.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
+        showPaymentAcknowledgement(window.currentPayingArn, window.lastPaymentData);
+      }
+
+      function closePayModalAndGoToDashboard() {
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance(modalEl);
+              if (inst) inst.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
+        returnToCitizenDashboard();
+      }
+
+      function returnToCitizenDashboard() {
+        const ackSection = document.getElementById('section-acknowledgement');
+        if (ackSection) ackSection.classList.add('d-none');
+        const dashSection = document.getElementById('section-dashboard');
+        if (dashSection) dashSection.classList.remove('d-none');
+
+        // Update applications tables
+        const currentKey = activeScenarioKey || window.activeScenarioKey || 'scenarioPayment';
+        if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios && TourismBusinessData.scenarios[currentKey]) {
+          const scData = TourismBusinessData.scenarios[currentKey];
+          renderRecentTable(scData.applications);
+          renderFullApplicationsTable(scData.applications);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function trackFromAck() {
+        const targetRef = window.activeAckArn || window.currentPayingArn || 'SK-TBR-2026-TO-00107';
+        if (typeof openTrackingFor === 'function') {
+          openTrackingFor(targetRef);
+        }
+      }
+
+      window.copyArnToClipboard = copyArnToClipboard;
+      window.showPaymentAcknowledgement = showPaymentAcknowledgement;
+      window.showPaymentAcknowledgementFromModal = showPaymentAcknowledgementFromModal;
+      window.closePayModalAndGoToDashboard = closePayModalAndGoToDashboard;
+      window.returnToCitizenDashboard = returnToCitizenDashboard;
+      window.trackFromAck = trackFromAck;
+
       function executeCitizenFeePayment(refNo) {
         const arn = refNo || window.currentPayingArn || window.activePaymentDueRef || 'SK-TBR-2026-TO-00107';
         let app = null;
@@ -2835,6 +3163,8 @@
         if (!app) {
           app = window.currentPaymentApp || { refNo: arn, registrationFee: 7000 };
         }
+        if (!Array.isArray(app.history)) app.history = [];
+        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
         const fee = app.registrationFee || app.applicableFee || 7000;
         const selectedMode = document.querySelector('input[name="payGatewayMode"]:checked');
         const method = selectedMode ? (selectedMode.id === 'payModeUPI' ? 'UPI / Bharat QR' : 'NetBanking / Card') : 'UPI / Bharat QR';
@@ -2851,11 +3181,18 @@
 
           let res = { success: true, txnId: txnId, receiptNo: receiptNo };
           if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.processCitizenPayment === 'function') {
-            res = WorkflowEngine.processCitizenPayment(arn, {
-              method: method + ' (SBI e-Pay Gateway)',
-              amount: fee,
-              txnId: txnId
-            });
+            try {
+              const engineRes = WorkflowEngine.processCitizenPayment(arn, {
+                method: method + ' (SBI e-Pay Gateway)',
+                amount: fee,
+                txnId: txnId
+              });
+              if (engineRes && engineRes.success) {
+                res = engineRes;
+              }
+            } catch (err) {
+              console.warn('WorkflowEngine.processCitizenPayment safe bypass:', err);
+            }
           }
 
           // Update in-memory scenario data if in scenarioPayment
@@ -2873,46 +3210,46 @@
             }
           }
 
-          // Switch modal view to SUCCESS VIEW right inside the modal
-          const entryView = document.getElementById('payModalEntryView');
-          const successView = document.getElementById('payModalSuccessView');
-          const modalTitle = document.getElementById('payModalLabel');
+          // Store reference for receipt & acknowledgement
+          window.activePaymentReceivedRef = arn;
+          window.currentPayingArn = arn;
+          window.lastPaymentData = {
+            arn: arn,
+            fee: fee,
+            txnId: txnId,
+            receiptNo: res.receiptNo || receiptNo,
+            method: method + ' (SBI e-Pay Gateway)',
+            app: app
+          };
 
-          if (modalTitle) {
-            modalTitle.innerHTML = '<i class="bi bi-check-circle-fill text-success me-2"></i>Payment Received Successfully';
-          }
-          if (entryView) entryView.classList.add('d-none');
-          if (successView) {
-            successView.classList.remove('d-none');
-            // Populate success view fields
-            const sArn = document.getElementById('paySuccessArn');
-            if (sArn) sArn.textContent = arn;
-            const sApplicant = document.getElementById('paySuccessApplicant');
-            if (sApplicant) sApplicant.textContent = app.businessName || app.applicantName || 'Tourism Enterprise';
-            const sCat = document.getElementById('paySuccessCategory');
-            if (sCat) {
-              const gradeTxt = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? ' • ' + app.registrationGrade : '';
-              sCat.textContent = (app.categoryName || app.category) + gradeTxt;
-            }
-            const sTxn = document.getElementById('paySuccessTxnId');
-            if (sTxn) sTxn.textContent = txnId;
-            const sRcpt = document.getElementById('paySuccessRcptNo');
-            if (sRcpt) sRcpt.textContent = res.receiptNo || receiptNo;
-            const sAmt = document.getElementById('paySuccessAmount');
-            if (sAmt) sAmt.textContent = '₹' + fee.toLocaleString('en-IN');
-          }
-
+          // Re-enable button
           if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-shield-check me-1"></i> Confirm &amp; Pay <span id="confirmPayBtnAmt">₹' + fee.toLocaleString('en-IN') + '</span>';
           }
 
-          // Store reference for receipt viewer
-          window.activePaymentReceivedRef = arn;
-          window.currentPayingArn = arn;
-
-          // Re-render citizen dashboard in background so when modal is closed, it is already updated
+          // Refresh citizen dashboard state in background
           refreshDashboardAfterPayment(arn, fee, txnId, res.receiptNo || receiptNo, app);
+
+          // Close payment modal cleanly
+          const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+          if (modalEl) {
+            try {
+              if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const inst = bootstrap.Modal.getInstance(modalEl);
+                if (inst) inst.hide();
+              }
+            } catch (e) {}
+            modalEl.classList.remove('show');
+            modalEl.style.display = 'none';
+            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+          }
+
+          // Display the standardized Payment Success / Acknowledgement Page
+          showPaymentAcknowledgement(arn, window.lastPaymentData);
 
         }, 600);
       }
@@ -2921,7 +3258,7 @@
         // Top success alert in citizen dashboard
         const alertHtml = `
           <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" id="paymentSuccessLiveAlert" style="border-left: 5px solid #16a34a !important;">
-            <div class="d-flex align-items-start gap-3">
+            <div class="d-flex align-items-start gap-3 flex-wrap">
               <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 40px; height: 40px;">
                 <i class="bi bi-check-lg fs-4"></i>
               </div>
@@ -2939,8 +3276,13 @@
                   <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-arrow-return-right me-1"></i>Returned to Level 2 DTO for Final Sanction</span>
                 </div>
               </div>
+              <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline-success fw-semibold shadow-xs" onclick="showPaymentAcknowledgement('${arn}')">
+                  <i class="bi bi-file-earmark-check me-1"></i> Acknowledgement Slip
+                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         `;
 
@@ -2952,30 +3294,35 @@
         const currentKey = activeScenarioKey || window.activeScenarioKey || 'scenarioPayment';
         if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios && TourismBusinessData.scenarios[currentKey]) {
           const scData = TourismBusinessData.scenarios[currentKey];
-          renderApplicationsTable(scData.applications);
+          renderRecentTable(scData.applications);
           renderFullApplicationsTable(scData.applications);
 
-          // Check if any applications are still pending payment in this scenario
-          const remainingPending = scData.applications.filter(a => (a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending' || (a.paymentActivated && a.paymentStatus !== 'Paid')));
-          if (remainingPending.length > 0) {
-            selectPaymentApplication(remainingPending[0].refNo);
-          } else {
-            const pDue = document.getElementById('paymentDueBanner');
-            if (pDue) pDue.classList.add('d-none');
-            const pRec = document.getElementById('paymentReceivedBanner');
-            if (pRec) {
-              pRec.classList.remove('d-none');
-              const rRef = document.getElementById('paymentReceivedRef');
-              if (rRef) rRef.textContent = arn;
-              const rCat = document.getElementById('paymentReceivedCat');
-              if (rCat) rCat.textContent = app ? (app.categoryName || app.category) : 'TA/TO';
-              const rTxn = document.getElementById('paymentReceivedTxnDisplay');
-              if (rTxn) rTxn.textContent = txnId;
-              const rRcpt = document.getElementById('paymentReceivedRcptDisplay');
-              if (rRcpt) rRcpt.textContent = receiptNo;
-              const rAmt = document.getElementById('paymentReceivedAmtDisplay');
-              if (rAmt) rAmt.textContent = '₹' + fee.toLocaleString('en-IN');
+          // Update pill appearance for paid application
+          const paidPill = document.getElementById('pill-' + arn);
+          if (paidPill) {
+            paidPill.classList.remove('btn-outline-dark', 'btn-warning');
+            paidPill.classList.add('btn-success', 'text-white', 'fw-bold');
+            if (!paidPill.innerHTML.includes('✓')) {
+              paidPill.innerHTML = paidPill.innerHTML.replace(/\)$/, ' &bull; Paid ✓)');
             }
+          }
+
+          // Hide payment due banner and show payment received banner
+          const pDue = document.getElementById('paymentDueBanner');
+          if (pDue) pDue.classList.add('d-none');
+          const pRec = document.getElementById('paymentReceivedBanner');
+          if (pRec) {
+            pRec.classList.remove('d-none');
+            const rRef = document.getElementById('paymentReceivedRef');
+            if (rRef) rRef.textContent = arn;
+            const rCat = document.getElementById('paymentReceivedCat');
+            if (rCat) rCat.textContent = app ? (app.categoryName || app.category) : 'TA/TO';
+            const rTxn = document.getElementById('paymentReceivedTxnDisplay');
+            if (rTxn) rTxn.textContent = txnId;
+            const rRcpt = document.getElementById('paymentReceivedRcptDisplay');
+            if (rRcpt) rRcpt.textContent = receiptNo;
+            const rAmt = document.getElementById('paymentReceivedAmtDisplay');
+            if (rAmt) rAmt.textContent = '₹' + fee.toLocaleString('en-IN');
           }
         }
       }
@@ -2983,19 +3330,21 @@
       function viewPaymentReceiptFromSuccess() {
         const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
         if (modalEl) {
-          if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-            const modal = bootstrap.Modal.getInstance(modalEl);
-            if (modal) modal.hide();
-          } else {
-            modalEl.classList.remove('show');
-            modalEl.style.display = 'none';
-          }
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const modal = bootstrap.Modal.getInstance(modalEl);
+              if (modal) modal.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
         }
         setTimeout(function () {
           viewPaymentReceipt(window.currentPayingArn || window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107');
         }, 300);
       }
-
 
       function executeCitizenPaymentFail() {
         const app = window.currentPaymentApp || { refNo: window.activePaymentDueRef || 'SK-TBR-2026-TO-00107' };
@@ -3152,6 +3501,12 @@
       window.openResubmitModal = openResubmitModal;
       window.handleCitizenResubmit = handleCitizenResubmit;
       window.openCitizenPaymentModal = openCitizenPaymentModal;
+      window.selectPaymentApplication = selectPaymentApplication;
+      window.showPaymentAcknowledgement = showPaymentAcknowledgement;
+      window.showPaymentAcknowledgementFromModal = showPaymentAcknowledgementFromModal;
+      window.closePayModalAndGoToDashboard = closePayModalAndGoToDashboard;
+      window.returnToCitizenDashboard = returnToCitizenDashboard;
+      window.copyArnToClipboard = copyArnToClipboard;
       window.executeCitizenFeePayment = executeCitizenFeePayment;
       window.executeCitizenPaymentSubmit = executeCitizenFeePayment;
       window.executeCitizenPaymentFail = executeCitizenPaymentFail;

@@ -158,6 +158,26 @@
       color: #94a3b8;
       border: 1px solid #cbd5e1;
     }
+  
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #ackSlipPrintable, #ackSlipPrintable * {
+        visibility: visible !important;
+      }
+      #ackSlipPrintable {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 24px !important;
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+      }
+    }
   </style>
 </head>
 <body data-theme="royal-navy" class="d-flex flex-column min-vh-100 bg-light">
@@ -341,7 +361,7 @@
         <!-- ==============================================================
              SECTION A: WELCOME & APPLICATION INSTRUCTIONS (Standardized Layout)
              ============================================================== -->
-        <div class="card border-0 bg-white p-4 shadow-xs mb-4">
+        <div class="card border-0 bg-white p-4 shadow-xs mb-4" id="welcomeCitizenCard">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
@@ -467,6 +487,114 @@
             </div>
           </div>
         </div>
+
+      
+        <!-- ==============================================================
+             STANDARDIZED PAYMENT SUCCESS & ACKNOWLEDGEMENT VIEW
+             (Standardized with Tourism Permission Reference Design)
+             ============================================================== -->
+        <section id="section-acknowledgement" class="workspace-section d-none">
+          <div class="text-center py-3 mb-4">
+            <div class="gov-icon-circle gov-icon-circle-lg bg-success text-white mx-auto mb-3 shadow-sm d-flex align-items-center justify-content-center">
+              <i class="bi bi-check-lg" style="font-size: 2.5rem;"></i>
+            </div>
+            <h2 class="h3 fw-bold text-dark mb-2">Application Submitted Successfully!</h2>
+            <p class="text-muted mx-auto mb-0" style="max-width: 640px;">
+              Your statutory registration fee payment has been completed successfully. Please keep the Application Reference Number (ARN) for future tracking and official reference.
+            </p>
+          </div>
+
+          <!-- Official Acknowledgement Slip Box -->
+          <div class="card border p-4 rounded-3 mb-4 bg-white shadow-xs" id="ackSlipPrintable">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 border-bottom pb-3 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <img src="../../common/images/sikkim-logo.png" onerror="this.src='../../common/assets/images/sikkim-government-logo-dark.png'" alt="Sikkim Emblem" style="height: 48px; width: auto;">
+                <div>
+                  <span class="small text-uppercase fw-bold text-muted d-block" style="letter-spacing: 0.5px;">Government of Sikkim</span>
+                  <div class="fw-bold text-dark">Tourism &amp; Civil Aviation Department</div>
+                  <span class="small text-muted" id="ackSlipServiceTitle">Adventure Tour Operator &amp; Guide Registration Acknowledgement Slip</span>
+                </div>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                  <i class="bi bi-check-circle-fill me-1"></i> PAYMENT SUCCESSFUL
+                </span>
+                <div class="small text-muted mt-1" id="ackDateDisplay">-</div>
+              </div>
+            </div>
+
+            <!-- Application Reference Callout -->
+            <div class="p-3 bg-light rounded-3 mb-4 text-center border">
+              <span class="text-muted small d-block">Official Application Reference Number (ARN):</span>
+              <span class="fs-4 fw-bold font-monospace text-primary d-inline-block mt-1" id="ackArnDisplay">-</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2 py-0 px-2" onclick="copyArnToClipboard()" title="Copy ARN">
+                <i class="bi bi-copy"></i> Copy
+              </button>
+            </div>
+
+            <!-- Slip Field Grid -->
+            <div class="row g-3 small" id="ackDetailsGrid">
+              <div class="col-md-6">
+                <span class="text-muted d-block">Applicant / Enterprise Name:</span>
+                <strong class="text-dark" id="ackNameDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Registration Category:</span>
+                <strong class="text-dark" id="ackCatDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Adventure Activity / Classification:</span>
+                <strong class="text-dark" id="ackActivityDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">District / Jurisdiction:</span>
+                <strong class="text-dark" id="ackDistrictDisplay">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Designated Issuing Office:</span>
+                <strong class="text-dark" id="ackOfficeDisplay">Tourism &amp; Civil Aviation Dept., Paryatan Bhawan, Tadong</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Applicable Statutory Fee Paid:</span>
+                <strong class="text-success" id="ackFeeAmountDisplay">₹1,500</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Payment Status:</span>
+                <strong class="text-success" id="ackPaymentDisplay">Paid</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Head of Account:</span>
+                <span class="font-monospace text-dark">0070-02-105-01 (Statutory Registration)</span>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Statutory Validity:</span>
+                <strong class="text-dark">1 Year</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Payment Mode &amp; Gateway:</span>
+                <span class="text-dark fw-semibold" id="ackGatewayDisplay">Online Payment &bull; Sikkim Single Window Gateway</span>
+              </div>
+            </div>
+
+            <div class="alert alert-light border small mt-4 mb-0" id="ackNextStepsAlert">
+              <i class="bi bi-info-circle text-primary me-1"></i>
+              <strong>What Happens Next:</strong> <span id="ackNextStepsText">Payment completed; application forwarded to the designated authority (DTO) for final statutory approval and certificate issuance. You can track live decisions on your Citizen Dashboard.</span>
+            </div>
+          </div>
+
+          <!-- Acknowledgement Actions -->
+          <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> Print Slip
+            </button>
+            <button type="button" class="btn btn-gov-primary px-4 py-2 fw-semibold" onclick="returnToCitizenDashboard()" id="ackBtnDashboard">
+              <i class="bi bi-speedometer2 me-1"></i> Go to Citizen Dashboard
+            </button>
+            <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold" onclick="trackFromAck()" id="ackBtnTrack">
+              <i class="bi bi-geo-alt me-1"></i> Track Application
+            </button>
+          </div>
+        </section>
 
       </main>
   </div>
@@ -730,7 +858,7 @@
             </div>
             <div class="d-flex justify-content-between align-items-center pt-1">
               <span class="fw-bold text-dark">Statutory Fee Payable:</span>
-              <span class="fw-bold text-success fs-5">&#8377;1,500</span>
+              <span class="fw-bold text-success fs-5" id="payModalFeeDisplay">&#8377;1,500</span>
             </div>
           </div>
 
@@ -1276,6 +1404,8 @@
         let actionBtns = '';
         if (stage === 'Payment Activated' || status === 'PAYMENT_ACTIVATED') {
           actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay &#8377;1,500</button>`;
+        } else if (stage.includes('Payment Received') || stage.includes('DTO Approval') || (app.payment && app.payment.paid) || status === 'PAID') {
+          actionBtns += `<button class="btn btn-sm btn-outline-success py-1 px-2 text-nowrap shadow-xs me-1" onclick="showPaymentAcknowledgement('${arn}')" title="View Payment Acknowledgement Slip"><i class="bi bi-file-earmark-check me-1"></i>Slip</button>`;
         } else if (status === 'RETURNED' || status === 'Returned for Correction') {
           actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'adventure-tour-operator'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
         } else if (status === 'APPROVED' || status === 'Approved') {
@@ -1384,18 +1514,173 @@
       renderApplications(filtered);
     }
 
+    function copyArnToClipboard() {
+      const arnEl = document.getElementById('ackArnDisplay');
+      const arn = arnEl ? arnEl.textContent.trim() : '';
+      if (arn && navigator.clipboard) {
+        navigator.clipboard.writeText(arn).then(() => {
+          alert('Application Reference Number (' + arn + ') copied to clipboard!');
+        }).catch(() => {});
+      }
+    }
+
+    function showPaymentAcknowledgement(arn, paymentData) {
+      const targetRef = arn || currentPayingArn || 'ATO-2026-004';
+      window.activeAckArn = targetRef;
+      currentPayingArn = targetRef;
+
+      let app = null;
+      if (window.AdventureWorkflowEngine) {
+        app = AdventureWorkflowEngine.getApplicationByArn(targetRef);
+      }
+      if (!app && currentScenarioData && currentScenarioData.applications) {
+        app = currentScenarioData.applications.find(a => (a.refNo === targetRef || a.arn === targetRef));
+      }
+      if (!app) {
+        app = {
+          arn: targetRef,
+          refNo: targetRef,
+          applicantName: 'Passang Doma Bhutia',
+          enterpriseName: 'Himalayan Summit Expeditions',
+          categoryName: 'Adventure Tour Operator',
+          category: 'adventure-tour-operator',
+          adventureActivities: ['Mountaineering & High-Altitude Trekking'],
+          district: 'Gangtok',
+          feeAmount: 1500
+        };
+      }
+
+      // Hide modal if open
+      const payModalEl = document.getElementById('citizenPaymentModal');
+      if (payModalEl) {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+          const inst = bootstrap.Modal.getInstance(payModalEl);
+          if (inst) inst.hide();
+        }
+        payModalEl.classList.remove('show');
+        payModalEl.style.display = 'none';
+        document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+      }
+
+      // Hide dashboard sections and show acknowledgement
+      const welcomeCard = document.getElementById('welcomeCitizenCard');
+      if (welcomeCard) welcomeCard.classList.add('d-none');
+      const actionCont = document.getElementById('actionOrientedContainer');
+      if (actionCont) actionCont.classList.add('d-none');
+      const emptyBanner = document.getElementById('emptyStateBanner');
+      if (emptyBanner) emptyBanner.classList.add('d-none');
+      const appSection = document.getElementById('applicationsSection');
+      if (appSection) appSection.classList.add('d-none');
+      const notifsCard = document.getElementById('recentNotifsCard') || document.getElementById('recentNotifsSection');
+      if (notifsCard) notifsCard.classList.add('d-none');
+
+      const ackSection = document.getElementById('section-acknowledgement');
+      if (ackSection) ackSection.classList.remove('d-none');
+
+      // Populate Acknowledgement Slip
+      const now = new Date();
+      const dateFormatted = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' +
+        now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+      const arnEl = document.getElementById('ackArnDisplay');
+      if (arnEl) arnEl.textContent = targetRef;
+
+      const dateEl = document.getElementById('ackDateDisplay');
+      if (dateEl) dateEl.textContent = (paymentData && paymentData.paidDate) || (app.payment && app.payment.paidDate) || dateFormatted;
+
+      const nameEl = document.getElementById('ackNameDisplay');
+      if (nameEl) nameEl.textContent = app.enterpriseName || app.applicantName || 'Passang Doma Bhutia';
+
+      const isGuide = (app.category === 'guide-registration' || app.typeId === 'guide-registration' || app.categoryCode === 'GR' || (targetRef && targetRef.includes('GR')));
+      const catEl = document.getElementById('ackCatDisplay');
+      if (catEl) {
+        catEl.textContent = isGuide ? 'Guide Registration (Professional Certification)' : 'Adventure Tour Operator (Commercial Enterprise)';
+      }
+
+      const actEl = document.getElementById('ackActivityDisplay');
+      if (actEl) {
+        if (isGuide) {
+          actEl.textContent = app.guideType || 'Certified Mountain & Trekking Guide';
+        } else {
+          const acts = (app.adventureActivities && app.adventureActivities.length > 0) ? app.adventureActivities.join(', ') : 'Mountaineering, Trekking & River Rafting';
+          actEl.textContent = acts;
+        }
+      }
+
+      const distEl = document.getElementById('ackDistrictDisplay');
+      if (distEl) distEl.textContent = (app.district || 'Gangtok') + ' Circle';
+
+      const feeVal = (paymentData && paymentData.fee) || app.feeAmount || (app.payment && app.payment.amount) || 1500;
+      const feeEl = document.getElementById('ackFeeAmountDisplay');
+      if (feeEl) feeEl.textContent = '₹' + feeVal.toLocaleString('en-IN');
+
+      const txnId = (paymentData && paymentData.txnId) || (app.payment && app.payment.transactionRef) || ('TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000));
+      const payEl = document.getElementById('ackPaymentDisplay');
+      if (payEl) {
+        payEl.innerHTML = '<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Paid (₹' + feeVal.toLocaleString('en-IN') + ') &bull; Ref: ' + txnId + '</span>';
+      }
+
+      const methodTxt = (paymentData && paymentData.method) || (app.payment && app.payment.paymentMethod) || 'Online Payment • Single Window Gateway (UPI / NetBanking)';
+      const gwEl = document.getElementById('ackGatewayDisplay');
+      if (gwEl) gwEl.textContent = methodTxt;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function returnToCitizenDashboard() {
+      const ackSection = document.getElementById('section-acknowledgement');
+      if (ackSection) ackSection.classList.add('d-none');
+
+      const welcomeCard = document.getElementById('welcomeCitizenCard');
+      if (welcomeCard) welcomeCard.classList.remove('d-none');
+      const actionCont = document.getElementById('actionOrientedContainer');
+      if (actionCont) actionCont.classList.remove('d-none');
+      const appSection = document.getElementById('applicationsSection');
+      if (appSection) appSection.classList.remove('d-none');
+      const notifsCard = document.getElementById('recentNotifsCard') || document.getElementById('recentNotifsSection');
+      if (notifsCard) notifsCard.classList.remove('d-none');
+
+      if (currentScenarioData) {
+        renderCitizenDashboard(currentScenarioData.id);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function trackFromAck() {
+      const targetRef = window.activeAckArn || currentPayingArn || 'ATO-2026-004';
+      if (typeof trackApplication === 'function') {
+        trackApplication(targetRef);
+      }
+    }
+
     function openCitizenPaymentModal(arn) {
       currentPayingArn = arn;
       let applicantName = 'Passang Doma Bhutia';
       let catName = 'Adventure Tour Operator';
       let district = 'Gangtok';
+      let feeAmount = 1500;
 
+      let app = null;
       if (window.AdventureWorkflowEngine) {
-        const app = AdventureWorkflowEngine.getApplicationByArn(arn);
-        if (app) {
-          applicantName = app.applicantName || app.enterpriseName;
-          catName = app.categoryName || (app.category === 'guide-registration' ? 'Guide Registration' : 'Adventure Tour Operator');
-          district = app.district;
+        app = AdventureWorkflowEngine.getApplicationByArn(arn);
+      }
+      if (!app && currentScenarioData && currentScenarioData.applications) {
+        app = currentScenarioData.applications.find(a => (a.refNo === arn || a.arn === arn));
+      }
+
+      if (app) {
+        applicantName = app.enterpriseName || app.applicantName;
+        catName = app.categoryName || (app.category === 'guide-registration' ? 'Guide Registration' : 'Adventure Tour Operator');
+        district = app.district || 'Gangtok';
+        feeAmount = app.feeAmount || (app.payment && app.payment.amount) || 1500;
+
+        // Check if already paid
+        if ((app.payment && app.payment.paid) || app.status === 'PAID' || app.status === 'Payment Received') {
+          showPaymentAcknowledgement(arn, { fee: feeAmount, txnId: (app.payment && app.payment.transactionRef) || 'TXN-PAID-ALREADY' });
+          return;
         }
       }
 
@@ -1403,42 +1688,74 @@
       document.getElementById('payModalApplicant').textContent = applicantName;
       document.getElementById('payModalCategory').textContent = `${catName} (${district})`;
 
+      const feeDisp = document.getElementById('payModalFeeDisplay');
+      if (feeDisp) feeDisp.textContent = '₹' + feeAmount.toLocaleString('en-IN');
+      const btnAmt = document.getElementById('confirmPayBtnAmt');
+      if (btnAmt) btnAmt.textContent = '₹' + feeAmount.toLocaleString('en-IN');
+
       const modal = new bootstrap.Modal(document.getElementById('citizenPaymentModal'));
       modal.show();
     }
 
     function executeCitizenFeePayment() {
       if (!currentPayingArn) return;
-      const txnId = 'TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000);
-      
-      if (window.AdventureWorkflowEngine) {
-        AdventureWorkflowEngine.submitCitizenPayment(currentPayingArn, txnId, 'NetBanking / UPI');
+      const btn = document.getElementById('confirmPaymentBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing Payment...';
       }
 
-      const payModalEl = document.getElementById('citizenPaymentModal');
-      const payModal = bootstrap.Modal.getInstance(payModalEl);
-      if (payModal) payModal.hide();
+      setTimeout(function () {
+        const txnId = 'TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000);
+        const selectedMode = document.querySelector('input[name="payGatewayMode"]:checked');
+        const mode = selectedMode ? (selectedMode.id === 'payModeUPI' ? 'UPI / Bharat QR' : 'NetBanking / Card') : 'UPI / Bharat QR';
+        
+        let app = null;
+        if (window.AdventureWorkflowEngine) {
+          AdventureWorkflowEngine.submitCitizenPayment(currentPayingArn, txnId, mode);
+          app = AdventureWorkflowEngine.getApplicationByArn(currentPayingArn);
+        }
 
-      // Show Toast / Alert
-      const actionContainer = document.getElementById('actionOrientedContainer');
-      actionContainer.insertAdjacentHTML('afterbegin', `
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-check-circle-fill fs-5 text-success"></i>
-            <div>
-              <strong>Payment Received Successfully!</strong>
-              <div class="small">Statutory fee of &#8377;1,500 deposited for <strong>${currentPayingArn}</strong>. Transaction Ref: <code>${txnId}</code>. File forwarded to DTO for Final Sanction.</div>
-            </div>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      `);
+        // Update scenario data if active
+        if (currentScenarioData && currentScenarioData.applications) {
+          const scApp = currentScenarioData.applications.find(a => (a.refNo === currentPayingArn || a.arn === currentPayingArn));
+          if (scApp) {
+            scApp.status = 'Payment Received';
+            scApp.statusLabel = 'Payment Received – Awaiting DTO Final Sanction';
+            scApp.currentStage = 'DTO Approval & Certificate';
+            scApp.stage = 'DTO Approval & Certificate';
+            scApp.statusBadge = 'bg-success-subtle text-success border border-success-subtle';
+            scApp.payment = {
+              paid: true,
+              amount: 1500,
+              transactionRef: txnId,
+              paymentMethod: mode
+            };
+          }
+        }
+        if (currentScenarioData && currentScenarioData.paymentRequired && currentScenarioData.paymentRequired.refNo === currentPayingArn) {
+          delete currentScenarioData.paymentRequired;
+        }
 
-      // Refresh applications list
-      if (currentScenarioData) {
-        renderCitizenDashboard(currentScenarioData.id);
-      }
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-lock-fill me-1"></i>Confirm &amp; Pay <span id="confirmPayBtnAmt">₹1,500</span>';
+        }
+
+        const fee = (app && app.feeAmount) || 1500;
+        showPaymentAcknowledgement(currentPayingArn, {
+          fee: fee,
+          txnId: txnId,
+          method: 'Online Payment • Single Window Gateway (' + mode + ')',
+          paidDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        });
+      }, 600);
     }
+
+    window.copyArnToClipboard = copyArnToClipboard;
+    window.showPaymentAcknowledgement = showPaymentAcknowledgement;
+    window.returnToCitizenDashboard = returnToCitizenDashboard;
+    window.trackFromAck = trackFromAck;
 
     function viewIssuedCertificate(arn) {
       let app = null;
@@ -1590,6 +1907,13 @@
         select.value = currentScen;
       }
       renderCitizenDashboard(currentScen);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('view') === 'acknowledgement') {
+        setTimeout(() => {
+          showPaymentAcknowledgement(urlParams.get('arn') || 'ATO-2026-004');
+        }, 150);
+      }
 
       // Mobile sidebar drawer toggler
       const toggleBtn = document.getElementById('gov-sidebar-toggle');
