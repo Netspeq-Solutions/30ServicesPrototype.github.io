@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Officer dashboard - e-Trade Licence, Urban Development Department, Government of Sikkim.">
+  <title>Officer Dashboard | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div id="dashRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script src="tl-view.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, V = window.TLView, D = App.data, esc = App.esc, ST = F.ST;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'dash' });
+      var u = App.me(session), me = session.userId;
+      var visible = D.applications.filter(function (a) { return F.visibleTo(a, me); });
+      var mine = visible.filter(function (a) { return F.canAct(a, me) && a.status !== ST.BR_UPLOADED; });
+      var br = visible.filter(function (a) { return F.canAct(a, me) && a.status === ST.BR_UPLOADED; });
+      function by(st) { return visible.filter(function (a) { return st.indexOf(a.status) !== -1; }); }
+      function sortQ(list) { return list.slice().sort(function (a, b) { return (a.updatedOn || '') < (b.updatedOn || '') ? -1 : 1; }); } // oldest first
+
+      var lics = D.licences.filter(function (l) { return l.circle === u.circle; });
+      var activeLics = lics.filter(function (l) { return F.licenceState(l) === 'Active'; }).length;
+      var fyStart = (+F.fyEnd(D.demoToday).slice(0, 4) - 1) + '-04-01';
+      var issuedFy = D.applications.filter(function (a) { return a.status === ST.ISSUED && a.updatedOn >= fyStart; }).length +
+        D.licences.reduce(function (n, l) { return n + l.renewals.filter(function (r) { return r.on >= fyStart && !D.applications.some(function (a) { return a.appId === r.appId; }); }).length; }, 0);
+      function daysWaiting(a) { return Math.max(0, F.daysBetween(a.updatedOn || D.demoToday, D.demoToday)); }
+      function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
+      var tile = App.dashTile, html = '', all = 'applications.html?view=all';
+      var eyebrow = esc(u.designation) + ' &bull; ' + esc(App.circle(u.circle).name) + ' &bull; ' + App.fmtDate(D.demoToday);
+
+      // ================= Department Admin (settings; view-only on applications) =================
+      if (u.role === 'admin') {
+        var due = lics.filter(function (l) { return F.renewalDue(l) && !F.openAppFor(l.licenceNo); }).length;
+        var mw = D.config.renewalWindow.monthsBefore;
+        var revised = lics.filter(function (l) { return l.fees && l.fees.history && l.fees.history.length; }).length;
+        html = App.dashHero({ id: 'pageTitle', eyebrow: eyebrow, title: App.greeting(u.name),
+          summary: 'Keep the items and document types masters, the renewal amounts of licences and the renewal settings up to date. Applications are view-only for this account.',
+          action: '<a class="btn btn-sm btn-primary" href="fee-master.html"><i class="bi bi-currency-rupee me-1" aria-hidden="true"></i>Renewal Amounts</a>',
+          chips: [['bi-patch-check', plural(activeLics, 'active licence', 'active licences')], ['bi-calendar-x', plural(due, 'renewal', 'renewals') + ' due'], ['bi-calendar-range', 'Renewal opens ' + mw + ' month' + (mw === 1 ? '' : 's') + ' before expiry']] }) +
+          App.sectionTitle('Go to') + '<div class="row g-3">' +
+          tile('bi-currency-rupee', 'warning', 'Renewal Amounts &amp; Settings', revised ? plural(revised, 'licence', 'licences') + ' with a revised renewal amount' : 'Renewal amount per licence and renewal window', 'fee-master.html', '') +
+          tile('bi-diagram-3', 'primary', 'Items Master', 'Items and sub-items applicants choose from, and the extra documents each needs', 'items-master.html', D.config.categories.filter(function (c) { return c.active !== false; }).length) +
+          tile('bi-file-earmark-check', 'info', 'Document Types', 'Documents applicants are asked for, and which items need them', 'documents-master.html', F.docTypes().length) +
+          tile('bi-patch-check', 'success', 'Licence Register', 'All licences of the circle', 'licences.html', activeLics) +
+          tile('bi-list-ul', 'primary', 'All Applications', 'View only', all, visible.length) +
+          tile('bi-bar-chart-line', 'info', 'Reports &amp; Audit Log', 'Summaries, exports and every action taken', 'reports.html', '') +
+          '</div>';
+        document.getElementById('dashRoot').innerHTML = html;
+        return;
+      }
+
+      // ================= Officers =================
+      var queue = sortQ(mine), brQ = sortQ(br), pending = mine.length + br.length;
+      var first = queue[0] || brQ[0] || null;
+      var next = first ? { label: 'Next up &bull; waiting ' + plural(daysWaiting(first), 'day', 'days'), title: esc(App.appName(first)),
+        meta: '<span class="tl-ref-id">' + esc(first.appId) + '</span> &bull; ' + esc(first.kind) + ' &bull; ' + esc(App.category(first.category).short),
+        pillHtml: App.pill(first.status), href: 'review.html?app=' + encodeURIComponent(first.appId), button: first.status === ST.BR_UPLOADED ? 'Verify BR' : 'Open' } : null;
+      var roleTitle = App.ROLE_TITLES[u.role];
+      var summary = pending ? '<strong>' + plural(pending, 'application', 'applications') + '</strong> pending with ' + roleTitle + '.' : 'Nothing pending with ' + roleTitle + ' right now.';
+      var chips = [];
+      if (u.role === 'inspector') chips = [['bi-search', by([ST.UNDER_INSPECTION]).length + ' under inspection'], ['bi-arrow-return-left', by([ST.RETURNED]).length + ' with applicants'], ['bi-patch-check', issuedFy + ' issued this FY']];
+      else if (u.role === 'bo') chips = [['bi-arrow-clockwise', mine.filter(function (a) { return a.kind === 'Renewal'; }).length + ' renewals to approve'], ['bi-hourglass-split', by([ST.WITH_SS, ST.WITH_HOD]).length + ' with senior officers'], ['bi-patch-check', issuedFy + ' issued this FY']];
+      else if (u.role === 'ss') chips = [['bi-hourglass-split', by([ST.WITH_HOD]).length + ' with HOD'], ['bi-currency-rupee', by([ST.PAYMENT, ST.BR_UPLOADED]).length + ' at payment stage'], ['bi-patch-check', issuedFy + ' issued this FY']];
+      else chips = [['bi-currency-rupee', by([ST.PAYMENT, ST.BR_UPLOADED, ST.BR_INVALID]).length + ' at payment stage'], ['bi-patch-check', issuedFy + ' issued this FY']];
+
+      var reviewSub = { inspector: 'New and resubmitted applications', bo: 'Forwarded by Inspectors, and renewals to approve', ss: 'Forwarded by the BOs', hod: 'Final approval of new licences and changes' }[u.role];
+      html = App.dashHero({ id: 'pageTitle', eyebrow: eyebrow, title: App.greeting(u.name), summary: summary, chips: chips,
+          action: first ? '<a class="btn btn-sm btn-primary" href="applications.html?view=mine"><i class="bi bi-inbox me-1" aria-hidden="true"></i>Open My Work Queue</a>' : '' }) +
+        App.dashNext(next, 'New applications will appear here as soon as they reach ' + roleTitle + '.') +
+        App.sectionTitle('Go to') + '<div class="row g-3">' +
+        tile('bi-inbox', 'primary', u.role === 'hod' ? 'Approve Applications' : 'Review Applications', reviewSub, 'applications.html?view=mine', mine.length) +
+        (u.role === 'inspector' || u.role === 'bo' ? tile('bi-receipt', 'info', 'Verify Bank Receipts', 'Check the BR and originals, then generate the licence', 'applications.html?view=br', br.length) : '') +
+        tile('bi-list-ul', 'secondary', 'All Applications', 'Search any application, at any stage', all, visible.length) +
+        tile('bi-patch-check', 'success', 'Licence Register', 'Issued licences, renewals and versions', 'licences.html', activeLics) +
+        tile('bi-bar-chart-line', 'warning', 'Reports &amp; Audit Log', 'Summaries, exports and every action taken', 'reports.html', '') +
+        '</div>';
+      document.getElementById('dashRoot').innerHTML = html;
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Items and sub-items master – e-Trade Licence, Urban Development Department, Government of Sikkim.">
+  <title>Items &amp; Sub-items Master | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0">Items &amp; Sub-items Master</h1><span id="modePill"></span></div>
+        <p class="text-muted small mb-0">Purposes for which a licence can be applied (items) and the activities under them (sub-items), as per the UDD notification. Some items have no sub-items. Applicants see only active entries.</p></div>
+      <div class="d-flex flex-wrap gap-2" id="pageActions"></div>
+    </div>
+    <div class="card border-0 shadow-xs mb-3"><div class="card-body d-flex flex-wrap gap-3 align-items-end">
+      <fieldset><legend class="form-label small fw-semibold mb-1">Applicant type</legend>
+        <div class="btn-group" role="group" id="typeSwitch"></div></fieldset>
+      <div class="flex-grow-1" style="min-width: 220px;"><label for="fSearch" class="form-label small fw-semibold">Search items and sub-items</label><input id="fSearch" type="search" class="form-control form-control-sm" placeholder="e.g. meat, garage, pharma"></div>
+      <div class="form-check mb-1"><input class="form-check-input" type="checkbox" id="fInactive"><label class="form-check-label small" for="fInactive">Show inactive</label></div>
+    </div></div>
+    <div id="itemsRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'items' });
+      var $ = function (id) { return document.getElementById(id); };
+      var u = App.me(session);
+      var canEdit = u.role === 'admin'; // the Department Admin maintains the items master
+      var type = 'IND', open = {};
+      D.config.itemHistory = D.config.itemHistory || [];
+      $('modePill').innerHTML = canEdit ? App.pill('Active', 'You can edit the master') : App.pill('Superseded', 'View only');
+      if (canEdit) $('pageActions').innerHTML = '<button type="button" class="btn btn-sm btn-primary" id="btnAddItem"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Item</button>';
+
+      function usage(cat, sub) {
+        function uses(x) { return x.category === cat.code && (!sub || x.item === sub.name || (sub.formerNames || []).indexOf(x.item) !== -1); }
+        return D.applications.filter(uses).length + D.licences.filter(uses).length;
+      }
+      // Documents mapped to an item / sub-item (from the document types master).
+      function docBadges(docs) {
+        return (docs || []).map(function (m) { var d = F.docType(m.key); return d ? '<span class="badge ' + (d.active === false ? 'bg-light text-muted' : 'bg-info-subtle text-info-emphasis') + ' border me-1 mb-1 text-wrap text-start">' + esc(d.name) + (m.req === 'O' ? ' (optional)' : '') + '</span>' : ''; }).join('');
+      }
+      function askText(c) {
+        var on = Object.keys(F.QUESTIONS).filter(function (q) { return (c.asks || {})[q]; });
+        return on.length ? on.map(function (q) { return '<span class="badge bg-light text-dark border me-1 mb-1 text-wrap text-start">' + esc(F.QUESTIONS[q]) + '</span>'; }).join('') : '<span class="text-muted">none</span>';
+      }
+      function status(x) { return x.active === false ? App.pill('Superseded', 'Inactive') : App.pill('Active', 'Active'); }
+      function btn(act, code, sub, icon, label, cls) {
+        return '<button type="button" class="btn btn-sm ' + (cls || 'btn-outline-primary') + '" data-act="' + act + '" data-code="' + esc(code) + '"' + (sub ? ' data-sub="' + esc(sub) + '"' : '') + '><i class="bi ' + icon + ' me-1" aria-hidden="true"></i>' + label + '</button>';
+      }
+
+      function render() {
+        $('typeSwitch').innerHTML = Object.keys(F.TYPES).map(function (t) {
+          return '<input type="radio" class="btn-check" name="mType" id="mType' + t + '" value="' + t + '"' + (t === type ? ' checked' : '') + '><label class="btn btn-sm btn-outline-primary" for="mType' + t + '">' + esc(F.TYPES[t].label) + ' (' + F.categoriesOf(t, true).length + ')</label>';
+        }).join('');
+        $('typeSwitch').querySelectorAll('input').forEach(function (r) { r.addEventListener('change', function () { type = r.value; render(); }); });
+        var q = $('fSearch').value.trim().toLowerCase(), showInactive = $('fInactive').checked;
+        var cats = F.categoriesOf(type, true).filter(function (c) { return showInactive || c.active !== false; });
+        var list = cats.map(function (c, n) {
+          var subs = F.items(c.code, true).filter(function (s) { return showInactive || s.active !== false; });
+          var hit = !q || c.name.toLowerCase().indexOf(q) !== -1 || subs.some(function (s) { return s.name.toLowerCase().indexOf(q) !== -1; });
+          if (!hit) return '';
+          var expanded = !!open[c.code] || !!q, used = usage(c);
+          var subRows = subs.map(function (s) {
+            return '<li class="list-group-item d-flex justify-content-between align-items-start flex-wrap gap-2' + (s.active === false ? ' bg-light' : '') + '"><div class="min-w-0"><div class="small fw-semibold">' + esc(s.name) + '</div>' +
+              '<div class="small text-muted">' + status(s) + ' <span class="ms-1">' + usage(c, s) + ' in use</span>' + ((s.formerNames || []).length ? ' &bull; earlier: ' + esc(s.formerNames.join(', ')) : '') + '</div>' + ((s.docs || []).length ? '<div class="mt-1">' + docBadges(s.docs) + '</div>' : '') + '</div>' +
+              (canEdit ? '<div class="d-flex gap-1 flex-wrap">' + btn('editSub', c.code, s.code, 'bi-pencil', 'Edit') + btn('toggleSub', c.code, s.code, s.active === false ? 'bi-arrow-counterclockwise' : 'bi-slash-circle', s.active === false ? 'Activate' : 'Deactivate', s.active === false ? 'btn-outline-success' : 'btn-outline-secondary') + '</div>' : '') + '</li>';
+          }).join('');
+          return '<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button small' + (expanded ? '' : ' collapsed') + '" type="button" data-bs-toggle="collapse" data-bs-target="#it-' + c.code + '" aria-expanded="' + expanded + '" aria-controls="it-' + c.code + '" data-open="' + c.code + '">' +
+              '<span class="d-flex flex-wrap align-items-center gap-2 w-100 pe-2"><span class="fw-semibold"><i class="bi ' + esc(c.icon || 'bi-tag') + ' me-1 text-primary" aria-hidden="true"></i>' + (type === 'IND' ? (n + 1) + '. ' : '') + esc(c.name) + '</span>' +
+              '<span class="badge bg-light text-secondary border">' + (c.items.length ? c.items.length + ' sub-item' + (c.items.length === 1 ? '' : 's') : 'No sub-items') + '</span>' + (c.active === false ? App.pill('Superseded', 'Inactive') : '') + '</span></button></h2>' +
+            '<div id="it-' + c.code + '" class="accordion-collapse collapse' + (expanded ? ' show' : '') + '"><div class="accordion-body">' +
+              '<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2"><div class="small"><div class="text-muted">Code <span class="font-monospace">' + esc(c.code) + '</span> &bull; ' + used + ' application(s) / licence(s) &bull; ' + status(c) + '</div>' +
+                '<div class="mt-1"><span class="text-muted">Extra documents:</span> ' + ((c.docs || []).length ? docBadges(c.docs) : '<span class="text-muted">none</span>') + ' <a class="ms-1" href="documents-master.html">Document types</a>' + '</div><div class="mt-1"><span class="text-muted">Questions in the form:</span> ' + askText(c) + '</div>' + (c.code === 'OTHER' ? '<div class="text-muted mt-1">Asks the applicant to describe the business; a notified item may also be chosen.</div>' : '') + '</div>' +
+                (canEdit ? '<div class="d-flex gap-1 flex-wrap">' + btn('addSub', c.code, null, 'bi-plus-lg', 'Add Sub-item') + btn('editItem', c.code, null, 'bi-pencil', 'Edit Item') + btn('toggleItem', c.code, null, c.active === false ? 'bi-arrow-counterclockwise' : 'bi-slash-circle', c.active === false ? 'Activate' : 'Deactivate', c.active === false ? 'btn-outline-success' : 'btn-outline-secondary') + '</div>' : '') + '</div>' +
+              (subs.length ? '<ul class="list-group">' + subRows + '</ul>' : '<p class="small text-muted mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>No sub-items &ndash; the applicant selects this item only.</p>') +
+            '</div></div></div>';
+        }).join('');
+        var hist = D.config.itemHistory.slice().reverse().map(function (h) {
+          return '<li class="list-group-item small"><div class="d-flex justify-content-between flex-wrap gap-2"><span class="fw-semibold">' + esc(h.action) + '</span><span class="text-muted">' + App.fmtDate(h.on) + '</span></div><div class="text-muted">' + esc(h.by) + (h.remarks ? ' &bull; ' + esc(h.remarks) : '') + '</div></li>';
+        }).join('');
+        $('itemsRoot').innerHTML = (list ? '<div class="accordion mb-4" id="itemsAcc">' + list + '</div>' : '<div class="alert alert-light border small">No items match.</div>') +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Change history</h2><div class="small text-muted">Every addition, edit, deactivation and activation with the order reference.</div></div>' +
+            (hist ? '<ul class="list-group list-group-flush">' + hist + '</ul>' : '<div class="card-body small text-muted">No changes yet. The list is as first loaded from the notification.</div>') + '</div>';
+        $('itemsRoot').querySelectorAll('.accordion-collapse').forEach(function (p) {
+          var code = p.id.slice(3);
+          p.addEventListener('shown.bs.collapse', function () { open[code] = true; });
+          p.addEventListener('hidden.bs.collapse', function () { open[code] = false; });
+        });
+        $('itemsRoot').querySelectorAll('[data-act]').forEach(function (b) {
+          b.addEventListener('click', function () { act(b.getAttribute('data-act'), App.category(b.getAttribute('data-code')), b.getAttribute('data-sub')); });
+        });
+      }
+
+      // ---------- Edit the master ----------
+      function record(action, remarks) {
+        D.config.itemHistory.push({ on: D.demoToday, by: u.name + ' (' + u.designation + ')', action: action, remarks: remarks });
+        App.audit({ appId: null, action: 'Items master · ' + action, remarks: remarks });
+        App.save();
+      }
+      // Pick documents from the master, each mandatory or optional. Documents every applicant of this type
+      // already gives (mandatory for all) are not listed.
+      function docPicker(sel, type) {
+        var chosen = {};
+        (sel || []).forEach(function (m) { chosen[m.key] = m.req; });
+        var list = F.docTypes(true).filter(function (d) { return chosen[d.key] || (d.active !== false && (d.base || {})[type] !== 'M'); });
+        return '<fieldset class="mt-3"><legend class="form-label fw-semibold mb-1">Extra documents to ask for</legend>' +
+          '<input type="search" class="form-control form-control-sm mb-2" id="mDocFilter" placeholder="Filter documents" aria-label="Filter documents">' +
+          '<ul class="list-group" style="max-height:260px;overflow:auto;" id="mDocList">' + list.map(function (d) {
+            var on = !!chosen[d.key];
+            return '<li class="list-group-item py-1 d-flex align-items-center gap-2" data-doc-row="' + esc(d.name.toLowerCase()) + '"><input class="form-check-input mt-0" type="checkbox" id="dk_' + d.key + '" value="' + d.key + '"' + (on ? ' checked' : '') + ' data-dockey>' +
+              '<label class="form-check-label flex-grow-1 small" for="dk_' + d.key + '">' + esc(d.name) + (d.active === false ? ' <span class="text-muted">(inactive)</span>' : '') + '</label>' +
+              '<select class="form-select form-select-sm w-auto" id="dr_' + d.key + '" aria-label="Mandatory or optional – ' + esc(d.name) + '"' + (on ? '' : ' disabled') + '><option value="M"' + (chosen[d.key] !== 'O' ? ' selected' : '') + '>Mandatory</option><option value="O"' + (chosen[d.key] === 'O' ? ' selected' : '') + '>Optional</option></select></li>';
+          }).join('') + '</ul><div class="form-text">Added on top of the documents every ' + esc(F.TYPES[type].short.toLowerCase()) + ' applicant gives. A sub-item adds to its item\'s documents. New document types are added in <a href="documents-master.html">Document Types</a>.</div></fieldset>';
+      }
+      function bindPicker(el) {
+        var f = el.querySelector('#mDocFilter');
+        if (f) f.addEventListener('input', function () { var q = f.value.trim().toLowerCase(); el.querySelectorAll('[data-doc-row]').forEach(function (r) { r.classList.toggle('d-none', !!q && r.getAttribute('data-doc-row').indexOf(q) === -1); }); });
+        el.querySelectorAll('[data-dockey]').forEach(function (c) { c.addEventListener('change', function () { el.querySelector('#dr_' + c.value).disabled = !c.checked; }); });
+      }
+      function readDocs(el) { return Array.prototype.slice.call(el.querySelectorAll('[data-dockey]:checked')).map(function (x) { return { key: x.value, req: el.querySelector('#dr_' + x.value).value }; }); }
+      function sameDocs(a, b) { return JSON.stringify(a || []) === JSON.stringify(b || []); }
+      function remarksField() { return '<label for="mRemarks" class="form-label fw-semibold mt-3">Order / remarks <span class="text-danger" aria-hidden="true">*</span></label><input id="mRemarks" class="form-control form-control-sm" placeholder="e.g. UDD notification no. and date">'; }
+      function readRemarks(el) { var r = el.querySelector('#mRemarks'); return App.fieldError(r, r.value.trim().length < 5 ? 'Enter the order reference or remarks.' : '') ? r.value.trim() : null; }
+      function nameError(input, list, current) {
+        var v = input.value.trim();
+        if (v.length < 2) return 'Enter the name.';
+        if (list.some(function (x) { return x !== current && x.name.toLowerCase() === v.toLowerCase(); })) return 'This name already exists.';
+        return '';
+      }
+      function act(what, c, subCode) {
+        var s = subCode ? c.items.filter(function (x) { return x.code === subCode; })[0] : null;
+        if (what === 'addSub' || what === 'editSub') {
+          App.modal({ title: s ? 'Edit sub-item' : 'Add sub-item to ' + esc(c.name), ok: 'Save', size: 'lg',
+            body: '<label for="mName" class="form-label fw-semibold">Sub-item name <span class="text-danger" aria-hidden="true">*</span></label><input id="mName" class="form-control form-control-sm" value="' + esc(s ? s.name : '') + '">' +
+              (s && usage(c, s) ? '<div class="form-text">Used on ' + usage(c, s) + ' application(s) / licence(s). They keep the earlier name; it is remembered so their documents still apply.</div>' : '') +
+              (c.items.length || s ? '' : '<div class="form-text">This item has no sub-items yet. Once you add one, applicants must choose a sub-item.</div>') + docPicker(s ? s.docs : [], c.type) + remarksField(),
+            onShow: bindPicker,
+            onOk: function (el) {
+              var n = el.querySelector('#mName');
+              if (!App.fieldError(n, nameError(n, c.items, s))) return false;
+              var r = readRemarks(el); if (r === null) return false;
+              var name = n.value.trim(), docs = readDocs(el);
+              if (s) {
+                if (name === s.name && sameDocs(docs, s.docs)) { App.fieldError(n, 'No change made.'); return false; }
+                if (name !== s.name) { s.formerNames = (s.formerNames || []).concat(s.name); }
+                var was = s.name; s.name = name; s.docs = docs;
+                record('Sub-item edited · ' + c.name + ' › ' + (was !== name ? was + ' → ' : '') + name, r);
+              } else {
+                var max = 0; c.items.forEach(function (x) { max = Math.max(max, +x.code.split('-').pop() || 0); });
+                c.items.push({ code: c.code + '-' + String(max + 1).padStart(2, '0'), name: name, docs: docs, active: true });
+                record('Sub-item added · ' + c.name + ' › ' + name, r);
+              }
+              open[c.code] = true;
+              App.toast('Sub-item saved.');
+              render();
+            } });
+          return;
+        }
+        if (what === 'toggleSub' || what === 'toggleItem') {
+          var x = s || c, off = x.active !== false;
+          App.modal({ title: (off ? 'Deactivate ' : 'Activate ') + (s ? 'sub-item' : 'item'), ok: off ? 'Deactivate' : 'Activate', okClass: off ? 'btn-secondary' : 'btn-success',
+            body: '<p><strong>' + esc(s ? c.name + ' › ' + s.name : c.name) + '</strong></p><p>' + (off ? 'Applicants will no longer see it for new applications. Existing applications and licences (' + usage(c, s) + ') keep it.' : 'Applicants will see it again for new applications.') + '</p>' + remarksField(),
+            onOk: function (el) {
+              var r = readRemarks(el); if (r === null) return false;
+              x.active = !off;
+              record((s ? 'Sub-item ' : 'Item ') + (off ? 'deactivated' : 'activated') + ' · ' + (s ? c.name + ' › ' + s.name : c.name), r);
+              open[c.code] = true;
+              App.toast((s ? 'Sub-item ' : 'Item ') + (off ? 'deactivated.' : 'activated.'));
+              render();
+            } });
+          return;
+        }
+        // Add or edit an item
+        var isNew = what === 'addItem', t = isNew ? type : c.type, peers = F.categoriesOf(t, true);
+        App.modal({ title: isNew ? 'Add item – ' + esc(F.TYPES[t].label) : 'Edit item', ok: 'Save', size: 'lg',
+          body: '<div class="row g-3"><div class="col-md-8"><label for="mName" class="form-label fw-semibold">Item name (purpose of licence) <span class="text-danger" aria-hidden="true">*</span></label><input id="mName" class="form-control form-control-sm" value="' + esc(isNew ? '' : c.name) + '"></div>' +
+            '<div class="col-md-4"><label for="mShort" class="form-label fw-semibold">Short name</label><input id="mShort" class="form-control form-control-sm" value="' + esc(isNew ? '' : c.short || '') + '"><div class="form-text">For lists and reports</div></div></div>' +
+            (isNew ? '<p class="text-muted mt-2 mb-0">Add sub-items afterwards if the notification lists any; an item can also have none.</p>' : '') + '<fieldset class="mt-3"><legend class="form-label fw-semibold mb-1">Questions in the form for this item</legend>' + Object.keys(F.QUESTIONS).map(function (q) {
+              return '<div class="form-check"><input class="form-check-input" type="checkbox" id="mAsk_' + q + '"' + (!isNew && (c.asks || {})[q] ? ' checked' : '') + '><label class="form-check-label" for="mAsk_' + q + '">' + esc(F.QUESTIONS[q]) + '</label></div>';
+            }).join('') + '<div class="form-text">Applicants see these questions only for this item. Hotel details are asked straight away; franchise and education start with a Yes / No question.</div></fieldset>' +
+            docPicker(isNew ? [] : c.docs, t) + remarksField(),
+          onShow: bindPicker,
+          onOk: function (el) {
+            var n = el.querySelector('#mName');
+            if (!App.fieldError(n, nameError(n, peers, isNew ? null : c))) return false;
+            var r = readRemarks(el); if (r === null) return false;
+            var name = n.value.trim(), short = el.querySelector('#mShort').value.trim() || name.slice(0, 24), docs = readDocs(el), askSet = {};
+            Object.keys(F.QUESTIONS).forEach(function (q) { if (el.querySelector('#mAsk_' + q).checked) askSet[q] = true; });
+            if (isNew) {
+              var code = t + '-' + String(D.config.categories.length + 1).padStart(3, '0');
+              D.config.categories.push({ code: code, type: t, name: name, short: short, icon: 'bi-tag', docs: docs, asks: askSet, active: true, items: [] });
+              record('Item added · ' + F.TYPES[t].short + ' · ' + name, r);
+              open[code] = true;
+            } else {
+              if (name === c.name && short === (c.short || '') && sameDocs(docs, c.docs) && JSON.stringify(askSet) === JSON.stringify(c.asks || {})) { App.fieldError(n, 'No change made.'); return false; }
+              var was = c.name;
+              if (name !== was) c.formerNames = (c.formerNames || []).concat(was);
+              c.name = name; c.short = short; c.docs = docs; c.asks = askSet;
+              record('Item edited · ' + (was !== name ? was + ' → ' : '') + name, r);
+              open[c.code] = true;
+            }
+            App.toast('Item saved.');
+            render();
+          } });
+      }
+      if (canEdit) $('btnAddItem').addEventListener('click', function () { act('addItem', null, null); });
+      $('fSearch').addEventListener('input', render);
+      $('fInactive').addEventListener('change', render);
+      render();
+    })();
+  </script>
+</body>
+</html>

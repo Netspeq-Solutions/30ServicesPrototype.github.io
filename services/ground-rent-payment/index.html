@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="gr-common.css">
+  <link rel="stylesheet" href="gr-common.css?v=20261122">
   <style>
     /* Mandatory Viewport & Zero Horizontal Overflow Guardrails */
     html, body {
@@ -227,86 +227,69 @@
     <!-- ====================================================================
          5. CITIZEN HERO SECTION
          ==================================================================== -->
-    <section class="gov-hero-section" aria-labelledby="hero-heading">
+    <section class="gov-hero-section udd-hero" aria-labelledby="hero-heading">
+      <div class="udd-hero-pattern" aria-hidden="true"></div>
+      <svg class="udd-hero-ridge" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0,118 L110,72 L210,104 L330,38 L450,96 L560,58 L690,112 L815,26 L940,92 L1060,52 L1180,102 L1300,44 L1440,96 L1440,160 L0,160 Z" fill="rgba(255,255,255,0.07)"/>
+        <path d="M0,142 L150,104 L300,134 L450,88 L600,128 L760,84 L905,130 L1080,92 L1240,132 L1440,108 L1440,160 L0,160 Z" fill="rgba(4,47,46,0.6)"/>
+      </svg>
       <div class="container-xl">
         <div class="row align-items-center g-4 g-lg-5">
-          <!-- Left: Hero Text & Call to Actions -->
           <div class="col-lg-7">
-            <h1 id="hero-heading" class="gov-hero-title">
-              Pay Ground Rent Online for Your Allotted Urban Site
-            </h1>
-            <p class="lead text-white-50 mb-4" style="font-size: 1.125rem; line-height: 1.7;">
-              Find your ground rent account by plot number, allottee's name or father's / husband's name, check the year-wise dues and pay online or through a Bank Receipt &ndash; Urban Development Department, Government of Sikkim.
-            </p>
-
-            <!-- Action Buttons -->
+            <span class="udd-hero-eyebrow"><i class="fas fa-landmark" aria-hidden="true"></i>Urban Development Department &middot; Government of Sikkim</span>
+            <h1 id="hero-heading" class="gov-hero-title">Pay Ground Rent Online for Your Allotted Urban Site</h1>
+            <p class="udd-hero-lead">Find your ground rent account by plot number, allottee's name or father's / husband's name, check the year-wise dues and pay online or through a Bank Receipt.</p>
             <div class="d-flex flex-wrap gap-3 mb-4">
               <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-gov-accent btn-lg d-inline-flex align-items-center gap-2">
-                <i class="fas fa-lock" aria-hidden="true"></i>
-                <span>Login via Sikkim GO</span>
+                <i class="fas fa-lock" aria-hidden="true"></i><span>Login via Sikkim GO</span>
               </a>
               <a href="#payment-options" class="btn btn-outline-light btn-lg d-inline-flex align-items-center gap-2">
-                <i class="fas fa-info-circle" aria-hidden="true"></i>
-                <span>Explore Payment Options</span>
+                <i class="fas fa-info-circle" aria-hidden="true"></i><span>Explore Payment Options</span>
               </a>
             </div>
-            <p class="small text-white-50 mb-0">
-              <i class="fas fa-user-shield me-1" aria-hidden="true"></i>
-              You need to log in through Sikkim GO to view your bill and pay. (Prototype: login is simulated.)
-            </p>
+            <ul class="udd-hero-points">
+              <li><i class="fas fa-search" aria-hidden="true"></i>Find your account</li>
+              <li><i class="fas fa-list-ol" aria-hidden="true"></i>Year-wise dues</li>
+              <li><i class="fas fa-credit-card" aria-hidden="true"></i>Pay online or by BR</li>
+            </ul>
+            <p class="udd-hero-note"><i class="fas fa-user-shield me-1" aria-hidden="true"></i>You need to log in through Sikkim GO to view your bill and pay. (Prototype: login is simulated.)</p>
           </div>
-
-          <!-- Right: Service Preview Card -->
-          <div class="col-lg-5 text-center">
-            <div class="gov-hero-preview-card">
-              <!-- Mountain Sky Header Graphic -->
-              <div style="background: linear-gradient(180deg, #042f2e 0%, #0f766e 60%, #99f6e4 100%); padding: 28px 16px 14px; position: relative;">
-                <svg viewBox="0 0 400 120" class="w-100" style="display: block; margin-bottom: -15px;" aria-hidden="true">
-                  <polygon points="50,120 120,40 190,120" fill="#ffffff" opacity="0.95" />
-                  <polygon points="110,50 120,40 130,50 120,60" fill="#e2e8f0" />
-                  <polygon points="140,120 220,20 300,120" fill="#f8fafc" opacity="0.98" />
-                  <polygon points="205,35 220,20 235,35 220,50" fill="#e2e8f0" />
-                  <polygon points="260,120 330,50 400,120" fill="#ffffff" opacity="0.9" />
-                  <polygon points="0,120 70,70 140,120" fill="#cbd5e1" opacity="0.8" />
+          <div class="col-lg-5">
+            <div class="gov-hero-preview-card udd-preview">
+              <div class="udd-preview-art">
+                <svg viewBox="0 0 400 160" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="grSky" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#0b3d3a"/><stop offset="45%" stop-color="#0f766e"/><stop offset="78%" stop-color="#5eead4"/><stop offset="100%" stop-color="#fde68a"/>
+                    </linearGradient>
+                    <linearGradient id="grSnow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient>
+                  </defs>
+                  <rect width="400" height="160" fill="url(#grSky)"/>
+                  <circle cx="318" cy="78" r="24" fill="#fef3c7" opacity="0.9"/>
+                  <circle cx="318" cy="78" r="38" fill="#fef3c7" opacity="0.18"/>
+                  <path d="M0,118 L60,86 L110,104 L170,70 L230,100 L290,78 L350,98 L400,84 L400,160 L0,160 Z" fill="#134e4a" opacity="0.55"/>
+                  <path d="M40,160 L140,56 L240,160 Z" fill="url(#grSnow)"/>
+                  <path d="M140,56 L122,76 L132,74 L140,84 L149,73 L158,76 Z" fill="#ffffff"/>
+                  <path d="M170,160 L262,40 L360,160 Z" fill="url(#grSnow)"/>
+                  <path d="M262,40 L243,64 L254,61 L262,72 L271,60 L282,64 Z" fill="#ffffff"/>
+                  <path d="M0,160 L0,132 L70,116 L150,138 L230,120 L320,140 L400,124 L400,160 Z" fill="#0f766e"/>
+                  <path d="M0,22 Q200,52 400,42" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1"/>
+                  <rect x="24" y="19.4" width="11" height="13" rx="1.5" fill="#2563eb" transform="rotate(-4 24 19.4)"/><rect x="62" y="21.7" width="11" height="13" rx="1.5" fill="#f8fafc" transform="rotate(3 62 21.7)"/><rect x="100" y="24.0" width="11" height="13" rx="1.5" fill="#dc2626" transform="rotate(-3 100 24.0)"/><rect x="138" y="26.3" width="11" height="13" rx="1.5" fill="#16a34a" transform="rotate(4 138 26.3)"/><rect x="176" y="28.6" width="11" height="13" rx="1.5" fill="#facc15" transform="rotate(-2 176 28.6)"/><rect x="214" y="30.8" width="11" height="13" rx="1.5" fill="#2563eb" transform="rotate(3 214 30.8)"/><rect x="252" y="33.1" width="11" height="13" rx="1.5" fill="#f8fafc" transform="rotate(-4 252 33.1)"/><rect x="290" y="35.4" width="11" height="13" rx="1.5" fill="#dc2626" transform="rotate(2 290 35.4)"/><rect x="328" y="37.7" width="11" height="13" rx="1.5" fill="#16a34a" transform="rotate(-3 328 37.7)"/><rect x="366" y="40.0" width="11" height="13" rx="1.5" fill="#facc15" transform="rotate(4 366 40.0)"/>
                 </svg>
+                <span class="udd-preview-chip"><i class="fas fa-check-circle" aria-hidden="true"></i>Official portal</span>
+                <span class="udd-preview-chip is-right"><i class="fas fa-qrcode" aria-hidden="true"></i>Instant receipt</span>
               </div>
-
-              <!-- Foreground Account Preview -->
-              <div class="gov-hero-preview-body bg-white text-start">
-                <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
-                    <i class="fas fa-check-circle me-1" aria-hidden="true"></i> Official Department Portal
-                  </span>
+              <div class="udd-preview-body">
+                <div class="udd-preview-id">
+                  <span class="udd-preview-icon"><i class="fas fa-receipt" aria-hidden="true"></i></span>
+                  <div class="min-w-0"><div class="udd-preview-label">Ground Rent ID (GR ID)</div><div class="udd-preview-value gr-id-sample">GR-GMC-W05-00123</div><div class="small text-muted">Printed on every receipt, challan and SMS</div></div>
                 </div>
-
-                <div class="d-flex align-items-center gap-3 mb-3">
-                  <div class="bg-primary-subtle text-primary p-3 rounded-3 text-center" style="min-width: 60px;">
-                    <i class="fas fa-receipt fs-2" aria-hidden="true"></i>
-                  </div>
-                  <div>
-                    <h6 class="fw-bold mb-1 text-dark">Ground Rent ID (GR ID)</h6>
-                    <p class="small text-muted mb-0">Printed on every receipt, challan and SMS, e.g. <span class="gr-id-sample text-dark">GR-GMC-W05-00123</span></p>
-                  </div>
-                </div>
-
-                <div class="bg-light p-2 rounded-2 small text-secondary mb-3">
-                  <div class="d-flex justify-content-between gap-2 py-1 border-bottom">
-                    <span>Rate (Municipal Corporation):</span>
-                    <strong class="text-dark text-end">&#8377;500 per 100 sq ft</strong>
-                  </div>
-                  <div class="d-flex justify-content-between gap-2 py-1 border-bottom">
-                    <span>Due date:</span>
-                    <strong class="text-dark text-end">31 March of each FY</strong>
-                  </div>
-                  <div class="d-flex justify-content-between gap-2 py-1">
-                    <span>Payment modes:</span>
-                    <strong class="text-dark text-end">Online / Bank Receipt</strong>
-                  </div>
-                </div>
-
-                <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-sm btn-primary fw-semibold">
-                  <i class="fas fa-external-link-alt me-1" aria-hidden="true"></i> Pay via Sikkim GO Portal
-                </a>
+                <ul class="udd-preview-facts">
+                  <li><i class="fas fa-ruler-combined" aria-hidden="true"></i><span>Rate (Municipal Corporation)</span><strong>&#8377;500 per 100 sq ft</strong></li>
+                  <li><i class="fas fa-calendar-day" aria-hidden="true"></i><span>Due date</span><strong>31 March of each FY</strong></li>
+                  <li><i class="fas fa-wallet" aria-hidden="true"></i><span>Payment modes</span><strong>Online / Bank Receipt</strong></li>
+                </ul>
+                <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-primary w-100 fw-semibold"><i class="fas fa-arrow-right" aria-hidden="true"></i>Pay via Sikkim GO Portal</a>
               </div>
             </div>
           </div>

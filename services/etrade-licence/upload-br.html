@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Upload Bank Receipt | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="dashboard.html#applications">My Applications</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Upload Bank Receipt</li>
+    </ol></nav>
+    <h1 class="h4 fw-bold mb-1">Upload Bank Receipt</h1>
+    <p class="text-muted small mb-3">Paid the licence fee and garbage fee at the bank? Upload the Bank Receipt (BR) here, then bring the BR and your original documents to the department.</p>
+    <div id="brRoot" class="mx-auto" style="max-width: 820px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc, inr = App.inr, ST = F.ST;
+      var session = App.requireSession('applicant');
+      if (!session) return;
+      App.shell({ type: 'applicant', active: 'applications' });
+      var $ = function (id) { return document.getElementById(id); };
+      var root = $('brRoot');
+      var open = App.appsOf(session.scenario).filter(function (x) { return x.status === ST.PAYMENT || x.status === ST.BR_INVALID; });
+      var a = App.qs('app') ? App.app(App.qs('app')) : (open.length === 1 ? open[0] : null);
+
+      if (!a || a.businessKey !== session.scenario) {
+        root.innerHTML = open.length
+          ? '<div class="card border-0 shadow-xs"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Select the application you paid for</h2></div><ul class="list-group list-group-flush">' + open.map(function (x) {
+              return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2"><div><span class="tl-ref-id small">' + esc(x.appId) + '</span> ' + App.pill(x.status) + '<div class="small text-muted">' + inr(x.fee.total) + '</div></div><a class="btn btn-sm btn-primary" href="upload-br.html?app=' + encodeURIComponent(x.appId) + '">Upload BR</a></li>';
+            }).join('') + '</ul></div>'
+          : '<div class="card border-0 shadow-xs"><div class="card-body text-center py-5"><span class="tl-icon-circle bg-primary-subtle text-primary mb-3"><i class="bi bi-bank" aria-hidden="true"></i></span><h2 class="h6 fw-bold">No approved application waiting for payment</h2><p class="small text-muted mb-3">The fee is shown after your application is approved.</p><a class="btn btn-sm btn-gov-primary" href="dashboard.html#applications">My Applications</a></div></div>';
+        return;
+      }
+      if (a.status !== ST.PAYMENT && a.status !== ST.BR_INVALID) {
+        root.innerHTML = '<div class="alert alert-warning">' + esc(a.appId) + ' is ' + esc(a.status.toLowerCase()) + '; a Bank Receipt cannot be uploaded now. <a href="application.html?app=' + encodeURIComponent(a.appId) + '">Track application</a></div>';
+        return;
+      }
+      var last = a.brHistory.length ? a.brHistory[a.brHistory.length - 1] : null;
+      var bank = D.config.banks[0];
+
+      root.innerHTML =
+        '<div class="card border-0 shadow-xs mb-3"><div class="card-body d-flex justify-content-between align-items-start flex-wrap gap-3">' +
+          '<div><div class="small text-muted">Application</div><div class="d-flex align-items-center gap-2 flex-wrap"><span class="tl-ref-id">' + esc(a.appId) + '</span>' + App.kindBadge(a.kind) + App.pill(a.status) + '</div>' +
+          '<div class="small text-muted mt-1">' + esc(App.appName(a)) + ' &bull; ' + esc(a.orgType) + '</div></div>' +
+          '<div class="text-end"><div class="small text-muted">Amount to pay</div><div class="tl-amount">' + inr(a.fee.total) + '</div>' +
+          '<div class="small text-muted">' + esc(a.fee.kind) + ' fee ' + inr(a.fee.base) + ' + garbage fee ' + inr(a.fee.garbage || 0) + '</div></div>' +
+        '</div></div>' +
+        (last && a.status === ST.BR_INVALID ? '<div class="alert alert-danger small"><i class="bi bi-x-octagon-fill me-1" aria-hidden="true"></i>Your earlier BR <strong>' + esc(last.brNo) + '</strong> was not accepted: <strong>' + esc(last.remarks) + '</strong>' +
+          (last.amount < a.fee.total ? ' Pay the balance of <strong>' + inr(a.fee.total - last.amount) + '</strong> and upload the BRs again.' : ' Please upload a valid Bank Receipt.') + '</div>' : '') +
+        '<div class="alert alert-light border small"><i class="bi bi-bank me-1 text-primary" aria-hidden="true"></i>Pay at <strong>' + esc(bank.name) + ', ' + esc(bank.branch) + '</strong> (designated bank pending departmental confirmation), quoting your Application ID. ' +
+          (a.originalsVerified ? 'Your originals were already verified at the inspection, so you only need to bring the BR.' : 'After uploading, bring the BR and your <strong>original documents</strong> to the department.') + '</div>' +
+        '<form id="upForm" class="card border-0 shadow-xs" novalidate><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Bank Receipt details</h2></div><div class="card-body"><div class="row g-3">' +
+          '<div class="col-md-6"><label for="upBrNo" class="form-label small fw-semibold">BR number <span class="text-danger" aria-hidden="true">*</span></label><input id="upBrNo" class="form-control font-monospace" placeholder="2627N-11001-04512"></div>' +
+          '<div class="col-6 col-md-3"><label for="upBrDate" class="form-label small fw-semibold">BR date <span class="text-danger" aria-hidden="true">*</span></label><input id="upBrDate" type="date" class="form-control" min="' + a.fee.fixedOn + '" max="' + D.demoToday + '"></div>' +
+          '<div class="col-6 col-md-3"><label for="upAmt" class="form-label small fw-semibold">Amount paid <span class="text-danger" aria-hidden="true">*</span></label><input id="upAmt" type="number" min="1" class="form-control" value="' + a.fee.total + '"></div>' +
+          '<div class="col-12">' + App.dropzone({ id: 'upScan', label: 'Scanned copy of the BR', required: true, docType: 'Bank Receipt', help: 'PDF, JPG or PNG, up to 5 MB. Keep the original BR; bring it to the department.' }) + '</div>' +
+          '<div class="col-12" id="upWarn"></div>' +
+        '</div></div><div class="card-footer bg-white d-flex flex-wrap gap-2">' +
+          '<button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Bank Receipt</button>' +
+          '<a class="btn btn-sm btn-outline-secondary" href="application.html?app=' + encodeURIComponent(a.appId) + '">Cancel</a></div></form>';
+
+      App.bindDropzones(root);
+      // Warn early: amount short of the fee, or BR number already used.
+      function warn() {
+        var w = [], amt = +$('upAmt').value, dup = F.brDuplicate($('upBrNo').value, a.appId);
+        if (amt && amt < a.fee.total) w.push('The amount is less than ' + inr(a.fee.total) + '. The office will mark the BR invalid; pay the balance first.');
+        if (dup) w.push('This BR number is already used on ' + esc(dup) + '. The office will mark it invalid.');
+        $('upWarn').innerHTML = w.length ? '<div class="alert alert-warning small mb-0"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>' + w.join('<br>') + '</div>' : '';
+      }
+      $('upAmt').addEventListener('input', warn);
+      $('upBrNo').addEventListener('input', warn);
+
+      $('upForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var ok = App.fieldError($('upBrNo'), $('upBrNo').value.trim() ? '' : 'Enter the BR number.');
+        ok = App.fieldError($('upBrDate'), $('upBrDate').value ? ($('upBrDate').value > D.demoToday ? 'BR date cannot be in the future.' : '') : 'Enter the BR date.') && ok;
+        ok = App.fieldError($('upAmt'), +$('upAmt').value > 0 ? '' : 'Enter the amount paid.') && ok;
+        ok = App.fieldError($('upScan'), App.checkFile($('upScan'), true)) && ok;
+        if (!ok) return;
+        var scan = App.addAttachments(a.appId, 'Bank Receipt', $('upScan'))[0];
+        a.br = { brNo: $('upBrNo').value.trim(), brDate: $('upBrDate').value, amount: Math.round(+$('upAmt').value), scan: scan, uploadedOn: D.demoToday, status: 'Uploaded' };
+        a.status = ST.BR_UPLOADED;
+        F.log(a, 'Bank Receipt uploaded · BR ' + a.br.brNo + ' · ' + inr(a.br.amount), '');
+        App.notify(a.businessKey, 'Bank Receipt uploaded', 'BR ' + a.br.brNo + ' for ' + a.appId + ' is waiting for verification.' + (a.originalsVerified ? '' : ' Bring the BR and original documents to the department.'), a.appId);
+        App.save();
+        App.filesReady().then(function () {
+          App.toast('Bank Receipt uploaded. The office will verify it and generate your licence.');
+          setTimeout(function () { window.location.href = 'application.html?app=' + encodeURIComponent(a.appId); }, 1200);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

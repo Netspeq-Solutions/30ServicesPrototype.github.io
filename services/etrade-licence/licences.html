@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Licence Register | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div><h1 class="h4 fw-bold mb-1">Licence Register</h1><p class="text-muted small mb-0" id="pageSubtitle"></p></div>
+      <div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-sm btn-outline-primary" id="btnCsv"><i class="bi bi-download me-1" aria-hidden="true"></i>Download CSV</button></div>
+    </div>
+    <form class="card border-0 shadow-xs mb-3" id="filters" role="search" aria-label="Filter licences"><div class="card-body"><div class="row g-2 align-items-end">
+      <div class="col-md-5"><label for="fq" class="form-label small fw-semibold">Search</label><input id="fq" class="form-control form-control-sm" placeholder="Licence number or business name"></div>
+      <div class="col-6 col-md-3"><label for="fState" class="form-label small fw-semibold">Status</label><select id="fState" class="form-select form-select-sm"><option value="">All</option><option>Active</option><option>Expired</option></select></div>
+      <div class="col-6 col-md-4"><label for="fCat" class="form-label small fw-semibold">Item</label><select id="fCat" class="form-select form-select-sm"></select></div>
+    </div></div></form>
+    <div id="listRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'licences' });
+      var $ = function (id) { return document.getElementById(id); };
+      var u = App.me(session);
+      $('pageSubtitle').textContent = 'All e-Trade Licences of the ' + App.circle(u.circle).name + '. Each licence keeps its number across renewals and changes.';
+      $('fCat').innerHTML = '<option value="">All items</option>' + Object.keys(F.TYPES).map(function (t) { return '<optgroup label="' + esc(F.TYPES[t].label) + '">' + F.categoriesOf(t).map(function (c) { return '<option value="' + c.code + '">' + esc(c.name) + '</option>'; }).join('') + '</optgroup>'; }).join('');
+      var current = [];
+      function render() {
+        var q = $('fq').value.trim().toLowerCase(), st = $('fState').value, c = $('fCat').value;
+        current = D.licences.filter(function (l) {
+          var v = F.currentVersion(l);
+          if (l.circle !== u.circle) return false;
+          if (st && F.licenceState(l) !== st) return false;
+          if (c && l.category !== c) return false;
+          return !q || (l.licenceNo + ' ' + v.businessName).toLowerCase().indexOf(q) !== -1;
+        });
+        var rows = current.map(function (l) {
+          var v = F.currentVersion(l), open = F.openAppFor(l.licenceNo);
+          var btn = '<a class="btn btn-sm btn-outline-primary" href="licence.html?no=' + encodeURIComponent(l.licenceNo) + '">View Licence</a>';
+          var extra = open ? '<div class="small"><a href="review.html?app=' + encodeURIComponent(open.appId) + '">' + esc(open.kind) + ' in process</a></div>' : '';
+          return { row: '<tr><td><span class="tl-ref-id small">' + esc(l.licenceNo) + '</span><div class="small text-muted">v' + v.v + (l.versions.length > 1 ? ' (' + (l.versions.length - 1) + ' superseded)' : '') + '</div></td>' +
+              '<td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(v.businessName) + '</div><div class="small text-muted">' + esc(l.orgType) + '</div></td><td class="small">' + esc(App.category(l.category).short) + '</td>' +
+              '<td class="small">' + App.fmtDate(l.validTo) + '</td><td>' + App.pill(F.licenceState(l)) + extra + '</td><td class="text-end text-nowrap">' + btn + '</td></tr>',
+            card: App.mobileCard('<span class="tl-ref-id small">' + esc(l.licenceNo) + '</span>', App.pill(F.licenceState(l)), '<div class="small fw-semibold">' + esc(v.businessName) + '</div><div class="small text-muted">Valid up to ' + App.fmtDate(l.validTo) + '</div>' + extra, btn) };
+        });
+        $('listRoot').innerHTML = App.tableCard('t-lic', 'Licences', current.length + ' licence' + (current.length === 1 ? '' : 's'),
+          [{ t: 'Licence No.', w: '20%' }, { t: 'Business', w: '26%' }, { t: 'Item', w: '12%' }, { t: 'Valid Up To', w: '12%' }, { t: 'Status', w: '16%' }, { t: 'Action', end: true, w: '14%' }],
+          rows.map(function (r) { return r.row; }).join(''), rows.map(function (r) { return r.card; }).join(''), 'No licences match the filters.');
+      }
+      ['fq', 'fState', 'fCat'].forEach(function (id) { $(id).addEventListener(id === 'fq' ? 'input' : 'change', render); });
+      $('filters').addEventListener('submit', function (e) { e.preventDefault(); });
+      $('btnCsv').addEventListener('click', function () {
+        App.downloadCsv('etrade-licences.csv', [['Licence No.', 'Business', 'Item', 'Sub-item / purpose', 'First issued', 'Valid up to', 'Status', 'Version']].concat(current.map(function (l) {
+          var v = F.currentVersion(l);
+          return [l.licenceNo, v.businessName, App.category(l.category).name, l.orgType, l.firstIssuedOn, l.validTo, F.licenceState(l), 'v' + v.v];
+        })));
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
