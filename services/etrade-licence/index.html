@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="e-Trade Licence - Urban Development Department, Government of Sikkim. Apply for a new trade licence, renew it every year or request a change of name, premises or address.">
+  <title>e-Trade Licence | Urban Development Department | Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Framework Standard CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal" class="d-flex flex-column min-vh-100">
+
+  <!-- ======================================================================
+       GIGW 3.0 ACCESSIBILITY SKIP LINKS
+       ====================================================================== -->
+  <a class="gov-skip-link" href="#licence-categories">Skip to Main Content</a>
+  <a class="gov-skip-link" href="#govNavbar">Skip to Navigation</a>
+
+  <!-- ======================================================================
+       1. TOP INDIAN TRICOLOR FLAG STRIPE
+       ====================================================================== -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- ======================================================================
+       2. TOP ACCESSIBILITY & UTILITY BAR (GIGW 3.0 MANDATORY)
+       ====================================================================== -->
+  <header class="gov-top-bar" role="region" aria-label="Accessibility and Utility Controls">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between gap-2 py-0">
+        <!-- Left: Official Government Identification with Badge -->
+        <div class="d-flex align-items-center gap-2">
+          <span class="gov-official-badge">
+            <i class="fas fa-shield-alt text-warning" aria-hidden="true"></i> OFFICIAL
+          </span>
+          <span class="fw-semibold">Government of Sikkim</span>
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+          <span class="text-white-50 d-none d-sm-inline">सिक्किम सरकार</span>
+        </div>
+
+        <!-- Right: Accessibility Toolbar -->
+        <div class="d-flex align-items-center gap-2">
+          <!-- Skip to Main Content Link -->
+          <a href="#licence-categories" class="gov-top-link d-inline-flex align-items-center gap-1" title="Skip to Licence Categories" aria-label="Skip to main content">
+            <i class="fas fa-arrow-down small" aria-hidden="true"></i>
+            <span>Skip to Main Content</span>
+          </a>
+
+          <span class="text-white-50 d-none d-md-inline">|</span>
+
+          <!-- Screen Reader Access Link -->
+          <a href="#screenReaderModal" data-bs-toggle="modal" class="gov-top-link d-none d-md-inline-flex align-items-center gap-1" aria-label="Screen Reader Access information" title="Screen Reader Access">
+            <i class="fas fa-volume-up small" aria-hidden="true"></i>
+            <span>Screen Reader</span>
+          </a>
+
+          <span class="text-white-50 d-none d-sm-inline">|</span>
+
+          <!-- Font Sizing Controls (GIGW 3.0 Standard) -->
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size" aria-label="Decrease text size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" id="btn-font-reset" data-font-action="reset" title="Normal font size" aria-label="Reset text size to default">A</button>
+            <button type="button" class="btn btn-outline-gov-light" id="btn-font-increase" data-font-action="increase" title="Increase font size" aria-label="Increase text size">A+</button>
+          </div>
+
+          <!-- High Contrast Toggle (Icon Only) -->
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" aria-pressed="false" title="Toggle High Contrast Mode" aria-label="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       3. GOVERNMENT OF SIKKIM & DEPARTMENT BRAND HEADER
+       ====================================================================== -->
+  <div class="gov-header" role="banner">
+    <div class="container-xl">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <!-- Left: Official Department & Service Identity -->
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block text-decoration-none" title="Return to e-Trade Licence Home">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Official Emblem of the Government of Sikkim" class="gov-header-emblem">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow">Urban Development Department</div>
+            <div class="gov-header-title">e-Trade Licence</div>
+            <div class="gov-header-subtitle">Unified Citizen Services &amp; Digital Governance Gateway &bull; Government of Sikkim</div>
+          </div>
+        </div>
+
+        <!-- Right Side: Helpline & Action Buttons (Sikkim GO SSO + Services) -->
+        <div class="d-flex flex-column align-items-end gap-2">
+          <!-- Top Sub-row: Subtle Helpline Pill (number pending departmental confirmation) -->
+          <div>
+            <a href="#help-contacts" class="gov-helpline-pill" title="Department helpline number pending departmental confirmation">
+              <i class="fas fa-headset text-success" aria-hidden="true"></i>
+              <span>Helpline: <strong>Pending confirmation</strong></span>
+            </a>
+          </div>
+
+          <!-- Bottom Sub-row: Sikkim GO (SSO) & Services Buttons -->
+          <div class="d-flex align-items-center gap-2">
+            <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-header-sso" title="Applicant and officer login (prototype)">
+              <i class="fas fa-user-circle" aria-hidden="true"></i>
+              <span>Sikkim GO (SSO)</span>
+            </a>
+            <a href="#service-overview" class="btn btn-header-services" title="Explore Service Details">
+              <i class="fas fa-th-large" aria-hidden="true"></i>
+              <span>Services</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       4. PRIMARY NAVIGATION BAR
+       ====================================================================== -->
+  <nav class="gov-navbar navbar navbar-expand-lg" id="govNavbar" aria-label="Main Navigation">
+    <div class="container-xl">
+      <button class="navbar-toggler text-white border-white py-2" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav" aria-controls="portalNav" aria-expanded="false" aria-label="Toggle navigation menu">
+        <i class="fas fa-bars me-1" aria-hidden="true"></i> Menu
+      </button>
+      <div class="collapse navbar-collapse" id="portalNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html">
+              <i class="fas fa-home me-1" aria-hidden="true"></i> Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#service-overview">Service Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#eligibility-criteria">Eligibility &amp; Checklist</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#how-to-apply">How to Apply</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#fees-renewal">Fees &amp; Renewal</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#faq-section">FAQs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#help-contacts">Helpline</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       MAIN CONTENT AREA
+       ====================================================================== -->
+  <main id="main-content" tabindex="-1" class="flex-grow-1">
+
+    <!-- ====================================================================
+         5. HERO SECTION
+         ==================================================================== -->
+    <section class="gov-hero-section udd-hero" aria-labelledby="hero-heading">
+      <div class="udd-hero-pattern" aria-hidden="true"></div>
+      <svg class="udd-hero-ridge" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0,118 L110,72 L210,104 L330,38 L450,96 L560,58 L690,112 L815,26 L940,92 L1060,52 L1180,102 L1300,44 L1440,96 L1440,160 L0,160 Z" fill="rgba(255,255,255,0.07)"/>
+        <path d="M0,142 L150,104 L300,134 L450,88 L600,128 L760,84 L905,130 L1080,92 L1240,132 L1440,108 L1440,160 L0,160 Z" fill="rgba(4,47,46,0.6)"/>
+      </svg>
+      <div class="container-xl">
+        <div class="row align-items-center g-4 g-lg-5">
+          <div class="col-lg-7">
+            <span class="udd-hero-eyebrow"><i class="fas fa-landmark" aria-hidden="true"></i>Urban Development Department &middot; Government of Sikkim</span>
+            <h1 id="hero-heading" class="gov-hero-title">Apply for, Renew or Update Your e-Trade Licence Online</h1>
+            <p class="udd-hero-lead">For individual / local traders and registered companies, for the activities notified by the Urban Development Department &ndash; one application, tracked at every step, through Sikkim GO.</p>
+            <div class="d-flex flex-wrap gap-3 mb-4">
+              <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-gov-accent btn-lg d-inline-flex align-items-center gap-2">
+                <i class="fas fa-lock" aria-hidden="true"></i><span>Login via Sikkim GO</span>
+              </a>
+              <a href="#licence-categories" class="btn btn-outline-light btn-lg d-inline-flex align-items-center gap-2">
+                <i class="fas fa-info-circle" aria-hidden="true"></i><span>Who Needs a Licence</span>
+              </a>
+            </div>
+            <ul class="udd-hero-points">
+              <li><i class="fas fa-check-circle" aria-hidden="true"></i>New licence, renewal &amp; change</li>
+              <li><i class="fas fa-file-invoice" aria-hidden="true"></i>Pay by Bank Receipt</li>
+              <li><i class="fas fa-qrcode" aria-hidden="true"></i>QR-verifiable licence</li>
+            </ul>
+            <p class="udd-hero-note"><i class="fas fa-user-shield me-1" aria-hidden="true"></i>Log in with your Sikkim GO account, then fill in your business details. (Prototype: login is simulated.)</p>
+          </div>
+          <div class="col-lg-5">
+            <div class="gov-hero-preview-card udd-preview">
+              <div class="udd-preview-art">
+                <svg viewBox="0 0 400 160" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="tlSky" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#0b3d3a"/><stop offset="45%" stop-color="#0f766e"/><stop offset="78%" stop-color="#5eead4"/><stop offset="100%" stop-color="#fde68a"/>
+                    </linearGradient>
+                    <linearGradient id="tlSnow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient>
+                  </defs>
+                  <rect width="400" height="160" fill="url(#tlSky)"/>
+                  <circle cx="318" cy="78" r="24" fill="#fef3c7" opacity="0.9"/>
+                  <circle cx="318" cy="78" r="38" fill="#fef3c7" opacity="0.18"/>
+                  <path d="M0,118 L60,86 L110,104 L170,70 L230,100 L290,78 L350,98 L400,84 L400,160 L0,160 Z" fill="#134e4a" opacity="0.55"/>
+                  <path d="M40,160 L140,56 L240,160 Z" fill="url(#tlSnow)"/>
+                  <path d="M140,56 L122,76 L132,74 L140,84 L149,73 L158,76 Z" fill="#ffffff"/>
+                  <path d="M170,160 L262,40 L360,160 Z" fill="url(#tlSnow)"/>
+                  <path d="M262,40 L243,64 L254,61 L262,72 L271,60 L282,64 Z" fill="#ffffff"/>
+                  <path d="M0,160 L0,132 L70,116 L150,138 L230,120 L320,140 L400,124 L400,160 Z" fill="#0f766e"/>
+                  <path d="M0,22 Q200,52 400,42" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1"/>
+                  <rect x="24" y="19.4" width="11" height="13" rx="1.5" fill="#2563eb" transform="rotate(-4 24 19.4)"/><rect x="62" y="21.7" width="11" height="13" rx="1.5" fill="#f8fafc" transform="rotate(3 62 21.7)"/><rect x="100" y="24.0" width="11" height="13" rx="1.5" fill="#dc2626" transform="rotate(-3 100 24.0)"/><rect x="138" y="26.3" width="11" height="13" rx="1.5" fill="#16a34a" transform="rotate(4 138 26.3)"/><rect x="176" y="28.6" width="11" height="13" rx="1.5" fill="#facc15" transform="rotate(-2 176 28.6)"/><rect x="214" y="30.8" width="11" height="13" rx="1.5" fill="#2563eb" transform="rotate(3 214 30.8)"/><rect x="252" y="33.1" width="11" height="13" rx="1.5" fill="#f8fafc" transform="rotate(-4 252 33.1)"/><rect x="290" y="35.4" width="11" height="13" rx="1.5" fill="#dc2626" transform="rotate(2 290 35.4)"/><rect x="328" y="37.7" width="11" height="13" rx="1.5" fill="#16a34a" transform="rotate(-3 328 37.7)"/><rect x="366" y="40.0" width="11" height="13" rx="1.5" fill="#facc15" transform="rotate(4 366 40.0)"/>
+                </svg>
+                <span class="udd-preview-chip"><i class="fas fa-check-circle" aria-hidden="true"></i>Official portal</span>
+                <span class="udd-preview-chip is-right"><i class="fas fa-qrcode" aria-hidden="true"></i>QR verified</span>
+              </div>
+              <div class="udd-preview-body">
+                <div class="udd-preview-id">
+                  <span class="udd-preview-icon"><i class="fas fa-certificate" aria-hidden="true"></i></span>
+                  <div class="min-w-0"><div class="udd-preview-label">e-Trade Licence No.</div><div class="udd-preview-value">UDD/TL/NE/2026/0012</div><div class="small text-muted">Kept on every renewal</div></div>
+                </div>
+                <ul class="udd-preview-facts">
+                  <li><i class="fas fa-calendar-check" aria-hidden="true"></i><span>Validity</span><strong>1 April &ndash; 31 March</strong></li>
+                  <li><i class="fas fa-hourglass-half" aria-hidden="true"></i><span>Renewal grace</span><strong>30 days (to 30 April)</strong></li>
+                  <li><i class="fas fa-receipt" aria-hidden="true"></i><span>Fee payment</span><strong>Fee + garbage fee by BR</strong></li>
+                </ul>
+                <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-primary w-100 fw-semibold"><i class="fas fa-arrow-right" aria-hidden="true"></i>Apply via Sikkim GO</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         6. KEY SERVICE HIGHLIGHTS
+         ==================================================================== -->
+    <div class="gov-metrics-strip">
+      <div class="container-xl">
+        <div class="gov-metrics-bar">
+          <div class="row g-3 text-center text-sm-start">
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex"><i class="fas fa-file-signature" aria-hidden="true"></i></div>
+                <div><div class="gov-metric-value">New Licence</div><div class="gov-metric-label">Apply online with documents</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex"><i class="fas fa-redo" aria-hidden="true"></i></div>
+                <div><div class="gov-metric-value">Yearly Renewal</div><div class="gov-metric-label">Same licence number</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex"><i class="fas fa-exchange-alt" aria-hidden="true"></i></div>
+                <div><div class="gov-metric-value">Change Request</div><div class="gov-metric-label">Name, premises or address</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 gov-metric-item">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gov-action-icon mb-0 d-none d-sm-inline-flex"><i class="fas fa-qrcode" aria-hidden="true"></i></div>
+                <div><div class="gov-metric-value">Digital Licence</div><div class="gov-metric-label">QR-verifiable download</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         7. LICENCE CATEGORIES
+         ==================================================================== -->
+    <section id="licence-categories" tabindex="-1" class="py-5 bg-white" aria-labelledby="categories-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Who Needs a Licence</div>
+          <h2 id="categories-heading" class="gov-section-title">Two Types of Applicant</h2>
+          <p class="text-muted">Choose your applicant type and the purpose of the licence. The form and the documents asked for follow your choice.</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+          <div class="col">
+            <div class="gov-card p-4 h-100 d-flex flex-column">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;"><i class="fas fa-store text-primary" aria-hidden="true"></i></div>
+                <div><span class="gov-card-badge mb-1">Type 1</span><h3 class="h6 fw-bold mb-0">Individual / Local Trader</h3></div>
+              </div>
+              <p class="small text-secondary mb-2">Proprietorships, partnerships and other local businesses, for an activity / item in the UDD notification, for example:</p>
+              <ul class="small text-secondary mb-0 ps-3 tl-cols-2">
+                <li>Agricultural and forest produce</li>
+                <li>Grocery, provisions and dairy</li>
+                <li>Meat, fish and egg sellers</li>
+                <li>Departmental stores and garments</li>
+                <li>Tailors, dyers and footwear</li>
+                <li>Beauty parlours, spas and gyms</li>
+                <li>Automobile showrooms, workshops and garages</li>
+                <li>LPG distributors and petrol pumps</li>
+              </ul>
+              <div class="mt-auto pt-3 small text-muted"><i class="fas fa-info-circle text-primary me-1" aria-hidden="true"></i>27 items in the form, many with sub-items; the department keeps the list up to date as notified.</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="gov-card p-4 h-100 d-flex flex-column">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;"><i class="fas fa-building text-primary" aria-hidden="true"></i></div>
+                <div><span class="gov-card-badge mb-1">Type 2</span><h3 class="h6 fw-bold mb-0">Registered Company</h3></div>
+              </div>
+              <p class="small text-secondary mb-2">Pvt. Ltd., Public Ltd., societies and other registered entities, for:</p>
+              <ul class="small text-secondary mb-0 ps-3 tl-cols-2">
+                <li>Manufacturing</li>
+                <li>Security agency / manpower placement</li>
+                <li>Banking &amp; non-banking</li>
+                <li>Departmental stores</li>
+                <li>Casino</li>
+                <li>Hotels / restaurants</li>
+                <li>Pharmaceutical companies</li>
+                <li>Others (describe the business)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-light border small mt-4 mb-0 d-flex gap-2 align-items-start">
+          <i class="bi bi-geo-alt-fill text-primary mt-1" aria-hidden="true"></i>
+          <span><strong>Circles:</strong> choose the circle where your premises are. The <strong>North-East Circle</strong> is run from UDD Headquarters, Gangtok. The <strong>South-West Circle</strong> (Soreng, Jorethang and other offices) will be added once its workflow is confirmed. Only officers of the circle you choose act on your application.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         8. QUICK ACCESS TILES
+         ==================================================================== -->
+    <section class="py-5 bg-light" aria-labelledby="quick-access-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Quick Access</div>
+          <h2 id="quick-access-heading" class="gov-section-title">What would you like to do today?</h2>
+          <p class="text-muted">Choose an action below to get started</p>
+        </div>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+          <div class="col"><a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-file-signature" aria-hidden="true"></i></div><div class="gov-action-tile-title">Apply for Licence</div><p class="gov-action-tile-desc">Login via Sikkim GO</p></a></div>
+          <div class="col"><a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-redo" aria-hidden="true"></i></div><div class="gov-action-tile-title">Renew Licence</div><p class="gov-action-tile-desc">Every financial year</p></a></div>
+          <div class="col"><a href="#fees-renewal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-rupee-sign" aria-hidden="true"></i></div><div class="gov-action-tile-title">Fees &amp; Renewal</div><p class="gov-action-tile-desc">Garbage fee and late surcharge</p></a></div>
+          <div class="col"><a href="verify.html" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-qrcode" aria-hidden="true"></i></div><div class="gov-action-tile-title">Verify a Licence</div><p class="gov-action-tile-desc">By licence number</p></a></div>
+          <div class="col"><a href="#help-contacts" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div class="gov-action-tile-title">Contact Support</div><p class="gov-action-tile-desc">Department helpdesk</p></a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         9. SERVICE DETAILS: DOCUMENTS, FEES & RENEWAL
+         ==================================================================== -->
+    <section id="service-overview" class="py-5 bg-white" aria-labelledby="service-overview-heading">
+      <div class="container-xl">
+        <div class="gov-section-header">
+          <div class="gov-section-eyebrow">Service Details</div>
+          <h2 id="service-overview-heading" class="gov-section-title">Official Guidelines &amp; Requirements</h2>
+          <p class="text-muted">A licence is valid for one financial year (1 April &ndash; 31 March) and must be renewed every year.</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="eligibility-criteria">
+          <div class="col">
+            <div class="gov-card p-4 h-100 d-flex flex-column">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;"><i class="fas fa-folder-open text-primary" aria-hidden="true"></i></div>
+                <div><span class="gov-card-badge mb-1">Checklist</span><h3 class="h6 fw-bold mb-0">Documents for a New Licence</h3></div>
+              </div>
+              <p class="small fw-semibold mb-1">Individual / local trader</p>
+              <ul class="small text-secondary mb-2 ps-3">
+                <li>Photo, SSC / COI / Land Parcha (any one) and RC</li>
+                <li>Building Occupancy Certificate, NOC of the house owner</li>
+                <li>Panchayat / Councillor recommendation and undertaking (formats provided)</li>
+                <li>Fire &amp; Emergency Services NOC, unemployed certificate</li>
+              </ul>
+              <p class="small fw-semibold mb-1">Registered company</p>
+              <ul class="small text-secondary mb-2 ps-3">
+                <li>Land Parcha, Certificate of Incorporation, MoA, board resolution, company PAN</li>
+                <li>PVR, Pollution Control Board clearance, Law Department enlistment, Fire NOC</li>
+              </ul>
+              <p class="small text-secondary mb-3">Plus licences or NOCs for the activity: FSSAI for food, Animal Husbandry for meat shops, Traffic Police for garages, Drug licence for pharma, Tourism for hotels, RBI / IRDA for banking, dealership and oil company licence for petrol pumps / LPG.</p>
+              <div class="mt-auto pt-2 border-top"><span class="small text-muted"><i class="fas fa-info-circle text-primary me-1" aria-hidden="true"></i> The form shows exactly which documents apply to you. PDF, JPG or PNG, up to 5 MB each.</span></div>
+            </div>
+          </div>
+          <div class="col" id="fees-renewal">
+            <div class="gov-card p-4 h-100 d-flex flex-column">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;"><i class="fas fa-rupee-sign text-primary" aria-hidden="true"></i></div>
+                <div><span class="gov-card-badge mb-1">Fees</span><h3 class="h6 fw-bold mb-0">Licence Fee &amp; Payment</h3></div>
+              </div>
+              <ul class="small text-secondary mb-3 ps-3">
+                <li class="mb-1">The Inspector works out the licence fee and the garbage fee at the site inspection, as per the UDD notification for your activity.</li>
+                <li class="mb-1">Amount to pay = licence fee + garbage fee. It is shown to you once the application is approved.</li>
+                <li class="mb-1">Pay at the bank and upload the Bank Receipt (BR). The full fee applies whichever month the licence is issued.</li>
+                <li>Bring the BR and original documents to the department, unless the Inspector already saw the originals at the site visit.</li>
+              </ul>
+              <div class="mt-auto pt-2 border-top"><span class="small text-muted"><i class="fas fa-lock text-primary me-1" aria-hidden="true"></i> Your first licence fee becomes your renewal amount; the department may revise it.</span></div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="gov-card p-4 h-100 d-flex flex-column">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;"><i class="fas fa-calendar-alt text-primary" aria-hidden="true"></i></div>
+                <div><span class="gov-card-badge mb-1">Renewal</span><h3 class="h6 fw-bold mb-0">Renewal &amp; Late Surcharge</h3></div>
+              </div>
+              <ul class="small text-secondary mb-3 ps-3">
+                <li class="mb-1">Licence expires on 31 March. Renewal opens a month or two before (as set by the Department).</li>
+                <li class="mb-1">Upload the <strong>GST clearance certificate</strong>, pay the renewal amount + garbage fee (+ any surcharge) at the bank and upload the BR with the renewal. Give the original BR at the department.</li>
+                <li class="mb-1">No surcharge by 30 April. From 1 May: <strong>₹5 per day</strong>, counted to the date you first submit (e.g. 20 May &rarr; ₹100).</li>
+                <li>The Inspector checks the BR and forwards to the BO, who approves (a site visit is optional). Then download the renewed licence.</li>
+              </ul>
+              <div class="mt-auto pt-2 border-top"><span class="small text-muted"><i class="fas fa-check text-success me-1" aria-hidden="true"></i> No cut-off: however late, you renew through the same flow.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         10. HOW TO APPLY
+         ==================================================================== -->
+    <section id="how-to-apply" tabindex="-1" class="py-5 bg-light" aria-labelledby="steps-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Digital Workflow</div>
+          <h2 id="steps-heading" class="gov-section-title">How to Get Your Licence (5 Steps)</h2>
+          <p class="text-muted">You can track your application at every stage from your dashboard</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-5 g-3">
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">1</div><h3 class="h6 fw-bold mb-2">Apply Online</h3><p class="small text-muted mb-0">Log in through Sikkim GO, choose the applicant type, item and sub-item, fill the form and upload the documents asked for.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">2</div><h3 class="h6 fw-bold mb-2">Inspection</h3><p class="small text-muted mb-0">An Inspector of your circle checks the documents, visits the site and assesses the licence fee and garbage fee.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">3</div><h3 class="h6 fw-bold mb-2">Review &amp; Approval</h3><p class="small text-muted mb-0">The BO, the Special Secretary and the HOD review and approve. If anything needs correction, it is returned to you with remarks.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">4</div><h3 class="h6 fw-bold mb-2">Pay by Bank Receipt</h3><p class="small text-muted mb-0">Pay the licence fee + garbage fee at the bank, upload the BR and bring it with your original documents.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">5</div><h3 class="h6 fw-bold mb-2">Download Licence</h3><p class="small text-muted mb-0">Once the BR is verified, download your QR-verifiable e-Trade Licence.</p></div></div>
+        </div>
+        <p class="small text-muted text-center mt-3 mb-0">Renewals: pay and upload the BR with the renewal; the Inspector checks it and the BO approves. The Special Secretary and HOD are not involved.</p>
+        <div class="text-center mt-4 pt-2">
+          <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-gov-accent btn-lg px-4"><i class="fas fa-arrow-right me-2" aria-hidden="true"></i> Apply Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         11. FAQ
+         ==================================================================== -->
+    <section id="faq-section" class="py-5 bg-white" aria-labelledby="faq-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Help</div>
+          <h2 id="faq-heading" class="gov-section-title">Frequently Asked Questions</h2>
+        </div>
+        <div class="accordion mx-auto" id="faqAccordion" style="max-width: 860px;">
+          <div class="accordion-item">
+            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">My shop is inside Gangtok Municipal Corporation limits. Do I apply here?</button></h3>
+            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">No. Shops and other businesses trading within GMC limits apply through GMC's own e-trade licence. This system is for individual / local traders and registered companies licensed by UDD for the activities in its notification.</div></div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">What happens if my application needs correction?</button></h3>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">The officer returns it with remarks and marks the fields and documents to correct. You edit only those, then resubmit. It goes back to the officer who returned it, not to the start. Earlier versions are kept.</div></div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">My licence was issued in February. When does it expire?</button></h3>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">Every licence expires on 31 March, whichever month it was issued in. You renew it for the next financial year. The full fee applies; there is no reduction for part of a year.</div></div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">How do I change the name, premises or address on my licence?</button></h3>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">Open the licence in My Licences and choose Request Change. Your existing licence stays valid while the request is processed. On approval and BR verification, a new version is issued with the same licence number and validity. If renewal is due, complete the renewal first.</div></div>
+          </div>
+          <div class="accordion-item">
+            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false" aria-controls="faq5">Is the late surcharge counted to the payment date?</button></h3>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">No. The surcharge is counted only up to the date you first submit the renewal, and you pay it with the renewal. If it is returned and you resubmit later, the amount stays as on the first submission. The system calculates it; officers cannot change it.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         12. HELP & CONTACTS
+         ==================================================================== -->
+    <section id="help-contacts" class="py-5 bg-light" aria-labelledby="contacts-heading">
+      <div class="container-xl">
+        <div class="gov-section-header text-center">
+          <div class="gov-section-eyebrow">Helpline</div>
+          <h2 id="contacts-heading" class="gov-section-title">Contact the Department</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-6 col-lg-5">
+            <div class="gov-card p-4 h-100">
+              <h3 class="h6 fw-bold mb-2"><i class="fas fa-building text-primary me-2" aria-hidden="true"></i>North-East Circle</h3>
+              <p class="small text-secondary mb-1">UDD Headquarters, NH-10, Gangtok, Sikkim</p>
+              <p class="small text-muted mb-0">Phone and email pending departmental confirmation</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-5">
+            <div class="gov-card p-4 h-100">
+              <h3 class="h6 fw-bold mb-2"><i class="fas fa-map-marker-alt text-primary me-2" aria-hidden="true"></i>South-West Circle</h3>
+              <p class="small text-secondary mb-1">Circle offices at Soreng, Jorethang and others</p>
+              <p class="small text-muted mb-0">Online service to be added once the workflow is confirmed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- ======================================================================
+       14. GIGW 3.0 MANDATORY COMPLIANCE FOOTER
+       ====================================================================== -->
+  <footer class="gov-footer" role="contentinfo" aria-label="Government Portal Footer">
+    <div class="container-xl">
+      <div class="row g-4">
+        <!-- Col 1: Department Information & Contact -->
+        <div class="col-lg-3 col-md-6">
+          <h3 class="footer-heading">Urban Development Department</h3>
+          <p class="small text-white-50 mb-2">Government of Sikkim</p>
+          <p class="small text-white-50 mb-3">
+            <i class="fas fa-map-marker-alt me-2 text-warning" aria-hidden="true"></i>
+            NH-10, Gangtok, Sikkim
+          </p>
+          <p class="small text-white-50 mb-2">
+            <i class="fas fa-phone-alt me-2 text-warning" aria-hidden="true"></i>
+            Helpline pending confirmation
+          </p>
+          <p class="small text-white-50 mb-0">
+            <i class="fas fa-envelope me-2 text-warning" aria-hidden="true"></i>
+            Email pending confirmation
+          </p>
+        </div>
+
+        <!-- Col 2: Citizen Quick Services -->
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-heading">Applicant Services</h4>
+          <ul class="gov-footer-list small">
+            <li><a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Apply for Licence</a></li>
+            <li><a href="#licence-categories"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Licence Categories</a></li>
+            <li><a href="#fees-renewal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Fees &amp; Late Fine</a></li>
+            <li><a href="#how-to-apply"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>How to Apply Guide</a></li>
+            <li><a href="#faq-section"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>FAQ &amp; Guidance</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: GIGW 3.0 Mandatory Website Policies -->
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-heading">Website Policies</h4>
+          <ul class="gov-footer-list small">
+            <li><a href="#termsModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Terms &amp; Conditions</a></li>
+            <li><a href="#privacyModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Privacy Policy</a></li>
+            <li><a href="#hyperlinkModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Hyperlinking Policy</a></li>
+            <li><a href="#copyrightModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Copyright Policy</a></li>
+            <li><a href="#disclaimerModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Disclaimer &amp; Notice</a></li>
+            <li><a href="#accessibilityModal" data-bs-toggle="modal"><i class="fas fa-chevron-right me-2 text-warning" aria-hidden="true"></i>Accessibility Statement</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Government Links & Compliance Seal -->
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-heading">National &amp; State Portals</h4>
+          <ul class="gov-footer-list small mb-3">
+            <li><a href="https://sikkim.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>State Portal of Sikkim</a></li>
+            <li><a href="https://sikkimgo.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>Sikkim GO Citizen Gateway</a></li>
+            <li><a href="https://www.india.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>National Portal of India</a></li>
+            <li><a href="https://samadhan.sikkim.gov.in" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt me-2 text-warning" aria-hidden="true"></i>Samadhan Grievance Redressal</a></li>
+          </ul>
+
+          <!-- GIGW 3.0 Compliance Badge -->
+          <div class="gov-badge-gigw mb-2">
+            <i class="fas fa-check-circle text-success" aria-hidden="true"></i>
+            <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="gov-footer-divider">
+
+      <!-- Sub-footer: Attributions, WIM, Last Updated, Visitor Count -->
+      <div class="row align-items-center g-3 small">
+        <div class="col-lg-7">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Urban Development Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-1 text-white-50">
+            Designed, Developed and Hosted by <strong>Department of Information Technology &amp; Communications (DITEC)</strong> / <strong>National Informatics Centre (NIC)</strong>.
+          </p>
+          <p class="mb-0 text-white-50">
+            <strong>Web Information Manager:</strong> Pending departmental confirmation.
+          </p>
+        </div>
+        <div class="col-lg-5 text-lg-end">
+          <div class="d-inline-flex flex-column align-items-lg-end gap-1">
+            <span class="text-white-50">Last Reviewed &amp; Updated: <strong>17 November 2026</strong></span>
+            <span class="text-white-50">&copy; 2026 Government of Sikkim. All Rights Reserved.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       MODALS: Screen Reader Info & Policy Modals
+       ====================================================================== -->
+
+  <!-- Screen Reader Access Modal -->
+  <div class="modal fade" id="screenReaderModal" tabindex="-1" aria-labelledby="screenReaderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title" id="screenReaderModalLabel"><i class="fas fa-volume-up me-2" aria-hidden="true"></i>Screen Reader Access</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This portal complies with the Guidelines for Indian Government Websites (GIGW 3.0) and World Wide Web Consortium (W3C) Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.</p>
+          <p class="fw-bold mb-2">Compatible Screen Readers:</p>
+          <ul>
+            <li><strong>Non Visual Desktop Access (NVDA)</strong> - Free / Open Source (Windows)</li>
+            <li><strong>JAWS (Job Access With Speech)</strong> - Windows</li>
+            <li><strong>VoiceOver</strong> - macOS and iOS</li>
+            <li><strong>TalkBack</strong> - Android Devices</li>
+            <li><strong>Narrator</strong> - Windows Built-in</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessibility Statement Modal -->
+  <div class="modal fade" id="accessibilityModal" tabindex="-1" aria-labelledby="accessibilityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title" id="accessibilityModalLabel"><i class="fas fa-universal-access me-2 text-primary" aria-hidden="true"></i>Accessibility Statement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body small">
+          <p>The Government of Sikkim is committed to ensuring that its portals and services are accessible to all citizens, including individuals with visual, auditory, cognitive, or physical impairments.</p>
+          <p>This website follows the Guidelines for Indian Government Websites (GIGW 3.0) and adheres to WCAG 2.1 Level AA criteria. Features include:</p>
+          <ul>
+            <li>Skip to Main Content &amp; Skip to Navigation keyboard links</li>
+            <li>High Contrast color scheme for low-vision readability</li>
+            <li>Font size scaling without breaking page layout (A-, A, A+)</li>
+            <li>Descriptive text equivalents (alt attributes) for visual elements</li>
+            <li>Logical heading hierarchy and landmark HTML5 semantics</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policy Modals Container -->
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">This portal does not automatically capture personal information without citizen consent. Information collected is used solely for the fulfillment of the requested public service in accordance with the Sikkim Information Technology &amp; Data Protection Rules.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="termsModalLabel">Terms &amp; Conditions</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">This portal is designed, developed, and maintained by DITEC / NIC for the Urban Development Department, Government of Sikkim. Licences issued through this portal are subject to verification of the Bank Receipt and original documents by the Department.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="hyperlinkModal" tabindex="-1" aria-labelledby="hyperlinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="hyperlinkModalLabel">Hyperlinking Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">Prior permission is required before hyperlinks are directed from any website to this portal. External links provided on this portal are for citizen convenience only; Government of Sikkim is not responsible for the contents or reliability of external websites.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="copyrightModal" tabindex="-1" aria-labelledby="copyrightModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="copyrightModalLabel">Copyright Policy</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">Material featured on this portal may be reproduced free of charge after obtaining permission from the Urban Development Department, provided the material is reproduced accurately and not used in a derogatory or misleading context.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light"><h5 class="modal-title" id="disclaimerModalLabel">Disclaimer</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body small">While every effort has been made to ensure accuracy and currency of the content on this website, the same should not be construed as a statement of law or used for any legal purposes. In case of any ambiguity, users are advised to verify with the department or relevant official gazette.</div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+  <!-- ======================================================================
+       LOGIN POPUP (prototype – replaces Sikkim GO single sign-on)
+       ====================================================================== -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl modal-fullscreen-md-down">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header text-white py-3" style="background: linear-gradient(135deg, var(--gov-primary, #0f766e) 0%, var(--gov-utility-bg, #042f2e) 100%);">
+          <div class="d-flex align-items-center gap-3">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="" aria-hidden="true" style="height: 44px; filter: brightness(0) invert(1);">
+            <div>
+              <h2 class="modal-title h5 fw-bold text-white mb-0" id="loginModalLabel"><i class="fas fa-user-shield me-2 text-warning" aria-hidden="true"></i>Login &ndash; e-Trade Licence</h2>
+              <p class="small mb-0 text-white-50">Prototype login &bull; Sikkim GO is not connected</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3 p-lg-4 bg-light">
+          <div class="alert alert-info border-0 d-flex align-items-start gap-2 py-2 px-3 mb-3">
+            <i class="bi bi-info-circle-fill text-primary mt-1" aria-hidden="true"></i>
+            <span class="small text-dark"><strong>Prototype login:</strong> in production, applicants log in with their Sikkim GO account (single sign-on); Sikkim GO only confirms who they are, and the business details are entered in the application form. Officers log in with their own department accounts. Here the login is simulated &ndash; no real credentials are used.</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-lg-5">
+              <section class="card border-0 shadow-sm h-100" aria-labelledby="applicant-login-heading">
+                <div class="card-body p-3 p-lg-4">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="tl-icon-circle bg-success-subtle text-success"><i class="bi bi-briefcase-fill" aria-hidden="true"></i></span>
+                    <div>
+                      <h3 id="applicant-login-heading" class="h6 fw-bold mb-0">Applicant (Business) Login</h3>
+                      <div class="small text-muted">Log in with your Sikkim GO account</div>
+                    </div>
+                  </div>
+                  <h4 class="h6 fw-bold mb-1" id="scenario-heading">Prototype Demo &ndash; Select Applicant Scenario</h4>
+                  <p class="small text-muted mb-2">Click a user to log in.</p>
+                  <div class="d-flex flex-column gap-2" id="scenarioList" role="list" aria-labelledby="scenario-heading"></div>
+                </div>
+              </section>
+            </div>
+            <div class="col-lg-7">
+              <section class="card border-0 shadow-sm h-100" aria-labelledby="staff-login-heading">
+                <div class="card-body p-3 p-lg-4">
+                  <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="tl-icon-circle bg-primary-subtle text-primary"><i class="bi bi-building" aria-hidden="true"></i></span>
+                    <div>
+                      <h3 id="staff-login-heading" class="h6 fw-bold mb-0">Department Officers &ndash; North-East Circle</h3>
+                      <div class="small text-muted">Each officer has an own account (demonstration users)</div>
+                    </div>
+                  </div>
+                  <div class="row g-3" id="staffRoleGrid"></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-white justify-content-between flex-wrap gap-2">
+          <span class="small text-muted"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>You can switch officer or scenario at any time from the bar at the top of each workspace.</span>
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    // Login popup controller (prototype)
+    (function () {
+      'use strict';
+      var App = window.TLApp, D = App.data, esc = App.esc;
+      var modalEl = document.getElementById('loginModal');
+      var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+      // ---------- Applicant scenarios ----------
+      var list = document.getElementById('scenarioList');
+      Object.keys(D.businesses).filter(function (k) { return D.businesses[k].scenario; }).forEach(function (key, i) {
+        var b = D.businesses[key];
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tl-scenario-chip';
+        btn.setAttribute('role', 'listitem');
+        btn.innerHTML = '<div class="d-flex justify-content-between align-items-center gap-2">' +
+          '<span class="fw-bold text-dark">' + String.fromCharCode(65 + i) + '. ' + esc(b.label) + '</span>' +
+          '</div>' +
+          '<div class="small text-muted">' + esc(b.authName) + ' &bull; Mobile ' + App.maskMobile(b.mobile) + ' &bull; ' + esc(b.badge) + '</div>';
+        btn.addEventListener('click', function () {
+          App.setSession({ type: 'applicant', scenario: key, loggedInAt: new Date().toISOString() });
+          window.location.href = 'dashboard.html';
+        });
+        list.appendChild(btn);
+      });
+
+      // ---------- Officers (one account each) ----------
+      var ICONS = { inspector: 'bi-clipboard-check', bo: 'bi-person-workspace', ss: 'bi-person-badge', hod: 'bi-award', admin: 'bi-gear' };
+      var DESC = {
+        inspector: 'Checks documents, visits the site, adds inspection notes, forwards to a BO. Verifies Bank Receipts.',
+        bo: 'Reviews and may re-inspect. Forwards new and change requests to the Special Secretary; approves renewals.',
+        ss: 'Verifies, may edit inspection notes (original kept), returns to BO or forwards to HOD.',
+        hod: 'Final approval of new licences and changes, or return to the Special Secretary.',
+        admin: 'Revises the fee master and sets when renewal opens. View-only on applications.'
+      };
+      var grid = document.getElementById('staffRoleGrid');
+      Object.keys(D.staff).forEach(function (key) {
+        var u = D.staff[key];
+        var col = document.createElement('div');
+        col.className = 'col-md-6';
+        col.innerHTML = '<div class="tl-role-card p-3">' +
+          '<div class="d-flex align-items-center gap-2 mb-2"><span class="tl-icon-circle bg-primary-subtle text-primary" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + ICONS[u.role] + '" aria-hidden="true"></i></span>' +
+          '<div class="min-w-0"><h4 class="h6 fw-bold mb-0">' + esc(u.designation) + '</h4><div class="small text-muted text-truncate">' + esc(u.name) + ' (demo)' + (u.note ? ' &bull; ' + esc(u.note) : '') + '</div></div></div>' +
+          '<p class="small text-secondary mb-3">' + esc(DESC[u.role]) + '</p>' +
+          '<div class="mt-auto"><button type="button" class="btn btn-sm btn-primary" data-user="' + key + '">Continue as ' + esc(u.short) + ' <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></button></div></div>';
+        grid.appendChild(col);
+      });
+      grid.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-user]');
+        if (!btn) return;
+        App.setSession({ type: 'staff', userId: btn.getAttribute('data-user'), loggedInAt: new Date().toISOString() });
+        window.location.href = 'dashboard-staff.html';
+      });
+
+      if (location.hash === '#login') modal.show();
+      modalEl.addEventListener('hidden.bs.modal', function () {
+        if (location.hash === '#login') history.replaceState(null, '', location.pathname);
+      });
+      App.initAccessibility();
+    })();
+  </script>
+  <script>
+    // Active navigation state follows the section in view; collapse mobile menu after a choice.
+    (function () {
+      'use strict';
+      var navLinks = document.querySelectorAll('#portalNav .nav-link[href^="#"]');
+      var homeLink = document.querySelector('#portalNav .nav-link[href="index.html"]');
+      var sections = [];
+      navLinks.forEach(function (link) {
+        var sec = document.querySelector(link.getAttribute('href'));
+        if (sec) sections.push({ link: link, el: sec });
+      });
+      function setActive(link) {
+        navLinks.forEach(function (l) { l.classList.remove('active'); l.removeAttribute('aria-current'); });
+        if (homeLink) homeLink.classList.toggle('active', !link);
+        if (link) { link.classList.add('active'); link.setAttribute('aria-current', 'location'); }
+      }
+      function onScroll() {
+        var y = window.scrollY + 140, current = null;
+        sections.forEach(function (s) { if (s.el.getBoundingClientRect().top + window.scrollY <= y) current = s.link; });
+        setActive(current);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      var portalNav = document.getElementById('portalNav');
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (portalNav.classList.contains('show')) bootstrap.Collapse.getOrCreateInstance(portalNav).hide();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

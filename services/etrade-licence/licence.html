@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Trade Licence | Urban Development Department | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal" class="tl-doc-page">
+  <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
+  <div class="tl-no-print bg-white border-bottom py-2 mb-3">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <a href="#" class="btn btn-sm btn-outline-secondary" id="btnBack"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back</a>
+      <div class="d-flex gap-2 flex-wrap align-items-center">
+        <label for="verSel" class="small fw-semibold mb-0">Version</label>
+        <select id="verSel" class="form-select form-select-sm" style="width:auto;"></select>
+        <button type="button" class="btn btn-sm btn-primary" onclick="window.print()"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+  <main id="main-content" tabindex="-1" class="pb-4 px-2"><div id="docRoot"></div><div id="histRoot" class="tl-no-print mx-auto mt-3" style="max-width:820px;"></div></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc, inr = App.inr;
+      var s = App.getSession();
+      var back = document.getElementById('btnBack');
+      back.href = s && s.type === 'staff' ? 'licences.html' : (s ? 'dashboard.html#licences' : 'index.html');
+      back.addEventListener('click', function (e) { if (document.referrer && document.referrer.indexOf(location.host) !== -1 && history.length > 1) { e.preventDefault(); history.back(); } });
+      var root = document.getElementById('docRoot');
+      var lic = App.licence(App.qs('no'));
+      // Applicants see only their own licences; officers see their circle; others use verify.html.
+      var allowed = lic && s && ((s.type === 'applicant' && lic.businessKey === s.scenario) || (s.type === 'staff' && App.me(s) && App.me(s).circle === lic.circle));
+      if (!allowed) { root.innerHTML = '<div class="tl-doc"><div class="alert alert-warning mb-0">Licence not found for this login. To check a licence, use <a href="verify.html' + (lic ? '?ref=' + encodeURIComponent(lic.licenceNo) : '') + '">Verify a Licence</a>.</div></div>'; return; }
+      var cur = F.currentVersion(lic);
+      var vNo = +(App.qs('v') || cur.v);
+      var v = lic.versions.filter(function (x) { return x.v === vNo; })[0] || cur;
+      var state = F.licenceState(lic), superseded = !!v.superseded;
+      var sel = document.getElementById('verSel');
+      sel.innerHTML = lic.versions.slice().reverse().map(function (x) { return '<option value="' + x.v + '"' + (x.v === v.v ? ' selected' : '') + '>v' + x.v + ' &ndash; ' + (x.superseded ? 'Superseded' : 'Current') + ' (' + App.fmtDate(x.issuedOn) + ')</option>'; }).join('');
+      sel.addEventListener('change', function () { location.href = 'licence.html?no=' + encodeURIComponent(lic.licenceNo) + '&v=' + sel.value; });
+
+      var lastRenewal = lic.renewals.length ? lic.renewals[lic.renewals.length - 1] : null;
+      // Validity shown: for a superseded version, the validity at the time it was replaced.
+      var validTo = superseded ? (function () { var r = lic.renewals.filter(function (x) { return x.on <= v.superseded; }).slice(-1)[0]; return r ? r.validTo : F.fyEnd(v.issuedOn); })() : lic.validTo;
+      var validFrom = (+validTo.slice(0, 4) - 1) + '-04-01';
+      if (lic.firstIssuedOn > validFrom) validFrom = lic.firstIssuedOn;
+      // Form No. III (see rule 4 and 7(1)(a)) – Trade Licence, Urban Development Department.
+      var d = F.licenceDetails(lic), isInd = F.typeOf(lic) === 'IND';
+      var renewed = !!(lastRenewal && !superseded && lastRenewal.on > v.issuedOn);
+      var srcApp = App.app(renewed ? lastRenewal.appId : v.appId);
+      var first = F.renewalAmounts(lic).first || {};
+      var fee = renewed ? lastRenewal.fee : first.fee || 0, garbage = renewed ? (lastRenewal.garbage || 0) : (first.garbage || 0), fine = renewed ? (lastRenewal.fine || 0) : 0;
+      var brNo = renewed ? lastRenewal.brNo : v.brNo, brDate = srcApp && srcApp.br ? srcApp.br.brDate : (renewed ? lastRenewal.on : v.issuedOn);
+      var paid = srcApp && srcApp.br ? srcApp.br.amount : fee + garbage + fine;
+      function ln(val) { return '<span class="tl-form-fill">' + (val ? esc(val) : '&nbsp;') + '</span>'; }
+      // Amount in words (Indian numbering).
+      function words(n) {
+        n = Math.round(n);
+        var a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        var t = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        function two(x) { return x < 20 ? a[x] : t[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : ''); }
+        function three(x) { return (x >= 100 ? a[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + two(x % 100); }
+        if (!n) return 'Zero';
+        var out = [], cr = Math.floor(n / 10000000), la = Math.floor(n / 100000) % 100, th = Math.floor(n / 1000) % 100, rest = n % 1000;
+        if (cr) out.push(three(cr) + ' Crore');
+        if (la) out.push(two(la) + ' Lakh');
+        if (th) out.push(two(th) + ' Thousand');
+        if (rest) out.push(three(rest));
+        return out.join(' ');
+      }
+      // Applicant photo uploaded with the application (individuals).
+      var att = null;
+      if (isInd) [srcApp].concat(D.applications.filter(function (x) { return x.licenceNo === lic.licenceNo; })).forEach(function (x) {
+        if (!att && x && x.docs && x.docs.photo) att = App.attachmentFor(x.docs.photo.file);
+      });
+      // Photograph only on licences of individuals; a registered company's licence carries none.
+      var photo = isInd ? '<div class="tl-photo-box">' + (att ? '<span class="tl-thumb" data-att="' + esc(att.id) + '" role="img" aria-label="Photograph of the licensee"></span>' : 'A passport size photograph') + '</div>' : '<div aria-hidden="true"></div>';
+      var catName = App.category(lic.category).name;
+      var article = catName + (lic.orgType && lic.orgType !== catName ? ' – ' + lic.orgType : '');
+      var TERMS = [
+        'That you shall not contravene any of the provisions of the Sikkim (Repeal and Miscellaneous) Provisions Act, 1985 and rules made there under;',
+        'That you shall abide by all instructions given by the Department from time to time;',
+        'That you shall display the original license in your place of business in a conspicuous manner and shall produce it for verification by the Departmental Officer as and when demanded;',
+        'That you shall not carry any other trade in the premises except the trade mentioned in the licence;',
+        'That you shall not carry any trade or manufacture in an unapproved building/premises.',
+        '<strong>That you shall not sublet the licence to any other person.</strong> If a person other than the licencee or his dependant is found on three Departmental surprise inspections, the intervening periods between the inspections being not less than two months, to be running the business it shall be presumed that the licence has been sublet and unless the licence holder proves that the person is an employee of the former with documentary evidence, the trade licence shall be cancelled within a month from the date of detection of subletting during which the person running the business shall dispose of the items of trade in the shop for closure;',
+        'That you shall allow any Officer of the Urban Development Department authorized by the authority empowered to issue licence to enter into any premises where manufacture and or sale of commodities is carried on;',
+        'That you shall produce your original copy of licence whenever required to do so by any Officer of the Department;',
+        'That you shall display a board specifying trade license No., name of the Proprietor, and Firm registration, if any;',
+        'That you shall issue a valid cash memo to the consumer for the sale of any item/commodity;',
+        'That you shall not display your goods/commodities on public thoroughfares;',
+        'That you shall keep the premises neat and clean and free from any sanitary defect;',
+        'That you shall maintain two empty bins for the disposal of bio-degradable and non-biodegradable waste products as per the provision of the Sikkim Non-biodegradable Garbage (Control) Act, 1997. In case the licence is for a clinical purpose a separate bin shall be maintained for disposal of bio-medical clinical waste;',
+        'That you shall pay toll tax as assessed in the Bazaar Contract Licence Agreement;',
+        'That you shall not sell any adulterated commodity as defined in the Prevention of Food Adulteration Act, 1954;',
+        'That, in case of licence for sale of cigarette or any tobacco products, you shall not sell cigarette or any tobacco to any person under 18 years of age and in an area within a radius of one hundred yards of any educational institution;',
+        'That in case of licence for hotel, guest house, lodge/resort you shall display a board specifying the category of rooms and tariff in the reception counter;',
+        'That you shall not deliver any goods or materials purchased or otherwise to any person, firm, shop, company or any other agency or organization in plastic wrappers or plastic bags;',
+        'That you shall not close business without the approval of Urban Development Department whether temporarily or permanently;',
+        'If the licencee contravenes any of the above terms and conditions, then without prejudice to any other action that may be taken against him/his license will be suspended or cancelled and he will he liable to a penalty not exceeding Rs.20,000/-.'
+      ];
+
+      root.innerHTML = '<article class="tl-doc tl-form3" aria-label="Trade Licence ' + esc(lic.licenceNo) + '">' +
+        (superseded ? '<div class="tl-doc-watermark" aria-hidden="true">SUPERSEDED</div>' : (state === 'Expired' ? '<div class="tl-doc-watermark" aria-hidden="true">EXPIRED</div>' : '')) +
+        '<div class="tl-cert-border">' +
+        (superseded ? '<div class="alert alert-secondary py-2 small"><strong>Superseded version.</strong> Replaced on ' + App.fmtDate(v.superseded) + ' by a newer version after a change request. Kept for record only.</div>' : '') +
+        (!superseded && state === 'Expired' ? '<div class="alert alert-danger py-2 small"><strong>Expired</strong> on ' + App.fmtDate(lic.validTo) + '. Renewal is due.</div>' : '') +
+        '<div class="tl-form3-top">' + photo +
+          '<header class="tl-form3-head"><div class="small">FORM NO. III <span class="text-muted">(See rule 4 and 7(1)(a))</span></div>' +
+            '<img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Official Emblem of the Government of Sikkim">' +
+            '<div class="fw-bold">GOVERNMENT OF SIKKIM</div><div class="fw-bold">URBAN DEVELOPMENT DEPARTMENT</div><div class="fw-bold">GANGTOK, SIKKIM</div>' +
+            '<h1 class="tl-doc-title">TRADE LICENSE</h1></header>' +
+          '<div class="tl-form3-qr"><div class="tl-qr" id="qr"></div><div class="small text-muted">Scan to verify</div></div></div>' +
+        '<p class="mb-1">License No. ' + ln(lic.licenceNo) + ' / File No. ' + ln(renewed ? lastRenewal.appId : v.appId) + ' Dated ' + ln(App.fmtDate(renewed ? lastRenewal.on : v.issuedOn)) + '</p>' +
+        '<p class="mb-0">Shri / Smt / Sushri ' + ln(d.applicantName) + (isInd ? '' : ' on behalf of ' + ln(d.companyName || v.businessName)) + '</p>' +
+        '<p class="mb-0">S/o, D/o, W/o ' + ln(d.guardianName) + '</p>' +
+        '<p class="mb-0">R/o ' + ln(v.officeAddress) + '</p>' +
+        '<p class="mb-2">District ' + ln(d.permDistrict) + '</p>' +
+        '<p class="mb-2 tl-indent">Is hereby permitted to carry on trade on the articles/items mentioned below subject to the terms and conditions stipulated hereinafter for the period w.e.f. ' + ln(App.fmtDate(validFrom)) + ' to ' + ln(App.fmtDate(validTo)) + '.</p>' +
+        '<p class="mb-2 tl-indent">You shall run trade' + (v.businessName ? ' under the name <strong>' + esc(v.businessName) + '</strong>' : '') + ' in the building/house/premises of Shri/Smt ' + ln(d.premOwner) + ' bearing Census house No. ' + ln(d.premHouseNo) +
+          ' located at ' + ln([d.premStreet, d.premLocality].filter(Boolean).join(', ')) + ' District ' + ln(d.premDistrict) + ' Police Station ' + ln(d.premPs) + '.</p>' +
+        '<div class="table-responsive"><table class="table table-sm table-bordered mb-2"><caption class="visually-hidden">Articles of trade and licence fee</caption><thead><tr><th scope="col" style="width:12%;">Sl. No.</th><th scope="col">Name of articles of trade</th><th scope="col" class="text-end" style="width:28%;">License fee amount</th></tr></thead><tbody>' +
+          '<tr><td>1</td><td>' + esc(article) + '</td><td class="text-end">' + inr(fee) + '</td></tr>' +
+          '<tr><td></td><td class="text-muted">Garbage fee</td><td class="text-end">' + inr(garbage) + '</td></tr>' +
+          (fine ? '<tr><td></td><td class="text-muted">Late surcharge on renewal</td><td class="text-end">' + inr(fine) + '</td></tr>' : '') +
+        '</tbody><tfoot><tr><th scope="row">Total items: 1</th><th class="text-end">Total amount</th><th class="text-end">' + inr(fee + garbage + fine) + '</th></tr></tfoot></table></div>' +
+        '<p class="mb-3">A sum of Rs. ' + ln(Math.round(paid).toLocaleString('en-IN')) + ' (Rupees ' + ln(words(paid) + ' only') + ') has been received vide BR No. / Challan No. ' + ln(brNo || '—') + ' dated ' + ln(App.fmtDate(brDate)) + ' as license fee.</p>' +
+        '<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 small">' +
+          '<div class="text-muted">Version v' + v.v + (v.change ? ' &ndash; ' + v.change.types.map(function (t) { return esc(F.CHANGE_TYPES[t].label.toLowerCase()); }).join(', ') : '') + '<br>First issued ' + App.fmtDate(lic.firstIssuedOn) + ' &bull; ' + esc(App.circle(lic.circle).name) +
+            '<br>Approved by ' + esc(renewed && lastRenewal.approvedBy ? lastRenewal.approvedBy : v.approvedBy) + '</div>' +
+          '<div class="text-center"><div class="tl-sign-space"></div>Signature of Licensing Authority<br>(Seal)</div></div>' +
+        '<p class="fw-bold small mt-3 mb-0">NOTE: THIS TRADE LICENCE IS NON-TRANSFERABLE AND ITS LOSS MUST BE REPORTED IMMEDIATELY TO THE POLICE AND ISSUING AUTHORITY.</p>' +
+        '<section class="tl-terms" aria-labelledby="termsHead"><h2 id="termsHead" class="h6 fw-bold text-decoration-underline mb-2">TERMS AND CONDITIONS OF TRADE LICENSE</h2><ol class="mb-3">' +
+          TERMS.map(function (t) { return '<li>' + (t.indexOf('<strong>') === 0 ? t : esc(t)) + '</li>'; }).join('') + '</ol>' +
+          '<div class="text-center fw-bold small">LICENCING AUTHORITY<br>URBAN DEVELOPMENT DEPARTMENT<br>GOVERNMENT OF SIKKIM</div></section>' +
+        '<p class="small text-muted text-center mt-3 mb-0">This is a computer-generated licence. Verify at <span class="font-monospace">verify.html?ref=' + esc(lic.licenceNo) + '</span></p>' +
+        '<p class="small text-muted text-center mt-2 mb-0 border-top pt-2"><i class="bi bi-flask me-1" aria-hidden="true"></i>Prototype document with demonstration data &ndash; not valid for any official purpose.</p>' +
+        '</div></article>';
+      App.hydrateThumbs(root);
+      App.renderQr(document.getElementById('qr'), App.verifyUrl(lic.licenceNo));
+      document.title = lic.licenceNo + ' (v' + v.v + ') | e-Trade Licence';
+
+      // History: versions and renewals (screen only)
+      var vers = lic.versions.slice().reverse().map(function (x) {
+        var ch = x.change ? Object.keys(x.change.to).map(function (k) { return esc(F.fieldLabel(k, lic.applicantType)) + ': <span class="text-decoration-line-through text-muted">' + esc(x.change.from[k]) + '</span> &rarr; ' + esc(x.change.to[k]); }).join('<br>') : 'Original licence';
+        return '<tr><td><a href="licence.html?no=' + encodeURIComponent(lic.licenceNo) + '&amp;v=' + x.v + '">v' + x.v + '</a></td><td>' + App.pill(x.superseded ? 'Superseded' : 'Current') + '</td><td class="small">' + ch + '</td><td class="small">' + App.fmtDate(x.issuedOn) + '<div class="text-muted">' + esc(x.approvedBy) + '</div></td><td class="small font-monospace">' + esc(x.brNo || '—') + '</td></tr>';
+      }).join('');
+      var rens = lic.renewals.slice().reverse().map(function (r) {
+        return '<tr><td class="small">' + App.fmtDate(r.on) + '</td><td class="small">' + App.fmtDate(r.validTo) + '</td><td class="small text-end">' + inr(r.fee) + '</td><td class="small text-end">' + inr(r.garbage || 0) + '</td><td class="small text-end">' + inr(r.fine) + '</td><td class="small font-monospace">' + esc(r.brNo) + '</td></tr>';
+      }).join('');
+      document.getElementById('histRoot').innerHTML =
+        '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Licence versions</h2><div class="small text-muted">Every version is kept. Older versions are marked Superseded and can still be viewed.</div></div><div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Licence versions</caption><thead><tr><th scope="col">Version</th><th scope="col">Status</th><th scope="col">Change (old &rarr; new)</th><th scope="col">Date &amp; HOD</th><th scope="col">BR</th></tr></thead><tbody>' + vers + '</tbody></table></div></div>' +
+        '<div class="card border-0 shadow-xs"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Renewals</h2></div><div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Renewals</caption><thead><tr><th scope="col">Renewed on</th><th scope="col">Valid to</th><th scope="col" class="text-end">Renewal fee</th><th scope="col" class="text-end">Garbage fee</th><th scope="col" class="text-end">Late surcharge</th><th scope="col">BR</th></tr></thead><tbody>' + (rens || '<tr><td colspan="6" class="text-muted small text-center py-3">Not renewed yet.</td></tr>') + '</tbody></table></div></div>';
+    })();
+  </script>
+</body>
+</html>

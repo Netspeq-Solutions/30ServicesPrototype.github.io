@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Reports | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div><h1 class="h4 fw-bold mb-1" id="pageTitle">Reports</h1><p class="text-muted small mb-0" id="pageSubtitle"></p></div>
+      <div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-sm btn-outline-primary" id="btnCsv"><i class="bi bi-download me-1" aria-hidden="true"></i>Download CSV</button></div>
+    </div>
+    <div id="repRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc, inr = App.inr, ST = F.ST;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      var isAudit = location.hash === '#audit';
+      App.shell({ type: 'staff', active: isAudit ? 'audit' : 'reports' });
+      var $ = function (id) { return document.getElementById(id); };
+      var u = App.me(session);
+      var apps = D.applications.filter(function (a) { return a.circle === u.circle && a.status !== ST.DRAFT; });
+      var lics = D.licences.filter(function (l) { return l.circle === u.circle; });
+      var csv = [];
+
+      if (!isAudit) {
+        $('pageTitle').textContent = 'Reports';
+        $('pageSubtitle').innerHTML = esc(App.circle(u.circle).name) + ' &bull; position as on ' + App.fmtDate(D.demoToday) + ' (demo data).';
+        var collected = 0;
+        apps.forEach(function (a) { if (a.status === ST.ISSUED && a.br) collected += a.br.amount; });
+        function kpi(icon, tone, value, label, sub) {
+          return '<div class="col-6 col-xl-3"><div class="gov-kpi-card d-flex"><div class="d-flex justify-content-between align-items-start gap-2"><div class="gov-kpi-count">' + value + '</div>' +
+            '<span class="tl-icon-circle bg-' + tone + '-subtle text-' + tone + '-emphasis" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + icon + '" aria-hidden="true"></i></span></div><div><p class="gov-kpi-label">' + label + '</p><div class="small text-muted">' + sub + '</div></div></div></div>';
+        }
+        var html = '<div class="row g-3 mb-4">' +
+          kpi('bi-folder2-open', 'primary', apps.length, 'Applications', 'Submitted online') +
+          kpi('bi-hourglass-split', 'warning', apps.filter(F.isOpen).length, 'In process', 'Not yet issued') +
+          kpi('bi-patch-check', 'success', lics.filter(function (l) { return F.licenceState(l) === 'Active'; }).length, 'Active licences', 'Valid to 31 March') +
+          kpi('bi-currency-rupee', 'info', inr(collected), 'Fees verified', 'BR verified in this system') + '</div>';
+
+        var statuses = Object.keys(ST).map(function (k) { return ST[k]; }).filter(function (s) { return s !== ST.DRAFT; });
+        var sRows = statuses.map(function (s) {
+          var c = { New: 0, Renewal: 0, Change: 0 };
+          apps.forEach(function (a) { if (a.status === s) c[a.kind]++; });
+          var t = c.New + c.Renewal + c.Change;
+          csv.push(['Status', s, c.New, c.Renewal, c.Change, t]);
+          return { row: '<tr><td>' + App.pill(s) + '</td><td class="text-end">' + c.New + '</td><td class="text-end">' + c.Renewal + '</td><td class="text-end">' + c.Change + '</td><td class="text-end fw-bold">' + t + '</td></tr>',
+            card: t ? App.mobileCard(App.pill(s), '<span class="fw-bold">' + t + '</span>', '<div class="small text-muted">New ' + c.New + ' &bull; Renewal ' + c.Renewal + ' &bull; Change ' + c.Change + '</div>', '') : '' };
+        });
+        html += App.tableCard('r-status', 'Applications by status', 'Who each application is pending with is shown in All Applications.',
+          [{ t: 'Status', w: '40%' }, { t: 'New', end: true, w: '15%' }, { t: 'Renewal', end: true, w: '15%' }, { t: 'Change', end: true, w: '15%' }, { t: 'Total', end: true, w: '15%' }],
+          sRows.map(function (r) { return r.row; }).join(''), sRows.map(function (r) { return r.card; }).join(''), 'No applications.');
+
+        function row(name, icon, ca, cl) {
+          var act = cl.filter(function (l) { return F.licenceState(l) === 'Active'; }).length, exp = cl.length - act;
+          var fee = ca.filter(function (a) { return a.status === ST.ISSUED && a.br; }).reduce(function (n, a) { return n + a.br.amount; }, 0);
+          return { name: name, icon: icon, apps: ca.length, act: act, exp: exp, fee: fee };
+        }
+        var tRows = Object.keys(F.TYPES).map(function (t) {
+          var r = row(F.TYPES[t].label, F.TYPES[t].icon, apps.filter(function (a) { return F.typeOf(a) === t; }), lics.filter(function (l) { return F.typeOf(l) === t; }));
+          csv.push(['Applicant type', r.name, r.apps, r.act, r.exp, r.fee]);
+          return { row: '<tr><td class="fw-semibold small"><i class="bi ' + r.icon + ' me-1 text-primary" aria-hidden="true"></i>' + esc(r.name) + '</td><td class="text-end">' + r.apps + '</td><td class="text-end">' + r.act + '</td><td class="text-end">' + r.exp + '</td><td class="text-end">' + inr(r.fee) + '</td></tr>',
+            card: App.mobileCard('<span class="fw-semibold small">' + esc(r.name) + '</span>', '', '<div class="small text-muted">' + r.apps + ' applications &bull; ' + r.act + ' active &bull; ' + r.exp + ' expired &bull; ' + inr(r.fee) + ' verified</div>', '') };
+        });
+        html += App.tableCard('r-type', 'By applicant type', 'Individual / local traders and registered companies.',
+          [{ t: 'Applicant type', w: '40%' }, { t: 'Applications', end: true, w: '15%' }, { t: 'Active', end: true, w: '15%' }, { t: 'Expired', end: true, w: '15%' }, { t: 'Fees verified', end: true, w: '15%' }],
+          tRows.map(function (r) { return r.row; }).join(''), tRows.map(function (r) { return r.card; }).join(''), 'No data.');
+        var cRows = D.config.categories.filter(function (c) { return apps.some(function (a) { return a.category === c.code; }) || lics.some(function (l) { return l.category === c.code; }); }).map(function (c) {
+          var ca = apps.filter(function (a) { return a.category === c.code; }), cl = lics.filter(function (l) { return l.category === c.code; });
+          var act = cl.filter(function (l) { return F.licenceState(l) === 'Active'; }).length, exp = cl.length - act;
+          var fee = ca.filter(function (a) { return a.status === ST.ISSUED && a.br; }).reduce(function (n, a) { return n + a.br.amount; }, 0);
+          csv.push(['Item', c.name + ' (' + F.TYPES[c.type].short + ')', ca.length, act, exp, fee]);
+          return { row: '<tr><td class="fw-semibold small"><i class="bi ' + c.icon + ' me-1 text-primary" aria-hidden="true"></i>' + esc(c.name) + '<div class="text-muted fw-normal">' + esc(F.TYPES[c.type].short) + '</div></td><td class="text-end">' + ca.length + '</td><td class="text-end">' + act + '</td><td class="text-end">' + exp + '</td><td class="text-end">' + inr(fee) + '</td></tr>',
+            card: App.mobileCard('<span class="fw-semibold small">' + esc(c.name) + '</span>', '', '<div class="small text-muted">' + ca.length + ' applications &bull; ' + act + ' active &bull; ' + exp + ' expired &bull; ' + inr(fee) + ' verified</div>', '') };
+        });
+        html += App.tableCard('r-cat', 'By item', 'Items with at least one application or licence. Expired licences are due for renewal (late surcharge ₹5 per day after 30 April).',
+          [{ t: 'Item', w: '40%' }, { t: 'Applications', end: true, w: '15%' }, { t: 'Active', end: true, w: '15%' }, { t: 'Expired', end: true, w: '15%' }, { t: 'Fees verified', end: true, w: '15%' }],
+          cRows.map(function (r) { return r.row; }).join(''), cRows.map(function (r) { return r.card; }).join(''), 'No data.');
+        csv.unshift(['Report', 'Row', 'Col 1', 'Col 2', 'Col 3', 'Total / Fee']);
+        $('repRoot').innerHTML = html;
+      } else {
+        $('pageTitle').textContent = 'Audit Log';
+        $('pageSubtitle').textContent = 'Every action with user, role, date-time and remarks. Read-only.';
+        var ids = apps.map(function (a) { return a.appId; });
+        var rowsAll = D.auditLog.filter(function (x) { return !x.appId || ids.indexOf(x.appId) !== -1; });
+        $('repRoot').innerHTML = '<form class="card border-0 shadow-xs mb-3" role="search" aria-label="Filter audit log" id="aForm"><div class="card-body"><div class="row g-2 align-items-end"><div class="col-md-6"><label for="aq" class="form-label small fw-semibold">Search</label><input id="aq" class="form-control form-control-sm" placeholder="Application ID, user or action"></div>' +
+          '<div class="col-md-4"><label for="aRole" class="form-label small fw-semibold">Role</label><select id="aRole" class="form-select form-select-sm"><option value="">All roles</option><option>Applicant</option><option>Inspector</option><option>BO</option><option>Special Secretary</option><option>CCS</option><option>Issuing Authority</option><option>Department Admin</option></select></div></div></div></form><div id="aList"></div>';
+        var draw = function () {
+          var q = $('aq').value.trim().toLowerCase(), r = $('aRole').value;
+          var list = rowsAll.filter(function (x) { return (!r || x.role === r) && (!q || (x.appId + ' ' + x.user + ' ' + x.action + ' ' + x.remarks).toLowerCase().indexOf(q) !== -1); });
+          csv = [['Date-time', 'User', 'Role', 'Application', 'Action', 'Remarks']].concat(list.map(function (x) { return [x.at, x.user, x.role, x.appId || '', x.action, x.remarks || '']; }));
+          var shown = list.slice(0, 200).map(function (x) {
+            var link = x.appId ? '<a class="tl-ref-id small" href="review.html?app=' + encodeURIComponent(x.appId) + '">' + esc(x.appId) + '</a>' : '<span class="small text-muted">Fee master</span>';
+            return { row: '<tr><td class="small text-nowrap">' + App.fmtStamp(x.at) + '</td><td class="small"><div class="fw-semibold">' + esc(x.user) + '</div><div class="text-muted">' + esc(x.role) + '</div></td><td>' + link + '</td><td class="small">' + esc(x.action) + '</td><td class="small text-muted">' + esc(x.remarks || '—') + '</td></tr>',
+              card: App.mobileCard(link, '<span class="small text-muted">' + App.fmtStamp(x.at) + '</span>', '<div class="small fw-semibold">' + esc(x.action) + '</div><div class="small text-muted">' + esc(x.user) + ' &bull; ' + esc(x.role) + (x.remarks ? ' &bull; ' + esc(x.remarks) : '') + '</div>', '') };
+          });
+          $('aList').innerHTML = App.tableCard('t-audit', 'Audit log', list.length + ' entr' + (list.length === 1 ? 'y' : 'ies') + (list.length > 200 ? ' (latest 200 shown; download CSV for all)' : ''),
+            [{ t: 'Date &amp; Time', w: '16%' }, { t: 'User &amp; Role', w: '20%' }, { t: 'Application', w: '18%' }, { t: 'Action', w: '26%' }, { t: 'Remarks', w: '20%' }],
+            shown.map(function (x) { return x.row; }).join(''), shown.map(function (x) { return x.card; }).join(''), 'No entries.');
+        };
+        $('aq').addEventListener('input', draw);
+        $('aRole').addEventListener('change', draw);
+        $('aForm').addEventListener('submit', function (e) { e.preventDefault(); });
+        draw();
+      }
+      $('btnCsv').addEventListener('click', function () { App.downloadCsv(isAudit ? 'etrade-audit-log.csv' : 'etrade-report.csv', csv); });
+    })();
+  </script>
+</body>
+</html>

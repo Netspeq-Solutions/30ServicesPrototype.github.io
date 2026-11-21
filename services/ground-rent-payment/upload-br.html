@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Upload Bank Receipt | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Upload Bank Receipt</li>
+    </ol></nav>
+    <h1 class="h4 fw-bold mb-1">Upload Bank Receipt</h1>
+    <p class="text-muted small mb-3">Paid an offline challan at the bank? Upload the Bank Receipt (BR) here. The office verifies it and issues your receipt.</p>
+    <div id="brRoot" class="mx-auto" style="max-width: 820px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('citizen');
+      if (!session) return;
+      App.shell({ type: 'citizen', active: 'uploadBr' });
+      var $ = function (id) { return document.getElementById(id); };
+      var root = $('brRoot');
+
+      var cz = App.currentCitizen(session);
+      var ids = App.citizenSites(cz).map(function (s) { return s.grId; });
+      // Challans the citizen can still upload a BR for (or replace a BR awaiting approval).
+      var open = D.challans.filter(function (c) {
+        if (c.status === 'Generated' && c.validTill < D.demoToday) { c.status = 'Expired'; App.save(); }
+        return (ids.indexOf(c.grId) !== -1 || c.payerMobile === session.mobile) && (c.status === 'Generated' || c.status === 'BR Recorded');
+      });
+      var no = App.qs('no');
+      var c = no ? D.challans.filter(function (x) { return x.challanNo === no; })[0] : (open.length === 1 ? open[0] : null);
+
+      // ---------- No challan chosen: list the open ones ----------
+      if (!c) {
+        root.innerHTML = open.length
+          ? '<div class="card border-0 shadow-xs"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Select the challan you paid</h2></div><ul class="list-group list-group-flush">' +
+            open.map(function (x) {
+              return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2"><div><span class="font-monospace fw-bold small">' + esc(x.challanNo) + '</span> ' + App.challanPill(x) +
+                '<div class="small text-muted">' + esc(x.grId) + ' &bull; ' + inr(x.amount) + ' &bull; valid till ' + App.fmtDate(x.validTill) + '</div></div>' +
+                '<a class="btn btn-sm btn-primary" href="upload-br.html?no=' + encodeURIComponent(x.challanNo) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>' + (x.status === 'BR Recorded' ? 'Replace BR' : 'Upload BR') + '</a></li>';
+            }).join('') + '</ul></div>'
+          : '<div class="card border-0 shadow-xs"><div class="card-body text-center py-5"><span class="gr-icon-circle bg-primary-subtle text-primary mb-3"><i class="bi bi-bank" aria-hidden="true"></i></span>' +
+            '<h2 class="h6 fw-bold">No offline challan waiting for a Bank Receipt</h2><p class="small text-muted mb-3">To pay at the bank, open the bill of your site and choose Pay Offline (Bank) to generate a challan.</p>' +
+            '<a class="btn btn-sm btn-gov-primary" href="dashboard.html#accounts">My Ground Rent Accounts</a></div></div>';
+        return;
+      }
+
+      var s = App.site(c.grId);
+      if (c.status !== 'Generated' && c.status !== 'BR Recorded') {
+        root.innerHTML = '<div class="alert alert-warning">Challan ' + esc(c.challanNo) + ' is ' + esc(c.status.toLowerCase()) + '; a Bank Receipt cannot be uploaded against it.' +
+          (c.receiptNo ? ' <a href="receipt.html?no=' + encodeURIComponent(c.receiptNo) + '">View receipt ' + esc(c.receiptNo) + '</a>' : ' Generate a new challan from the <a href="bill.html?gr=' + encodeURIComponent(c.grId) + '">bill</a>.') + '</div>';
+        return;
+      }
+      var replacing = c.status === 'BR Recorded';
+
+      root.innerHTML =
+        '<div class="card border-0 shadow-xs mb-3"><div class="card-body d-flex justify-content-between align-items-start flex-wrap gap-3">' +
+          '<div><div class="small text-muted">Challan</div><div class="font-monospace fw-bold">' + esc(c.challanNo) + ' ' + App.challanPill(c) + '</div>' +
+          '<div class="small text-muted mt-1"><span class="gr-gr-id">' + esc(s.grId) + '</span> &bull; ' + esc(App.ownersText(s)) + ' &bull; valid till ' + App.fmtDate(c.validTill) + '</div></div>' +
+          '<div class="text-end"><div class="small text-muted">Amount to pay</div><div class="gr-amount">' + inr(c.amount) + '</div>' +
+          '<a class="small" href="challan.html?no=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print challan</a></div>' +
+        '</div></div>' +
+        (c.returnReason ? '<div class="alert alert-warning small"><i class="bi bi-arrow-return-left me-1" aria-hidden="true"></i>Your earlier Bank Receipt was returned by the office: <strong>' + esc(c.returnReason) + '</strong>. Please upload it again.</div>' : '') +
+        (replacing ? '<div class="alert alert-info small"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>BR <strong>' + esc(c.brNo) + '</strong> dated ' + App.fmtDate(c.brDate) + (c.brScan ? ' &bull; ' + App.fileLink(c.brScan, s.grId) : '') + ' is awaiting approval. Upload again below only if it was wrong.</div>' : '') +
+        '<form id="upForm" class="card border-0 shadow-xs" novalidate><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Bank Receipt details</h2></div><div class="card-body"><div class="row g-3">' +
+          '<div class="col-md-6"><label for="upBrNo" class="form-label small fw-semibold">BR no. <span class="text-danger" aria-hidden="true">*</span></label><input id="upBrNo" class="form-control font-monospace" placeholder="2627N-11001-02231" value="' + esc(c.brNo || '') + '"></div>' +
+          '<div class="col-6 col-md-3"><label for="upBrDate" class="form-label small fw-semibold">BR date <span class="text-danger" aria-hidden="true">*</span></label><input id="upBrDate" type="date" class="form-control" min="' + c.generatedOn + '" max="' + D.demoToday + '" value="' + esc(c.brDate || '') + '"></div>' +
+          '<div class="col-6 col-md-3"><label for="upAmt" class="form-label small fw-semibold">Amount paid <span class="text-danger" aria-hidden="true">*</span></label><input id="upAmt" type="number" min="1" class="form-control" value="' + (c.brAmount || c.amount) + '"></div>' +
+          '<div class="col-12"><label for="upScan" class="form-label small fw-semibold">Scan / photo of the BR <span class="text-danger" aria-hidden="true">*</span></label><input id="upScan" type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png"><div class="form-text">PDF, JPG or PNG, up to 5 MB. Keep the original BR; the office may ask to see it.</div></div>' +
+          '<div class="col-12" id="upPreview"></div>' +
+        '</div></div><div class="card-footer bg-white d-flex flex-wrap gap-2">' +
+          '<button type="submit" class="btn btn-primary"><i class="bi bi-upload me-1" aria-hidden="true"></i>' + (replacing ? 'Replace Bank Receipt' : 'Upload Bank Receipt') + '</button>' +
+          '<a class="btn btn-outline-secondary" href="dashboard.html">Cancel</a></div></form>';
+
+      // Preview the chosen photo before upload.
+      $('upScan').addEventListener('change', function () {
+        var f = this.files && this.files[0], box = $('upPreview');
+        box.innerHTML = '';
+        if (f && /^image\//.test(f.type) && !App.checkFile(this, true)) {
+          box.innerHTML = '<img alt="Preview of the selected Bank Receipt" class="img-fluid border rounded" style="max-height:260px;">';
+          box.querySelector('img').src = URL.createObjectURL(f);
+        }
+      });
+
+      $('upForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var ok = App.fieldError($('upBrNo'), $('upBrNo').value.trim() ? '' : 'Enter the BR no.');
+        ok = App.fieldError($('upBrDate'), $('upBrDate').value ? '' : 'Enter the BR date.') && ok;
+        ok = App.fieldError($('upAmt'), +$('upAmt').value > 0 ? '' : 'Enter the amount paid.') && ok;
+        ok = App.fieldError($('upScan'), App.checkFile($('upScan'), true)) && ok;
+        if (!ok) return;
+        c.brNo = $('upBrNo').value.trim(); c.brDate = $('upBrDate').value; c.brAmount = Math.round(+$('upAmt').value);
+        c.brScan = App.addAttachment(s.grId, 'Bank Receipt scan', $('upScan'));
+        c.status = 'BR Recorded'; c.brUploadedBy = 'Citizen'; c.brUploadedOn = D.demoToday; delete c.returnReason;
+        App.audit({ grId: s.grId, entity: 'Challan', action: 'Bank Receipt uploaded by citizen against challan ' + c.challanNo + ' · BR ' + c.brNo + ' · ' + inr(c.brAmount), file: c.brScan });
+        App.notify(session.mobile, 'Bank Receipt uploaded', 'BR ' + c.brNo + ' for challan ' + c.challanNo + ' (' + s.grId + ') is waiting for verification by the office.', s.grId);
+        App.save();
+        App.filesReady().then(function () {
+          App.toast('Bank Receipt uploaded. The office will verify it and issue your receipt.');
+          setTimeout(function () { window.location.href = 'dashboard.html'; }, 1200);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

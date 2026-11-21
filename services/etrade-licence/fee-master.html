@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Renewal Amounts &amp; Settings | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261122">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0">Renewal Amounts &amp; Settings</h1><span id="modePill"></span></div>
+        <p class="text-muted small mb-0">The licence fee and garbage fee are assessed by the Inspector for each new licence. That first amount becomes the licence's renewal amount, which the department can revise. Every revision is kept.</p></div>
+      <div class="d-flex flex-wrap gap-2" id="pageActions"></div>
+    </div>
+    <div id="feeRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261122"></script>
+  <script src="tl-app.js?v=20261122"></script>
+  <script src="tl-flow.js?v=20261122"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'fees' });
+      var $ = function (id) { return document.getElementById(id); };
+      var u = App.me(session);
+      var canEdit = u.role === 'admin'; // the Department Admin maintains the fee master and renewal settings
+      $('modePill').innerHTML = canEdit ? App.pill('Active', 'You can revise fees and settings') : App.pill('Superseded', 'View only');
+      // ---------- Renewal amount per licence ----------
+      function amounts(l) { return F.renewalAmounts(l); }
+      function render() {
+        var lics = D.licences.filter(function (l) { return l.circle === u.circle; });
+        var rows = lics.map(function (l) {
+          var f = amounts(l), first = f.first || {}, v = F.currentVersion(l), last = (f.history || []).slice(-1)[0];
+          var changed = last ? '<div class="small text-warning-emphasis"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Revised ' + App.fmtDate(last.changedOn) + '</div>' : '<div class="small text-muted">As first assessed</div>';
+          var edit = canEdit ? '<button type="button" class="btn btn-sm btn-outline-primary" data-edit="' + esc(l.licenceNo) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit</button>' : '';
+          return { row: '<tr><td><a class="tl-ref-id small" href="licence.html?no=' + encodeURIComponent(l.licenceNo) + '">' + esc(l.licenceNo) + '</a><div class="small text-muted">' + App.pill(F.licenceState(l)) + '</div></td>' +
+              '<td><div class="small fw-semibold text-truncate" style="max-width:220px;">' + esc(v.businessName) + '</div><div class="small text-muted text-truncate" style="max-width:220px;">' + esc(l.orgType) + '</div></td>' +
+              '<td class="small text-end text-nowrap">' + inr(first.fee) + ' + ' + inr(first.garbage) + '<div class="text-muted">' + (first.by ? esc(first.by) : '') + '</div></td>' +
+              '<td class="text-end text-nowrap"><strong>' + inr(f.renewal) + '</strong> + ' + inr(f.garbage) + changed + '</td>' +
+              '<td class="text-end text-nowrap">' + edit + '</td></tr>',
+            card: App.mobileCard('<span class="tl-ref-id small">' + esc(l.licenceNo) + '</span>', App.pill(F.licenceState(l)), '<div class="small fw-semibold">' + esc(v.businessName) + '</div><div class="small text-muted">' + esc(l.orgType) + '</div>' +
+              '<div class="small">First: ' + inr(first.fee) + ' + garbage ' + inr(first.garbage) + '<br>Renewal: <strong>' + inr(f.renewal) + '</strong> + garbage ' + inr(f.garbage) + '</div>' + changed, edit) };
+        });
+        var hist = [];
+        lics.forEach(function (l) { (amounts(l).history || []).forEach(function (h) { hist.push({ l: l, h: h }); }); });
+        hist.sort(function (a, b) { return a.h.changedOn < b.h.changedOn ? 1 : -1; });
+        var hRows = hist.map(function (x) {
+          var h = x.h;
+          function cell(o, n) { return o !== n ? '<span class="text-decoration-line-through text-muted">' + inr(o) + '</span> &rarr; <strong>' + inr(n) + '</strong>' : inr(n); }
+          var by = esc(h.changedBy) + '<div class="text-muted">' + App.fmtDate(h.changedOn) + (h.remarks ? ' &bull; ' + esc(h.remarks) : '') + '</div>';
+          return { row: '<tr><td class="small"><span class="tl-ref-id">' + esc(x.l.licenceNo) + '</span><div class="text-muted">' + esc(F.currentVersion(x.l).businessName) + '</div></td><td class="small text-nowrap">' + cell(h.oldRenewal, h.renewal) + '</td><td class="small text-nowrap">' + cell(h.oldGarbage, h.garbage) + '</td><td class="small">' + by + '</td></tr>',
+            card: App.mobileCard('<span class="tl-ref-id small">' + esc(x.l.licenceNo) + '</span>', '', '<div class="small">Renewal ' + cell(h.oldRenewal, h.renewal) + '<br>Garbage ' + cell(h.oldGarbage, h.garbage) + '</div><div class="small mt-1">' + by + '</div>', '') };
+        });
+        function col(list, k) { return list.map(function (x) { return x[k]; }).join(''); }
+        var rule = D.config.renewalFine;
+        $('feeRoot').innerHTML =
+          '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i><strong>How the fee is set:</strong> for a new licence the Inspector enters the licence fee and the garbage fee in the inspection report (as per the UDD notification for the activity); the HOD fixes it on approval. ' +
+            'At renewal the applicant pays the renewal amount + garbage fee + any late surcharge on one BR with the application.</div>' +
+          App.tableCard('t-amounts', 'Renewal amount by licence', 'First amount assessed by the Inspector, and the amount charged at the next renewal (renewal fee + garbage fee).',
+            [{ t: 'Licence', w: '20%' }, { t: 'Licensee & activity', w: '30%' }, { t: 'First assessed (fee + garbage)', end: true, w: '18%' }, { t: 'Next renewal (fee + garbage)', end: true, w: '20%' }, { t: canEdit ? 'Action' : '', end: true, w: '12%' }], col(rows, 'row'), col(rows, 'card'), 'No licences yet.') +
+          renewalCard() +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Renewal late surcharge (system rule)</h2></div><div class="card-body"><dl class="tl-meta-grid mb-0">' +
+            '<div><dt>Licence expires</dt><dd>31 March every year</dd></div><div><dt>Grace period</dt><dd>' + rule.graceDays + ' days (to 30 April) &ndash; no surcharge</dd></div>' +
+            '<div><dt>Surcharge after grace period</dt><dd>₹' + rule.perDay + ' per day, counted to the first renewal submission date</dd></div><div><dt>Cut-off</dt><dd>None &ndash; renewed through the same flow</dd></div></dl>' +
+            '<p class="small text-muted mt-2 mb-0">Calculated by the system and paid on the same BR as the renewal amount. Officers cannot edit it.</p></div></div>' +
+          App.tableCard('t-hist', 'Revision history', 'Old amount, new amount, changed by and changed on. Revisions apply to renewals submitted after the change.',
+            [{ t: 'Licence', w: '28%' }, { t: 'Renewal fee', w: '18%' }, { t: 'Garbage fee', w: '18%' }, { t: 'Changed by / on', w: '36%' }], col(hRows, 'row'), col(hRows, 'card'), 'No revisions yet.');
+        var b = $('btnWindow');
+        if (b) b.addEventListener('click', editWindow);
+        $('feeRoot').querySelectorAll('[data-edit]').forEach(function (x) { x.addEventListener('click', function () { editAmount(App.licence(x.getAttribute('data-edit'))); }); });
+      }
+      function editAmount(l) {
+        var f = amounts(l);
+        App.modal({ title: 'Revise renewal amount', ok: 'Save Revision',
+          body: '<p><span class="tl-ref-id">' + esc(l.licenceNo) + '</span> &bull; ' + esc(F.currentVersion(l).businessName) + '<br><span class="text-muted">First assessed: ' + inr((f.first || {}).fee) + ' + garbage fee ' + inr((f.first || {}).garbage) + '</span></p>' +
+            '<div class="row g-3"><div class="col-6"><label for="aRen" class="form-label fw-semibold">Renewal fee (₹) <span class="text-danger" aria-hidden="true">*</span></label><input type="number" min="0" id="aRen" class="form-control form-control-sm" value="' + f.renewal + '"></div>' +
+            '<div class="col-6"><label for="aGar" class="form-label fw-semibold">Garbage fee (₹) <span class="text-danger" aria-hidden="true">*</span></label><input type="number" min="0" id="aGar" class="form-control form-control-sm" value="' + f.garbage + '"></div>' +
+            '<div class="col-12"><label for="aRemarks" class="form-label fw-semibold">Order / remarks <span class="text-danger" aria-hidden="true">*</span></label><input id="aRemarks" class="form-control form-control-sm" placeholder="e.g. Departmental order no. and date"></div></div>' +
+            '<p class="text-muted mt-2 mb-0">Applies to renewals submitted from now on. A renewal already submitted keeps the amount it was charged.</p>',
+          onOk: function (el) {
+            var ren = el.querySelector('#aRen'), gar = el.querySelector('#aGar'), rem = el.querySelector('#aRemarks');
+            var ok = App.fieldError(ren, ren.value === '' || +ren.value < 0 ? 'Enter the renewal fee.' : '');
+            ok = App.fieldError(gar, gar.value === '' || +gar.value < 0 ? 'Enter the garbage fee (0 if none).' : '') && ok;
+            ok = App.fieldError(rem, rem.value.trim().length < 5 ? 'Enter the order reference or remarks.' : '') && ok;
+            if (!ok) return false;
+            var nr = Math.round(+ren.value), ng = Math.round(+gar.value);
+            if (nr === f.renewal && ng === f.garbage) { App.fieldError(ren, 'No change from the current amount.'); return false; }
+            l.fees = l.fees || { renewal: 0, garbage: 0, history: [] };
+            l.fees.history = l.fees.history || [];
+            l.fees.history.push({ oldRenewal: f.renewal, oldGarbage: f.garbage, renewal: nr, garbage: ng, changedBy: u.name + ' (' + u.designation + ')', changedOn: D.demoToday, remarks: rem.value.trim() });
+            l.fees.renewal = nr; l.fees.garbage = ng;
+            App.audit({ appId: null, action: 'Renewal amount revised · ' + l.licenceNo + ' · renewal fee ' + inr(f.renewal) + ' → ' + inr(nr) + ', garbage fee ' + inr(f.garbage) + ' → ' + inr(ng), remarks: rem.value.trim() });
+            App.save();
+            App.toast('Renewal amount saved for ' + esc(l.licenceNo) + '.');
+            render();
+          } });
+      }
+
+      // ---------- Renewal window (configurable: renewal opens N months before 31 March) ----------
+      function months(n) { return n + ' month' + (n === 1 ? '' : 's'); }
+      function renewalCard() {
+        var m = D.config.renewalWindow.monthsBefore;
+        var next = F.fyEnd(D.demoToday);
+        var opens = F.renewalOpensOn({ validTo: next });
+        var hist = (D.config.settingsHistory || []).slice().reverse().map(function (h) {
+          return '<li class="list-group-item small"><div class="d-flex justify-content-between flex-wrap gap-2"><span><strong>' + esc(h.setting) + ':</strong> <span class="text-decoration-line-through text-muted">' + esc(h.oldValue) + '</span> &rarr; <strong>' + esc(h.newValue) + '</strong></span><span class="text-muted">' + App.fmtDate(h.changedOn) + '</span></div>' +
+            '<div class="text-muted">' + esc(h.changedBy) + (h.remarks ? ' &bull; ' + esc(h.remarks) : '') + '</div></li>';
+        }).join('');
+        return '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2"><div><h2 class="h6 fw-bold mb-0">Renewal window</h2><div class="small text-muted">When licence holders can start renewing before the licence expires on 31 March.</div></div>' +
+            (canEdit ? '<button type="button" class="btn btn-sm btn-outline-primary" id="btnWindow"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Change Window</button>' : '') + '</div>' +
+          '<div class="card-body"><dl class="tl-meta-grid mb-0"><div><dt>Renewal opens</dt><dd>' + months(m) + ' before expiry</dd></div><div><dt>For licences expiring ' + App.fmtDate(next) + '</dt><dd>Renewal opens ' + App.fmtDate(opens) + '</dd></div>' +
+            '<div class="tl-span-2"><dt>While the window is open</dt><dd class="fw-normal">The licence stays valid to 31 March. A change request is not allowed until the renewal is completed. Renewed licences run to the following 31 March.</dd></div></dl></div>' +
+          (hist ? '<div class="card-header bg-white border-top"><h3 class="h6 fw-semibold mb-0 small">Change history</h3></div><ul class="list-group list-group-flush">' + hist + '</ul>' : '') + '</div>';
+      }
+      function editWindow() {
+        var m = D.config.renewalWindow.monthsBefore;
+        App.modal({ title: 'Change renewal window', ok: 'Save Setting',
+          body: '<label for="wMonths" class="form-label fw-semibold">Renewal opens before expiry <span class="text-danger" aria-hidden="true">*</span></label><select id="wMonths" class="form-select form-select-sm mb-1">' +
+              [1, 2, 3, 4, 5, 6].map(function (n) { return '<option value="' + n + '"' + (n === m ? ' selected' : '') + '>' + months(n) + ' (opens 1 ' + ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'][6 - n] + ')</option>'; }).join('') + '</select>' +
+            '<div class="form-text mb-3">Applies to all licences straight away. Renewals already submitted are not affected.</div>' +
+            '<label for="wRemarks" class="form-label fw-semibold">Order / remarks <span class="text-danger" aria-hidden="true">*</span></label><input id="wRemarks" class="form-control form-control-sm" placeholder="e.g. Departmental order no. and date">',
+          onOk: function (el) {
+            var sel = el.querySelector('#wMonths'), rem = el.querySelector('#wRemarks'), n = +sel.value;
+            var ok = App.fieldError(sel, n === m ? 'This is the current setting.' : '');
+            ok = App.fieldError(rem, rem.value.trim().length < 5 ? 'Enter the order reference or remarks.' : '') && ok;
+            if (!ok) return false;
+            D.config.renewalWindow.monthsBefore = n;
+            D.config.settingsHistory = D.config.settingsHistory || [];
+            D.config.settingsHistory.push({ setting: 'Renewal opens before expiry', oldValue: months(m), newValue: months(n), changedBy: u.name + ' (' + u.designation + ')', changedOn: D.demoToday, remarks: rem.value.trim() });
+            App.audit({ appId: null, action: 'Renewal window changed · opens ' + months(n) + ' before expiry (was ' + months(m) + ')', remarks: rem.value.trim() });
+            App.save();
+            App.toast('Renewal window saved: renewal opens ' + esc(months(n)) + ' before 31 March.');
+            render();
+          } });
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>
