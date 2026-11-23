@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261122">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -35,13 +35,14 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261122"></script>
-  <script src="tl-app.js?v=20261122"></script>
-  <script src="tl-flow.js?v=20261122"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
+  <script src="tl-view.js?v=20261123"></script>
   <script>
     (function () {
       'use strict';
-      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc, inr = App.inr, ST = F.ST;
+      var App = window.TLApp, F = window.TLFlow, V = window.TLView, D = App.data, esc = App.esc, inr = App.inr, ST = F.ST;
       var session = App.requireSession('applicant');
       if (!session) return;
       var active = App.qs('type') === 'new' ? 'apply' : 'applications';
@@ -76,7 +77,7 @@
       } else {
         // Sikkim GO is only the identity provider: pre-fill the applicant's name, mobile and email; everything else is entered here.
         w = { appId: null, kind: 'New', licenceNo: null, businessKey: session.scenario, circle: '', applicantType: '', category: '', item: '', orgType: '', docs: {}, br: null, change: null,
-          form: { applicantName: biz.authName, mobile: biz.mobile, email: biz.email, presSame: true } };
+          form: { applyFor: 'new', applicantName: biz.authName, mobile: biz.mobile, email: biz.email, presSame: true } };
         mode = 'new';
       }
       var kind = w.kind;
@@ -103,19 +104,24 @@
       var titles = { New: 'Apply for New Licence', Renewal: 'Renew Licence', Change: 'Request Change to Licence' };
       $('pageTitle').textContent = mode === 'correct' ? 'Correct & Resubmit' : titles[kind];
       $('crumb').textContent = mode === 'correct' ? 'Correct & Resubmit' : titles[kind];
-      $('pageKind').innerHTML = App.kindBadge(kind) + (w.appId ? ' <span class="tl-ref-id small ms-1">' + esc(w.appId) + '</span>' : '');
-      $('pageSubtitle').innerHTML = kind === 'New' ? 'For individual / local traders and registered companies. The form and the documents asked for follow the applicant type and purpose you choose.' :
+      $('pageKind').innerHTML = App.kindBadge(w) + (w.appId ? ' <span class="tl-ref-id small ms-1">' + esc(w.appId) + '</span>' : '');
+      $('pageSubtitle').innerHTML = kind === 'New' ? 'For individuals / firms and registered companies, and for renewing a licence issued before this system. The form and the documents asked for follow the applicant type and purpose you choose.' :
         'Licence <span class="tl-ref-id">' + esc(w.licenceNo) + '</span> &bull; ' + esc(lic ? F.currentVersion(lic).businessName : '') + (kind === 'Change' ? ' &bull; your licence stays valid while this request is processed.' : '');
 
       // ---------- Steps ----------
+      // Instructions come first (documents, formats, acknowledgement); not repeated when correcting a returned application.
       var STEPS = kind === 'Renewal' ? ['details', 'docs', 'payment', 'review'] : (kind === 'Change' ? ['changeType', 'changeDetails', 'docs', 'review'] : ['purpose', 'applicant', 'premises', 'docs', 'review']);
-      var LABELS = { purpose: 'Type & Purpose', applicant: 'Applicant', premises: 'Premises & Business', details: 'Licence & Contact', payment: 'Fee & Bank Receipt', changeType: 'Change Type', changeDetails: 'New Details', docs: 'Documents', review: 'Review & Submit' };
-      var step = 0;
+      if (mode !== 'correct') STEPS.unshift('instructions');
+      var LABELS = { instructions: 'Instructions', purpose: 'Type & Purpose', applicant: 'Applicant', premises: 'Premises & Business', details: 'Licence & Contact', payment: 'Fee & Bank Receipt', changeType: 'Change Type', changeDetails: 'New Details', docs: 'Documents', review: 'Review & Submit' };
+      // A saved draft has already accepted the instructions: open it at the next step.
+      var step = mode === 'draft' && w.instructionsAck ? 1 : 0;
+      var fromReview = false; // opened a step with Edit on the review page
 
       function req(on) { return on ? ' <span class="text-danger" aria-hidden="true">*</span>' : ''; }
       function inputHtml(f, val, on) {
         var id = 'f_' + f.key, dis = on ? '' : ' disabled', v = val == null ? '' : val, t = F.inputType(f, tp());
         if (t === 'textarea') return '<textarea id="' + id + '" class="form-control" rows="2"' + dis + '>' + esc(v) + '</textarea>';
+        if (t === 'date') return '<input id="' + id + '" class="form-control" type="date" max="' + D.demoToday + '" value="' + esc(v) + '"' + dis + '>';
         if (t === 'select' || t === 'district' || t === 'yesno') {
           var opts = t === 'district' ? (f.key === 'premDistrict' && kind === 'New' && App.circle(w.circle) ? App.circle(w.circle).districts : D.config.districts) : (t === 'yesno' ? ['Yes', 'No'] : f.options);
           return '<select id="' + id + '" class="form-select"' + dis + '><option value="">Select</option>' + opts.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') + '</select>';
@@ -135,10 +141,14 @@
             inputHtml(f, w.form[f.key], on) + (f.hint && on ? '<div class="form-text">' + esc(f.hint) + '</div>' : '') + (f.key === 'premDistrict' && kind === 'New' && on && App.circle(w.circle) ? '<div class="form-text">Districts of the ' + esc(App.circle(w.circle).name) + ' you chose in step 1.</div>' : '') + '</div></div>';
         }).join('');
       }
-      function card(title, body, sub) {
-        return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (sub ? '<div class="small text-muted">' + sub + '</div>' : '') + '</div><div class="card-body">' + body + '</div></div>';
+      // edit: step key – shows an Edit button (review page) that opens that step.
+      function card(title, body, sub, edit) {
+        var btnEdit = edit && STEPS.indexOf(edit) !== -1 ? '<button type="button" class="btn btn-sm btn-outline-primary" data-goto="' + edit + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit<span class="visually-hidden"> ' + title.replace(/<[^>]+>/g, '') + '</span></button>' : '';
+        return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white' + (btnEdit ? ' d-flex justify-content-between align-items-start gap-2' : '') + '"><div class="min-w-0"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (sub ? '<div class="small text-muted">' + sub + '</div>' : '') + '</div>' + btnEdit + '</div><div class="card-body">' + body + '</div></div>';
       }
       function sectionCard(sec, sub) { var body = fieldsHtml(sec); return body ? card(esc(F.sectionLabel(sec, tp())), '<div class="row g-3">' + body + '</div>', sub) : ''; }
+      // Step that holds a form section (for the Edit buttons on the review page).
+      var SECTION_STEP = { oldLicence: 'purpose', applicant: 'applicant', perm: 'applicant', present: 'applicant', contact: 'applicant', firm: 'premises', hotel: 'premises', franchise: 'premises', education: 'premises' };
       function licenceSummary() {
         var v = F.currentVersion(lic);
         return '<dl class="tl-dl"><dt>Licence number</dt><dd><span class="tl-ref-id">' + esc(lic.licenceNo) + '</span></dd><dt>Business</dt><dd>' + esc(v.businessName) + '</dd><dt>Purpose</dt><dd>' + esc(App.category(lic.category).name) + ' &bull; ' + esc(lic.orgType) + '</dd>' +
@@ -163,8 +173,42 @@
       }
 
       var RENDER = {
+        instructions: function () {
+          var how, docs;
+          if (kind === 'Renewal') {
+            how = ['Check the licence and confirm your contact details.', 'Upload the documents asked for renewal.', 'Pay the renewal amount + garbage fee (+ any late surcharge) at the bank and enter the Bank Receipt (BR).', 'Review and submit. Give the original BR at the department.', 'The Inspector checks the BR and the BO approves. Then download the renewed licence.'];
+            docs = '<h3 class="h6 fw-semibold mb-2">Documents for renewal</h3>' + V.renewalDocList();
+          } else if (kind === 'Change') {
+            how = ['Choose what you want to change: name, premises or address (one or more).', 'Enter the new details.', 'Upload the documents for the change.', 'Review and submit. Your licence stays valid while the request is processed.', 'After inspection and approval, pay the fee by BR. A new version of the licence is issued with the same number and validity.'];
+            docs = Object.keys(F.CHANGE_TYPES).map(function (t) { return '<h3 class="h6 fw-semibold mb-2">' + esc(F.CHANGE_TYPES[t].label) + '</h3>' + V.changeDocList(t); }).join('');
+          } else {
+            how = ['Choose the circle, whether it is a new licence or the renewal of a licence issued before this system, the applicant type and the item (purpose).', 'Fill in the applicant, address, contact and premises details.', 'Upload the documents asked for. Formats are provided below where a prescribed form is needed.', 'Review every section (you can edit any of them) and submit with the declaration.', 'An Inspector of your circle visits the site and assesses the licence fee and garbage fee. The BO, Special Secretary and HOD review and approve.', 'Pay the fee at the bank, upload the Bank Receipt and bring the originals. Then download your licence.'];
+            docs = '<div class="row g-3"><div class="col-md-6"><h3 class="h6 fw-semibold mb-2"><i class="bi ' + F.TYPES.IND.icon + ' text-primary me-1" aria-hidden="true"></i>' + esc(F.TYPES.IND.label) + '</h3>' + V.baseDocList('IND') + '</div>' +
+              '<div class="col-md-6"><h3 class="h6 fw-semibold mb-2"><i class="bi ' + F.TYPES.COMP.icon + ' text-primary me-1" aria-hidden="true"></i>' + esc(F.TYPES.COMP.label) + '</h3>' + V.baseDocList('COMP') + '</div></div>' +
+              '<h3 class="h6 fw-semibold mt-3 mb-2">Depending on your answers in the form</h3>' + V.whenDocList() +
+              '<details class="mt-3"><summary class="small fw-semibold">Extra documents for particular items &ndash; ' + esc(F.TYPES.IND.label) + '</summary><div class="mt-2">' + V.itemDocTable('IND') + '</div></details>' +
+              '<details class="mt-2"><summary class="small fw-semibold">Extra documents for particular items &ndash; ' + esc(F.TYPES.COMP.label) + '</summary><div class="mt-2">' + V.itemDocTable('COMP') + '</div></details>';
+          }
+          return card('How to apply', '<ol class="small mb-0 ps-3">' + how.map(function (x) { return '<li class="mb-1">' + x + '</li>'; }).join('') + '</ol>') +
+            card('Documents to keep ready', docs + '<p class="small text-muted mt-3 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>PDF, JPG or PNG, up to 5 MB each. The Documents step lists exactly what applies to you. Keep the originals; the Inspector or BO checks them.</p>', kind === 'New' ? 'Asked of every applicant of that type, plus documents for your item and answers.' : '') +
+            (kind === 'New' ? card('Downloadable formats', V.formatList(), 'Download, fill in, sign and upload the scanned copy in the Documents step.') : '') +
+            '<div class="card border-0 shadow-xs mb-3"><div class="card-body"><div class="form-check"><input class="form-check-input" type="checkbox" id="ackInstr"' + (w.instructionsAck ? ' checked' : '') + '><label class="form-check-label small" for="ackInstr">I have read the instructions and have the documents listed above ready. I will produce the originals when asked.</label></div></div></div>';
+        },
         purpose: function () {
           var lockP = !editable('category');
+          // New licence, or renewal of a licence issued before this system (follows the new licence process).
+          var applyFor = '';
+          if (kind === 'New') {
+            var oldOn = w.form.applyFor === 'old', lockA = !editable('oldLicenceNo');
+            applyFor = card('What are you applying for?', '<fieldset><legend class="visually-hidden">What are you applying for?</legend><div class="row g-2">' +
+                [['new', 'New licence', 'bi-plus-circle', 'First licence for this business'], ['old', 'Renewal of an old licence', 'bi-clock-history', 'Licence issued before this online system (offline). It follows the new licence process; give the old licence number.']].map(function (o) {
+                  var on = (w.form.applyFor || 'new') === o[0];
+                  return '<div class="col-md-6"><label class="tl-scenario-chip d-flex gap-2 align-items-start h-100' + (on ? ' active' : '') + '" for="af_' + o[0] + '"><input class="form-check-input mt-1" type="radio" name="applyFor" id="af_' + o[0] + '" value="' + o[0] + '"' + (on ? ' checked' : '') + (lockA ? ' disabled' : '') + '>' +
+                    '<span><span class="fw-bold d-block"><i class="bi ' + o[2] + ' me-1 text-primary" aria-hidden="true"></i>' + o[1] + '</span><span class="small text-muted d-block">' + o[3] + '</span></span></label></div>';
+                }).join('') + '</div></fieldset>' +
+              (oldOn ? '<div class="row g-3 mt-1">' + fieldsHtml('oldLicence') + '</div><div class="alert alert-light border small mt-3 mb-0"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>A new licence number is issued under this system. The Inspector may add a fine / surcharge for the years the licence was not renewed, along with the licence fee and garbage fee. Upload a copy of the old licence in the Documents step.</div>' : ''),
+              'Old licences were not moved into this system.');
+          }
           var circles = D.config.circles.map(function (c) {
             return '<div class="col-md-6"><label class="tl-scenario-chip d-flex gap-2 align-items-start' + (w.circle === c.code ? ' active' : '') + (c.active ? '' : ' opacity-75') + '" for="c_' + c.code + '">' +
               '<input class="form-check-input mt-1" type="radio" name="circle" id="c_' + c.code + '" value="' + c.code + '"' + (w.circle === c.code ? ' checked' : '') + (c.active && (mode !== 'correct' || editable('circle')) ? '' : ' disabled') + '>' +
@@ -199,7 +243,7 @@
             }
             purpose += '</div>' + (w.applicantType === 'IND' ? '<p class="small text-muted mt-2 mb-0">Items and sub-items as notified by UDD (sample list; the department keeps it up to date).</p>' : '');
           }
-          return card('Circle' + req(editable('circle')) + (flagged('circle') ? ' <span class="badge bg-warning text-dark ms-1">Correct this</span>' : ''), '<fieldset><legend class="visually-hidden">Circle (required)</legend><div class="row g-2">' + circles + '</div></fieldset>', 'Choose the circle where your premises are. Only officers of that circle act on your application.') +
+          return applyFor + card('Circle' + req(editable('circle')) + (flagged('circle') ? ' <span class="badge bg-warning text-dark ms-1">Correct this</span>' : ''), '<fieldset><legend class="visually-hidden">Circle (required)</legend><div class="row g-2">' + circles + '</div></fieldset>', 'Choose the circle where your premises are. Only officers of that circle act on your application.') +
             card('Applicant type', '<fieldset><legend class="visually-hidden">Applicant type</legend><div class="row g-2">' + types + '</div></fieldset>', 'The form fields and the documents asked for depend on this.') +
             (w.applicantType ? card('Purpose of licence', purpose, 'Select the item and, where it has them, the sub-item.') : '') +
             '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>The licence fee and the garbage fee are assessed by the Inspector at the site inspection. You see the amount to pay once the application is approved.</div>';
@@ -258,19 +302,23 @@
             (mode === 'correct' ? '<p class="small text-muted"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Earlier versions of your documents are kept; a new upload does not overwrite them.</p>' : '');
         },
         review: function () {
-          var body = '';
+          var body = '', gaps = incomplete();
+          if (gaps.length) body += '<div class="alert alert-danger small" role="alert"><div class="fw-bold mb-1"><i class="bi bi-exclamation-octagon me-1" aria-hidden="true"></i>Complete these before submitting</div><ul class="mb-0 ps-3">' +
+            gaps.map(function (g) { return '<li>' + esc(g.text) + ' <button type="button" class="btn btn-link btn-sm p-0 align-baseline" data-goto="' + g.step + '">Go to ' + esc(LABELS[g.step]) + '</button></li>'; }).join('') + '</ul></div>';
+          body += '<p class="small text-muted"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Check every section. Use <strong>Edit</strong> on a section to change it, then return to this page.</p>';
           if (kind !== 'New') body += card('Licence', licenceSummary());
-          else body += card('Circle &amp; purpose', '<dl class="tl-dl"><dt>Circle</dt><dd>' + esc(App.circle(w.circle).name) + '</dd><dt>Applicant type</dt><dd>' + esc(F.TYPES[tp()].label) + '</dd><dt>Category</dt><dd>' + esc(App.category(w.category).name) + '</dd>' +
-            (w.category === 'OTHER' ? '<dt>Purpose (as described)</dt><dd>' + esc(w.form.otherPurpose) + '</dd>' : '') + (w.item ? '<dt>Sub-item</dt><dd>' + esc(w.item) + '</dd>' : '') + '</dl>');
+          else body += card('Circle &amp; purpose', '<dl class="tl-dl"><dt>Applying for</dt><dd>' + (F.isOldRenewal(w) ? 'Renewal of an old licence (issued before this system)' : 'New licence') + '</dd><dt>Circle</dt><dd>' + esc(App.circle(w.circle).name) + '</dd><dt>Applicant type</dt><dd>' + esc(F.TYPES[tp()].label) + '</dd><dt>Category</dt><dd>' + esc(App.category(w.category).name) + '</dd>' +
+            (w.category === 'OTHER' ? '<dt>Purpose (as described)</dt><dd>' + esc(w.form.otherPurpose) + '</dd>' : '') + (w.item ? '<dt>Sub-item</dt><dd>' + esc(w.item) + '</dd>' : '') + '</dl>', '', 'purpose');
+          if (kind === 'Change') body += card('Change requested', '<p class="mb-0 small">' + (w.change.types || []).map(function (t) { return esc(F.CHANGE_TYPES[t].label); }).join(', ') + '</p>', '', 'changeType');
           function dl(fields) {
             return '<dl class="tl-dl">' + fields.map(function (f) {
               var old = kind === 'Change' ? '<div class="small text-muted fw-normal">Was: ' + esc(F.showValue(f, w.change.old[f.key])) + '</div>' : '';
               return '<dt>' + esc(F.labelOf(f, tp())) + '</dt><dd>' + esc(F.showValue(f, w.form[f.key])) + old + '</dd>';
             }).join('') + '</dl>';
           }
-          if (kind === 'Change') body += card('New details', dl(F.changeFields(w).map(F.field)));
-          else if (kind === 'Renewal') body += card('Contact details', dl(F.renewalFields(w).map(F.field)));
-          else Object.keys(F.SECTIONS).forEach(function (sec) { var list = F.fieldsFor(w, sec); if (list.length) body += card(esc(F.sectionLabel(sec, tp())), dl(list)); });
+          if (kind === 'Change') body += card('New details', dl(F.changeFields(w).map(F.field)), '', 'changeDetails');
+          else if (kind === 'Renewal') body += card('Contact details', dl(F.renewalFields(w).map(F.field)), '', 'details');
+          else Object.keys(F.SECTIONS).forEach(function (sec) { var list = F.fieldsFor(w, sec); if (list.length) body += card(esc(F.sectionLabel(sec, tp())), dl(list), '', SECTION_STEP[sec]); });
           body += card('Documents', '<div class="tl-thumbs mt-0">' + F.docList(w).map(function (d) {
             var k = d.key;
             if (newFiles[k]) return '<div class="tl-thumb-item"><button type="button" class="tl-thumb" data-newdoc="' + k + '" aria-label="View ' + esc(newFiles[k].name) + '"><i class="bi bi-file-earmark" aria-hidden="true"></i></button>' +
@@ -278,19 +326,41 @@
             if (w.docs[k]) return App.fileThumb(w.docs[k].file, F.docLabel(k), F.docLabel(k), esc(w.docs[k].file));
             if (!d.req) return '';
             return '<div class="tl-thumb-item"><span class="tl-thumb"><i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i></span><div class="tl-thumb-cap"><div class="fw-semibold">' + esc(F.docLabel(k)) + '</div><span class="text-danger">missing</span></div></div>';
-          }).join('') + '</div>');
+          }).join('') + '</div>', '', 'docs');
           if (kind === 'Renewal') {
             var b = w.br || {};
-            body += card('Fee &amp; Bank Receipt', feeTable(renewalFee()) + '<dl class="tl-dl"><dt>BR number</dt><dd class="font-monospace">' + esc(b.brNo) + '</dd><dt>BR date</dt><dd>' + App.fmtDate(b.brDate) + '</dd><dt>Amount paid</dt><dd>' + inr(b.amount) + '</dd><dt>BR scan</dt><dd>' + (newFiles.br ? esc(newFiles.br.name) + ' <span class="badge bg-success-subtle text-success">new</span>' : esc(b.scan || '—')) + '</dd></dl>');
+            body += card('Fee &amp; Bank Receipt', feeTable(renewalFee()) + '<dl class="tl-dl"><dt>BR number</dt><dd class="font-monospace">' + esc(b.brNo) + '</dd><dt>BR date</dt><dd>' + App.fmtDate(b.brDate) + '</dd><dt>Amount paid</dt><dd>' + inr(b.amount) + '</dd><dt>BR scan</dt><dd>' + (newFiles.br ? esc(newFiles.br.name) + ' <span class="badge bg-success-subtle text-success">new</span>' : esc(b.scan || '—')) + '</dd></dl>', '', 'payment');
           }
-          body += '<div class="card border-0 shadow-xs mb-3"><div class="card-body"><div class="form-check"><input class="form-check-input" type="checkbox" id="declare"><label class="form-check-label small" for="declare">I declare that the information given is true and the documents uploaded are genuine. I will produce the originals when asked.</label></div></div></div>';
+          body += '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Declaration</h2></div><div class="card-body"><div class="form-check"><input class="form-check-input" type="checkbox" id="declare"><label class="form-check-label small" for="declare">I declare that the information given is true and the documents uploaded are genuine. I will produce the originals when asked.</label></div></div></div>';
           return body;
         }
       };
 
+      // What is still missing across all steps (a section may have been changed with Edit on the review page).
+      function incomplete() {
+        var out = [];
+        if (kind === 'New') {
+          if (!w.circle || !w.applicantType || !w.category) out.push({ text: 'Circle, applicant type and item (purpose)', step: 'purpose' });
+          else if (w.category !== 'OTHER' && F.items(w.category).length && !w.item) out.push({ text: 'Sub-item', step: 'purpose' });
+        }
+        var fieldKeys = kind === 'Renewal' ? F.renewalFields(w) : (kind === 'Change' ? F.changeFields(w) : null);
+        F.FIELDS.filter(function (f) { return F.applies(f, w) && F.isRequired(f, w) && f.type !== 'check' && editable(f.key) && (!fieldKeys || fieldKeys.indexOf(f.key) !== -1); }).forEach(function (f) {
+          var v = w.form[f.key];
+          if (v === '' || v == null) out.push({ text: F.labelOf(f, tp()), step: SECTION_STEP[f.section] || (kind === 'Renewal' ? 'details' : (kind === 'Change' ? 'changeDetails' : 'applicant')) });
+        });
+        F.docList(w).forEach(function (d) {
+          if (d.req && !w.docs[d.key] && !newFiles[d.key]) out.push({ text: F.docLabel(d.key) + ' (document)', step: d.key === 'photo' ? 'applicant' : 'docs' });
+        });
+        if (kind === 'Renewal' && !(w.br && w.br.brNo && (w.br.scan || newFiles.br))) out.push({ text: 'Bank Receipt', step: 'payment' });
+        return out;
+      }
+
       // ---------- Read & validate the current step ----------
       function readStep() {
         var s = STEPS[step];
+        if (s === 'instructions' && $('ackInstr')) w.instructionsAck = $('ackInstr').checked ? (w.instructionsAck || D.demoToday) : null;
+        var af = document.querySelector('input[name="applyFor"]:checked:not([disabled])');
+        if (af) w.form.applyFor = af.value;
         if (s === 'purpose') {
           var c = document.querySelector('input[name="circle"]:checked'), t = document.querySelector('input[name="ptype"]:checked:not([disabled])');
           if (c) w.circle = c.value;
@@ -321,6 +391,7 @@
       }
       function validateStep() {
         var s = STEPS[step], ok = true;
+        if (s === 'instructions') return App.fieldError($('ackInstr'), w.instructionsAck ? '' : 'Tick the box to confirm you have read the instructions.');
         if (s === 'purpose') {
           if (!w.circle) { App.toast('Choose the circle where your premises are.', 'danger'); var c0 = root.querySelector('input[name="circle"]:not([disabled])'); if (c0) c0.focus(); return false; }
           if (!w.applicantType) { App.toast('Choose the applicant type.', 'danger'); return false; }
@@ -339,6 +410,7 @@
           if (F.isRequired(f, w) && !v) msg = (el.tagName === 'SELECT' ? 'Select ' : 'Enter ') + label.replace(/\?$/, '') + '.';
           else if (v && f.pattern && !f.pattern.test(f.upper ? v.toUpperCase() : v)) msg = 'Check the ' + label + (f.hint ? ' (' + f.hint + ')' : '') + '.';
           else if (f.type === 'number' && v && (+v < (f.min || 1) || (f.max && +v > f.max))) msg = 'Enter a number from ' + (f.min || 1) + (f.max ? ' to ' + f.max : '') + '.';
+          else if (f.type === 'date' && v && v > D.demoToday) msg = 'The date cannot be in the future.';
           ok = App.fieldError(el, msg) && ok;
           if (!msg && f.upper) el.value = v.toUpperCase();
         });
@@ -380,6 +452,7 @@
 
       function render(focusId) {
         var s = STEPS[step];
+        $('pageKind').innerHTML = App.kindBadge(w) + (w.appId || stored ? ' <span class="tl-ref-id small ms-1">' + esc((stored || w).appId) + '</span>' : '');
         var stepper = '<ol class="gov-stepper tl-stepper" aria-label="Form progress">' + STEPS.map(function (x, i) {
           return '<li class="gov-step-item' + (i < step ? ' completed' : (i === step ? ' active' : '')) + '"' + (i === step ? ' aria-current="step"' : '') + '><span class="gov-step-circle">' + (i < step ? '<i class="bi bi-check-lg" aria-hidden="true"></i>' : i + 1) + '</span><span class="gov-step-label">' + LABELS[x] + '</span></li>';
         }).join('') + '</ol>';
@@ -387,17 +460,20 @@
         if (mode === 'correct') banner = '<div class="alert alert-warning small"><div class="fw-bold mb-1"><i class="bi bi-arrow-return-left me-1" aria-hidden="true"></i>Returned for correction by ' + esc(corr.by) + ' (' + esc(corr.role) + ') on ' + App.fmtDate(corr.on) + '</div>' + esc(corr.remarks) +
           '<div class="mt-1">' + (corrAll ? 'You may edit any field.' : 'Only the marked fields and documents can be changed.') + ' After you resubmit, it goes back to ' + (stored.returnedBy && stored.returnedBy.role === 'bo' ? 'BO ' + esc(F.staffName(stored.returnedBy.userId)) : 'the Inspector') + '.</div></div>';
         var isLast = step === STEPS.length - 1;
-        root.innerHTML = stepper + banner + '<form id="stepForm" novalidate>' + RENDER[s]() +
+        if (isLast) fromReview = false;
+        var gaps = isLast ? incomplete() : [];
+        root.innerHTML = stepper + banner + (fromReview ? '<div class="alert alert-info small py-2"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Editing from the review page. Make your changes, then use <strong>Save &amp; Return to Review</strong>.</div>' : '') + '<form id="stepForm" novalidate>' + RENDER[s]() +
           '<div class="d-flex justify-content-between flex-wrap gap-2 mt-3">' +
-            '<div class="d-flex gap-2">' + (step > 0 ? '<button type="button" class="btn btn-sm btn-outline-secondary" id="btnBack"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back</button>' : '<a class="btn btn-sm btn-outline-secondary" href="dashboard.html">Cancel</a>') +
-            (mode !== 'correct' ? '<button type="button" class="btn btn-sm btn-outline-primary" id="btnDraft"><i class="bi bi-save me-1" aria-hidden="true"></i>Save as Draft</button>' : '') + '</div>' +
-            '<button type="submit" class="btn btn-sm ' + (isLast ? 'btn-success' : 'btn-primary') + '">' + (isLast ? '<i class="bi bi-send me-1" aria-hidden="true"></i>' + (mode === 'correct' ? 'Resubmit Application' : 'Submit Application') : 'Next<i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>') + '</button>' +
+            '<div class="d-flex gap-2 flex-wrap">' + (step > 0 ? '<button type="button" class="btn btn-sm btn-outline-secondary" id="btnBack"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back</button>' : '<a class="btn btn-sm btn-outline-secondary" href="dashboard.html">Cancel</a>') +
+            (mode !== 'correct' && s !== 'instructions' ? '<button type="button" class="btn btn-sm btn-outline-primary" id="btnDraft"><i class="bi bi-save me-1" aria-hidden="true"></i>Save as Draft</button>' : '') + '</div>' +
+            '<div class="d-flex gap-2 flex-wrap">' + (fromReview ? '<button type="button" class="btn btn-sm btn-primary" id="btnToReview"><i class="bi bi-check2 me-1" aria-hidden="true"></i>Save &amp; Return to Review</button>' : '') +
+            '<button type="submit" class="btn btn-sm ' + (isLast ? 'btn-success' : (fromReview ? 'btn-outline-primary' : 'btn-primary')) + '"' + (gaps.length ? ' disabled aria-disabled="true"' : '') + '>' + (isLast ? '<i class="bi bi-send me-1" aria-hidden="true"></i>' + (mode === 'correct' ? 'Resubmit Application' : 'Submit Application') : 'Next<i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>') + '</button></div>' +
           '</div></form>';
         function rerender(el) { readStep(); render(el.id); }
         // Radio / checkbox cards highlight the chosen one; the applicant type changes the purpose list.
         root.querySelectorAll('.tl-scenario-chip input').forEach(function (inp) {
           inp.addEventListener('change', function () {
-            if (inp.name === 'ptype') return rerender(inp);
+            if (inp.name === 'ptype' || inp.name === 'applyFor') return rerender(inp);
             readStep();
             root.querySelectorAll('.tl-scenario-chip').forEach(function (l) { var i = l.querySelector('input'); l.classList.toggle('active', i.checked); });
           });
@@ -419,12 +495,22 @@
           b.addEventListener('click', function () { App.openDoc({ file: f, docType: F.docLabel(k) }); });
         });
         if ($('btnBack')) $('btnBack').addEventListener('click', function () { readStep(); step--; render(); window.scrollTo(0, 0); });
+        // Edit on the review page: open that step; "Save & Return to Review" checks it and goes back.
+        root.querySelectorAll('[data-goto]').forEach(function (b) {
+          b.addEventListener('click', function () { readStep(); step = STEPS.indexOf(b.getAttribute('data-goto')); fromReview = true; render(); window.scrollTo(0, 0); $('main-content').focus({ preventScroll: true }); });
+        });
+        if ($('btnToReview')) $('btnToReview').addEventListener('click', function () {
+          readStep();
+          if (!validateStep()) return;
+          step = STEPS.length - 1; fromReview = false; render(); window.scrollTo(0, 0); $('main-content').focus({ preventScroll: true });
+        });
         if ($('btnDraft')) $('btnDraft').addEventListener('click', function () { readStep(); if (!w.circle || !w.applicantType || !w.category) { App.toast('Choose the circle, applicant type and purpose before saving a draft.', 'danger'); return; } saveDraft(); });
         $('stepForm').addEventListener('submit', function (e) {
           e.preventDefault();
           readStep();
           if (!validateStep()) return;
           if (!isLast) { step++; render(); window.scrollTo(0, 0); $('main-content').focus({ preventScroll: true }); return; }
+          if (incomplete().length) { App.toast('Complete the items listed at the top before submitting.', 'danger'); return; }
           if (!$('declare').checked) { App.fieldError($('declare'), 'Tick the declaration to submit.'); return; }
           submit();
         });
@@ -451,15 +537,15 @@
         if (prev && prev.status !== 'Draft') {
           if (prev.status !== 'Invalid') prev.status = 'Replaced';
           target.brHistory.push(prev);
-          target.originalsVerified = false; target.originalsVerifiedBy = null;
+          F.clearOriginals(target);
         }
         target.br = { brNo: w.br.brNo, brDate: w.br.brDate, amount: w.br.amount, scan: scan, uploadedOn: D.demoToday, status: 'Draft' };
       }
       function blank() {
-        return { appId: F.nextAppId(w.circle), status: ST.DRAFT, history: [], inspections: [], versions: [], brHistory: [], round: 1, selectedBo: null, returnedBy: null, correction: null, assessment: null, originalsVerified: false, originalsVerifiedBy: null, fee: null, br: null, firstSubmittedOn: null, submittedOn: null };
+        return { appId: F.nextAppId(w.circle), status: ST.DRAFT, history: [], inspections: [], versions: [], brHistory: [], boHistory: [], round: 1, selectedBo: null, returnedBy: null, correction: null, assessment: null, originalsChecks: [], originalsVerified: false, originalsVerifiedBy: null, fee: null, br: null, firstSubmittedOn: null, submittedOn: null };
       }
       function writeBack(target) {
-        ['circle', 'applicantType', 'category', 'item', 'orgType', 'kind', 'licenceNo', 'businessKey', 'change'].forEach(function (k) { target[k] = clone(w[k] == null ? null : w[k]); });
+        ['circle', 'applicantType', 'category', 'item', 'orgType', 'kind', 'licenceNo', 'businessKey', 'change', 'instructionsAck'].forEach(function (k) { target[k] = clone(w[k] == null ? null : w[k]); });
         target.form = clone(w.form);
         target.updatedOn = D.demoToday;
       }
@@ -476,7 +562,7 @@
         App.save();
         App.filesReady().then(function () { App.toast('Draft saved as ' + esc(target.appId) + '. You can continue from My Applications.'); });
         history.replaceState(null, '', 'apply.html?app=' + encodeURIComponent(target.appId));
-        $('pageKind').innerHTML = App.kindBadge(kind) + ' <span class="tl-ref-id small ms-1">' + esc(target.appId) + '</span>';
+        $('pageKind').innerHTML = App.kindBadge(w) + ' <span class="tl-ref-id small ms-1">' + esc(target.appId) + '</span>';
         render();
       }
       function submit() {

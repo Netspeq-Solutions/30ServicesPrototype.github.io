@@ -10,7 +10,7 @@
   'use strict';
 
   var SESSION_KEY = 'tl_demo_session';
-  var STATE_KEY = 'tl_demo_state_v6';
+  var STATE_KEY = 'tl_demo_state_v7';
   var FILE_DB = 'tl_demo_files';
   var SEED = global.TL_DATA;
 
@@ -171,7 +171,12 @@
     var m = STATUS_STYLE[status] || ['submitted', 'bi-info-circle-fill'];
     return '<span class="gov-status-pill gov-status-pill-' + m[0] + '"><i class="bi ' + m[1] + '" aria-hidden="true"></i>' + esc(text || status) + '</span>';
   }
+  // kind: 'New' | 'Renewal' | 'Change', or the application itself (shows "Old licence" for a renewal of a licence issued before this system).
   function kindBadge(kind) {
+    if (kind && typeof kind === 'object') {
+      if (kind.kind === 'New' && kind.form && kind.form.applyFor === 'old') return '<span class="tl-kind tl-kind-renewal" title="Renewal of a licence issued before this system"><i class="bi bi-clock-history" aria-hidden="true"></i>Old licence</span>';
+      kind = kind.kind;
+    }
     var cls = kind === 'Renewal' ? ' tl-kind-renewal' : (kind === 'Change' ? ' tl-kind-change' : '');
     var icon = kind === 'Renewal' ? 'bi-arrow-clockwise' : (kind === 'Change' ? 'bi-pencil' : 'bi-plus-circle');
     return '<span class="tl-kind' + cls + '"><i class="bi ' + icon + '" aria-hidden="true"></i>' + esc(kind === 'Change' ? 'Change' : kind) + '</span>';
@@ -286,6 +291,16 @@
     var isPhoto = /\.(jpe?g|png)$/i.test(a.file);
     return '<div class="border rounded p-5 text-center bg-light"><i class="bi ' + (isPhoto ? 'bi-image' : 'bi-file-earmark-richtext') + ' fs-1 text-muted" aria-hidden="true"></i>' +
       '<p class="fw-semibold mt-2 mb-1">' + esc(a.docType) + '</p><p class="small text-muted mb-0">Sample ' + (isPhoto ? 'photo' : 'document') + ' for a demonstration record. Files you upload during the demo are shown here as uploaded.</p></div>';
+  }
+  // Show a stored file inside a page or popup (image / PDF), or the demonstration sample when there is no real file.
+  function previewInto(el, name, docType) {
+    if (!el || !name) return;
+    var att = attachmentFor(name);
+    var a = att || { id: null, file: name, docType: docType || 'Document' };
+    el.innerHTML = '<p class="small text-muted mb-0">Opening the file…</p>';
+    (a.id ? getFile(a.id) : Promise.resolve(null)).then(function (file) {
+      el.innerHTML = file ? fileView(file, a.docType + ': ' + a.file).html : docSample(a);
+    });
   }
   function fileView(file, title) {
     var url = URL.createObjectURL(file), type = file.type || '';
@@ -443,6 +458,8 @@
     return '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2 mb-1">' + top + pillHtml + '</div>' + lines + (action ? '<div class="d-flex justify-content-end mt-2">' + action + '</div>' : '') + '</div>';
   }
   // Generic remarks / form modal. fields: html; onOk(modalEl) returns false to keep open.
+  // opts.scroll === false: the whole popup scrolls with the page, so Cancel / Save sit after the last field
+  // (used for long forms, where a fixed footer let officers save before seeing the rest of the form).
   function modal(opts) {
     var id = 'tlModal';
     var old = document.getElementById(id);
@@ -450,10 +467,11 @@
     var el = document.createElement('div');
     el.className = 'modal fade'; el.id = id; el.tabIndex = -1;
     el.setAttribute('aria-labelledby', id + 'Label'); el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable' + (opts.size ? ' modal-' + opts.size : '') + '"><form class="modal-content" novalidate>' +
+    el.innerHTML = '<div class="modal-dialog' + (opts.scroll === false ? '' : ' modal-dialog-centered modal-dialog-scrollable') + (opts.size ? ' modal-' + opts.size : '') + '"><form class="modal-content" novalidate>' +
       '<div class="modal-header"><h2 class="modal-title h6 fw-bold" id="' + id + 'Label">' + opts.title + '</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>' +
       '<div class="modal-body small">' + opts.body + '</div>' +
-      '<div class="modal-footer"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-sm ' + (opts.okClass || 'btn-primary') + '">' + opts.ok + '</button></div></form></div>';
+      '<div class="modal-footer' + (opts.footerNote ? ' justify-content-between' : '') + '">' + (opts.footerNote ? '<span class="small text-muted me-auto">' + opts.footerNote + '</span>' : '') +
+        '<div class="d-flex gap-2"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>' + (opts.ok ? '<button type="submit" class="btn btn-sm ' + (opts.okClass || 'btn-primary') + '"' + (opts.okDisabled ? ' disabled' : '') + '>' + opts.ok + '</button>' : '') + '</div></div></form></div>';
     document.body.appendChild(el);
     var m = new bootstrap.Modal(el);
     el.querySelector('form').addEventListener('submit', function (e) {
@@ -788,7 +806,7 @@
     inr: inr, fmtDate: fmtDate, fmtStamp: fmtStamp, esc: esc, maskMobile: maskMobile, stamp: stamp, qs: qs,
     app: app, licence: licence, circle: circle, category: category, appsOf: appsOf, licencesOf: licencesOf, appName: appName,
     audit: audit, notify: notify, pill: pill, kindBadge: kindBadge,
-    toast: toast, checkFile: checkFile, fieldError: fieldError, addAttachments: addAttachments, attachmentFor: attachmentFor, fileLink: fileLink, fileThumb: fileThumb, openDoc: openDoc, docSample: docSample, fileView: fileView, dropzone: dropzone, bindDropzones: bindDropzones, hydrateThumbs: hydrateThumbs, getFile: getFile, filesReady: filesReady,
+    toast: toast, checkFile: checkFile, fieldError: fieldError, addAttachments: addAttachments, attachmentFor: attachmentFor, fileLink: fileLink, fileThumb: fileThumb, openDoc: openDoc, docSample: docSample, fileView: fileView, previewInto: previewInto, dropzone: dropzone, bindDropzones: bindDropzones, hydrateThumbs: hydrateThumbs, getFile: getFile, filesReady: filesReady,
     greeting: greeting, dashHero: dashHero, dashTile: dashTile, dashNext: dashNext, sectionTitle: sectionTitle,
     downloadCsv: downloadCsv, renderQr: renderQr, verifyUrl: verifyUrl, tableCard: tableCard, mobileCard: mobileCard, modal: modal,
     initAccessibility: initAccessibility, initSidebar: initSidebar, initViews: initViews, shell: shell

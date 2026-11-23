@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Review Bank Payment | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard-staff.html">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="payment-desk.html">Approve Bank Payments</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Review Payment</li>
+    </ol></nav>
+    <div id="reviewRoot"></div>
+  </main>
+
+  <!-- Return to citizen -->
+  <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><form class="modal-content" id="rejectForm" novalidate>
+      <div class="modal-header"><h2 class="modal-title h6 fw-bold" id="rejectTitle">Return to citizen</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body">
+        <p class="small mb-2" id="rejectInfo"></p>
+        <label for="rejectReason" class="form-label small fw-semibold">Reason <span class="text-danger" aria-hidden="true">*</span></label>
+        <select id="rejectReason" class="form-select form-select-sm"></select>
+        <div class="form-text">The citizen gets an SMS and can upload the Bank Receipt again.</div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-sm btn-danger">Return to Citizen</button></div>
+    </form></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-docs.js"></script>
+  <script src="gr-payments.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, P = window.GRPay, Docs = window.GRDocs, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'payments');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'verify' });
+      var $ = function (id) { return document.getElementById(id); };
+      var root = $('reviewRoot');
+      var c = P.challan(App.qs('challan')), site = c ? App.site(c.grId) : null;
+      if (!c || !site || !App.inScope(site, session)) {
+        root.innerHTML = '<div class="alert alert-warning">Payment not found, or outside your ULB.</div><a class="btn btn-sm btn-outline-secondary" href="payment-desk.html">Approve Bank Payments</a>';
+        return;
+      }
+      document.title = c.challanNo + ' | Review Payment | Online Ground Rent Payment System';
+      var rejectModal = new bootstrap.Modal($('rejectModal'));
+      $('rejectReason').innerHTML = '<option value="">Select a reason</option>' + P.RETURN_REASONS.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join('');
+
+      function card(title, body, extra) {
+        return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (extra || '') + '</div>' + body + '</div>';
+      }
+      function meta(pairs) { return '<dl class="gr-meta-grid mb-0">' + pairs.map(function (p) { return '<div><dt>' + p[0] + '</dt><dd>' + p[1] + '</dd></div>'; }).join('') + '</dl>'; }
+
+      // ---------- Verification decision (top right; first on small screens) ----------
+      function decision() {
+        if (c.status !== 'BR Recorded') {
+          var body = c.status === 'Verified'
+            ? '<p class="small mb-2"><i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>Approved by ' + esc(c.approvedBy || '') + ' on ' + App.fmtDate(c.approvedOn) + '. Receipt <span class="font-monospace fw-semibold">' + esc(c.receiptNo) + '</span>.</p><a class="btn btn-sm btn-success" href="receipt.html?no=' + encodeURIComponent(c.receiptNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Receipt</a>'
+            : '<p class="small text-muted mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>No Bank Receipt is waiting on this challan (' + esc(c.status.toLowerCase()) + ').' + (c.returnReason ? ' Returned: ' + esc(c.returnReason) + '.' : '') + '</p>';
+          return '<div class="gov-workflow-panel mb-3"><div class="gov-workflow-panel-header"><h2 class="h6 fw-bold mb-0">Verification Decision</h2></div>' + body + '</div>';
+        }
+        var k = P.check(c), days = P.daysWaiting(c);
+        var tone = k.tone === 'success' ? 'success' : (k.tone === 'danger' ? 'danger' : 'warning');
+        return '<div class="gov-workflow-panel mb-3"><div class="gov-workflow-panel-header"><h2 class="h6 fw-bold mb-0">Verification Decision</h2><div class="small text-muted">Check the original Bank Receipt at the counter against the uploaded BR.</div></div>' +
+          meta([['BR no.', '<span class="font-monospace">' + esc(c.brNo) + '</span>'], ['BR date', App.fmtDate(c.brDate)], ['Paid at bank', inr(k.paid)], ['Challan amount', inr(c.amount)], ['Amount to record', '<span class="fs-6">' + inr(k.record) + '</span>'], ['Waiting', days ? days + (days === 1 ? ' day' : ' days') + ' (since ' + App.fmtDate(c.brUploadedOn) + ')' : 'Uploaded today']]) +
+          '<div class="alert alert-' + tone + ' small py-2 mt-2 mb-2"><i class="bi ' + (tone === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle') + ' me-1" aria-hidden="true"></i>' + esc(k.note) + '</div>' +
+          '<div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="chkOriginal"' + (k.blocked ? ' disabled' : '') + '><label class="form-check-label small" for="chkOriginal">I have seen the original Bank Receipt and it matches these details.</label><div class="invalid-feedback" id="chkErr">Confirm you have checked the original Bank Receipt.</div></div>' +
+          '<div id="workflowActionsContainer"><button type="button" class="btn btn-sm btn-success" id="btnApprove"' + (k.blocked ? ' disabled aria-disabled="true"' : '') + '><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Approve &amp; Issue Receipt</button>' +
+            '<div class="gov-action-subgroup"><button type="button" class="btn btn-sm btn-outline-danger" id="btnReject"><i class="bi bi-arrow-return-left me-1" aria-hidden="true"></i>Return to Citizen</button></div></div>' +
+          (k.blocked ? '<p class="small text-muted mt-2 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>This payment cannot be approved. Return it to the citizen with the reason.</p>' : '') + '</div>';
+      }
+
+      // ---------- Allottee & account details ----------
+      function details() {
+        var d = App.dues(site), u = App.ulb(site.ulb), w = App.ward(site.ulb, site.ward);
+        var owners = '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Allottees</caption><thead><tr><th scope="col">Name</th><th scope="col">Relation</th><th scope="col">Mobile</th><th scope="col" class="text-end">Share</th></tr></thead><tbody>' +
+          site.owners.map(function (o) { return '<tr><td class="fw-semibold">' + esc(o.name) + '</td><td>' + esc(o.relation + ' ' + o.guardian) + '</td><td>' + esc(App.maskMobile(o.mobile)) + '</td><td class="text-end">' + o.share + '%</td></tr>'; }).join('') + '</tbody></table></div>';
+        var open = [];
+        if (!d.blocked) {
+          if (d.opening.balance) open.push(['Opening balance (register)', d.opening.balance]);
+          d.years.forEach(function (y) { if (y.balance > 0) open.push(['FY ' + y.label + (y.state === 'Overdue' ? ' (overdue)' : ''), y.balance]); });
+        }
+        var duesBody = d.blocked ? '<div class="card-body"><div class="alert alert-danger small mb-0">' + esc(d.blockReason) + '</div></div>'
+          : '<div class="card-body">' + meta([['Outstanding today', inr(d.totalPayable)], ['Paid up to', 'FY ' + esc(d.paidUpToFy || '—')], ['Annual rent FY ' + esc(d.currentFy), inr(d.annualRent)], ['Chargeable area', App.sqft(d.currentArea || 0)]]) +
+            (open.length ? '<table class="table table-sm small mt-3 mb-0"><caption class="visually-hidden">Unpaid years</caption><thead><tr><th scope="col">Unpaid</th><th scope="col" class="text-end">Balance</th></tr></thead><tbody>' + open.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td class="text-end">' + inr(r[1]) + '</td></tr>'; }).join('') + '</tbody></table>' : '<p class="small text-muted mt-3 mb-0">Nothing outstanding.</p>') + '</div>';
+        var pays = D.payments.filter(function (p) { return p.grId === site.grId; }).slice(0, 5);
+        var payBody = '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Recent payments</caption><thead><tr><th scope="col">Receipt</th><th scope="col">Date &amp; Mode</th><th scope="col">Txn / BR No.</th><th scope="col" class="text-end">Amount</th><th scope="col">Status</th></tr></thead><tbody>' +
+          (pays.map(function (p) { return '<tr><td class="font-monospace small fw-bold">' + esc(p.receiptNo || p.intentNo) + '</td><td>' + App.fmtDate(p.paidOn) + '<div class="small text-muted">' + esc(p.mode) + '</div></td><td class="small font-monospace">' + esc(p.ref || '—') + '</td><td class="text-end fw-bold">' + inr(p.amount) + '</td><td>' + App.paymentPill(p) + '</td></tr>'; }).join('') ||
+            '<tr><td colspan="5" class="text-center text-muted py-3">No payments since go-live.' + (site.opening.lastPayment ? ' Last register payment: BR ' + esc(site.opening.lastPayment.brNo) + ', ' + App.fmtDate(site.opening.lastPayment.date) + '.' : '') + '</td></tr>') + '</tbody></table></div>';
+        return card('Bank Receipt uploaded by the citizen', '<div class="card-body"><div class="gr-br-preview" id="brPreview"></div><div class="small mt-2 d-flex flex-wrap gap-3"><span>Uploaded by ' + esc(c.brUploadedBy || 'Citizen') + ' on ' + App.fmtDate(c.brUploadedOn) + '</span>' + (c.brScan ? App.fileLink(c.brScan, site.grId, 'Open in the document viewer') : '') + '</div></div>') +
+          card('Allottee(s)', owners) +
+          card('Site', '<div class="card-body">' + meta([['ULB', esc(u.name)], ['Ward', esc(w ? w.name : site.ward)], ['Locality', esc(site.locality)], ['Plot / Holding No.', esc(site.plotNo || 'Not recorded')], ['Address', esc(site.address)], ['Register ref.', esc(App.legacyRef(site))]]) +
+            (site.flags && site.flags.length ? '<div class="small text-danger mt-2"><i class="bi bi-flag-fill me-1" aria-hidden="true"></i>' + site.flags.map(esc).join(' &bull; ') + '</div>' : '') + '</div>',
+            '<a class="btn btn-sm btn-outline-primary" href="ledger.html?gr=' + encodeURIComponent(site.grId) + '"><i class="bi bi-journal-text me-1" aria-hidden="true"></i>Open Full Account</a>') +
+          card('Dues', duesBody) +
+          card('Recent payments', payBody);
+      }
+
+      function render() {
+        var role = D.staffRoles[session.role];
+        root.innerHTML = '<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"><div class="min-w-0"><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0 font-monospace">' + esc(c.challanNo) + '</h1>' + App.challanPill(c) + '</div>' +
+            '<p class="text-muted small mb-0"><span class="gr-gr-id">' + esc(site.grId) + '</span> &bull; ' + esc(App.ownersFull(site)) + ' &bull; challan of ' + App.fmtDate(c.generatedOn) + ' for ' + inr(c.amount) + '</p></div>' +
+            '<span class="badge bg-primary-subtle text-primary border border-primary-subtle">' + esc(role.title) + '</span></div>' +
+          '<div class="row g-3"><div class="col-xl-8 min-w-0">' + details() + '</div>' +
+          '<div class="col-xl-4 order-first order-xl-last"><div class="gr-action-rail">' + decision() + '</div></div></div>';
+        Docs.previewInto($('brPreview'), c.brScan || ('BR_' + (c.brNo || '') + '.jpg'), site.grId);
+        var ap = $('btnApprove'), rj = $('btnReject');
+        if (ap) ap.addEventListener('click', function () {
+          var chk = $('chkOriginal');
+          chk.classList.toggle('is-invalid', !chk.checked);
+          if (!chk.checked) { chk.focus(); return; }
+          try {
+            var p = P.approve(c, session);
+            App.filesReady().then(function () { window.location.href = 'payment-desk.html?done=' + encodeURIComponent(c.challanNo) + '&r=' + encodeURIComponent(p.receiptNo); });
+          } catch (e) { App.toast(esc(e.message), 'danger'); }
+        });
+        if (rj) rj.addEventListener('click', function () {
+          $('rejectInfo').innerHTML = 'Challan <strong class="font-monospace">' + esc(c.challanNo) + '</strong> &bull; BR ' + esc(c.brNo) + ' &bull; ' + esc(c.grId);
+          $('rejectReason').value = ''; App.fieldError($('rejectReason'), '');
+          rejectModal.show();
+        });
+      }
+      $('rejectForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var reason = $('rejectReason').value;
+        if (!App.fieldError($('rejectReason'), reason ? '' : 'Select a reason.')) return;
+        P.reject(c, reason);
+        rejectModal.hide();
+        window.location.href = 'payment-desk.html?done=' + encodeURIComponent(c.challanNo);
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

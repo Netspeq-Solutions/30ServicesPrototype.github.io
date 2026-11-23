@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261122">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -29,9 +29,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261122"></script>
-  <script src="tl-app.js?v=20261122"></script>
-  <script src="tl-flow.js?v=20261122"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
   <script>
     (function () {
       'use strict';
@@ -108,9 +108,9 @@
       var rows = apps.map(function (a) {
         var act = nextAction(a, true);
         var sub = a.kind === 'New' ? esc(App.category(a.category).name) : esc(a.licenceNo || '');
-        return { row: '<tr><td><a class="tl-ref-id small" href="application.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a></td><td>' + App.kindBadge(a.kind) + '<div class="small text-muted text-truncate" style="max-width:220px;">' + sub + '</div></td>' +
+        return { row: '<tr><td><a class="tl-ref-id small" href="application.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a></td><td>' + App.kindBadge(a) + '<div class="small text-muted text-truncate" style="max-width:220px;">' + sub + '</div></td>' +
             '<td class="small">' + App.fmtDate(a.submittedOn) + '</td><td>' + App.pill(a.status) + '<div class="small text-muted">' + esc(F.pendingWith(a).label) + '</div></td><td class="text-end text-nowrap"><div class="d-inline-flex align-items-center gap-1 text-nowrap">' + act + '</div></td></tr>',
-          card: App.mobileCard('<a class="tl-ref-id small" href="application.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a>', App.pill(a.status), '<div class="small">' + App.kindBadge(a.kind) + ' <span class="text-muted">' + sub + '</span></div><div class="small text-muted">Submitted ' + App.fmtDate(a.submittedOn) + ' &bull; ' + esc(F.pendingWith(a).label) + '</div>', act) };
+          card: App.mobileCard('<a class="tl-ref-id small" href="application.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a>', App.pill(a.status), '<div class="small">' + App.kindBadge(a) + ' <span class="text-muted">' + sub + '</span></div><div class="small text-muted">Submitted ' + App.fmtDate(a.submittedOn) + ' &bull; ' + esc(F.pendingWith(a).label) + '</div>', act) };
       });
       $('view-applications').innerHTML = heading('h-applications', 'My Applications', 'New licence, renewal and change requests with their current stage.', '<a class="btn btn-sm btn-success" href="apply.html?type=new"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Apply for New Licence</a>') +
         App.tableCard('t-apps', 'Applications', apps.length + ' in total',

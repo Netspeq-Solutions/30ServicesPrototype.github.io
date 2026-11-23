@@ -17,7 +17,7 @@
 
   // ---------------- Applicant types ----------------
   var TYPES = {
-    IND: { label: 'Individual / local trader', short: 'Individual', icon: 'bi-person', hint: 'Proprietorship, partnership or other local business' },
+    IND: { label: 'Individual / firm', short: 'Individual / firm', icon: 'bi-person', hint: 'Firm, enterprise or establishment of the applicant(s) – a proprietor or partners' },
     COMP: { label: 'Registered company', short: 'Company', icon: 'bi-buildings', hint: 'Pvt. Ltd., Public Ltd., society or other registered entity' }
   };
   function typeOf(a) { return a.applicantType === 'IND' ? 'IND' : 'COMP'; }
@@ -31,9 +31,14 @@
   function asks(k) { return function (f, c) { return !!c.asks[k]; }; }
   function asksYes(k, field) { return function (f, c) { return !!c.asks[k] && f[field] === 'Yes'; }; }
   function notSame(f) { return !f.presSame; }
+  // Renewal of a licence issued before this system: applied for as a new application, with the old licence details.
+  function oldLic(f) { return f.applyFor === 'old'; }
   var PIN = { pattern: /^[1-9][0-9]{5}$/, hint: '6 digits', mono: true };
   function pin(o) { return Object.assign({}, PIN, o); }
   var FIELDS = [
+    { key: 'oldLicenceNo', label: 'Old licence number', section: 'oldLicence', required: true, mono: true, when: oldLic, hint: 'As printed on the old trade licence' },
+    { key: 'oldIssuedOn', label: 'Date of first issue', section: 'oldLicence', type: 'date', when: oldLic, hint: 'Optional, if known' },
+    { key: 'oldValidTo', label: 'Valid up to (last renewal)', section: 'oldLicence', required: true, type: 'date', when: oldLic, hint: 'Validity end date on the old licence' },
     { key: 'applicantName', label: 'Name of applicant / applicants / proprietor / partners', labels: { COMP: 'Name of the applicant / applicants' }, section: 'applicant', required: true },
     { key: 'companyName', label: 'Name of the firm / company / society', section: 'applicant', who: 'COMP', required: true },
     { key: 'regNo', label: 'Registration number (CIN / society registration)', section: 'applicant', who: 'COMP', required: true, mono: true },
@@ -100,7 +105,7 @@
     { key: 'eduRegistered', label: 'Registered with the Education Department?', section: 'education', required: true, type: 'yesno', when: asksYes('education', 'isEducation'), toggles: true },
     { key: 'eduRegNo', label: 'Education Department registration number', section: 'education', required: true, when: function (f, c) { return !!c.asks.education && f.isEducation === 'Yes' && f.eduRegistered === 'Yes'; } }
   ];
-  var SECTIONS = { applicant: 'Applicant details', perm: 'Permanent residential address', present: 'Present address', contact: 'Contact & tax details', firm: 'Firm & place of business', hotel: 'Hotel business', franchise: 'Head office / parent company', education: 'Educational institute / tutorial' };
+  var SECTIONS = { oldLicence: 'Old licence (issued before this system)', applicant: 'Applicant details', perm: 'Permanent residential address', present: 'Present address', contact: 'Contact & tax details', firm: 'Firm & place of business', hotel: 'Hotel business', franchise: 'Head office / parent company', education: 'Educational institute / tutorial' };
   var SECTION_LABELS = { COMP: { firm: 'Premises where the trade / manufacture is carried out', contact: 'Contact details' } };
   function sectionLabel(sec, type) { return (SECTION_LABELS[type] && SECTION_LABELS[type][sec]) || SECTIONS[sec]; }
   function field(key) { return FIELDS.filter(function (f) { return f.key === key; })[0]; }
@@ -209,8 +214,11 @@
   var WHEN = {
     franchise: { label: 'Franchise of a parent company = Yes', test: function (f, c) { return !!c.asks.franchise && f.isFranchise === 'Yes'; } },
     tourismRegistered: { label: 'Hotel registered with Tourism = Yes (individuals)', test: function (f, c) { return c.type === 'IND' && hotel(f, c) && f.tourismRegistered === 'Yes'; } },
-    toursTravel: { label: 'Hotel offers tours & travels = Yes', test: function (f, c) { return hotel(f, c) && f.toursTravel === 'Yes'; } }
+    toursTravel: { label: 'Hotel offers tours & travels = Yes', test: function (f, c) { return hotel(f, c) && f.toursTravel === 'Yes'; } },
+    oldLicence: { label: 'Renewal of a licence issued before this system = Yes', test: function (f) { return oldLic(f); } }
   };
+  // New application that renews a licence issued before this system (old licences are not migrated).
+  function isOldRenewal(a) { return a.kind === 'New' && !!a.form && oldLic(a.form); }
   // Documents for an application: [{ key, req, why }], in master order.
   function docList(a) {
     var found = {}, c = ctx(a), f = a.form || {};
@@ -274,8 +282,9 @@
       var f = lic ? renewalFine(lic.validTo, a.firstSubmittedOn || onDate) : { fine: 0, lateDays: 0 };
       return { kind: 'Renewal', base: r.renewal, garbage: r.garbage, fine: f.fine, lateDays: f.lateDays, total: r.renewal + r.garbage + f.fine, fixedOn: onDate };
     }
-    var s = a.assessment;
-    return { kind: a.kind === 'Change' ? 'Change' : 'Licence', base: s ? s.fee : 0, garbage: s ? s.garbage : 0, fine: 0, lateDays: 0, total: s ? s.fee + s.garbage : 0,
+    // An old licence renewed through a new application may also carry a fine / surcharge for the lapsed years.
+    var s = a.assessment, fine = s ? s.fine || 0 : 0;
+    return { kind: a.kind === 'Change' ? 'Change' : 'Licence', base: s ? s.fee : 0, garbage: s ? s.garbage : 0, fine: fine, lateDays: 0, total: s ? s.fee + s.garbage + fine : 0,
       assessedBy: s ? s.by : null, assessedRole: s ? s.role || 'Inspector' : null, assessedOn: s ? s.on : null, fixedOn: onDate };
   }
 
@@ -312,11 +321,19 @@
     if (p.role !== u.role) return false;
     return !p.userId || p.userId === userId;
   }
+  // Send the application on to another BO: the BO holding it, or an Inspector while it is with the BO.
+  function canReassign(a, userId) {
+    var u = D().staff[userId];
+    if (!u || u.circle !== a.circle) return false;
+    if (u.role === 'bo') return canAct(a, userId) && (a.status === ST.WITH_BO || a.status === ST.RETURNED_BO);
+    if (u.role === 'inspector') return a.status === ST.WITH_BO;
+    return false;
+  }
   // Applications this user can see in "All applications".
   function visibleTo(a, userId) {
     var u = D().staff[userId];
     if (!u || a.circle !== u.circle || a.status === ST.DRAFT) return false;
-    if (u.role === 'bo') return a.selectedBo === userId || (a.returnedBy && a.returnedBy.userId === userId);
+    if (u.role === 'bo') return a.selectedBo === userId || (a.returnedBy && a.returnedBy.userId === userId) || (a.boHistory || []).indexOf(userId) !== -1;
     return true; // Inspectors, Special Secretary, HOD and Department Admin (view only) see the whole circle
   }
 
@@ -385,12 +402,29 @@
     if (biz) biz.lastActiveOn = today();
   }
 
+  // ---------------- Original documents ----------------
+  // The Inspector and the BO can each verify the originals (for renewals: receive the original BR).
+  // Every check is kept: [{ role, designation, by, on, how }]. One check is enough to go ahead.
+  function originals(a) { return a.originalsChecks || []; }
+  function originalsBy(a, role) { return originals(a).filter(function (c) { return c.role === role; })[0] || null; }
+  function originalsText(a) {
+    return originals(a).map(function (c) { return c.by + ' (' + c.designation + ') – ' + c.how + ', ' + App.fmtDate(c.on); }).join('; ');
+  }
+  function markOriginals(a, u, how, on) {
+    if (originalsBy(a, u.role)) return false;
+    a.originalsChecks = originals(a).concat([{ role: u.role, designation: u.designation, by: u.name, on: on || today(), how: how }]);
+    a.originalsVerified = true;
+    a.originalsVerifiedBy = originalsText(a);
+    return true;
+  }
+  function clearOriginals(a) { a.originalsChecks = []; a.originalsVerified = false; a.originalsVerifiedBy = null; }
+
   // ---------------- Officer actions ----------------
   // payload: { remarks, boId, notes, visitDate, files, originals, noteId, fields, docs, assess }
   function act(a, action, p) {
     p = p || {};
     var s = App.getSession(), me = s && s.userId, meU = D().staff[me];
-    if (!canAct(a, me) && action !== 'editNote') throw new Error('You cannot act on this application at its current stage.');
+    if (action === 'reassignBo' ? !canReassign(a, me) : (!canAct(a, me) && action !== 'editNote')) throw new Error('You cannot act on this application at its current stage.');
     var who = meU.name + ' (' + meU.designation + ')';
     switch (action) {
       case 'start':
@@ -398,18 +432,19 @@
         log(a, 'Verification started', p.remarks);
         return 'Verification started.';
       case 'note': {
-        a.inspections.push({ id: 'N-' + a.appId.slice(-3) + '-' + (a.inspections.length + 1), by: me, byName: meU.name, role: meU.designation, visitDate: p.visitDate || null, at: App.stamp(), notes: p.notes, files: p.files || [], originalsCollected: !!p.originals, edits: [] });
-        if (p.originals && !a.originalsVerified) { a.originalsVerified = true; a.originalsVerifiedBy = who + ' – at inspection, ' + App.fmtDate(p.visitDate); }
+        var origNow = !!p.originals && markOriginals(a, meU, 'at inspection', p.visitDate);
+        a.inspections.push({ id: 'N-' + a.appId.slice(-3) + '-' + (a.inspections.length + 1), by: me, byName: meU.name, role: meU.designation, visitDate: p.visitDate || null, at: App.stamp(), notes: p.notes, files: p.files || [], originalsCollected: origNow, edits: [] });
         // Fee assessment (Inspector, or BO revising it): kept only when it differs; earlier assessments are kept.
         var feeTxt = '', prev = a.assessment;
-        if (p.assess && (!prev || prev.fee !== p.assess.fee || prev.garbage !== p.assess.garbage)) {
+        var feeLine = function (x) { return App.inr(x.fee) + ' + garbage fee ' + App.inr(x.garbage) + (x.fine ? ' + fine / surcharge ' + App.inr(x.fine) : ''); };
+        if (p.assess && (!prev || prev.fee !== p.assess.fee || prev.garbage !== p.assess.garbage || (prev.fine || 0) !== (p.assess.fine || 0))) {
           if (prev) a.assessmentHistory = (a.assessmentHistory || []).concat([prev]);
-          a.assessment = { fee: p.assess.fee, garbage: p.assess.garbage, by: meU.name, role: meU.designation, on: today() };
-          feeTxt = ' · fee ' + (prev ? 'revised from ' + App.inr(prev.fee) + ' + garbage fee ' + App.inr(prev.garbage) + ' to ' : 'assessed ') + App.inr(p.assess.fee) + ' + garbage fee ' + App.inr(p.assess.garbage);
+          a.assessment = { fee: p.assess.fee, garbage: p.assess.garbage, fine: p.assess.fine || 0, by: meU.name, role: meU.designation, on: today() };
+          feeTxt = ' · fee ' + (prev ? 'revised from ' + feeLine(prev) + ' to ' : 'assessed ') + feeLine(a.assessment);
         } else p.assess = null;
         if (meU.role === 'ss') { log(a, 'Special Secretary note added' + (p.visitDate ? ' · site visited' : ''), p.visitDate ? 'Site visited on ' + App.fmtDate(p.visitDate) : ''); return 'Note saved.'; }
-        log(a, (meU.role === 'bo' ? (a.kind === 'Renewal' ? 'Site inspection note added' : 'Re-inspection note added') : 'Inspection report added') + feeTxt + (p.originals ? ' · originals verified at inspection' : ''), 'Site visited on ' + App.fmtDate(p.visitDate));
-        return 'Inspection ' + (meU.role === 'bo' ? 'note' : 'report') + ' saved' + (p.assess ? ' with the fee ' + (prev ? 'revised to ' : 'of ') + App.inr(p.assess.fee + p.assess.garbage) : '') + '.';
+        log(a, (meU.role === 'bo' ? (a.kind === 'Renewal' ? 'Site inspection note added' : 'Re-inspection note added') : 'Inspection report added') + feeTxt + (origNow ? ' · originals verified at inspection' : ''), 'Site visited on ' + App.fmtDate(p.visitDate));
+        return 'Inspection ' + (meU.role === 'bo' ? 'note' : 'report') + ' saved' + (p.assess ? ' with the fee ' + (prev ? 'revised to ' : 'of ') + App.inr(p.assess.fee + p.assess.garbage + (p.assess.fine || 0)) : '') + '.';
       }
       case 'editNote': {
         if (meU.role !== 'ss' || !canAct(a, me)) throw new Error('Only the Special Secretary can edit inspection notes at this stage.');
@@ -442,6 +477,14 @@
         log(a, brTxt + 'Forwarded to BO (' + staffName(p.boId) + ')', p.remarks);
         return 'Forwarded to BO ' + staffName(p.boId) + '.';
       }
+      case 'reassignBo': {
+        var fromBo = a.selectedBo;
+        if (!p.boId || p.boId === fromBo) throw new Error('Choose a different BO.');
+        if (fromBo && (a.boHistory || []).indexOf(fromBo) === -1) a.boHistory = (a.boHistory || []).concat([fromBo]);
+        a.selectedBo = p.boId;
+        log(a, 'Forwarded to another BO (' + staffName(fromBo) + ' → ' + staffName(p.boId) + ')', p.remarks);
+        return 'Forwarded to BO ' + staffName(p.boId) + '.';
+      }
       case 'forwardSs':
         a.status = ST.WITH_SS; a.returnedBy = null;
         log(a, 'Forwarded to Special Secretary', p.remarks);
@@ -450,7 +493,7 @@
         if (!a.assessment) throw new Error('The fee has not been assessed in the inspection report.');
         a.fee = computeFee(a);
         a.status = ST.PAYMENT; a.returnedBy = null;
-        log(a, 'Approved – fee ' + App.inr(a.fee.total) + ' fixed (' + a.fee.kind.toLowerCase() + ' fee ' + App.inr(a.fee.base) + ' + garbage fee ' + App.inr(a.fee.garbage) + ')', p.remarks);
+        log(a, 'Approved – fee ' + App.inr(a.fee.total) + ' fixed (' + a.fee.kind.toLowerCase() + ' fee ' + App.inr(a.fee.base) + ' + garbage fee ' + App.inr(a.fee.garbage) + (a.fee.fine ? ' + fine / surcharge ' + App.inr(a.fee.fine) : '') + ')', p.remarks);
         App.notify(a.businessKey, 'Application approved – pay the fee', a.appId + ' is approved. Pay ' + App.inr(a.fee.total) + ' at the bank, upload the Bank Receipt and bring it with the original documents to the department.', a.appId);
         return 'Approved. Fee of ' + App.inr(a.fee.total) + ' is shown to the applicant for payment.';
       }
@@ -479,9 +522,9 @@
         log(a, 'Returned to Special Secretary', p.remarks);
         return 'Returned to the Special Secretary.';
       case 'originals':
-        a.originalsVerified = true; a.originalsVerifiedBy = who + ' – at the department, ' + App.fmtDate(today());
-        log(a, a.kind === 'Renewal' ? 'Original Bank Receipt received at the department' : 'Original documents verified at the department', p.remarks);
-        return a.kind === 'Renewal' ? 'Original Bank Receipt marked as received.' : 'Originals marked as verified.';
+        if (!markOriginals(a, meU, 'at the department', today())) throw new Error('You have already marked the originals.');
+        log(a, (a.kind === 'Renewal' ? 'Original Bank Receipt received at the department' : 'Original documents verified at the department') + ' (' + meU.designation + ')', p.remarks);
+        return a.kind === 'Renewal' ? 'Original Bank Receipt marked as received.' : 'Originals marked as verified by you (' + meU.designation + ').';
       case 'brInvalid':
         a.br.status = 'Invalid'; a.br.remarks = p.remarks; a.br.checkedBy = who; a.br.checkedOn = today();
         a.brHistory.push(a.br); a.br = null;
@@ -527,6 +570,7 @@
         fees: { first: { fee: a.fee.base, garbage: a.fee.garbage, on: a.fee.assessedOn, by: a.fee.assessedBy }, renewal: a.fee.base, garbage: a.fee.garbage, history: [] } };
       lic.versions.push(Object.assign({ v: 1, issuedOn: day, appId: a.appId, approvedBy: approver(a), brNo: a.br.brNo, superseded: null, change: null }, versionFields(a.form)));
       lic.details = clone(a.form);
+      if (isOldRenewal(a)) lic.oldLicenceNo = a.form.oldLicenceNo;
       D().licences.unshift(lic);
     } else if (a.kind === 'Renewal') {
       lic = App.licence(a.licenceNo);
@@ -587,6 +631,9 @@
   function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 18); }
   D().applications.forEach(function (a) {
     derive(a);
+    a.originalsChecks = a.originalsChecks || [];
+    a.originalsVerified = a.originalsChecks.length > 0;
+    a.originalsVerifiedBy = originalsText(a) || null;
     if (!a.docs) {
       a.docs = {};
       docList(a).forEach(function (d) { a.docs[d.key] = { file: d.key + '_' + slug(a.form.businessName) + (d.key === 'photo' ? '.jpg' : '.pdf'), v: 1, on: a.firstSubmittedOn }; });
@@ -599,7 +646,8 @@
     QUESTIONS: QUESTIONS, items: items, categoriesOf: categoriesOf, findItem: findItem, itemDocs: itemDocs, purpose: purpose, derive: derive,
     CHANGE_TYPES: CHANGE_TYPES, changeFields: changeFields, renewalFields: renewalFields,
     docTypes: docTypes, docType: docType, FORMATS: FORMATS, formatUrl: formatUrl, WHEN: WHEN, docList: docList, docKeys: docKeys, docRequired: docRequired, docLabel: docLabel, docMappings: docMappings,
-    ST: ST, isOpen: isOpen, pendingWith: pendingWith, canAct: canAct, visibleTo: visibleTo,
+    ST: ST, isOpen: isOpen, pendingWith: pendingWith, canAct: canAct, canReassign: canReassign, visibleTo: visibleTo, isOldRenewal: isOldRenewal,
+    originals: originals, originalsBy: originalsBy, originalsText: originalsText, clearOriginals: clearOriginals,
     renewalFine: renewalFine, renewalAmounts: renewalAmounts, computeFee: computeFee, fyEnd: fyEnd, fyLabel: fyLabel, addDays: addDays, daysBetween: daysBetween,
     nextAppId: nextAppId, submit: submit, act: act, log: log, brDuplicate: brDuplicate, brProblem: brProblem, issueLicence: issueLicence,
     licenceState: licenceState, openAppFor: openAppFor, renewalOpensOn: renewalOpensOn, renewalDue: renewalDue, renewalCheck: renewalCheck, changeCheck: changeCheck, currentVersion: currentVersion, licenceDetails: licenceDetails, staffName: staffName

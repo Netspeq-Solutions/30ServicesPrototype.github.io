@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../../common/css/gigw-template.css">
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261122">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
 </head>
 <body data-theme="teal" class="tl-doc-page">
   <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
@@ -31,9 +31,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-  <script src="mock-data.js?v=20261122"></script>
-  <script src="tl-app.js?v=20261122"></script>
-  <script src="tl-flow.js?v=20261122"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
   <script>
     (function () {
       'use strict';
@@ -65,7 +65,9 @@
       var renewed = !!(lastRenewal && !superseded && lastRenewal.on > v.issuedOn);
       var srcApp = App.app(renewed ? lastRenewal.appId : v.appId);
       var first = F.renewalAmounts(lic).first || {};
-      var fee = renewed ? lastRenewal.fee : first.fee || 0, garbage = renewed ? (lastRenewal.garbage || 0) : (first.garbage || 0), fine = renewed ? (lastRenewal.fine || 0) : 0;
+      // First issue of a renewed old licence may carry the fine / surcharge assessed for the lapsed years.
+      var oldFine = !renewed && v.v === 1 && srcApp && srcApp.fee && F.isOldRenewal(srcApp) ? srcApp.fee.fine || 0 : 0;
+      var fee = renewed ? lastRenewal.fee : first.fee || 0, garbage = renewed ? (lastRenewal.garbage || 0) : (first.garbage || 0), fine = renewed ? (lastRenewal.fine || 0) : oldFine;
       var brNo = renewed ? lastRenewal.brNo : v.brNo, brDate = srcApp && srcApp.br ? srcApp.br.brDate : (renewed ? lastRenewal.on : v.issuedOn);
       var paid = srcApp && srcApp.br ? srcApp.br.amount : fee + garbage + fine;
       function ln(val) { return '<span class="tl-form-fill">' + (val ? esc(val) : '&nbsp;') + '</span>'; }
@@ -128,6 +130,7 @@
             '<h1 class="tl-doc-title">TRADE LICENSE</h1></header>' +
           '<div class="tl-form3-qr"><div class="tl-qr" id="qr"></div><div class="small text-muted">Scan to verify</div></div></div>' +
         '<p class="mb-1">License No. ' + ln(lic.licenceNo) + ' / File No. ' + ln(renewed ? lastRenewal.appId : v.appId) + ' Dated ' + ln(App.fmtDate(renewed ? lastRenewal.on : v.issuedOn)) + '</p>' +
+        (lic.oldLicenceNo ? '<p class="mb-1">Old License No. ' + ln(lic.oldLicenceNo) + ' <span class="small text-muted">(issued before this online system)</span></p>' : '') +
         '<p class="mb-0">Shri / Smt / Sushri ' + ln(d.applicantName) + (isInd ? '' : ' on behalf of ' + ln(d.companyName || v.businessName)) + '</p>' +
         '<p class="mb-0">S/o, D/o, W/o ' + ln(d.guardianName) + '</p>' +
         '<p class="mb-0">R/o ' + ln(v.officeAddress) + '</p>' +
@@ -138,7 +141,7 @@
         '<div class="table-responsive"><table class="table table-sm table-bordered mb-2"><caption class="visually-hidden">Articles of trade and licence fee</caption><thead><tr><th scope="col" style="width:12%;">Sl. No.</th><th scope="col">Name of articles of trade</th><th scope="col" class="text-end" style="width:28%;">License fee amount</th></tr></thead><tbody>' +
           '<tr><td>1</td><td>' + esc(article) + '</td><td class="text-end">' + inr(fee) + '</td></tr>' +
           '<tr><td></td><td class="text-muted">Garbage fee</td><td class="text-end">' + inr(garbage) + '</td></tr>' +
-          (fine ? '<tr><td></td><td class="text-muted">Late surcharge on renewal</td><td class="text-end">' + inr(fine) + '</td></tr>' : '') +
+          (fine ? '<tr><td></td><td class="text-muted">' + (oldFine ? 'Fine / surcharge (old licence)' : 'Late surcharge on renewal') + '</td><td class="text-end">' + inr(fine) + '</td></tr>' : '') +
         '</tbody><tfoot><tr><th scope="row">Total items: 1</th><th class="text-end">Total amount</th><th class="text-end">' + inr(fee + garbage + fine) + '</th></tr></tfoot></table></div>' +
         '<p class="mb-3">A sum of Rs. ' + ln(Math.round(paid).toLocaleString('en-IN')) + ' (Rupees ' + ln(words(paid) + ' only') + ') has been received vide BR No. / Challan No. ' + ln(brNo || '—') + ' dated ' + ln(App.fmtDate(brDate)) + ' as license fee.</p>' +
         '<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 small">' +

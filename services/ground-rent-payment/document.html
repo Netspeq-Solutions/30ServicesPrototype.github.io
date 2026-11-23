@@ -52,34 +52,9 @@
           '</div>' + body + '</article>';
       }
 
-      // Demonstration records loaded with the seed have no real file: show a sample instead.
-      function sample() {
-        var br = (a.file.match(/\d{4}N-\d{5}-\d{5}/) || [])[0];
-        var c = br ? D.challans.filter(function (x) { return x.brNo === br; })[0] : null;
-        var p = br ? D.payments.filter(function (x) { return x.ref === br; })[0] : null;
-        if (br && (c || p)) {
-          var amt = c ? (c.brAmount || c.amount) : p.amount, date = c ? c.brDate : p.paidOn, gr = c ? c.grId : p.grId;
-          var bank = D.config.lists.banks[0];
-          return '<div class="border border-2 rounded p-3 mx-auto bg-light" style="max-width:520px;font-family:\'Noto Serif\',serif;">' +
-            '<div class="text-center fw-bold">' + esc(bank.name) + '</div><div class="text-center small text-muted mb-2">' + esc(bank.branch) + '</div>' +
-            '<div class="text-center fw-bold border-top border-bottom py-1 mb-2">BANK RECEIPT</div>' +
-            '<table class="table table-sm table-borderless mb-0"><tbody>' +
-              Docs.row('BR No.', '<span class="font-monospace">' + esc(br) + '</span>') +
-              Docs.row('Date', App.fmtDate(date)) +
-              Docs.row('Received for', 'Ground rent &bull; <span class="gr-gr-id">' + esc(gr) + '</span>') +
-              (c ? Docs.row('Challan No.', esc(c.challanNo)) : '') +
-              Docs.row('Amount', '<strong>' + inr(amt) + '</strong>') +
-              Docs.row('In words', esc(Docs.words(amt)) + ' only') +
-            '</tbody></table></div>' +
-            '<p class="small text-muted text-center mt-3 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Sample scan for a demonstration record. Files you upload during the demo are shown here as uploaded.</p>';
-        }
-        return '<div class="border rounded p-5 text-center bg-light"><i class="bi bi-file-earmark-richtext fs-1 text-muted" aria-hidden="true"></i>' +
-          '<p class="fw-semibold mt-2 mb-1">' + esc(a.docType) + '</p><p class="small text-muted mb-0">Sample document for a demonstration record. Files you upload during the demo are shown here as uploaded.</p></div>';
-      }
-
       shell('<p class="small text-muted mb-0">Opening the file…</p>');
       (a.id ? App.getFile(a.id) : Promise.resolve(null)).then(function (file) {
-        if (!file) { shell(sample()); return; }
+        if (!file) { shell(Docs.sample(a)); return; }
         var url = URL.createObjectURL(file);
         var dl = document.getElementById('btnDownload');
         dl.href = url; dl.setAttribute('download', a.file); dl.classList.remove('d-none');

@@ -323,15 +323,24 @@
           var cur = r[2].filter(function (o) { return o[0] === s[r[0]]; })[0];
           return '<tr><td class="fw-semibold small">' + esc(r[1]) + '</td><td class="small">' + esc(cur ? cur[1] : String(s[r[0]])) + '</td><td class="text-end text-nowrap">' + (r[2].length > 1 ? btn('Change', 'data-rule="' + r[0] + '"') : '<span class="small text-muted">Fixed</span>') + '</td></tr>';
         }).join('') + '<tr><td class="fw-semibold small">Financial year &amp; due date</td><td class="small">1 April – 31 March; due 31 March closing the FY</td><td class="text-end"><span class="small text-muted">Fixed</span></td></tr>' +
-          '<tr><td class="fw-semibold small">Offline challan validity</td><td class="small">' + s.challanValidityDays + ' days, never past 31 March</td><td class="text-end text-nowrap">' + btn('Change', 'data-rule="challanValidityDays"') + '</td></tr>';
+          '<tr><td class="fw-semibold small">Offline challan validity</td><td class="small">' + s.challanValidityDays + ' days, never past 31 March</td><td class="text-end text-nowrap">' + btn('Change', 'data-rule="challanValidityDays"') + '</td></tr>' +
+          '<tr><td class="fw-semibold small">"Register paid up to" FY list</td><td class="small">From FY ' + esc(s.registerFirstFy || '1975-76') + ' to the FY of each ULB\'s register cut-off</td><td class="text-end text-nowrap">' + btn('Change', 'data-rule="registerFirstFy"') + '</td></tr>';
+        // Structure kinds can be renamed or removed (removal only when no structure uses it); other lists are add-only.
+        function inUse(kind) { var n = 0; D.sites.forEach(function (st) { st.structures.forEach(function (x) { if (x.type === kind) n++; }); }); return n; }
         var lists = function (key, title) {
-          var items = D.config.lists[key].map(function (x) { return '<li class="list-group-item small">' + esc(typeof x === 'string' ? x : x.name + ' – ' + x.branch) + '</li>'; }).join('');
+          var items = D.config.lists[key].map(function (x, i) {
+            var text = typeof x === 'string' ? x : x.name + ' – ' + x.branch;
+            if (key !== 'structureTypes') return '<li class="list-group-item small">' + esc(text) + '</li>';
+            var n = inUse(x);
+            return '<li class="list-group-item small d-flex justify-content-between align-items-center gap-2"><span>' + esc(text) + (n ? ' <span class="text-muted">(' + n + ' in use)</span>' : '') + '</span>' +
+              (edit ? '<span class="d-inline-flex gap-1 text-nowrap">' + btn('Rename', 'data-lren="' + i + '"', 'outline-secondary') + (n ? '' : btn('Remove', 'data-ldel="' + i + '"', 'outline-danger')) + '</span>' : '') + '</li>';
+          }).join('');
           return '<div class="col-md-6">' + card(title, '<ul class="list-group list-group-flush">' + items + '</ul>', btn('<i class="bi bi-plus" aria-hidden="true"></i>Add', 'data-list="' + key + '"')) + '</div>';
         };
         var rem = D.config.reminders.map(function (r) { return '<tr><td class="small fw-semibold">' + esc(r.on) + '</td><td class="small">' + esc(r.audience) + '</td><td class="small">' + esc(r.text) + '</td><td class="small">' + esc(r.channel) + '</td></tr>'; }).join('');
         var out = D.outbox.slice(0, 8).map(function (o) { return '<li class="list-group-item small"><span class="text-muted">' + esc(o.at) + ' &bull; ' + esc(o.to) + '</span><br>' + esc(o.text) + '</li>'; }).join('') || '<li class="list-group-item small text-muted">No messages sent during this demo yet.</li>';
         return card('Global rules (Section 5.7)', table(['Rule', 'Current value', { t: 'Action', end: true }], rows, 'Global rules')) +
-          '<div class="row g-3">' + lists('structureTypes', 'Structure types') + lists('banks', 'Banks / branches') + lists('transferReasons', 'Transfer reasons') + lists('documentTypes', 'Document types') + '</div>' +
+          '<div class="row g-3">' + lists('structureTypes', 'Structure kinds') + lists('banks', 'Banks / branches') + lists('transferReasons', 'Transfer reasons') + lists('documentTypes', 'Document types') + '</div>' +
           card('Reminder schedule (SMS &amp; email stubs)', table(['Date', 'Who', 'Message', 'Channel'], rem, 'Reminders')) +
           card('Message outbox (simulated)', '<ul class="list-group list-group-flush">' + out + '</ul>');
       }
@@ -344,6 +353,17 @@
             App.audit({ entity: 'GlobalSetting', grId: null, action: 'Challan validity ' + s.challanValidityDays + ' → ' + n + ' days', reason: v('cReason') });
             s.challanValidityDays = n; App.toast('Rule saved.');
           });
+          return;
+        }
+        if (key === 'registerFirstFy') {
+          var opts = '';
+          for (var y = 1950; y <= T.fyOfDate(D.demoToday); y++) opts += '<option' + (T.fyLabel(y) === (s.registerFirstFy || '1975-76') ? ' selected' : '') + '>' + T.fyLabel(y) + '</option>';
+          open('"Register paid up to" FY list', '<p class="small text-muted">Staff pick the FY up to which the paper register shows rent paid when creating an account. The list runs from this FY to the FY of the ULB\'s register cut-off.</p>' +
+            '<label for="rVal" class="form-label small fw-semibold">First FY in the list</label><select id="rVal" class="form-select form-select-sm">' + opts + '</select>' + reasonField, 'Save', function () {
+              if (!need('cReason', 'A reason is required.')) return false;
+              App.audit({ entity: 'GlobalSetting', grId: null, action: 'Register paid-up FY list starts FY ' + (s.registerFirstFy || '1975-76') + ' → FY ' + v('rVal'), reason: v('cReason') });
+              s.registerFirstFy = v('rVal'); App.toast('Rule saved.');
+            });
           return;
         }
         var r = RULES.filter(function (x) { return x[0] === key; })[0];
@@ -368,7 +388,7 @@
       // ================= Users & Roles =================
       var PERM_ROWS = [['Search accounts, view bill & account', 'Own / any', 'Yes', 'Yes', 'View', 'Yes'], ['Pay online / offline challan', 'Yes', 'On behalf', 'Yes', '–', 'Yes'], ['Create / edit allottee & site', '–', 'Yes', 'Yes', '–', 'Yes'],
         ['Add / end structures', '–', 'Yes', 'Yes', '–', 'Yes'], ['Record transfer', '–', 'Submit', 'Submit & approve', '–', 'Yes'], ['Approve bank payments (BR)', '–', 'Yes', 'Yes', '–', 'Yes'],
-        ['Adjustment / waiver / reversal', '–', '–', 'Yes (reason + file)', '–', 'Yes (reason + file)'],
+        ['Adjustment / waiver', '–', '–', 'Yes (reason + file)', '–', 'Yes (reason + file)'],
         ['Configure ULBs, wards, rates, rules', '–', '–', 'View', 'View', 'Yes'], ['Manage staff users & roles', '–', '–', '–', '–', 'Yes'], ['Reports', '–', 'Own ULB', 'Own ULB', 'All ULBs + state totals', 'All ULBs'], ['Audit log', '–', 'Own ULB', 'Own ULB', 'All (read-only)', 'All']];
       function paneUsers() {
         var rows = D.users.map(function (u) {
@@ -423,6 +443,27 @@
         on('#btnAddSur', surForm);
         on('[data-rule]', function (b) { ruleForm(b.getAttribute('data-rule')); });
         on('[data-list]', function (b) { listForm(b.getAttribute('data-list')); });
+        on('[data-lren]', function (b) {
+          var list = D.config.lists.structureTypes, i = +b.getAttribute('data-lren'), old = list[i];
+          open('Rename structure kind', '<label for="lVal" class="form-label small fw-semibold">Name <span class="text-danger">*</span></label><input id="lVal" class="form-control form-control-sm" value="' + esc(old) + '"><div class="form-text">Structures already recorded with this kind are renamed too.</div>' + reasonField, 'Save', function () {
+            if (!(need('lVal', 'Enter a name.') & need('cReason', 'A reason is required.'))) return false;
+            var nv = v('lVal');
+            if (nv !== old && list.indexOf(nv) !== -1) return App.fieldError($('lVal'), 'This kind already exists.') && false;
+            list[i] = nv;
+            D.sites.forEach(function (st) { st.structures.forEach(function (x) { if (x.type === old) x.type = nv; }); });
+            App.audit({ entity: 'List', grId: null, action: 'Structure kind renamed: ' + old + ' → ' + nv, reason: v('cReason') });
+            App.toast('Structure kind renamed.');
+          });
+        });
+        on('[data-ldel]', function (b) {
+          var list = D.config.lists.structureTypes, i = +b.getAttribute('data-ldel'), old = list[i];
+          open('Remove structure kind', '<p class="small">Remove <strong>' + esc(old) + '</strong> from the list? No structure uses it.</p>' + reasonField, 'Remove', function () {
+            if (!need('cReason', 'A reason is required.')) return false;
+            list.splice(i, 1);
+            App.audit({ entity: 'List', grId: null, action: 'Structure kind removed: ' + old, reason: v('cReason') });
+            App.toast('Structure kind removed.');
+          }, 'danger');
+        });
         on('[data-user]', function (b) { userForm(b.getAttribute('data-user')); });
         var wu = $('wUlb');
         if (wu) wu.addEventListener('change', function () { wardUlb = wu.value; render(); });

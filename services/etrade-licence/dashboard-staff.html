@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261122">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -24,10 +24,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261122"></script>
-  <script src="tl-app.js?v=20261122"></script>
-  <script src="tl-flow.js?v=20261122"></script>
-  <script src="tl-view.js?v=20261122"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
+  <script src="tl-view.js?v=20261123"></script>
   <script>
     (function () {
       'use strict';
@@ -88,12 +88,20 @@
       else chips = [['bi-currency-rupee', by([ST.PAYMENT, ST.BR_UPLOADED, ST.BR_INVALID]).length + ' at payment stage'], ['bi-patch-check', issuedFy + ' issued this FY']];
 
       var reviewSub = { inspector: 'New and resubmitted applications', bo: 'Forwarded by Inspectors, and renewals to approve', ss: 'Forwarded by the BOs', hod: 'Final approval of new licences and changes' }[u.role];
+      // Tiles in order of importance: your work first, with how long the oldest item has waited.
+      function oldest(list) {
+        if (!list.length) return '';
+        var n = list.reduce(function (m, a) { return Math.max(m, daysWaiting(a)); }, 0);
+        return ' &bull; <span class="' + (n >= 7 ? 'text-danger fw-semibold' : 'text-warning-emphasis') + '">oldest waiting ' + plural(n, 'day', 'days') + '</span>';
+      }
+      var withApplicant = by([ST.PAYMENT, ST.BR_INVALID]);
       html = App.dashHero({ id: 'pageTitle', eyebrow: eyebrow, title: App.greeting(u.name), summary: summary, chips: chips,
           action: first ? '<a class="btn btn-sm btn-primary" href="applications.html?view=mine"><i class="bi bi-inbox me-1" aria-hidden="true"></i>Open My Work Queue</a>' : '' }) +
         App.dashNext(next, 'New applications will appear here as soon as they reach ' + roleTitle + '.') +
         App.sectionTitle('Go to') + '<div class="row g-3">' +
-        tile('bi-inbox', 'primary', u.role === 'hod' ? 'Approve Applications' : 'Review Applications', reviewSub, 'applications.html?view=mine', mine.length) +
-        (u.role === 'inspector' || u.role === 'bo' ? tile('bi-receipt', 'info', 'Verify Bank Receipts', 'Check the BR and originals, then generate the licence', 'applications.html?view=br', br.length) : '') +
+        tile('bi-inbox', 'primary', u.role === 'hod' ? 'Approve Applications' : 'Review Applications', reviewSub + oldest(mine), 'applications.html?view=mine', mine.length) +
+        (u.role === 'inspector' || u.role === 'bo' ? tile('bi-receipt', 'info', 'Verify Bank Receipts', 'Check the BR and originals, then generate the licence' + oldest(br), 'applications.html?view=br', br.length) : '') +
+        (withApplicant.length ? tile('bi-hourglass-split', 'warning', 'Payment pending with applicants', 'Approved, BR not yet uploaded' + oldest(withApplicant), all, withApplicant.length) : '') +
         tile('bi-list-ul', 'secondary', 'All Applications', 'Search any application, at any stage', all, visible.length) +
         tile('bi-patch-check', 'success', 'Licence Register', 'Issued licences, renewals and versions', 'licences.html', activeLics) +
         tile('bi-bar-chart-line', 'warning', 'Reports &amp; Audit Log', 'Summaries, exports and every action taken', 'reports.html', '') +
