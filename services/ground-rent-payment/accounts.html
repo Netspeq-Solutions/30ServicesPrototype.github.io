@@ -35,7 +35,7 @@
         <div class="col-6 col-md-3"><label for="fWard" class="form-label small fw-semibold mb-1">Ward</label><select id="fWard" class="form-select form-select-sm"></select></div>
         <div class="col-6 col-md-3"><label for="fLoc" class="form-label small fw-semibold mb-1">Locality</label><select id="fLoc" class="form-select form-select-sm"></select></div>
         <div class="col-6 col-md-3"><label for="fStatus" class="form-label small fw-semibold mb-1">Status</label>
-          <select id="fStatus" class="form-select form-select-sm"><option value="">All</option><option value="due">Due</option><option value="paid">Paid</option><option value="closed">Closed</option></select></div>
+          <select id="fStatus" class="form-select form-select-sm"><option value="">All</option><option value="due">Due</option><option value="paid">Paid</option><option value="closed">Closed</option><option value="unverified">Not verified against register</option></select></div>
         <div class="col-md-9"><label for="fText" class="form-label small fw-semibold mb-1">Name, GR ID, plot or mobile</label>
           <input id="fText" type="search" class="form-control form-control-sm" placeholder="e.g. Goyal, GR-GMC-W01-00002, DEO/114, 98000…"></div>
       </div>
@@ -70,17 +70,18 @@
       var scope = App.staffScope(session);
       if (App.can('editAccounts')) document.getElementById('btnCreate').classList.remove('d-none');
       if (session.role === 'hq') document.getElementById('pageSub').textContent = 'Read-only. Open any account to view it.';
-      if (intent === 'adjust') document.getElementById('intentBanner').innerHTML = '<div class="alert alert-info small py-2"><i class="bi bi-sliders2-vertical me-1" aria-hidden="true"></i>Select the account for the adjustment or payment reversal. It opens on the Payments tab.</div>';
+      if (intent === 'adjust') document.getElementById('intentBanner').innerHTML = '<div class="alert alert-info small py-2"><i class="bi bi-sliders2-vertical me-1" aria-hidden="true"></i>Select the account for the adjustment. It opens on the Payments tab.</div>';
 
       // District → ULB → Ward → Locality; ULB-level staff see their own ULB fixed.
       var place = App.cascadeFilters({ district: 'fDist', ulb: 'fUlb', ward: 'fWard', locality: 'fLoc' }, { lockUlb: scope, onChange: function () { render(); } });
-      if (['due', 'paid', 'closed'].indexOf(App.qs('status')) !== -1) document.getElementById('fStatus').value = App.qs('status');
+      if (['due', 'paid', 'closed', 'unverified'].indexOf(App.qs('status')) !== -1) document.getElementById('fStatus').value = App.qs('status');
 
       function matches(s) {
         if (!App.inScope(s, session)) return false;
         if (!place.match(s)) return false;
         var st = document.getElementById('fStatus').value;
         if (st === 'closed') { if (s.status !== 'Closed') return false; }
+        else if (st === 'unverified') { if (s.status === 'Closed' || (s.dataVerified && s.status !== 'Draft')) return false; }
         else if (st) { if (s.status === 'Closed' || (App.dues(s).totalPayable > 0 ? 'due' : 'paid') !== st) return false; }
         var t = App.norm(document.getElementById('fText').value);
         if (!t) return true;

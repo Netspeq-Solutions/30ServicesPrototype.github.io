@@ -219,8 +219,8 @@
       function panePayments() {
         var pays = D.payments.filter(function (p) { return p.grId === site.grId; });
         var rows = pays.map(function (p) {
-          var a = p.status === 'Success' ? '<div class="d-inline-flex align-items-center gap-1 text-nowrap"><a class="btn btn-sm btn-outline-primary" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '">Receipt</a>' +
-            (canAdjust ? '<button type="button" class="btn btn-sm btn-outline-danger" data-reverse="' + esc(p.receiptNo) + '">Reverse</button>' : '') + '</div>' : '<span class="small text-muted">—</span>';
+          // Payments are final: nothing is refundable, so there is no reversal.
+          var a = p.status === 'Success' ? '<div class="d-inline-flex align-items-center gap-1 text-nowrap"><a class="btn btn-sm btn-outline-primary" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '">Receipt</a></div>' : '<span class="small text-muted">—</span>';
           return '<tr><td class="font-monospace small fw-bold">' + esc(p.receiptNo || p.intentNo) + '</td><td>' + App.fmtDate(p.paidOn) + '<div class="small text-muted">' + esc(p.mode) + '</div></td><td class="small font-monospace">' + esc(p.ref || '—') + '</td>' +
             '<td class="text-end fw-bold">' + inr(p.amount) + '</td><td>' + App.paymentPill(p) + (p.reversalReason ? '<div class="small text-muted">' + esc(p.reversalReason) + '</div>' : '') + '</td><td class="text-end text-nowrap">' + a + '</td></tr>';
         }).join('') || '<tr><td colspan="6" class="text-center text-muted py-3">No payments since go-live.</td></tr>';
@@ -230,7 +230,7 @@
         }).join('') || '<tr><td colspan="6" class="text-center text-muted py-3">No adjustments.</td></tr>';
         var adjAct = canAdjust && site.status !== 'Closed' ? '<button type="button" class="btn btn-sm btn-primary" id="btnAdjust"><i class="bi bi-sliders2-vertical me-1" aria-hidden="true"></i>Add Adjustment</button>' : '';
         return card('Payments', '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Payments</caption><thead><tr><th scope="col">Receipt</th><th scope="col">Date &amp; Mode</th><th scope="col">Txn / BR No.</th><th scope="col" class="text-end">Amount</th><th scope="col">Status</th><th scope="col" class="text-end">Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-            '<div class="card-footer bg-white small text-muted">Payments are never deleted. A reversal keeps the original visible and reopens the dues.</div>') +
+            '<div class="card-footer bg-white small text-muted">Payments are final and never deleted or reversed; nothing is refundable.</div>') +
           card('Adjustments', '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Adjustments</caption><thead><tr><th scope="col">ID</th><th scope="col">Date</th><th scope="col">Period</th><th scope="col">Type</th><th scope="col" class="text-end">Amount</th><th scope="col">Reason &amp; File</th></tr></thead><tbody>' + adjRows + '</tbody></table></div>' +
             '<div class="card-footer bg-white small text-muted">Use an adjustment only on a written order, for example a waiver approved by the Department or an opening balance copied wrongly from the register. Dues are otherwise never changed by hand.</div>', adjAct);
       }
@@ -460,22 +460,6 @@
           ['aAmt', 'aFy', 'aDirLess', 'aDirMore'].forEach(function (id) { document.getElementById(id).addEventListener('input', adjPreview); document.getElementById(id).addEventListener('change', adjPreview); });
         });
 
-        // S9 – payment reversal
-        document.querySelectorAll('[data-reverse]').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var p = D.payments.filter(function (x) { return x.receiptNo === btn.getAttribute('data-reverse'); })[0];
-            openModal('Reverse payment ' + esc(p.receiptNo), '<div class="alert alert-danger small py-2">The receipt stays visible, marked <strong>Reversed</strong>, and ' + inr(p.amount) + ' of dues reopen.</div>' +
-              '<div class="mb-2"><label for="rReason" class="form-label small fw-semibold">Reason <span class="text-danger">*</span></label><select id="rReason" class="form-select form-select-sm">' + D.config.lists.reversalReasons.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join('') + '</select></div>' +
-              fileField('Supporting file', true) + commentField(), 'Reverse Payment', function () {
-                var ok = fileReq('mFile', true) & req('mComment', 'A comment is required.');
-                if (!ok) return false;
-                var file = App.addAttachment(site.grId, 'Other', document.getElementById('mFile'));
-                p.status = 'Reversed'; p.reversedOn = D.demoToday; p.reversalReason = val('rReason') + ' – ' + val('mComment'); p.reversedBy = D.staffRoles[session.role].user;
-                App.audit({ grId: site.grId, entity: 'Payment', action: 'Payment reversed · ' + p.receiptNo + ' · ' + inr(p.amount), reason: p.reversalReason, file: file, before: { status: 'Success' }, after: { status: 'Reversed' } });
-                App.save(); App.toast('Payment ' + p.receiptNo + ' reversed. Dues reopened.', 'warning');
-              }, 'danger');
-          });
-        });
 
         if ((b = document.getElementById('btnUpload'))) b.addEventListener('click', function () {
           openModal('Upload document', '<div class="mb-2"><label for="dType" class="form-label small fw-semibold">Document type</label><select id="dType" class="form-select form-select-sm">' + D.config.lists.documentTypes.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</select></div>' + fileField('File', true) + commentField(), 'Upload', function () {

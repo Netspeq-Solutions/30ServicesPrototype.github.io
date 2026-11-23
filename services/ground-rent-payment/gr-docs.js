@@ -1,6 +1,6 @@
 /* ==========================================================================
    Online Ground Rent Payment System – shared document helpers (Stage 05)
-   Used by receipt.html, challan.html and verify.html.
+   Used by receipt.html, challan.html, verify.html, document.html and payment-review.html.
    ========================================================================== */
 (function (global) {
   'use strict';
@@ -37,6 +37,45 @@
     return 'Rupees ' + parts.join(' ');
   }
 
+  // Demonstration records loaded with the seed have no real file: a sample Bank Receipt (or a placeholder) instead.
+  function sample(a) {
+    var D = App.data, esc = App.esc, inr = App.inr;
+    var br = (a.file.match(/\d{4}N-\d{5}-\d{5}/) || [])[0];
+    var c = br ? D.challans.filter(function (x) { return x.brNo === br; })[0] : null;
+    var p = br ? D.payments.filter(function (x) { return x.ref === br; })[0] : null;
+    if (br && (c || p)) {
+      var amt = c ? (c.brAmount || c.amount) : p.amount, date = c ? c.brDate : p.paidOn, gr = c ? c.grId : p.grId;
+      var bank = D.config.lists.banks[0];
+      return '<div class="border border-2 rounded p-3 mx-auto bg-light" style="max-width:520px;font-family:\'Noto Serif\',serif;">' +
+        '<div class="text-center fw-bold">' + esc(bank.name) + '</div><div class="text-center small text-muted mb-2">' + esc(bank.branch) + '</div>' +
+        '<div class="text-center fw-bold border-top border-bottom py-1 mb-2">BANK RECEIPT</div>' +
+        '<table class="table table-sm table-borderless mb-0"><tbody>' +
+          row('BR No.', '<span class="font-monospace">' + esc(br) + '</span>') +
+          row('Date', App.fmtDate(date)) +
+          row('Received for', 'Ground rent &bull; <span class="gr-gr-id">' + esc(gr) + '</span>') +
+          (c ? row('Challan No.', esc(c.challanNo)) : '') +
+          row('Amount', '<strong>' + inr(amt) + '</strong>') +
+          row('In words', esc(words(amt)) + ' only') +
+        '</tbody></table></div>' +
+        '<p class="small text-muted text-center mt-3 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Sample scan for a demonstration record. Files you upload during the demo are shown here as uploaded.</p>';
+    }
+    return '<div class="border rounded p-5 text-center bg-light"><i class="bi bi-file-earmark-richtext fs-1 text-muted" aria-hidden="true"></i>' +
+      '<p class="fw-semibold mt-2 mb-1">' + esc(a.docType) + '</p><p class="small text-muted mb-0">Sample document for a demonstration record. Files you upload during the demo are shown here as uploaded.</p></div>';
+  }
+  // Show an uploaded file (image / PDF) inside the page; the sample when no real file is stored.
+  function previewInto(el, name, grId) {
+    if (!el || !name) return;
+    var a = App.attachmentFor(name, grId) || App.attachmentFor(name) || { id: null, file: name, docType: 'Bank Receipt scan' };
+    el.innerHTML = '<p class="small text-muted mb-0">Opening the file…</p>';
+    (a.id ? App.getFile(a.id) : Promise.resolve(null)).then(function (file) {
+      if (!file) { el.innerHTML = sample(a); return; }
+      var url = URL.createObjectURL(file), type = file.type || '';
+      if (/^image\//.test(type)) el.innerHTML = '<img src="' + url + '" alt="' + App.esc(a.docType + ': ' + a.file) + '" class="img-fluid d-block mx-auto border rounded">';
+      else if (type === 'application/pdf' || /\.pdf$/i.test(a.file)) el.innerHTML = '<iframe src="' + url + '" title="' + App.esc(a.file) + '" class="w-100 border rounded gr-preview-frame"></iframe>';
+      else el.innerHTML = '<div class="alert alert-light border small mb-0">This file type cannot be previewed here. Open it in the document viewer.</div>';
+    });
+  }
+
   function backButton() {
     var btn = document.getElementById('btnBack');
     if (!btn) return;
@@ -47,5 +86,5 @@
     });
   }
 
-  global.GRDocs = { header: header, row: row, words: words, prototypeNote: prototypeNote, backButton: backButton };
+  global.GRDocs = { header: header, row: row, words: words, prototypeNote: prototypeNote, backButton: backButton, sample: sample, previewInto: previewInto };
 })(window);

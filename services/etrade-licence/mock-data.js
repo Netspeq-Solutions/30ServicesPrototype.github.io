@@ -24,7 +24,7 @@
   // ---------------- Items master (purpose of licence) ----------------
   // Seed of the master maintained by the Department Admin in items-master.html.
   // Each item (purpose) may have sub-items (activity as per the UDD notification); some have none.
-  // type IND = Individual / local trader (proprietorship, partnership); COMP = Registered company.
+  // type IND = Individual / firm (firm, enterprise or establishment of a proprietor or partners); COMP = Registered company.
   // Sample list – the full UDD activity / items notification is awaited.
   // tags below are seed shorthand only: they are turned into document mappings (item.docs) from the
   // document types master – food → PFA / FSSAI, meat → Animal Husbandry NOC, garage → Traffic Police NOC,
@@ -32,13 +32,13 @@
   function m(n, tags) { return { n: n, tags: tags }; }
   var CATEGORIES = [
     { code: 'AGRI', type: 'IND', name: 'Agricultural and Forest Produce', short: 'Agriculture', icon: 'bi-flower1', items: ['Agriculture, Floriculture and Horticulture (Composite)', 'Agricultural Implements and Seeds Shop', 'Agriculture Inputs of Organic Origin', 'Florist, Plant Seller and Nursery of Plants', 'Mushrooms', 'Orange (Wholesale)', 'Broomsticks (Amliso) Wholesale', 'Cardamom', 'Ginger'] },
-    { code: 'FOREST', type: 'IND', name: 'Forest Produce and Timber Merchants', short: 'Forest produce', icon: 'bi-tree', items: ['Charcoal, Firewood, Broomsticks and Dry Flowers', 'Cane and Cane Products', 'Lumber and Timber', 'Quarry / Crusher Plant'] },
-    { code: 'SCRAP', type: 'IND', name: 'Scrap', short: 'Scrap', icon: 'bi-recycle', items: ['Bags, Cartons and Crates', 'Iron and Metals'] },
+    { code: 'FOREST', type: 'IND', name: 'Forest Produce and Timber Merchants', short: 'Forest produce', icon: 'bi-tree', tags: ['forest'], items: ['Charcoal, Firewood, Broomsticks and Dry Flowers', 'Cane and Cane Products', 'Lumber and Timber', m('Quarry / Crusher Plant', ['quarry'])] },
+    { code: 'SCRAP', type: 'IND', name: 'Scrap', short: 'Scrap', icon: 'bi-recycle', items: ['Bags, Cartons and Crates', m('Iron and Metals', ['pollution'])] },
     { code: 'GREEN', type: 'IND', name: 'Green Grocery, Dairy, Farm and Orchard Produce', short: 'Green grocery', icon: 'bi-basket', tags: ['food'], items: ['Vegetable and Fruit Vendor (Retail)', 'Vegetable and Fruit Vendor (Wholesale)', 'Milk and Dairy Produce Vendor'] },
     { code: 'GROCERY', type: 'IND', name: 'Grocery, Packaged Food and Provisions', short: 'Grocery', icon: 'bi-bag', tags: ['food'], items: ['Tea Leaf and Tea Dust Shop', 'Grocery (except controlled items) – Wholesale', 'Grocery (except controlled items) – Retail'] },
     { code: 'TEASHOP', type: 'IND', name: 'Boutique Tea Shop', short: 'Tea shop', icon: 'bi-cup-hot', tags: ['food'], items: [] },
     { code: 'ANIMAL', type: 'IND', name: 'Animal Husbandry, Livestock and Produce', short: 'Animal husbandry', icon: 'bi-egg', tags: ['food'], items: [m('Mechanised Abattoir / Slaughter House', ['meat']), 'Fish', 'Egg Seller', m('Meat (Retail)', ['meat']), m('Meat or Fish (Wholesale)', ['meat'])] },
-    { code: 'WATER', type: 'IND', name: 'Mineral Water (Wholesale)', short: 'Mineral water', icon: 'bi-droplet', tags: ['food'], items: [] },
+    { code: 'WATER', type: 'IND', name: 'Mineral Water (Wholesale)', short: 'Mineral water', icon: 'bi-droplet', tags: ['food', 'bis'], items: [] },
     { code: 'PROVISION', type: 'IND', name: 'Provisional Goods', short: 'Provisions', icon: 'bi-box-seam', tags: ['food'], items: ['Provisional Goods (Retail)', 'Provisional Goods (Wholesale)'] },
     { code: 'RICE', type: 'IND', name: 'Rice (Wholesale)', short: 'Rice', icon: 'bi-basket2', tags: ['food'], items: [] },
     { code: 'DEPTA', type: 'IND', name: 'Departmental Stores (A)', short: 'Dept. store (A)', icon: 'bi-shop', tags: ['food'], items: ['Class-I: Provisions, confectionery, cosmetics, grocery, manihari, cold drinks, ice-cream (large shop with multiple facilities)', 'Class-II: Small shop with basic facilities'] },
@@ -51,16 +51,16 @@
     { code: 'DYERS', type: 'IND', name: 'Dyers and Cleaners', short: 'Dry cleaning', icon: 'bi-droplet-half', items: ['Dry Cleaning and Dyeing of Clothes', 'Dyeing of Clothes'] },
     { code: 'BEAUTY', type: 'IND', name: 'Beauty, Spa and Beauty Care', short: 'Beauty care', icon: 'bi-stars', items: ['Cosmetics and Toiletries', 'Beauty Parlour (Class-I): multiple and specialised services', 'Beauty Parlour (Class-II): basic services only', 'Beauty Parlour (Class-III): SHG, cooperative or small entrepreneur trained under a government programme', 'Hair Salon (Male)'] },
     { code: 'HEALTHCLUB', type: 'IND', name: 'Health Club and Spa', short: 'Health club', icon: 'bi-heart-pulse', items: ['Foot Spa', 'Health Club and Spa', 'Gymnasium and Body Building Centre', 'Yoga Centre'] },
-    { code: 'AUTOSHOW', type: 'IND', name: 'Automobile Showroom', short: 'Auto showroom', icon: 'bi-car-front', items: ['Two Wheeler', 'Light Motor Vehicle', 'Heavy Motor Vehicle'] },
-    { code: 'AUTOWORK', type: 'IND', name: 'Automobile Workshops', short: 'Auto workshop', icon: 'bi-tools', tags: ['garage'], items: ['Two Wheeler Workshop', 'Light Motor Vehicle Workshop', 'Heavy Motor Vehicle Workshop'] },
+    { code: 'AUTOSHOW', type: 'IND', name: 'Automobile Showroom', short: 'Auto showroom', icon: 'bi-car-front', tags: ['dealer'], items: ['Two Wheeler', 'Light Motor Vehicle', 'Heavy Motor Vehicle'] },
+    { code: 'AUTOWORK', type: 'IND', name: 'Automobile Workshops', short: 'Auto workshop', icon: 'bi-tools', tags: ['garage', 'pollution'], items: ['Two Wheeler Workshop', 'Light Motor Vehicle Workshop', 'Heavy Motor Vehicle Workshop'] },
     { code: 'GARAGE', type: 'IND', name: 'Garage – Small Scale', short: 'Garage', icon: 'bi-wrench', tags: ['garage'], items: ['Automobile Electrical Parts', 'Automobile Spare Parts and Accessories'] },
-    { code: 'CARPARK', type: 'IND', name: 'Commercial Car Parks', short: 'Car park', icon: 'bi-p-square', items: ['Car Park (Private)'] },
+    { code: 'CARPARK', type: 'IND', name: 'Commercial Car Parks', short: 'Car park', icon: 'bi-p-square', tags: ['garage'], items: ['Car Park (Private)'] },
     { code: 'FUEL', type: 'IND', name: 'Power and Fuel Merchants', short: 'Fuel', icon: 'bi-fuel-pump', items: [m('Liquefied Petroleum Gas Distributors', ['fuel']), m('Petrol and Diesel Pump', ['fuel']), 'Lubricants'] },
     { code: 'MACHINERY', type: 'IND', name: 'Heavy Machinery Items', short: 'Heavy machinery', icon: 'bi-gear-wide-connected', items: [] },
     { code: 'CYBER', type: 'IND', name: 'Cyber Café', short: 'Cyber café', icon: 'bi-pc-display', tags: ['cyber'], items: [] },
     // Registered companies
     { code: 'MANUF', type: 'COMP', name: 'Manufacturing', short: 'Manufacturing', icon: 'bi-gear', tags: ['industry'], items: [] },
-    { code: 'SECURITY', type: 'COMP', name: 'Security Agency / Manpower Placement', short: 'Security / manpower', icon: 'bi-shield-check', items: [] },
+    { code: 'SECURITY', type: 'COMP', name: 'Security Agency / Manpower Placement', short: 'Security / manpower', icon: 'bi-shield-check', tags: ['security'], items: [] },
     { code: 'BANK', type: 'COMP', name: 'Banking & Non-Banking', short: 'Banking', icon: 'bi-bank', items: [m('Banking', ['rbi']), m('Non-banking (NBFC / insurance)', ['irda'])] },
     { code: 'DEPT', type: 'COMP', name: 'Departmental Stores', short: 'Dept. stores', icon: 'bi-shop', tags: ['food'], items: [] },
     { code: 'CASINO', type: 'COMP', name: 'Casino', short: 'Casino', icon: 'bi-suit-spade', tags: ['lottery'], items: [] },
@@ -80,9 +80,9 @@
   function doc(key, name, o) { return Object.assign({ key: key, name: name, active: true, base: {}, renewal: '', change: {}, when: {}, format: '' }, o || {}); }
   var DOC_TYPES = [
     doc('photo', 'Photograph of the applicant', { base: { IND: 'M' } }),
-    doc('idProof', 'SSC / COI / Land Parcha (any one)', { base: { IND: 'M', COMP: 'O' } }),
-    doc('rc', 'Residential Certificate (RC) – Notification No. 23/Home/2015 dated 15.05.2015', { base: { IND: 'M' } }),
-    doc('landParcha', 'Land Parcha', { base: { COMP: 'M' } }),
+    // Identity: one document – SSC, COI or RC (Residential Certificate, Notification No. 23/Home/2015 dated 15.05.2015).
+    doc('idProof', 'SSC / COI / RC (any one)', { base: { IND: 'M', COMP: 'O' } }),
+    doc('landParcha', 'Land Parcha of the premises', { base: { COMP: 'M' } }),
     doc('occupancy', 'Building Occupancy Certificate', { base: { IND: 'M', COMP: 'M' }, change: { premises: 'M' } }),
     doc('recommendation', 'Recommendation of the Gram Panchayat / Councillor (Form VI)', { base: { IND: 'M', COMP: 'M' }, format: 'recommendation' }),
     doc('houseOwnerNoc', 'NOC of the house owner (Form X)', { base: { IND: 'M', COMP: 'M' }, change: { premises: 'M' }, format: 'houseOwnerNoc' }),
@@ -106,6 +106,11 @@
     doc('trafficNoc', 'NOC – Traffic Police'),
     doc('tourismNoc', 'Tourism & Civil Aviation Department – NOC / certificate of registration', { when: { tourismRegistered: 'M', toursTravel: 'M' } }),
     doc('franchiseDocs', 'Franchise agreement and parent company documents', { when: { franchise: 'M' } }),
+    doc('oldLicence', 'Copy of the old trade licence (last renewed)', { when: { oldLicence: 'M' } }),
+    doc('forestNoc', 'NOC / transit permit – Forest & Environment Department'),
+    doc('miningNoc', 'Permission – Mines & Geology Department'),
+    doc('bisLicence', 'BIS licence (packaged drinking water)'),
+    doc('psara', 'Licence under the Private Security Agencies (Regulation) Act'),
     doc('tenancy', 'Tenancy agreement / lease deed / rent agreement'),
     doc('industryEst', 'Industry establishment certificate'),
     doc('msme', 'MSME registration'),
@@ -125,7 +130,9 @@
   var TAG_DOCS = {
     food: ['fssai'], meat: ['ahNoc'], garage: ['trafficNoc'], cyber: ['crimeNoc'], drug: ['drugLicence'], industry: ['industryEst'], lottery: ['lotteryNoc'], tourism: ['tourismNoc'], rbi: ['rbi'], irda: ['irda'],
     pharma: ['tenancy', 'industryEst', 'taxClearance'],
-    fuel: ['landParcha', 'houseOwnerNoc', 'occupancy', 'tenancy', ['trafficNoc', 'O'], 'dealership', 'oilLicence', 'dcNoc', 'pollution']
+    forest: ['forestNoc'], quarry: ['miningNoc', 'pollution'], pollution: ['pollution'], bis: ['bisLicence'], dealer: ['dealership'], security: ['psara', 'labour'],
+    // Documents already asked of every applicant (occupancy certificate, NOC of the house owner) are not repeated here.
+    fuel: ['landParcha', ['tenancy', 'O'], ['trafficNoc', 'O'], 'dealership', 'oilLicence', 'dcNoc', 'pollution']
   };
   function docsOfTags(tags) {
     var out = [];
@@ -161,11 +168,11 @@
   // Sikkim GO is only the identity provider: it supplies authName, mobile and email.
   // The form fields are what each applicant entered in their licence application.
   function ind(f) {
-    return Object.assign({ mdName: '', gender: 'Male', idStatus: 'SSC', socialGroup: 'Others', permDistrict: 'Gangtok', premDistrict: 'Gangtok', godownAddress: '',
+    return Object.assign({ applyFor: 'new', mdName: '', gender: 'Male', idStatus: 'SSC', socialGroup: 'Others', permDistrict: 'Gangtok', premDistrict: 'Gangtok', godownAddress: '',
       isHotel: 'No', isFranchise: 'No', isEducation: 'No', landline: '', tin: '' }, f);
   }
   function comp(f) {
-    return Object.assign({ permAddress: '', presSame: true, premDistrict: 'Gangtok', godownAddress: '', isFranchise: 'No', isEducation: 'No' }, f);
+    return Object.assign({ applyFor: 'new', permAddress: '', presSame: true, premDistrict: 'Gangtok', godownAddress: '', isFranchise: 'No', isEducation: 'No' }, f);
   }
   function biz(o) {
     var b = Object.assign({ notifications: [], scenario: false }, o);
@@ -236,6 +243,11 @@
     bizQ: biz({ authName: 'Sangay Bhutia', mobile: '9733000115', email: 'ranipoolfuel@example.in', applicantType: 'IND', category: 'FUEL', item: 'Petrol and Diesel Pump',
       form: ind({ age: 35, guardianName: 'Karma Bhutia', socialGroup: 'ST', permHouseNo: 'H. No. 2', permStreet: 'NH-10', permLocality: 'Ranipool', permGpu: 'Ranipool Nagar Panchayat', permWard: 'Ward No. 1', permPo: 'Ranipool', permPs: 'Ranipool', permPin: '737135',
         firmName: 'Ranipool Fuel Point', premOwner: 'Chimi Bhutia', premHouseNo: 'Km 12', premStreet: 'NH-10', premLocality: 'Ranipool', premGpu: 'Ranipool Nagar Panchayat', premWard: 'Ward No. 1', premPo: 'Ranipool', premPs: 'Ranipool', premPin: '737135', pan: 'AHJPB0988G' }) }),
+    // Licence issued before this system (not migrated): applied for as a new application with the old licence details.
+    bizS: biz({ authName: 'Tashi Gurung', mobile: '9733000117', email: 'tashistore@example.in', applicantType: 'IND', category: 'GROCERY', item: 'Grocery (except controlled items) – Retail',
+      form: ind({ applyFor: 'old', oldLicenceNo: 'UDD/TL/1187/2016', oldIssuedOn: '2016-07-14', oldValidTo: '2023-03-31',
+        age: 49, guardianName: 'Bhim Bahadur Gurung', socialGroup: 'OBC', permHouseNo: 'H. No. 27', permStreet: 'Sichey Road', permLocality: 'Lower Sichey', permGpu: 'GMC', permWard: 'Ward No. 14 (Sichey)', permPo: 'Gangtok', permPs: 'Sadar', permPin: '737101',
+        firmName: 'Tashi General Store', premOwner: 'Tashi Gurung (own)', premHouseNo: 'Shop No. 2', premStreet: 'Sichey Road', premLocality: 'Lower Sichey', premGpu: 'GMC', premWard: 'Ward No. 14 (Sichey)', premPo: 'Gangtok', premPs: 'Sadar', premPin: '737101', pan: 'AKGPG4410H' }) }),
     bizR: biz({ authName: 'Dechen Lachenpa', mobile: '9733000116', email: 'lachenmeat@example.in', applicantType: 'IND', category: 'ANIMAL', item: 'Meat (Retail)',
       form: ind({ age: 38, gender: 'Female', guardianName: 'Tashi Lachenpa (husband)', socialGroup: 'ST', permHouseNo: 'H. No. 19', permStreet: 'Lachen Road', permLocality: 'Lachen', permDistrict: 'Mangan', permGpu: 'Lachen Dzumsa', permWard: 'Lachen', permPo: 'Lachen', permPs: 'Chungthang', permPin: '737120',
         firmName: 'Lachen Meat & Fish Corner', premOwner: 'Norbu Tshering', premHouseNo: 'Shop No. 6', premStreet: 'Lal Bazaar Road', premLocality: 'Lal Market', premGpu: 'GMC', premWard: 'Ward No. 11 (Lal Bazaar)', premPo: 'Gangtok', premPs: 'Sadar', premPin: '737101', pan: 'AQLPL2216E' }) })
@@ -251,11 +263,13 @@
     });
   }
   // Fee assessed by the Inspector in the inspection report: licence fee + garbage fee.
-  function assessed(fee, garbage, by, on) { return { fee: fee, garbage: garbage, by: STAFF[by].name, role: 'Inspector', on: on }; }
+  function assessed(fee, garbage, by, on) { return { fee: fee, garbage: garbage, fine: 0, by: STAFF[by].name, role: 'Inspector', on: on }; }
+  // Original documents seen by an officer (Inspector and BO each keep their own check).
+  function oc(by, on, how) { var s = STAFF[by]; return { role: s.role, designation: s.designation, by: s.name, on: on, how: how }; }
   function app(o) {
     var a = Object.assign({
       circle: 'NE', kind: 'New', licenceNo: null, change: null, selectedBo: null, returnedBy: null, correction: null, assessment: null,
-      inspections: [], originalsVerified: false, originalsVerifiedBy: null, fee: null, br: null, brHistory: [], versions: [], round: 1, docs: null
+      inspections: [], originalsChecks: [], fee: null, br: null, brHistory: [], boHistory: [], versions: [], round: 1, docs: null
     }, purposeOf(o.businessKey), o);
     a.history = h(a.history, a.businessKey);
     return a;
@@ -287,7 +301,7 @@
     app({ appId: 'TL-NE-2026-000104', businessKey: 'bizH', status: 'Under Inspection', firstSubmittedOn: '2026-11-10', submittedOn: '2026-11-10', updatedOn: '2026-11-13',
       assessment: assessed(8000, 1500, 'INS-02', '2026-11-13'),
       inspections: [{ id: 'N-104-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-11-13', at: '2026-11-13 15:30', notes: 'Store visited. Fit-out complete, opening planned for December. Original incorporation certificate, franchise agreement and NOC of the house owner seen and collected for the file.', files: ['store_front_mountainmart.jpg'], originalsCollected: true, edits: [] }],
-      originalsVerified: true, originalsVerifiedBy: 'Pema Doma Lepcha (Inspector) – at inspection, 13 Nov 2026',
+      originalsChecks: [oc('INS-02', '2026-11-13', 'at inspection')],
       history: [['2026-11-10 09:55', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-11-12 11:10', 'INS-02', 'Verification started', '', 'Under Inspection'],
         ['2026-11-13 15:30', 'INS-02', 'Inspection report added · fee assessed ₹8,000 + garbage fee ₹1,500 · originals verified at inspection', 'Site visited on 13 Nov 2026', 'Under Inspection']] }),
@@ -315,7 +329,7 @@
       assessment: assessed(6000, 1000, 'INS-02', '2026-10-12'),
       inspections: [{ id: 'N-107-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-10-12', at: '2026-10-12 12:45', notes: 'Lubricant store visited. Stock kept on racks, fire extinguishers and sand buckets in place. Fire NOC valid till 2028.', files: ['store_siniolchu.jpg'], originalsCollected: true,
         edits: [{ notes: 'Lubricant store visited. Stock kept on racks.', editedBy: 'Tenzing Wangchuk', editedRole: 'Special Secretary', editedOn: '2026-11-12 11:20' }] }],
-      originalsVerified: true, originalsVerifiedBy: 'Pema Doma Lepcha (Inspector) – at inspection, 12 Oct 2026',
+      originalsChecks: [oc('INS-02', '2026-10-12', 'at inspection')],
       history: [['2026-10-05 10:30', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-10-08 09:40', 'INS-02', 'Verification started', '', 'Under Inspection'],
         ['2026-10-12 12:45', 'INS-02', 'Inspection report added · fee assessed ₹6,000 + garbage fee ₹1,000 · originals verified at inspection', 'Site visited on 12 Oct 2026', 'Under Inspection'],
@@ -327,7 +341,7 @@
     app({ appId: 'TL-NE-2026-000108', businessKey: 'bizL', status: 'BR Uploaded', firstSubmittedOn: '2026-08-12', submittedOn: '2026-08-12', updatedOn: '2026-11-14', selectedBo: 'BO-02',
       assessment: assessed(6500, 1000, 'INS-01', '2026-08-20'),
       inspections: [{ id: 'N-108-1', by: 'INS-01', byName: 'Karma Tshering Bhutia', role: 'Inspector', visitDate: '2026-08-20', at: '2026-08-20 15:15', notes: 'Office visited. All originals seen and collected at site.', files: [], originalsCollected: true, edits: [] }],
-      originalsVerified: true, originalsVerifiedBy: 'Karma Tshering Bhutia (Inspector) – at inspection, 20 Aug 2026',
+      originalsChecks: [oc('INS-01', '2026-08-20', 'at inspection')],
       fee: { kind: 'Licence', base: 6500, garbage: 1000, fine: 0, lateDays: 0, total: 7500, assessedBy: 'Karma Tshering Bhutia', assessedOn: '2026-08-20', fixedOn: '2026-11-03' },
       br: { brNo: '2627N-11001-04512', brDate: '2026-11-13', amount: 7500, scan: 'BR_2627N-11001-04512.pdf', uploadedOn: '2026-11-14', status: 'Uploaded' },
       history: [['2026-08-12 11:00', 'APPLICANT', 'Application submitted', '', 'Submitted'],
@@ -367,7 +381,7 @@
       docs: { gstClearance: { file: 'gst_clearance_rumtek_fuel_station_v2.pdf', v: 2, on: '2026-11-14' } },
       fee: { kind: 'Renewal', base: 12000, garbage: 1500, fine: 100, lateDays: 20, total: 13600, fixedOn: '2026-05-20' },
       br: { brNo: '2627N-11001-01120', brDate: '2026-05-19', amount: 13600, scan: 'BR_2627N-11001-01120.pdf', uploadedOn: '2026-05-20', status: 'Verified', checkedBy: 'Karma Tshering Bhutia (Inspector)', checkedOn: '2026-05-22' },
-      originalsVerified: true, originalsVerifiedBy: 'Karma Tshering Bhutia (Inspector) – at the department, 22 May 2026',
+      originalsChecks: [oc('INS-01', '2026-05-22', 'at the department')],
       versions: [{ round: 1, submittedOn: '2026-05-20', returnedOn: '2026-05-26', returnedBy: 'Sushma Rai (BO)', remarks: 'The GST clearance certificate uploaded is for FY 2024-25. Upload the certificate for FY 2025-26.', changedFields: [], changedDocs: [{ key: 'gstClearance', old: 'gst_clearance_rumtek_fuel_station.pdf', new: 'gst_clearance_rumtek_fuel_station_v2.pdf' }] }],
       history: [['2026-05-20 10:30', 'APPLICANT', 'Renewal submitted · BR 2627N-11001-01120 · ₹13,600', '', 'Submitted'],
         ['2026-05-22 11:00', 'INS-01', 'Verification started', '', 'Under Inspection'],
@@ -384,7 +398,13 @@
 
     // Individual meat shop – Animal Husbandry NOC and PFA / FSSAI required.
     app({ appId: 'TL-NE-2026-000113', businessKey: 'bizR', status: 'Submitted', firstSubmittedOn: '2026-11-17', submittedOn: '2026-11-17', updatedOn: '2026-11-17',
-      history: [['2026-11-17 09:40', 'APPLICANT', 'Application submitted', '', 'Submitted']] })
+      history: [['2026-11-17 09:40', 'APPLICANT', 'Application submitted', '', 'Submitted']] }),
+
+    // Old licence (issued in 2016, last valid to 31 Mar 2023) renewed through the new application flow.
+    // The Inspector assesses the licence fee, garbage fee and a fine / surcharge for the lapsed years.
+    app({ appId: 'TL-NE-2026-000114', businessKey: 'bizS', status: 'Under Inspection', firstSubmittedOn: '2026-11-12', submittedOn: '2026-11-12', updatedOn: '2026-11-14',
+      history: [['2026-11-12 11:15', 'APPLICANT', 'Application submitted (renewal of old licence UDD/TL/1187/2016)', '', 'Submitted'],
+        ['2026-11-14 10:30', 'INS-01', 'Verification started', '', 'Under Inspection']] })
   ];
   // Change request carries the new name
   APPLICATIONS[11].form.firmName = 'Ranipool Highway Fuels';

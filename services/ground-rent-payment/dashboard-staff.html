@@ -36,10 +36,11 @@
   <script src="mock-data.js"></script>
   <script src="dues-engine.js"></script>
   <script src="gr-app.js"></script>
+  <script src="gr-payments.js"></script>
   <script>
     (function () {
       'use strict';
-      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr, T = window.GRDues;
+      var App = window.GRApp, P = window.GRPay, D = App.data, esc = App.esc, inr = App.inr, T = window.GRDues;
       var session = App.requireSession('staff');
       if (!session) return;
       App.shell({ type: 'staff', active: 'dash' });
@@ -75,13 +76,26 @@
       var stats = scopeStats(scopedSites);
       var todayTotal = stats.todayPays.reduce(function (a, p) { return a + p.amount; }, 0);
 
-      function kpi(icon, tone, value, label, sub, target) {
-        var tag = target ? 'a href="' + target + '"' : 'div';
-        return '<div class="col-6 col-xl-3"><' + tag + ' class="gov-kpi-card text-decoration-none text-reset d-flex">' +
+      // KPI cards in order of importance: what this user must act on first, then what is pending with others.
+      // tag: 'Your action' | 'Pending' | 'Overview' shown on the card so the order is clear.
+      function kpi(icon, tone, value, label, sub, target, tag) {
+        var el = target ? 'a href="' + target + '"' : 'div';
+        var tagHtml = tag ? '<span class="gr-kpi-tag gr-kpi-tag-' + (tag === 'Your action' ? 'action' : (tag === 'Pending' ? 'pending' : 'info')) + '">' + tag + '</span>' : '';
+        return '<div class="col-6 col-xl-3"><' + el + ' class="gov-kpi-card text-decoration-none text-reset d-flex' + (tag === 'Your action' && +String(value).replace(/[^\d]/g, '') ? ' active' : '') + '">' +
           '<div class="d-flex justify-content-between align-items-start gap-2"><div class="gov-kpi-count">' + value + '</div>' +
           '<span class="gr-icon-circle bg-' + tone + '-subtle text-' + tone + '-emphasis" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + icon + '" aria-hidden="true"></i></span></div>' +
-          '<div><p class="gov-kpi-label">' + label + '</p><div class="small text-muted">' + sub + '</div></div></' + (target ? 'a' : 'div') + '></div>';
+          '<div>' + tagHtml + '<p class="gov-kpi-label">' + label + '</p><div class="small text-muted">' + sub + '</div></div></' + (target ? 'a' : 'div') + '></div>';
       }
+      function days(n) { return n + (n === 1 ? ' day' : ' days'); }
+      function ageOf(list, fn) { return list.reduce(function (m, x) { return Math.max(m, fn(x)); }, 0); }
+      function daysSince(iso) { return Math.max(0, Math.round((T.toDate(today) - T.toDate(iso)) / 86400000)); }
+      // "Oldest waiting 10 days" – red from 7 days.
+      function waitSub(list, fn, emptyText) {
+        if (!list.length) return emptyText;
+        var n = ageOf(list, fn);
+        return n ? '<span class="' + (n >= 7 ? 'text-danger fw-semibold' : 'text-warning-emphasis') + '">Oldest waiting ' + days(n) + '</span>' : 'Received today';
+      }
+      function unverified(sites) { return sites.filter(function (s) { return s.status !== 'Closed' && (!s.dataVerified || s.status === 'Draft'); }); }
       function tableCard(id, title, subtitle, cols, rows, cards, emptyText, footer) {
         var empty = '<tr><td colspan="' + cols.length + '" class="text-center text-muted py-4">' + emptyText + '</td></tr>';
         return '<div class="card border-0 shadow-xs mb-4" id="' + id + '"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (subtitle ? '<div class="small text-muted">' + subtitle + '</div>' : '') + '</div>' +
@@ -99,24 +113,30 @@
 
       // ================= Supervisor & Dept. Admin (S1) =================
       if (scopeUlb) {
-        document.getElementById('pageSubtitle').textContent = 'Today\'s collection and bank payments waiting for your approval.';
+        document.getElementById('pageSubtitle').textContent = 'Your work first: bank payments to approve and accounts to verify, then what is waiting on citizens.';
         actions = '<a class="btn btn-sm btn-primary" href="payment-desk.html"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>Approve Bank Payments</a><a class="btn btn-sm btn-outline-primary" href="accounts.html"><i class="bi bi-search me-1" aria-hidden="true"></i>Account Search</a>';
-        var toApprove = pendingChallans.filter(function (c) { return c.status === 'BR Recorded'; });
-        var active = scopedSites.filter(function (s) { return s.status !== 'Closed'; });
-        var dueCount = 0, dueSum = 0;
-        active.forEach(function (s) { var d = App.dues(s); if (!d.blocked && d.totalPayable > 0) { dueCount++; dueSum += d.totalPayable; } });
-        kpis += kpi('bi-currency-rupee', 'success', inr(todayTotal), 'Today\'s collection', stats.todayPays.length + ' receipts &bull; ' + App.fmtDate(today), 'reports.html#collection');
-        kpis += kpi('bi-patch-check', 'warning', toApprove.length, 'Payments to approve', 'Bank Receipts uploaded by citizens', 'payment-desk.html');
-        kpis += kpi('bi-exclamation-circle', 'danger', dueCount, 'Accounts due', inr(dueSum) + ' outstanding', 'accounts.html?status=due');
-        kpis += kpi('bi-check-circle', 'info', active.length - dueCount, 'Accounts paid', 'Nothing outstanding', 'accounts.html?status=paid');
+        var toApprove = pendingChallans.filter(function (c) { return c.status === 'BR Recorded'; }).sort(function (a, b) { return P.daysWaiting(b) - P.daysWaiting(a); });
+        var awaitingBr = pendingChallans.filter(function (c) { return c.status === 'Generated'; });
+        var toVerify = unverified(scopedSites);
+        var changes = D.config.settings.makerChecker && App.can('approve') ? D.approvals.filter(function (x) { return x.status === 'Submitted' && siteIds.indexOf(x.grId) !== -1; }) : [];
+        var overdue = 0, overdueSum = 0;
+        scopedSites.forEach(function (s) { if (s.status === 'Closed') return; var d = App.dues(s); if (!d.blocked && d.hasOverdue) { overdue++; overdueSum += d.totalPayable; } });
+        // 1–2: your action; 3–4: pending with others / overview.
+        kpis += kpi('bi-patch-check', 'warning', toApprove.length, 'Bank payments to approve', waitSub(toApprove, P.daysWaiting, 'Nothing waiting'), 'payment-desk.html', 'Your action');
+        if (changes.length) kpis += kpi('bi-check2-square', 'primary', changes.length, 'Changes to approve', waitSub(changes, function (x) { return daysSince(x.submittedAt.slice(0, 10)); }, ''), 'approvals.html', 'Your action');
+        else kpis += kpi('bi-clipboard-check', 'primary', toVerify.length, 'Accounts to verify', toVerify.length ? 'Not yet checked against the register' : 'All checked against the register', 'accounts.html?status=unverified', 'Your action');
+        kpis += kpi('bi-hourglass-split', 'info', awaitingBr.length, 'Challans awaiting BR upload', awaitingBr.length ? 'With citizens &bull; oldest issued ' + days(ageOf(awaitingBr, function (c) { return daysSince(c.generatedOn); })) + ' ago' : 'With citizens', 'payment-desk.html', 'Pending');
+        kpis += kpi('bi-exclamation-triangle', 'danger', overdue, 'Accounts in arrears', inr(overdueSum) + ' outstanding', 'accounts.html?status=due', 'Pending');
 
         var ch = toApprove.map(function (c) {
-          var a = '<a class="btn btn-sm btn-success" href="payment-desk.html?challan=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Approve</a>';
-          return { row: '<tr><td class="font-monospace fw-bold small">' + esc(c.challanNo) + '</td><td><div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(owner(c.grId)) + '</div></td><td class="small font-monospace">' + esc(c.brNo) + '<div class="text-muted">' + App.fmtDate(c.brDate) + '</div></td><td class="text-end fw-bold">' + inr(c.brAmount || c.amount) + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
-            card: mobileCard('<span class="font-monospace fw-bold small">' + esc(c.challanNo) + '</span>', '<span class="fw-bold">' + inr(c.brAmount || c.amount) + '</span>', '<div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted">BR ' + esc(c.brNo) + ' &bull; ' + App.fmtDate(c.brDate) + '</div>', a) };
+          var w = P.daysWaiting(c);
+          var a = '<a class="btn btn-sm btn-primary" href="payment-review.html?challan=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-eye me-1" aria-hidden="true"></i>Review &amp; Approve</a>';
+          var wp = w >= 7 ? App.pill('overdue', days(w)) : (w >= 3 ? App.pill('due', days(w)) : App.pill('pending', w ? days(w) : 'Today'));
+          return { row: '<tr><td class="font-monospace fw-bold small">' + esc(c.challanNo) + '</td><td><div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(owner(c.grId)) + '</div></td><td class="small font-monospace">' + esc(c.brNo) + '<div class="text-muted">' + App.fmtDate(c.brDate) + ' &bull; ' + inr(c.brAmount || c.amount) + '</div></td><td>' + wp + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
+            card: mobileCard('<span class="font-monospace fw-bold small">' + esc(c.challanNo) + '</span>', wp, '<div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted">BR ' + esc(c.brNo) + ' &bull; ' + App.fmtDate(c.brDate) + ' &bull; ' + inr(c.brAmount || c.amount) + '</div>', a) };
         });
-        content += tableCard('q-challans', 'Payments to approve', 'Check the original Bank Receipt at the counter, then approve.',
-          [{ t: 'Challan No.', w: '18%' }, { t: 'GR ID &amp; Allottee', w: '30%' }, { t: 'BR No. &amp; Date', w: '22%' }, { t: 'Amount', end: true, w: '14%' }, { t: 'Action', end: true, w: '16%' }], join(ch, 'row'), join(ch, 'card'), 'Nothing to approve.');
+        content += tableCard('q-challans', 'Bank payments to approve', 'Oldest first. Open a payment to see the allottee\'s details and the uploaded BR.',
+          [{ t: 'Challan No.', w: '18%' }, { t: 'GR ID &amp; Allottee', w: '28%' }, { t: 'BR No., Date &amp; Amount', w: '24%' }, { t: 'Waiting', w: '14%' }, { t: 'Action', end: true, w: '16%' }], join(ch, 'row'), join(ch, 'card'), 'Nothing to approve.');
 
         var td = stats.todayPays.map(function (p) {
           var a = '<a class="btn btn-sm btn-outline-primary" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '">Receipt</a>';
@@ -134,10 +154,22 @@
         document.getElementById('pageSubtitle').textContent = isAdmin ? 'Overview and the rates in force.' : 'Totals and ULB-wise comparison. HQ has read-only access.';
         actions = isAdmin ? '<a class="btn btn-sm btn-primary" href="config.html#rates"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Rate Revision</a><a class="btn btn-sm btn-outline-primary" href="config.html#ulbs">Manage ULBs</a>'
           : '<a class="btn btn-sm btn-primary" href="reports.html#state"><i class="bi bi-bar-chart-line me-1" aria-hidden="true"></i>Open Reports</a>';
-        kpis += kpi('bi-buildings', 'primary', live.length + ' / ' + D.config.ulbs.length, 'ULBs live', 'Others join after their records are loaded', 'reports.html#state');
-        kpis += kpi('bi-house-door', 'info', stats.active, 'Active accounts', 'Across live ULBs (demo data)', 'accounts.html');
-        kpis += kpi('bi-currency-rupee', 'success', inr(stats.collectedFy), 'Collected FY ' + T.fyLabel(curFyStart), 'Online and offline', 'reports.html#collection');
-        kpis += kpi('bi-exclamation-triangle', 'danger', inr(stats.outstanding), 'Outstanding', stats.defaulters + ' accounts with arrears', 'reports.html#defaulters');
+        // Statewide: BR payments not yet approved by the ULBs, oldest first.
+        var brWaiting = D.challans.filter(function (c) { var s = App.site(c.grId); return s && s.status !== 'Closed' && c.status === 'BR Recorded'; });
+        var ready = D.config.ulbs.filter(function (u) { return u.migrationStatus === 'Data received'; });
+        var notChecked = unverified(scopedSites);
+        if (isAdmin) {
+          kpis += kpi('bi-rocket-takeoff', 'primary', ready.length, 'ULBs ready to go live', ready.length ? 'Data received: ' + esc(ready.map(function (u) { return u.name.replace(/ Nagar Panchayat| Municipal.*$/, ''); }).join(', ')) : 'No ULB waiting', 'config.html#ulbs', 'Your action');
+          kpis += kpi('bi-patch-check', 'warning', brWaiting.length, 'BR payments pending approval', waitSub(brWaiting, P.daysWaiting, 'Nothing pending at the ULBs'), 'reports.html#state', 'Pending');
+          kpis += kpi('bi-clipboard-check', 'info', notChecked.length, 'Accounts not verified', 'Not yet checked against the register at the ULBs', 'accounts.html?status=unverified', 'Pending');
+          kpis += kpi('bi-currency-rupee', 'success', inr(stats.collectedFy), 'Collected FY ' + T.fyLabel(curFyStart), live.length + ' of ' + D.config.ulbs.length + ' ULBs live &bull; ' + inr(stats.outstanding) + ' outstanding', 'reports.html#collection', 'Overview');
+        } else {
+          // HQ is read-only: no actions of its own, so pending items lead.
+          kpis += kpi('bi-patch-check', 'warning', brWaiting.length, 'BR payments pending approval', waitSub(brWaiting, P.daysWaiting, 'Nothing pending at the ULBs'), 'reports.html#state', 'Pending');
+          kpis += kpi('bi-exclamation-triangle', 'danger', stats.defaulters, 'Accounts in arrears', inr(stats.outstanding) + ' outstanding', 'reports.html#defaulters', 'Pending');
+          kpis += kpi('bi-buildings', 'primary', (D.config.ulbs.length - live.length), 'ULBs not live yet', ready.length + ' with data received', 'reports.html#state', 'Pending');
+          kpis += kpi('bi-currency-rupee', 'success', inr(stats.collectedFy), 'Collected FY ' + T.fyLabel(curFyStart), 'Online and offline', 'reports.html#collection', 'Overview');
+        }
 
         var ur = D.config.ulbs.map(function (u) {
           var st = scopeStats(D.sites.filter(function (s) { return s.ulb === u.code; }));

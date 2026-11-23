@@ -340,3 +340,18 @@ body.high-contrast .udd-hero { background: #000 !important; }
 body.high-contrast .udd-hero-pattern, body.high-contrast .udd-hero-ridge { display: none; }
 body.high-contrast .udd-hero-eyebrow { background: #000; border-color: #ff0; }
 body.high-contrast .udd-preview { box-shadow: none; border: 2px solid #ff0; }
+
+/* Bank payment review desk (payment-review.html): decision panel stays in view on wide screens */
+@media (min-width: 1200px) {
+  .gr-action-rail { position: sticky; top: 1rem; }
+}
+.gr-br-preview { border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; padding: 0.5rem; min-height: 200px; }
+.gr-br-preview img { max-height: 60vh; width: auto; max-width: 100%; }
+.gr-preview-frame { height: 60vh; background: #fff; }
+@media (max-width: 767.98px) { .gr-preview-frame { height: 50vh; } }
+
+/* Dashboard KPI order: your action → pending with others → overview */
+.gr-kpi-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 50rem; padding: 0.1rem 0.5rem; margin-bottom: 0.25rem; }
+.gr-kpi-tag-action { background: #fff8e6; color: #8a5300; border: 1px solid #fcd580; }
+.gr-kpi-tag-pending { background: #e1f5fe; color: #01579b; border: 1px solid #81d4fa; }
+.gr-kpi-tag-info { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }

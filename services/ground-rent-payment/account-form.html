@@ -58,10 +58,10 @@
       <section class="card border-0 shadow-xs mb-3" aria-labelledby="h-ob" id="obSection">
         <div class="card-header bg-white"><h2 id="h-ob" class="h6 fw-bold mb-0">4. Certified opening balance</h2></div>
         <div class="card-body row g-2">
-          <div class="col-md-4"><label for="oUpTo" class="form-label small fw-semibold">Register paid up to FY <span class="text-danger">*</span></label><input id="oUpTo" class="form-control form-control-sm" placeholder="2025-26" pattern="\d{4}-\d{2}"></div>
+          <div class="col-md-4"><label for="oUpTo" class="form-label small fw-semibold">Register paid up to FY <span class="text-danger">*</span></label><select id="oUpTo" class="form-select form-select-sm" aria-describedby="upToHelp"></select><div id="upToHelp" class="form-text">Years up to the register cut-off of the ULB (list set in Configuration).</div></div>
           <div class="col-6 col-md-4"><label for="oRent" class="form-label small fw-semibold">Arrear rent (₹)</label><input id="oRent" type="number" min="0" class="form-control form-control-sm" value="0"></div>
           <div class="col-6 col-md-4"><label for="oSur" class="form-label small fw-semibold">Arrear surcharge (₹)</label><input id="oSur" type="number" min="0" class="form-control form-control-sm" value="0"></div>
-          <div class="col-md-8"><label for="oCert" class="form-label small fw-semibold">Signed certificate <span class="text-danger">*</span></label><input id="oCert" type="file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png"><div class="form-text">Certified by the Department as on the cut-off date. PDF, JPG or PNG, up to 5 MB.</div></div>
+          <div class="col-md-8"><label for="oCert" class="form-label small fw-semibold">Signed certificate (optional)</label><input id="oCert" type="file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png"><div class="form-text">If available: opening balance certified by the Department as on the cut-off date. PDF, JPG or PNG, up to 5 MB.</div></div>
         </div>
       </section>
 
@@ -103,14 +103,18 @@
       }
 
       // ---------- Site ----------
-      var ulbs = D.config.ulbs.filter(function (u) { return u.active && (!scope || u.code === scope); });
-      $('fUlb').innerHTML = ulbs.map(function (u) { return '<option value="' + u.code + '">' + esc(u.name) + '</option>'; }).join('');
-      // Only one ULB to choose from: it is understood, so the field is not shown.
-      if (ulbs.length < 2) $('ulbCol').classList.add('d-none');
-      // ULB → Ward → Locality
+      // Every ULB of the user's scope is listed; accounts can be created only in a live ULB.
+      var ulbs = D.config.ulbs.filter(function (u) { return !scope || u.code === scope; });
+      $('fUlb').innerHTML = ulbs.map(function (u) { return '<option value="' + u.code + '"' + (u.active ? '' : ' disabled') + '>' + esc(u.name) + ' (' + esc(u.district) + ')' + (u.active ? '' : ' – not live yet') + '</option>'; }).join('');
+      var firstLive = ulbs.filter(function (u) { return u.active; })[0];
+      if (firstLive) $('fUlb').value = firstLive.code;
+      // ULB → Ward → Locality; the ULB also sets the paid-up FY list (to its register cut-off).
       function fillWards() {
         $('fWard').innerHTML = App.wardsOf($('fUlb').value).map(function (w) { return '<option value="' + w.code + '">' + esc(w.name) + '</option>'; }).join('');
         fillLocs();
+        var keep = $('oUpTo').value, fys = S.registerFyOptions($('fUlb').value);
+        $('oUpTo').innerHTML = '<option value="">Select FY</option>' + fys.slice().reverse().map(function (f) { return '<option value="' + f + '">FY ' + f + '</option>'; }).join('');
+        if (fys.indexOf(keep) !== -1) $('oUpTo').value = keep;
       }
       function fillLocs() {
         var locs = App.localitiesOf($('fUlb').value, $('fWard').value);
@@ -199,8 +203,8 @@
             structures.push({ type: g('type'), lengthFt: +g('l') || null, widthFt: +g('w') || null, areaSqft: area, areaOverrideReason: +g('l') && +g('w') ? null : 'Area as per register',
               mutationNo: g('mutation') || 'Original allotment', orderDate: null, chargeableFromFy: App.ulb($('fUlb').value).goLiveFy, chargeableToFy: null });
           });
-          ok = App.fieldError($('oUpTo'), /^\d{4}-\d{2}$/.test($('oUpTo').value.trim()) ? '' : 'Enter the FY as 2025-26.') && ok;
-          ok = App.fieldError($('oCert'), App.checkFile($('oCert'), true)) && ok;
+          ok = App.fieldError($('oUpTo'), $('oUpTo').value ? '' : 'Select the FY up to which the register shows rent paid.') && ok;
+          ok = App.fieldError($('oCert'), App.checkFile($('oCert'), false)) && ok;
         }
         var comment = need('fComment', 'A reason is required.');
         if (!ok) { var bad = document.querySelector('.is-invalid'); if (bad) bad.focus(); return; }
@@ -222,7 +226,7 @@
           legacy: { book: book || null, page: +page || null, slNo: +$('fSl').value || null }, address: addr, status: 'Active', dataVerified: false, owners: owners, structures: structures,
           opening: { asOfFy: '2025-26', paidUpToFy: $('oUpTo').value.trim(), principal: Math.round(+$('oRent').value || 0), surcharge: Math.round(+$('oSur').value || 0), lastPayment: null, certifiedBy: 'Pending (Q14)' } };
         D.sites.push(site);
-        var file = App.addAttachment(grId, 'Signed certificate', $('oCert'));
+        var file = App.addAttachment(grId, 'Signed certificate', $('oCert')); // null when not uploaded
         App.audit({ grId: grId, entity: 'SiteAccount', action: 'Account created with GR ID ' + grId, reason: comment, file: file, after: { owners: owners.map(function (o) { return o.name; }), area: structures.reduce(function (a, x) { return a + x.areaSqft; }, 0) } });
         owners.forEach(function (o) { if (o.mobile) App.notify(o.mobile, 'Your ground rent account is online', 'Your site is now ' + grId + '. Use it to pay ground rent online.', grId); });
         App.save();

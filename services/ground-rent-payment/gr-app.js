@@ -10,7 +10,7 @@
   'use strict';
 
   var SESSION_KEY = 'gr_demo_session';
-  var STATE_KEY = 'gr_demo_state_v6';
+  var STATE_KEY = 'gr_demo_state_v7';
   var FILE_DB = 'gr_demo_files';
   var SEED = global.GR_DATA;
 
@@ -530,7 +530,7 @@
     search: { icon: 'bi-search', label: 'Account Search', href: 'accounts.html', perm: 'viewAccounts' },
     create: { icon: 'bi-person-plus', label: 'Create Account', href: 'account-form.html', perm: 'editAccounts' },
     verify: { icon: 'bi-patch-check', label: 'Approve Bank Payments', href: 'payment-desk.html', perm: 'payments', badge: 'challans' },
-    adjust: { icon: 'bi-sliders2-vertical', label: 'Adjustment / Reversal', href: 'accounts.html?intent=adjust', perm: 'adjust' },
+    adjust: { icon: 'bi-sliders2-vertical', label: 'Adjustments', href: 'accounts.html?intent=adjust', perm: 'adjust' },
     approvals: { icon: 'bi-check2-square', label: 'Approval Queue', href: 'approvals.html', perm: 'approve', makerChecker: true, badge: 'approvals' },
     config: { icon: 'bi-gear', label: 'Configuration', href: 'config.html', perm: 'configView' },
     reports: { icon: 'bi-bar-chart-line', label: 'Reports', href: 'reports.html' },

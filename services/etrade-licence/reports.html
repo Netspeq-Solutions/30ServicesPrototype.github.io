@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261122">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -27,9 +27,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261122"></script>
-  <script src="tl-app.js?v=20261122"></script>
-  <script src="tl-flow.js?v=20261122"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
   <script>
     (function () {
       'use strict';
@@ -83,7 +83,7 @@
           return { row: '<tr><td class="fw-semibold small"><i class="bi ' + r.icon + ' me-1 text-primary" aria-hidden="true"></i>' + esc(r.name) + '</td><td class="text-end">' + r.apps + '</td><td class="text-end">' + r.act + '</td><td class="text-end">' + r.exp + '</td><td class="text-end">' + inr(r.fee) + '</td></tr>',
             card: App.mobileCard('<span class="fw-semibold small">' + esc(r.name) + '</span>', '', '<div class="small text-muted">' + r.apps + ' applications &bull; ' + r.act + ' active &bull; ' + r.exp + ' expired &bull; ' + inr(r.fee) + ' verified</div>', '') };
         });
-        html += App.tableCard('r-type', 'By applicant type', 'Individual / local traders and registered companies.',
+        html += App.tableCard('r-type', 'By applicant type', 'Individuals / firms and registered companies.',
           [{ t: 'Applicant type', w: '40%' }, { t: 'Applications', end: true, w: '15%' }, { t: 'Active', end: true, w: '15%' }, { t: 'Expired', end: true, w: '15%' }, { t: 'Fees verified', end: true, w: '15%' }],
           tRows.map(function (r) { return r.row; }).join(''), tRows.map(function (r) { return r.card; }).join(''), 'No data.');
         var cRows = D.config.categories.filter(function (c) { return apps.some(function (a) { return a.category === c.code; }) || lics.some(function (l) { return l.category === c.code; }); }).map(function (c) {

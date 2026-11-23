@@ -18,6 +18,13 @@
     for (var y = goLiveFy(site); y <= currentFy() + (extraAhead || 1); y++) out.push(T.fyLabel(y));
     return out;
   }
+  // "Register paid up to" choices: from the first register FY (setting) to the FY ending on the ULB's cut-off date.
+  function registerFyOptions(ulbCode) {
+    var u = App.ulb(ulbCode), s = D().config.settings, out = [];
+    var last = u && u.cutOffDate ? T.fyOfDate(u.cutOffDate) : currentFy() - 1;
+    for (var y = T.parseFy(s.registerFirstFy || '1975-76'); y <= last; y++) out.push(T.fyLabel(y));
+    return out;
+  }
   // Default chargeable-from FY for a new structure (setting 5.7).
   function defaultFromFy(orderDate) {
     var fy = orderDate ? T.fyOfDate(orderDate) : currentFy();
@@ -118,7 +125,7 @@
   }
 
   global.GRStaff = {
-    fyOptions: fyOptions, defaultFromFy: defaultFromFy, rentForFy: rentForFy, currentFy: currentFy, firstOpenFy: firstOpenFy,
+    fyOptions: fyOptions, registerFyOptions: registerFyOptions, defaultFromFy: defaultFromFy, rentForFy: rentForFy, currentFy: currentFy, firstOpenFy: firstOpenFy,
     ensureOwnershipHistory: ensureOwnershipHistory, applyChange: applyChange, submitChange: submitChange, describe: describe, clone: clone
   };
 })(window);

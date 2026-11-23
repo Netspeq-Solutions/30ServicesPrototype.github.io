@@ -628,3 +628,19 @@ body.high-contrast .udd-hero { background: #000 !important; }
 body.high-contrast .udd-hero-pattern, body.high-contrast .udd-hero-ridge { display: none; }
 body.high-contrast .udd-hero-eyebrow { background: #000; border-color: #ff0; }
 body.high-contrast .udd-preview { box-shadow: none; border: 2px solid #ff0; }
+
+/* Instructions: document checklists and downloadable formats */
+.tl-doc-list { font-size: 0.8125rem; padding-left: 1.1rem; margin-bottom: 0; }
+.tl-doc-list li { margin-bottom: 0.3rem; }
+.tl-fmt-btn { font-size: 0.72rem; vertical-align: baseline; }
+.tl-item-docs th, .tl-item-docs td { vertical-align: top; }
+.tl-format-list .list-group-item { background: transparent; }
+
+/* Originals checked by the Inspector and by the BO */
+.tl-originals li + li { margin-top: 0.15rem; }
+
+/* Bank Receipt shown inside the Verify BR popup */
+.tl-br-preview { border: 1px solid var(--gov-border, #dee2e6); border-radius: var(--gov-radius-md, 6px); background: #f8fafc; padding: 0.5rem; min-height: 200px; }
+.tl-br-preview img { max-height: 60vh; width: auto; max-width: 100%; }
+.tl-br-preview .tl-viewer-frame { height: 60vh; }
+@media (max-width: 767.98px) { .tl-br-preview .tl-viewer-frame { height: 50vh; } }

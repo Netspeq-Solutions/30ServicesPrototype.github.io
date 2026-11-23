@@ -7,7 +7,7 @@
   "governmentName": "Government of Sikkim",
   "theme": "teal",
   "designBaseline": "Same shell, store and document patterns as services/ground-rent-payment (Tourism Permission common platform)",
-  "servicePurpose": "Online issue, yearly renewal and change (name / premises / address) of e-Trade Licences issued by UDD to individual / local traders (proprietorships, partnerships) and registered companies (Pvt. Ltd., Public Ltd., societies), for the activities / items in the UDD notification.",
+  "servicePurpose": "Online issue, yearly renewal and change (name / premises / address) of e-Trade Licences issued by UDD to individuals / firms (firms, enterprises or establishments of a proprietor or partners) and registered companies (Pvt. Ltd., Public Ltd., societies), for the activities / items in the UDD notification.",
   "screens": {
     "landing_and_login": "index.html (#login opens the prototype login popup)",
     "applicant_dashboard": "dashboard.html (#dashboard, #applications, #licences, #notifications, #support, #profile)",
@@ -99,7 +99,7 @@
   ],
   "sikkimGoLoginUrl": "https://sso.sikkim.gov.in/",
   "applicantTypes": {
-    "IND": "Individual / local trader – 27 items from the UDD notification (sample), most with sub-items; Boutique Tea Shop, Mineral Water, Rice, Heavy Machinery and Cyber Café have none",
+    "IND": "Individual / firm – 27 items from the UDD notification (sample), most with sub-items; Boutique Tea Shop, Mineral Water, Rice, Heavy Machinery and Cyber Café have none",
     "COMP": "Registered company – Manufacturing, Security/Manpower, Banking & Non-Banking, Departmental Stores, Casino, Hotels/Restaurants, Pharmaceutical, Others (specify; optional notified item)"
   },
   "documentRules": "tl-flow.js docList() reads config.docTypes (document types master) and the documents mapped to the chosen item / sub-item (config.categories[].docs, items[].docs). Mandatory wins when a document is asked for more than one reason. Masters are edited by the Department Admin.",

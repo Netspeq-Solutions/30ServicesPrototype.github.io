@@ -93,6 +93,7 @@
       allocationOrder: 'SURCHARGE_FIRST',
       rounding: 'NEAREST',
       challanValidityDays: 15,
+      registerFirstFy: '1975-76',
       midYearRevision: 'PRO_RATA_MONTH',
       newStructureFrom: 'SAME_FY',
       structureRemovalStops: 'NEXT_FY'
@@ -286,7 +287,7 @@
   // Offline challans (W3). Generated → BR Recorded → Verified / Expired / Cancelled.
   var challans = [
     { challanNo: 'GRC-2026-000318', grId: 'GR-GMC-W03-00045', amount: 3520, generatedOn: '2026-11-10', validTill: '2026-11-25', status: 'Generated', generatedBy: 'Citizen' },
-    { challanNo: 'GRC-2026-000322', grId: 'GR-GMC-W03-00048', amount: 2250, generatedOn: '2026-11-12', validTill: '2026-11-27', status: 'BR Recorded', brNo: '2627N-11001-02231', brDate: '2026-11-14', brAmount: 2250, brScan: 'BR_2627N-11001-02231.jpg', brUploadedBy: 'Citizen', brUploadedOn: '2026-11-14', generatedBy: 'Citizen' },
+    { challanNo: 'GRC-2026-000322', grId: 'GR-GMC-W03-00048', amount: 2250, generatedOn: '2026-11-04', validTill: '2026-11-19', status: 'BR Recorded', brNo: '2627N-11001-02231', brDate: '2026-11-05', brAmount: 2250, brScan: 'BR_2627N-11001-02231.jpg', brUploadedBy: 'Citizen', brUploadedOn: '2026-11-06', generatedBy: 'Citizen' },
     { challanNo: 'GRC-2026-000325', grId: 'GR-GMC-W07-00074', amount: 3200, generatedOn: '2026-11-15', validTill: '2026-11-30', status: 'BR Recorded', brNo: '2627N-11001-02260', brDate: '2026-11-16', brAmount: 3200, brScan: 'BR_2627N-11001-02260.pdf', brUploadedBy: 'Citizen', brUploadedOn: '2026-11-16', generatedBy: 'Citizen' },
     { challanNo: 'GRC-2026-000301', grId: 'GR-GMC-W05-00024', amount: 2640, generatedOn: '2026-10-20', validTill: '2026-11-04', status: 'Expired', generatedBy: 'Citizen' }
   ];
@@ -354,7 +355,7 @@
     supervisor: { key: 'supervisor', title: 'Supervisor', user: 'Demo Supervisor', scope: 'ULB', icon: 'bi-person-workspace',
       description: 'Approve Bank Receipts uploaded by citizens and maintain allottees, structures and transfers.' },
     deptAdmin: { key: 'deptAdmin', title: 'Dept. Admin', user: 'Demo Dept. Admin', scope: 'ULB', icon: 'bi-person-gear',
-      description: 'Everything a Supervisor does, plus adjustments, payment reversals and approvals.' },
+      description: 'Everything a Supervisor does, plus adjustments and approvals.' },
     hq: { key: 'hq', title: 'HQ', user: 'Demo HQ Officer', scope: 'STATE', icon: 'bi-globe2',
       description: 'Read-only view of every ULB: dashboards, reports with state totals and ULB-wise comparison, and the audit log.' },
     sysAdmin: { key: 'sysAdmin', title: 'System Admin', user: 'Demo System Admin', scope: 'STATE', icon: 'bi-sliders',
@@ -364,7 +365,7 @@
   // Recent staff-side audit entries for the dashboard activity panel.
   var auditLog = [
     { at: '2026-11-16 11:05', user: 'Demo Supervisor', role: 'Supervisor', grId: 'GR-GMC-W02-00013', action: 'Offline payment recorded · BR 2627N-11001-02210 · ₹21,840' },
-    { at: '2026-11-14 15:42', user: 'Demo Supervisor', role: 'Supervisor', grId: 'GR-GMC-W03-00048', action: 'BR recorded against challan GRC-2026-000322 · awaiting verification' },
+    { at: '2026-11-06 15:42', user: 'Citizen', role: 'Citizen', grId: 'GR-GMC-W03-00048', action: 'BR uploaded against challan GRC-2026-000322 · awaiting verification' },
     { at: '2026-05-20 12:10', user: 'Demo Supervisor', role: 'Supervisor', grId: 'GR-GMC-W05-00027', action: 'Structure added 10×20 = 200 sq ft · Mutation 3/DCE · file attached' },
     { at: '2026-04-01 09:00', user: 'Demo Dept. Admin', role: 'Dept. Admin', grId: null, action: 'GMC register data loaded (manual migration) · accounts created with GR IDs' }
   ];
@@ -374,7 +375,7 @@
     structureTypes: ['R.C.C. shop-cum-residential', 'R.C.C. building', 'Wooden shop house', 'Hotel', 'Assam-type', 'Other'],
     transferReasons: ['Inheritance to son or daughter', 'Other legal heir / family member', 'Third-party sale / gift', 'Other'],
     adjustmentTypes: ['Waiver', 'Correction', 'Refund note'],
-    reversalReasons: ['Bounced / dishonoured', 'Duplicate entry', 'Wrong account', 'Other'],
+
     banks: [
       { name: 'State Bank of Sikkim (SBS)', branch: 'M.G. Marg, Gangtok (to confirm – Q8)' },
       { name: 'State Bank of Sikkim (SBS)', branch: 'Tadong (to confirm – Q8)' }
@@ -400,7 +401,7 @@
     { id: 'F-0001', grId: 'GR-GMC-W05-00027', docType: 'Mutation order / plan', file: 'Mutation_3-DCE_2026.pdf', uploadedBy: 'Demo Supervisor', at: '2026-05-20' },
     { id: 'F-0002', grId: 'GR-GMC-W02-00013', docType: 'Bank Receipt scan', file: 'BR_2627N-11001-02210.jpg', uploadedBy: 'Demo Supervisor', at: '2026-11-16' },
     { id: 'F-0005', grId: 'GR-GMC-W07-00074', docType: 'Bank Receipt scan', file: 'BR_2627N-11001-02260.pdf', uploadedBy: 'Citizen', at: '2026-11-16' },
-    { id: 'F-0004', grId: 'GR-GMC-W03-00048', docType: 'Bank Receipt scan', file: 'BR_2627N-11001-02231.jpg', uploadedBy: 'Citizen', at: '2026-11-14' },
+    { id: 'F-0004', grId: 'GR-GMC-W03-00048', docType: 'Bank Receipt scan', file: 'BR_2627N-11001-02231.jpg', uploadedBy: 'Citizen', at: '2026-11-06' },
     { id: 'F-0003', grId: 'GR-GMC-W01-00004', docType: 'Bank Receipt scan', file: 'BR_2627N-11001-01452.jpg', uploadedBy: 'Demo Supervisor', at: '2026-06-21' }
   ];
 
