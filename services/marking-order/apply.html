@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <title>Apply for Marking Order &bull; Forest and Environment Department &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Stepper Header Styling */
+    .gov-stepper-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .gov-stepper-list {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      justify-content: space-between;
+      position: relative;
+    }
+    .gov-stepper-list::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      right: 40px;
+      height: 3px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .gov-stepper-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      cursor: pointer;
+    }
+    .gov-stepper-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      color: #64748b;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      transition: all 0.25s ease;
+      font-size: 1rem;
+    }
+    .gov-stepper-title {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #64748b;
+      max-width: 140px;
+      line-height: 1.25;
+    }
+    .gov-stepper-step.active .gov-stepper-bubble {
+      background: #114b3f;
+      border-color: #114b3f;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(17, 75, 63, 0.15);
+    }
+    .gov-stepper-step.active .gov-stepper-title {
+      color: #114b3f;
+      font-weight: 700;
+    }
+    .gov-stepper-step.completed .gov-stepper-bubble {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+    .gov-stepper-step.completed .gov-stepper-title {
+      color: #10b981;
+    }
+
+    /* Form Step Sections */
+    .form-step-pane {
+      display: none;
+    }
+    .form-step-pane.active {
+      display: block;
+    }
+
+    .form-step-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-legend {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    /* Custom Radio Card Selection */
+    .radio-pill-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      height: 100%;
+    }
+    .radio-pill-card:hover {
+      border-color: #114b3f;
+      background: #f8fbf9;
+    }
+    .radio-pill-card.selected {
+      border-color: #114b3f;
+      background: #f0fdf4;
+      box-shadow: 0 0 0 1px #114b3f;
+    }
+
+    /* File Upload Box */
+    .file-upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 1.5rem;
+      background: #f8fafc;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .file-upload-box.uploaded {
+      border-style: solid;
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    /* Tree Row Box */
+    .tree-row-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .tree-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Preview Review Cards */
+    .preview-summary-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .preview-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    /* Acknowledgement Slip */
+    .ack-card {
+      background: #ffffff;
+      border: 2px solid #10b981;
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
+    }
+
+    @media print {
+      .gov-utility-bar, .gov-navbar, .no-print, .btn, .gov-stepper-container {
+        display: none !important;
+      }
+      .ack-card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link -->
+  <a class="gov-skip-link" href="#main-form-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Accessibility Toolbar -->
+  <aside class="gov-utility-bar no-print" aria-label="Accessibility Toolbar">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+          <i class="bi bi-tree-fill me-1"></i> STAGE 03 PROTOTYPE
+        </span>
+        <span class="small text-white-50 d-none d-sm-inline">Marking Order Application Form &bull; 4-Step Process</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;" onclick="prefillDemoData()">
+          <i class="bi bi-magic me-1"></i> Prefill Sample Data
+        </button>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="decrease" title="Decrease font size">A-</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm active" data-font-action="reset" title="Reset font size">A</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="increase" title="Increase font size">A+</button>
+        </div>
+        <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast">
+          <i class="bi bi-circle-half me-1"></i>Contrast
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs no-print" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle Menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <a href="index.html" class="d-inline-block">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 48px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Forest and Environment Department &bull; Government of Sikkim</div>
+            <h1 class="h5 fw-bold text-dark mb-0" id="applyHeaderTitle">Apply for Tree Felling Marking Order</h1>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="applyHeaderUserName">Citizen Demo User (Primary)</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-success-subtle text-success border border-success-subtle me-1" id="applyHeaderRoleBadge">Role: Citizen</span>
+              <span id="applyHeaderJurisdiction">District: Gangtok &bull; Ranipool Range</span>
+            </div>
+          </div>
+          <a href="dashboard.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1.5" id="btnBackToDashboard">
+            <i class="bi bi-arrow-left"></i>
+            <span>Citizen Dashboard</span>
+          </a>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Switch Role</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container with Role Sidebar -->
+  <div class="officer-workspace-container flex-grow-1" id="applyWorkspaceLayout">
+
+    <!-- Role-Based Navigation Sidebar -->
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block no-print" id="sidebar-nav" aria-label="Navigation Menu">
+      <div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">
+        <span class="fw-bold small text-muted" id="applySidebarTitle">WORKSPACE MENU</span>
+        <button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>
+      </div>
+      <div id="applySidebarNavContainer">
+        <!-- Rendered dynamically by renderRoleSidebar() based on role -->
+      </div>
+      <div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">
+        <div class="fw-bold text-dark"><i class="bi bi-tree-fill text-success me-1"></i> Marking Order Service</div>
+        <div class="text-muted mt-1" style="font-size: 0.73rem;">Forest &amp; Environment Department, Government of Sikkim</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-form-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
+      <div class="container-fluid px-0" style="max-width: 980px;">
+
+      <!-- Mode & Context Banner -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 no-print">
+        <div id="roleAssistanceBanner">
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
+            <i class="bi bi-person-check-fill me-1"></i> Citizen Submission Mode
+          </span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-muted small" id="draftStatusBadge">
+            <i class="bi bi-clock me-1"></i> Auto-saved locally
+          </span>
+          <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2.5" onclick="manualSaveDraft()">
+            <i class="bi bi-save me-1"></i> Save as Draft
+          </button>
+        </div>
+      </div>
+
+      <!-- Incomplete Draft Resume Alert (if draft exists) -->
+      <div class="alert alert-warning border-warning-subtle shadow-xs py-2.5 px-3 rounded-3 d-none mb-3 no-print" id="draftResumeAlert">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="small text-dark">
+            <i class="bi bi-info-circle-fill text-warning-emphasis me-1"></i>
+            <strong>Incomplete Draft Found:</strong> You have an unfinished application draft saved on this browser.
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-dark py-0 px-2" onclick="loadDraftData()">Resume Draft</button>
+            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="discardDraft()">Discard</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-STEP STEPPER HEADER -->
+      <div class="gov-stepper-container no-print" id="stepperContainer">
+        <ul class="gov-stepper-list">
+          <!-- Step 1 -->
+          <li class="gov-stepper-step active" id="stepperStep1" onclick="navigateToStep(1)">
+            <div class="gov-stepper-bubble">1</div>
+            <div class="gov-stepper-title">Applicant Details &amp; Address</div>
+          </li>
+          <!-- Step 2 -->
+          <li class="gov-stepper-step" id="stepperStep2" onclick="navigateToStep(2)">
+            <div class="gov-stepper-bubble">2</div>
+            <div class="gov-stepper-title">Forest &amp; Land Details</div>
+          </li>
+          <!-- Step 3 -->
+          <li class="gov-stepper-step" id="stepperStep3" onclick="navigateToStep(3)">
+            <div class="gov-stepper-bubble">3</div>
+            <div class="gov-stepper-title">Tree Information</div>
+          </li>
+          <!-- Step 4 -->
+          <li class="gov-stepper-step" id="stepperStep4" onclick="navigateToStep(4)">
+            <div class="gov-stepper-bubble">4</div>
+            <div class="gov-stepper-title">Preview &amp; Declaration</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ==================================================================
+           FORM CONTAINER (4 PANES)
+           ================================================================== -->
+      <form id="moApplicationForm" novalidate onsubmit="return false;">
+
+        <!-- ==============================================================
+             STEP 1: APPLICANT DETAILS & ADDRESS
+             ============================================================== -->
+        <div class="form-step-pane active" id="stepPane1">
+          <div class="form-step-card">
+
+            <!-- Section A: Application For -->
+            <div class="mb-4">
+              <div class="section-legend">
+                <i class="bi bi-person-badge text-success"></i>
+                <span>Section A &ndash; Application For</span>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle small fw-normal ms-auto" style="font-size: 0.72rem;">Mandatory</span>
+              </div>
+              <p class="text-secondary small mb-3">
+                Please select whether you are submitting this application for yourself or on behalf of another citizen.
+              </p>
+              <div class="row g-3" id="appForGroup">
+                <div class="col-md-6" id="appForSelfCol">
+                  <label class="radio-pill-card selected d-block" for="appForSelf" id="labelAppForSelf">
+                    <div class="form-check mb-0">
+                      <input class="form-check-input" type="radio" name="applicationFor" id="appForSelf" value="Self" checked onchange="handleAppForChange()">
+                      <div class="ms-2">
+                        <strong class="d-block text-dark"><i class="bi bi-person-fill text-success me-1"></i> Apply for Self</strong>
+                        <span class="small text-muted">Application is submitted by the citizen on their own behalf.</span>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div class="col-md-6" id="appForOthersCol">
+                  <label class="radio-pill-card d-block" for="appForOthers" id="labelAppForOthers">
+                    <div class="form-check mb-0">
+                      <input class="form-check-input" type="radio" name="applicationFor" id="appForOthers" value="Apply for Others" onchange="handleAppForChange()">
+                      <div class="ms-2">
+                        <strong class="d-block text-dark"><i class="bi bi-people-fill text-primary me-1"></i> Apply for Others</strong>
+                        <span class="small text-muted">Application is submitted on behalf of another citizen/landowner.</span>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section B: Applicant Details -->
+            <div class="mb-4">
+              <div class="section-legend">
+                <i class="bi bi-person-vcard text-success"></i>
+                <span id="applicantDetailsHeading">Section B &ndash; Applicant Details</span>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="txtFirstName" class="form-label small fw-bold text-dark">
+                    First Name <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtFirstName" placeholder="Enter first name" required>
+                  <div class="invalid-feedback small">First name is mandatory.</div>
+                </div>
+                <div class="col-md-4">
+                  <label for="txtMiddleName" class="form-label small fw-bold text-dark">
+                    Middle Name <span class="text-muted fw-normal">(Optional)</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtMiddleName" placeholder="Enter middle name">
+                </div>
+                <div class="col-md-4">
+                  <label for="txtLastName" class="form-label small fw-bold text-dark">
+                    Last Name <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtLastName" placeholder="Enter last name" required>
+                  <div class="invalid-feedback small">Last name is mandatory.</div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold text-dark d-block">
+                    Relation <span class="text-danger">*</span>
+                  </label>
+                  <div class="d-flex align-items-center gap-3 pt-1">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="relationType" id="relFather" value="Father" checked>
+                      <label class="form-check-label small" for="relFather">Father</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="relationType" id="relHusband" value="Husband">
+                      <label class="form-check-label small" for="relHusband">Husband</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="txtRelationName" class="form-label small fw-bold text-dark">
+                    Father / Husband Name <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtRelationName" placeholder="Enter father or husband full name" required>
+                  <div class="invalid-feedback small">Father / Husband name is mandatory.</div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="txtMobile" class="form-label small fw-bold text-dark">
+                    Mobile Number <span class="text-danger">*</span>
+                  </label>
+                  <input type="tel" class="form-control form-control-sm font-monospace" id="txtMobile" placeholder="10-digit mobile number" maxlength="10" required>
+                  <div class="invalid-feedback small">Valid 10-digit mobile number is mandatory.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section C: Permanent Address -->
+            <div class="mb-4">
+              <div class="section-legend">
+                <i class="bi bi-geo-alt-fill text-success"></i>
+                <span>Section C &ndash; Permanent Address</span>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="txtPermAddress1" class="form-label small fw-bold text-dark">
+                    Address Line 1 <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtPermAddress1" placeholder="House / Plot No., Ward, Locality or Village" required>
+                  <div class="invalid-feedback small">Address line 1 is mandatory.</div>
+                </div>
+                <div class="col-12">
+                  <label for="txtPermAddress2" class="form-label small fw-bold text-dark">
+                    Address Line 2 <span class="text-muted fw-normal">(Optional)</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtPermAddress2" placeholder="Landmark, Post Office or Additional Address particulars">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="selPermDistrict" class="form-label small fw-bold text-dark">
+                    District <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selPermDistrict" required onchange="populateDistrictBlocks('selPermDistrict', 'selPermBlock')">
+                    <option value="">-- Select District --</option>
+                  </select>
+                  <div class="invalid-feedback small">Please select a district.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="selPermBlock" class="form-label small fw-bold text-dark">
+                    Block / GPU / Nagar Panchayat / Municipality <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selPermBlock" required>
+                    <option value="">-- Select District First --</option>
+                  </select>
+                  <div class="invalid-feedback small">Please select Block / GPU / Municipality.</div>
+                </div>
+
+                <div class="col-12 pt-2">
+                  <label class="form-label small fw-bold text-dark d-block">
+                    Permanent and Residential Address Same? <span class="text-danger">*</span>
+                  </label>
+                  <div class="d-flex align-items-center gap-4 pt-1">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sameAsPerm" id="sameAddressYes" value="Yes" checked onchange="toggleResidentialAddressSection()">
+                      <label class="form-check-label small" for="sameAddressYes">Yes (Same Address)</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="sameAsPerm" id="sameAddressNo" value="No" onchange="toggleResidentialAddressSection()">
+                      <label class="form-check-label small" for="sameAddressNo">No (Different Present Address)</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section D: Residential / Present Address (Conditional) -->
+            <div id="residentialAddressSection" class="d-none">
+              <div class="section-legend">
+                <i class="bi bi-house-door-fill text-primary"></i>
+                <span>Section D &ndash; Residential / Present Address</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle small fw-normal ms-auto" style="font-size: 0.72rem;">Required as addresses differ</span>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="txtResAddress1" class="form-label small fw-bold text-dark">
+                    Residential Address Line 1 <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtResAddress1" placeholder="Current residential house, ward, or village">
+                  <div class="invalid-feedback small">Residential address line 1 is mandatory.</div>
+                </div>
+                <div class="col-12">
+                  <label for="txtResAddress2" class="form-label small fw-bold text-dark">
+                    Residential Address Line 2 <span class="text-muted fw-normal">(Optional)</span>
+                  </label>
+                  <input type="text" class="form-control form-control-sm" id="txtResAddress2" placeholder="Landmark or locality">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="selResDistrict" class="form-label small fw-bold text-dark">
+                    District <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selResDistrict" onchange="populateDistrictBlocks('selResDistrict', 'selResBlock')">
+                    <option value="">-- Select District --</option>
+                  </select>
+                  <div class="invalid-feedback small">Please select residential district.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="selResBlock" class="form-label small fw-bold text-dark">
+                    Block / GPU / Nagar Panchayat / Municipality <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selResBlock">
+                    <option value="">-- Select District First --</option>
+                  </select>
+                  <div class="invalid-feedback small">Please select Block / GPU / Municipality.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Step 1 Actions -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+            <a href="instructions.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold">
+              <i class="bi bi-arrow-left me-1"></i> Back to Instructions
+            </a>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="manualSaveDraft()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold" onclick="validateAndProceedStep(1)">
+                <span>Next: Forest &amp; Land Details</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             STEP 2: FOREST AND LAND DETAILS
+             ============================================================== -->
+        <div class="form-step-pane" id="stepPane2">
+          <div class="form-step-card">
+
+            <!-- Section A: Forest Jurisdiction -->
+            <div class="mb-4">
+              <div class="section-legend">
+                <i class="bi bi-signpost-2-fill text-success"></i>
+                <span>Section A &ndash; Forest Jurisdiction</span>
+              </div>
+              <p class="text-secondary small mb-3">
+                First select your Forest Division, then choose the corresponding Forest Range under that division.
+              </p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="selDivision" class="form-label small fw-bold text-dark">
+                    Forest Division <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selDivision" required onchange="handleDivisionChange()">
+                    <option value="">-- Select Division --</option>
+                  </select>
+                  <div class="invalid-feedback small">Forest division selection is mandatory.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="selRange" class="form-label small fw-bold text-dark">
+                    Forest Range <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selRange" required>
+                    <option value="">-- Select Division First --</option>
+                  </select>
+                  <div class="invalid-feedback small">Forest range selection is mandatory.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section B: Purpose of Tree Felling -->
+            <div class="mb-4">
+              <div class="section-legend">
+                <i class="bi bi-bullseye text-success"></i>
+                <span>Section B &ndash; Purpose of Tree Felling</span>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="selPurpose" class="form-label small fw-bold text-dark">
+                    Purpose for Felling <span class="text-danger">*</span>
+                  </label>
+                  <select class="form-select form-select-sm" id="selPurpose" required onchange="updatePurposeAuthorityHint()">
+                    <option value="">-- Select Purpose --</option>
+                    <option value="Firewood">Firewood</option>
+                    <option value="Timber">Timber</option>
+                  </select>
+                  <div class="invalid-feedback small">Purpose selection is mandatory.</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="p-2.5 rounded-2 bg-light border small text-muted" id="purposeAuthorityHint">
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    <strong>Statutory Processing Limit:</strong> RO (Up to 3 trees), ACF (Up to 6 trees), DFO (Up to 10 trees).
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section C: Land Information and Documents -->
+            <div class="mb-2">
+              <div class="section-legend">
+                <i class="bi bi-file-earmark-check-fill text-success"></i>
+                <span>Section C &ndash; Land Information and Documents</span>
+              </div>
+
+              <!-- Mandatory Parcha Upload -->
+              <div class="mb-4">
+                <label class="form-label small fw-bold text-dark d-block">
+                  Land Parcha / Khatiyan Copy <span class="text-danger">*</span>
+                </label>
+                <div class="file-upload-box" id="boxParchaUpload">
+                  <input type="file" id="fileParcha" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('Parcha')">
+                  <div id="parchaEmptyPrompt">
+                    <i class="bi bi-cloud-arrow-up-fill fs-2 text-success mb-2 d-block"></i>
+                    <span class="small fw-semibold text-dark d-block mb-1">Click to browse or select Land Parcha / Khatiyan document</span>
+                    <span class="text-muted small">Accepted formats: PDF, JPG, PNG (Simulated Upload)</span>
+                    <div class="mt-2">
+                      <button type="button" class="btn btn-sm btn-outline-success" onclick="document.getElementById('fileParcha').click()">
+                        <i class="bi bi-paperclip me-1"></i> Choose File
+                      </button>
+                    </div>
+                  </div>
+                  <div id="parchaUploadedInfo" class="d-none text-start">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-3 me-2 align-middle"></i>
+                        <span class="fw-bold text-dark font-monospace small" id="lblParchaFileName">Parcha_Document.pdf</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle ms-2">Uploaded</span>
+                      </div>
+                      <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="document.getElementById('fileParcha').click()">Replace</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="removeUploadedFile('Parcha')">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-danger small d-none mt-1" id="errParchaRequired">Land Parcha / Khatiyan is mandatory.</div>
+              </div>
+
+              <!-- Parcha in Applicant's Name? -->
+              <div class="mb-4">
+                <label class="form-label small fw-bold text-dark d-block">
+                  Whether Land Parcha / Khatiyan is in the name of the Applicant? <span class="text-danger">*</span>
+                </label>
+                <div class="d-flex align-items-center gap-4 pt-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="parchaInName" id="parchaInNameYes" value="Yes" checked onchange="toggleConditionalNocSection()">
+                    <label class="form-check-label small" for="parchaInNameYes">Yes (In Applicant's Name)</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="parchaInName" id="parchaInNameNo" value="No" onchange="toggleConditionalNocSection()">
+                    <label class="form-check-label small" for="parchaInNameNo">No (Not in Applicant's Name)</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conditional NOC from Land Owner / Revenue Officer -->
+              <div class="mb-4 d-none" id="nocLandOwnerSection">
+                <div class="alert alert-warning py-2.5 px-3 small border-warning-subtle mb-2">
+                  <i class="bi bi-exclamation-triangle-fill text-warning-emphasis me-1"></i>
+                  <strong>Mandatory Requirement:</strong> As the Land Parcha / Khatiyan is not in the applicant's name, an <strong>NOC from the Land Owner / Revenue Officer</strong> is mandatory.
+                </div>
+                <label class="form-label small fw-bold text-dark d-block">
+                  NOC from Land Owner / Revenue Officer <span class="text-danger">*</span>
+                </label>
+                <div class="file-upload-box" id="boxNocUpload">
+                  <input type="file" id="fileNoc" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('Noc')">
+                  <div id="nocEmptyPrompt">
+                    <i class="bi bi-file-earmark-lock-fill fs-2 text-warning mb-2 d-block"></i>
+                    <span class="small fw-semibold text-dark d-block mb-1">Click to select Land Owner / Revenue Officer NOC</span>
+                    <span class="text-muted small">Accepted formats: PDF, JPG, PNG (Simulated Upload)</span>
+                    <div class="mt-2">
+                      <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="document.getElementById('fileNoc').click()">
+                        <i class="bi bi-paperclip me-1"></i> Choose NOC File
+                      </button>
+                    </div>
+                  </div>
+                  <div id="nocUploadedInfo" class="d-none text-start">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-3 me-2 align-middle"></i>
+                        <span class="fw-bold text-dark font-monospace small" id="lblNocFileName">Landowner_NOC.pdf</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle ms-2">Uploaded</span>
+                      </div>
+                      <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="document.getElementById('fileNoc').click()">Replace</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="removeUploadedFile('Noc')">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-danger small d-none mt-1" id="errNocRequired">NOC from Land Owner / Revenue Officer is mandatory when Parcha is not in applicant's name.</div>
+              </div>
+
+              <!-- Optional Panchayat NOC / Verification Report -->
+              <div class="mb-2">
+                <label class="form-label small fw-bold text-dark d-block">
+                  NOC / Verification Report from Panchayat <span class="text-muted fw-normal">(Optional / Conditional &ndash; If any dispute or verification is available)</span>
+                </label>
+                <div class="file-upload-box" id="boxPanchayatUpload">
+                  <input type="file" id="filePanchayat" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload('Panchayat')">
+                  <div id="panchayatEmptyPrompt">
+                    <i class="bi bi-file-earmark-text fs-2 text-secondary mb-2 d-block"></i>
+                    <span class="small fw-semibold text-dark d-block mb-1">Select Panchayat NOC / Verification Report (Optional)</span>
+                    <span class="text-muted small">Attach if there is any land-related dispute or additional Panchayat verification</span>
+                    <div class="mt-2">
+                      <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('filePanchayat').click()">
+                        <i class="bi bi-paperclip me-1"></i> Choose File
+                      </button>
+                    </div>
+                  </div>
+                  <div id="panchayatUploadedInfo" class="d-none text-start">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-3 me-2 align-middle"></i>
+                        <span class="fw-bold text-dark font-monospace small" id="lblPanchayatFileName">Panchayat_Report.pdf</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle ms-2">Uploaded</span>
+                      </div>
+                      <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="document.getElementById('filePanchayat').click()">Replace</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="removeUploadedFile('Panchayat')">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Step 2 Actions -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="navigateToStep(1)">
+              <i class="bi bi-arrow-left me-1"></i> Previous: Applicant Details
+            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="manualSaveDraft()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold" onclick="validateAndProceedStep(2)">
+                <span>Next: Tree Information</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             STEP 3: TREE INFORMATION
+             ============================================================== -->
+        <div class="form-step-pane" id="stepPane3">
+          <div class="form-step-card">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+              <div>
+                <h3 class="h6 fw-bold text-dark mb-0">Tree Details for Proposed Marking</h3>
+                <span class="small text-muted">Enter individual tree species, plot/khasra number, and GBH in feet</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success-subtle text-success border border-success-subtle fs-6" id="badgeTreeCount">
+                  Trees Added: 1 of 10
+                </span>
+                <button type="button" class="btn btn-sm btn-gov-primary fw-semibold" id="btnAddTreeRow" onclick="addTreeRow()">
+                  <i class="bi bi-plus-circle me-1"></i> Add Tree
+                </button>
+              </div>
+            </div>
+
+            <!-- Max Tree Alert -->
+            <div class="alert alert-warning py-2 px-3 small border-warning-subtle d-none mb-3" id="alertMaxTreesReached">
+              <i class="bi bi-exclamation-circle-fill text-warning-emphasis me-1"></i>
+              <strong>Maximum Limit Reached:</strong> A maximum of <strong>10 trees</strong> can be included in a single Marking Order application. The &ldquo;Add Tree&rdquo; action is disabled.
+            </div>
+
+            <!-- Notice separating Applicant tree info from BO verification -->
+            <div class="alert alert-light border py-2 px-3 small mb-3 text-secondary">
+              <i class="bi bi-info-circle-fill text-primary me-1"></i>
+              <strong>Note:</strong> On-site evidence such as tree photographs, GPS coordinates (latitude/longitude), and verification observations belong to the Block Officer (BO) field inspection stage and are captured separately by the department.
+            </div>
+
+            <!-- Tree Rows Container -->
+            <div id="treeRowsContainer">
+              <!-- Dynamically rendered tree rows -->
+            </div>
+
+            <!-- Additional Remarks Section -->
+            <div class="mt-4 pt-3 border-top">
+              <label for="txtAdditionalRemarks" class="form-label small fw-bold text-dark">
+                Additional Remarks <span class="text-muted fw-normal">(Optional)</span>
+              </label>
+              <textarea class="form-control form-control-sm" id="txtAdditionalRemarks" rows="3" placeholder="Provide any additional relevant details or notes regarding tree marking..."></textarea>
+            </div>
+
+          </div>
+
+          <!-- Step 3 Actions -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="navigateToStep(2)">
+              <i class="bi bi-arrow-left me-1"></i> Previous: Forest &amp; Land Details
+            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="manualSaveDraft()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold" onclick="validateAndProceedStep(3)">
+                <span>Next: Preview &amp; Declaration</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             STEP 4: APPLICATION PREVIEW AND DECLARATION
+             ============================================================== -->
+        <div class="form-step-pane" id="stepPane4">
+
+          <div class="alert alert-info border-0 shadow-xs py-2.5 px-3 small mb-4 rounded-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <i class="bi bi-eye-fill text-primary fs-5 me-1 align-middle"></i>
+              <strong>Application Review:</strong> Please review all entered information, land documents, and tree details carefully. You can edit any section before final submission.
+            </div>
+            <span class="badge bg-light text-dark border">Step 4 of 4</span>
+          </div>
+
+          <!-- Preview Section A: Applicant Details & Address -->
+          <div class="preview-summary-card">
+            <div class="preview-card-header">
+              <h4 class="h6 fw-bold text-dark mb-0">
+                <i class="bi bi-person-vcard text-success me-2"></i>1. Applicant Details &amp; Address
+              </h4>
+              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5" onclick="navigateToStep(1)">
+                <i class="bi bi-pencil-square me-1"></i> Edit Section
+              </button>
+            </div>
+            <div class="row g-3 small">
+              <div class="col-md-3">
+                <span class="text-muted d-block">Application For</span>
+                <strong id="prevAppFor" class="text-dark">Self</strong>
+              </div>
+              <div class="col-md-3">
+                <span class="text-muted d-block">Applicant Full Name</span>
+                <strong id="prevFullName" class="text-dark">-</strong>
+              </div>
+              <div class="col-md-3">
+                <span class="text-muted d-block" id="prevRelationLabel">Father / Husband</span>
+                <strong id="prevRelationName" class="text-dark">-</strong>
+              </div>
+              <div class="col-md-3">
+                <span class="text-muted d-block">Mobile Number</span>
+                <strong id="prevMobile" class="text-dark font-monospace">-</strong>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Permanent Address</span>
+                <span id="prevPermAddress" class="text-dark">-</span>
+              </div>
+              <div class="col-md-6">
+                <span class="text-muted d-block">Residential / Present Address</span>
+                <span id="prevResAddress" class="text-dark">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Section B: Forest & Land Details -->
+          <div class="preview-summary-card">
+            <div class="preview-card-header">
+              <h4 class="h6 fw-bold text-dark mb-0">
+                <i class="bi bi-tree text-success me-2"></i>2. Forest &amp; Land Details
+              </h4>
+              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5" onclick="navigateToStep(2)">
+                <i class="bi bi-pencil-square me-1"></i> Edit Section
+              </button>
+            </div>
+            <div class="row g-3 small mb-3">
+              <div class="col-md-3">
+                <span class="text-muted d-block">Forest Division</span>
+                <strong id="prevDivision" class="text-dark">-</strong>
+              </div>
+              <div class="col-md-3">
+                <span class="text-muted d-block">Forest Range</span>
+                <strong id="prevRange" class="text-dark">-</strong>
+              </div>
+              <div class="col-md-3">
+                <span class="text-muted d-block">Purpose for Felling</span>
+                <strong id="prevPurpose" class="text-dark">-</strong>
+              </div>
+              <div class="col-md-3">
+                <span class="text-muted d-block">Parcha in Applicant Name?</span>
+                <strong id="prevParchaOwnership" class="text-dark">-</strong>
+              </div>
+            </div>
+
+            <h6 class="fw-bold small text-muted text-uppercase mb-2">Uploaded Supporting Documents:</h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Document Name</th>
+                    <th>Requirement Type</th>
+                    <th>File Attached</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="prevDocsTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Preview Section C: Tree Information -->
+          <div class="preview-summary-card">
+            <div class="preview-card-header">
+              <div class="d-flex align-items-center gap-2">
+                <h4 class="h6 fw-bold text-dark mb-0">
+                  <i class="bi bi-list-ol text-success me-1"></i>3. Tree Information
+                </h4>
+                <span class="badge bg-success-subtle text-success border border-success-subtle" id="prevTreeCountBadge">
+                  1 Tree
+                </span>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5" onclick="navigateToStep(3)">
+                <i class="bi bi-pencil-square me-1"></i> Edit Section
+              </button>
+            </div>
+
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle small mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Tree Species / Name</th>
+                    <th>Plot / Khasra No.</th>
+                    <th>GBH (Feet)</th>
+                  </tr>
+                </thead>
+                <tbody id="prevTreesTableBody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="small">
+              <span class="text-muted d-block mb-1">Additional Remarks:</span>
+              <div class="p-2 bg-light rounded border text-secondary" id="prevRemarks">None</div>
+            </div>
+          </div>
+
+          <!-- Preview Section D: Mandatory Declaration -->
+          <div class="form-step-card" style="border-left: 4px solid #114b3f !important;">
+            <div class="section-legend">
+              <i class="bi bi-check2-square text-success"></i>
+              <span>Section D &ndash; Applicant Declaration</span>
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle small fw-normal ms-auto" style="font-size: 0.72rem;">Mandatory</span>
+            </div>
+
+            <div class="alert alert-light border p-3 rounded-2 small mb-3">
+              <p class="fw-semibold text-dark mb-1">
+                Draft declaration &ndash; Subject to departmental approval
+              </p>
+              <p class="text-secondary mb-0">
+                I hereby declare that all information, land particulars, and tree details provided in this application are true, correct, and complete to the best of my knowledge and belief. I understand that the Marking Order is subject to field verification by the Forest and Environment Department, Government of Sikkim, and applicable statutory guidelines.
+              </p>
+            </div>
+
+            <div class="form-check d-flex align-items-start gap-2 mb-0">
+              <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="chkFinalDeclaration" style="width: 1.25rem; height: 1.25rem; cursor: pointer;" onchange="handleDeclarationToggle()">
+              <label class="form-check-label text-dark fw-bold small" for="chkFinalDeclaration" style="cursor: pointer; line-height: 1.5;">
+                I have reviewed the entire application, confirm the accuracy of all entered particulars, and accept the declaration above.
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 4 Actions -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="navigateToStep(3)">
+              <i class="bi bi-arrow-left me-1"></i> Previous: Tree Information
+            </button>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="manualSaveDraft()">
+                <i class="bi bi-save me-1"></i> Save Draft
+              </button>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-2 fw-bold shadow-sm" id="btnSubmitApplication" disabled onclick="submitFinalApplication()">
+                <i class="bi bi-send-check me-1"></i> Submit Application
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+
+      <!-- ==============================================================
+           FINAL SUBMISSION ACKNOWLEDGEMENT CARD (Shown on Success)
+           ============================================================== -->
+      <div id="submissionAckView" class="d-none">
+        <div class="ack-card">
+          <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle mb-3" style="width: 72px; height: 72px; font-size: 2.2rem;">
+              <i class="bi bi-check-lg"></i>
+            </div>
+            <h2 class="h3 fw-bold text-dark mb-1">Application Submitted Successfully!</h2>
+            <p class="text-muted small mb-0">
+              Your Marking Order application has been received and routed to the Forest Range Officer for preliminary scrutiny.
+            </p>
+          </div>
+
+          <!-- Application ID Banner -->
+          <div class="card border-0 bg-light p-3.5 rounded-3 text-center mb-4 border">
+            <span class="text-muted small text-uppercase fw-semibold d-block mb-1">Generated Application Number</span>
+            <div class="h2 fw-bold font-monospace text-primary mb-1" id="ackAppNo">AP/2026/8942</div>
+            <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
+                <i class="bi bi-check-circle me-1"></i> Initial Status: Application Submitted
+              </span>
+              <span class="badge bg-light text-secondary border px-2.5 py-1" id="ackSubmissionDate">
+                Submitted Today
+              </span>
+            </div>
+          </div>
+
+          <!-- Application Summary Matrix -->
+          <div class="card border-0 shadow-xs p-3.5 bg-white mb-4 border">
+            <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+              <i class="bi bi-receipt text-success me-1"></i> Marking Order Application Summary
+            </h6>
+            <div class="row g-3 small">
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Service Name</span>
+                <strong class="text-dark">Marking Order</strong>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Applicant Name</span>
+                <strong class="text-dark" id="ackApplicantName">-</strong>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Division &bull; Range</span>
+                <strong class="text-dark" id="ackDivisionRange">-</strong>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Purpose &bull; Tree Count</span>
+                <strong class="text-dark" id="ackPurposeTrees">-</strong>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Department</span>
+                <span class="text-dark">Forest and Environment Department</span>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Government</span>
+                <span class="text-dark">Government of Sikkim</span>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Next Step</span>
+                <span class="text-success fw-semibold">Range Officer Preliminary Scrutiny</span>
+              </div>
+              <div class="col-sm-6 col-md-3">
+                <span class="text-muted d-block">Statutory Fee</span>
+                <span class="text-dark">₹50.00 (Payable after Approval)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 no-print">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> Print Acknowledgement Slip
+            </button>
+            <div class="d-flex gap-2">
+              <a href="dashboard.html" class="btn btn-sm btn-outline-primary px-3 py-1.5" id="ackBtnTrack">
+                <i class="bi bi-geo-alt me-1"></i> Track in Citizen Dashboard
+              </a>
+              <a href="dashboard.html" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold">
+                <span>Go to Citizen Dashboard</span>
+                <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto no-print" role="contentinfo">
+    <div class="container-xl">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Forest and Environment Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="liveToast" class="toast align-items-center text-bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body small" id="toastMessage">Draft saved successfully.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script>
+    'use strict';
+
+    // Application Form State
+    let currentStep = 1;
+    let treeCount = 0;
+    const maxTrees = 10;
+    let officerRole = null; // 'ro', 'bo', 'acf', 'dfo' or null
+    let mockUploadedFiles = {
+      Parcha: null,
+      Noc: null,
+      Panchayat: null
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      MarkingOrderData.initDashboardCommon();
+
+      // Detect role context (URL param or session)
+      const params = new URLSearchParams(window.location.search);
+      const qRole = params.get('role');
+      if (qRole && ['ro', 'bo', 'acf', 'dfo'].includes(qRole.toLowerCase())) {
+        officerRole = qRole.toLowerCase();
+      }
+
+      setupRoleAssistanceContext();
+      populateDropdowns();
+
+      // Check if editing an existing returned application (e.g. ?appNo=SK-MO-2026-00110)
+      const editAppNo = params.get('appNo');
+      if (editAppNo) {
+        loadApplicationForCorrection(editAppNo);
+      } else {
+        // Initialize with 1 empty tree row or check draft
+        checkForExistingDraft();
+      }
+    });
+
+    // =========================================================================
+    // 1. ROLE ASSISTANCE CONTEXT (Section 3)
+    // =========================================================================
+    function setupRoleAssistanceContext() {
+      const banner = document.getElementById('roleAssistanceBanner');
+      const appForSelf = document.getElementById('appForSelf');
+      const appForOthers = document.getElementById('appForOthers');
+      const labelAppForSelf = document.getElementById('labelAppForSelf');
+      const labelAppForOthers = document.getElementById('labelAppForOthers');
+      const appForSelfCol = document.getElementById('appForSelfCol');
+      const backBtn = document.getElementById('btnBackToDashboard');
+
+      if (officerRole) {
+        const roleTitles = {
+          ro: 'Range Officer (RO) Assisted Mode',
+          bo: 'Block Officer (BO) Assisted Mode',
+          acf: 'Assistant Conservator of Forests (ACF) Assisted Mode',
+          dfo: 'Divisional Forest Officer (DFO) Assisted Mode'
+        };
+        const dashboardUrls = {
+          ro: 'dashboard-ro.html',
+          bo: 'dashboard-bo.html',
+          acf: 'dashboard-acf.html',
+          dfo: 'dashboard-dfo.html'
+        };
+
+        banner.innerHTML =
+          '<span class="badge bg-primary text-white px-2.5 py-1">' +
+            '<i class="bi bi-person-gear me-1"></i> ' + (roleTitles[officerRole] || 'Department Officer Assisted Mode') + ' &bull; Submitting on Behalf of Citizen' +
+          '</span>';
+
+        // Officer assisted applications must default to Apply for Others and hide Self
+        appForOthers.checked = true;
+        labelAppForOthers.classList.add('selected');
+        labelAppForSelf.classList.remove('selected');
+        appForSelfCol.classList.add('d-none');
+
+        backBtn.href = dashboardUrls[officerRole] || 'role-select.html';
+        backBtn.querySelector('span').textContent = 'Officer Dashboard';
+      } else {
+        banner.innerHTML =
+          '<span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">' +
+            '<i class="bi bi-person-check-fill me-1"></i> Citizen Submission Mode' +
+          '</span>';
+      }
+
+      renderApplyRoleLayout(officerRole);
+    }
+
+    function renderApplyRoleLayout(role) {
+      const navContainer = document.getElementById('applySidebarNavContainer');
+      const hdrTitle = document.getElementById('applyHeaderTitle');
+      const hdrUserName = document.getElementById('applyHeaderUserName');
+      const hdrRoleBadge = document.getElementById('applyHeaderRoleBadge');
+      const hdrJurisdiction = document.getElementById('applyHeaderJurisdiction');
+
+      if (role === 'ro') {
+        hdrTitle.textContent = 'RO Desk \u2022 Assist Citizen (Apply)';
+        hdrUserName.textContent = 'RO Demo User (Ranipool Range)';
+        hdrRoleBadge.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle me-1';
+        hdrRoleBadge.textContent = 'Role: Range Officer (RO)';
+        hdrJurisdiction.textContent = 'Division: Gangtok \u2022 Range: Ranipool Range';
+        navContainer.innerHTML =
+          '<nav class="nav flex-column gap-1">' +
+            '<a href="dashboard-ro.html#dashboard" class="officer-nav-link"><i class="bi bi-speedometer2"></i> <span>Dashboard Overview</span></a>' +
+            '<a href="apply.html?role=ro" class="officer-nav-link active text-success fw-semibold"><i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span></a>' +
+            '<a href="dashboard-ro.html#pending" class="officer-nav-link"><i class="bi bi-inbox-fill text-warning"></i> <span>Pending Applications</span></a>' +
+            '<a href="dashboard-ro.html#scheduled" class="officer-nav-link"><i class="bi bi-calendar-check-fill text-info"></i> <span>Verification Scheduled</span></a>' +
+            '<a href="dashboard-ro.html#reports-submitted" class="officer-nav-link"><i class="bi bi-clipboard2-check-fill text-primary"></i> <span>Verification Reports</span></a>' +
+            '<a href="dashboard-ro.html#approved" class="officer-nav-link"><i class="bi bi-check-circle-fill text-success"></i> <span>Approved Applications</span></a>' +
+            '<a href="dashboard-ro.html#forwarded" class="officer-nav-link"><i class="bi bi-send-check-fill text-secondary"></i> <span>Forwarded to ACF</span></a>' +
+            '<a href="dashboard-ro.html#rejected" class="officer-nav-link"><i class="bi bi-x-circle-fill text-danger"></i> <span>Rejected Applications</span></a>' +
+            '<a href="reports.html?role=ro" class="officer-nav-link"><i class="bi bi-file-earmark-bar-graph text-success"></i> <span>Reports &amp; Analytics</span></a>' +
+            '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top"><i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span></a>' +
+          '</nav>';
+      } else if (role === 'bo') {
+        hdrTitle.textContent = 'BO Desk \u2022 Assist Citizen (Apply)';
+        hdrUserName.textContent = 'BO Demo User 1 (Ranipool Block)';
+        hdrRoleBadge.className = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle me-1';
+        hdrRoleBadge.textContent = 'Role: Block Officer (BO)';
+        hdrJurisdiction.textContent = 'Division: Gangtok \u2022 Range: Ranipool Range';
+        navContainer.innerHTML =
+          '<nav class="nav flex-column gap-1">' +
+            '<a href="dashboard-bo.html#dashboard" class="officer-nav-link"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a>' +
+            '<a href="apply.html?role=bo" class="officer-nav-link active text-success fw-semibold"><i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span></a>' +
+            '<a href="dashboard-bo.html#assigned" class="officer-nav-link"><i class="bi bi-inbox-fill text-primary"></i> <span>Assigned Applications</span></a>' +
+            '<a href="dashboard-bo.html#scheduled" class="officer-nav-link"><i class="bi bi-calendar-event-fill text-warning"></i> <span>Scheduled Verification</span></a>' +
+            '<a href="dashboard-bo.html#verified" class="officer-nav-link"><i class="bi bi-check2-circle text-success"></i> <span>Verified Applications</span></a>' +
+            '<a href="dashboard-bo.html#reports" class="officer-nav-link"><i class="bi bi-file-earmark-check-fill text-info"></i> <span>Submitted Reports</span></a>' +
+            '<a href="dashboard-bo.html#trees" class="officer-nav-link"><i class="bi bi-tree-fill text-success"></i> <span>Tree Details</span></a>' +
+            '<a href="reports.html?role=bo" class="officer-nav-link"><i class="bi bi-file-earmark-bar-graph text-info"></i> <span>Reports &amp; Summary</span></a>' +
+            '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top"><i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span></a>' +
+          '</nav>';
+      } else if (role === 'acf') {
+        hdrTitle.textContent = 'ACF Desk \u2022 Assist Citizen (Apply)';
+        hdrUserName.textContent = 'ACF Demo User (Gangtok Division)';
+        hdrRoleBadge.className = 'badge bg-info-subtle text-info-emphasis border border-info-subtle me-1';
+        hdrRoleBadge.textContent = 'Role: Assistant Conservator of Forests (ACF)';
+        hdrJurisdiction.textContent = 'Division: Gangtok Territorial Division';
+        navContainer.innerHTML =
+          '<nav class="nav flex-column gap-1">' +
+            '<a href="dashboard-acf.html#dashboard" class="officer-nav-link"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a>' +
+            '<a href="apply.html?role=acf" class="officer-nav-link active text-success fw-semibold"><i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span></a>' +
+            '<a href="dashboard-acf.html#forwarded" class="officer-nav-link"><i class="bi bi-inbox-fill text-primary"></i> <span>Forwarded Applications</span></a>' +
+            '<a href="dashboard-acf.html#pending" class="officer-nav-link"><i class="bi bi-hourglass-split text-warning"></i> <span>Pending Applications</span></a>' +
+            '<a href="dashboard-acf.html#verified" class="officer-nav-link"><i class="bi bi-clipboard2-check text-info"></i> <span>Verified Applications</span></a>' +
+            '<a href="dashboard-acf.html#approved" class="officer-nav-link"><i class="bi bi-check-circle-fill text-success"></i> <span>Approved Applications</span></a>' +
+            '<a href="dashboard-acf.html#rejected" class="officer-nav-link"><i class="bi bi-x-circle-fill text-danger"></i> <span>Rejected Applications</span></a>' +
+            '<a href="reports.html?role=acf" class="officer-nav-link"><i class="bi bi-file-earmark-bar-graph text-success"></i> <span>Reports &amp; Analytics</span></a>' +
+            '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top"><i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span></a>' +
+          '</nav>';
+      } else if (role === 'dfo') {
+        hdrTitle.textContent = 'DFO Desk \u2022 Assist Citizen (Apply)';
+        hdrUserName.textContent = 'DFO Demo User (Gangtok Division)';
+        hdrRoleBadge.className = 'badge bg-success-subtle text-success border border-success-subtle me-1';
+        hdrRoleBadge.textContent = 'Role: Divisional Forest Officer (DFO)';
+        hdrJurisdiction.textContent = 'Division: Gangtok Territorial Division';
+        navContainer.innerHTML =
+          '<nav class="nav flex-column gap-1">' +
+            '<a href="dashboard-dfo.html#dashboard" class="officer-nav-link"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a>' +
+            '<a href="apply.html?role=dfo" class="officer-nav-link active text-success fw-semibold"><i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span></a>' +
+            '<a href="dashboard-dfo.html#forwarded" class="officer-nav-link"><i class="bi bi-inbox-fill text-primary"></i> <span>Forwarded Applications</span></a>' +
+            '<a href="dashboard-dfo.html#pending" class="officer-nav-link"><i class="bi bi-hourglass-split text-warning"></i> <span>Pending Applications</span></a>' +
+            '<a href="dashboard-dfo.html#approved" class="officer-nav-link"><i class="bi bi-check-circle-fill text-success"></i> <span>Approved Applications</span></a>' +
+            '<a href="dashboard-dfo.html#rejected" class="officer-nav-link"><i class="bi bi-x-circle-fill text-danger"></i> <span>Rejected Applications</span></a>' +
+            '<a href="reports.html?role=dfo" class="officer-nav-link"><i class="bi bi-file-earmark-bar-graph text-success"></i> <span>Reports &amp; Analytics</span></a>' +
+            '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top"><i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span></a>' +
+          '</nav>';
+      } else {
+        // Citizen Mode
+        hdrTitle.textContent = 'Apply for Tree Felling Marking Order';
+        hdrUserName.textContent = 'Citizen Demo User (Primary)';
+        hdrRoleBadge.className = 'badge bg-success-subtle text-success border border-success-subtle me-1';
+        hdrRoleBadge.textContent = 'Role: Citizen';
+        hdrJurisdiction.textContent = 'District: Gangtok \u2022 Ranipool Range';
+        navContainer.innerHTML =
+          '<ul class="gov-sidebar-nav list-unstyled p-0 m-0">' +
+            '<li><a href="dashboard.html#dashboard" class="gov-sidebar-link"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a></li>' +
+            '<li><a href="apply.html" class="gov-sidebar-link active text-success fw-semibold"><i class="bi bi-plus-circle-fill text-success"></i> <span>Apply for Marking Order</span></a></li>' +
+            '<li><a href="dashboard.html#applications" class="gov-sidebar-link"><i class="bi bi-journal-text"></i> <span>My Applications</span></a></li>' +
+            '<li><a href="dashboard.html#tracking" class="gov-sidebar-link"><i class="bi bi-geo-alt-fill text-primary"></i> <span>Track Application</span></a></li>' +
+            '<li><a href="dashboard.html#notifications" class="gov-sidebar-link"><i class="bi bi-bell-fill text-warning"></i> <span>Notifications</span></a></li>' +
+            '<li><a href="dashboard.html#support" class="gov-sidebar-link"><i class="bi bi-headset"></i> <span>Help and Support</span></a></li>' +
+            '<li><a href="dashboard.html#profile" class="gov-sidebar-link"><i class="bi bi-person-badge"></i> <span>My Profile</span></a></li>' +
+            '<li class="mt-2 pt-2 border-top"><a href="role-select.html" class="gov-sidebar-link text-danger"><i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span></a></li>' +
+          '</ul>';
+      }
+    }
+
+    function handleAppForChange() {
+      const isOthers = document.getElementById('appForOthers').checked;
+      const labelSelf = document.getElementById('labelAppForSelf');
+      const labelOthers = document.getElementById('labelAppForOthers');
+      const heading = document.getElementById('applicantDetailsHeading');
+
+      if (isOthers) {
+        labelOthers.classList.add('selected');
+        labelSelf.classList.remove('selected');
+        heading.textContent = 'Section B \u2013 Beneficiary Applicant Details (Person on whose behalf application is made)';
+      } else {
+        labelSelf.classList.add('selected');
+        labelOthers.classList.remove('selected');
+        heading.textContent = 'Section B \u2013 Applicant Details';
+      }
+    }
+
+    // =========================================================================
+    // 2. MASTER DROPDOWN POPULATION (Divisions, Ranges, Districts, Blocks)
+    // =========================================================================
+    function populateDropdowns() {
+      // 1. Districts
+      const dists = MarkingOrderData.districtsMaster;
+      const permDistSel = document.getElementById('selPermDistrict');
+      const resDistSel = document.getElementById('selResDistrict');
+
+      dists.forEach(function (d) {
+        const opt1 = new Option(d.name + ' District', d.name);
+        const opt2 = new Option(d.name + ' District', d.name);
+        permDistSel.add(opt1);
+        resDistSel.add(opt2);
+      });
+
+      // 2. Divisions
+      const divs = MarkingOrderData.divisionsMaster;
+      const divSel = document.getElementById('selDivision');
+      divs.forEach(function (dv) {
+        divSel.add(new Option(dv.name + ' Division (' + dv.fullTitle + ')', dv.name));
+      });
+    }
+
+    function populateDistrictBlocks(districtSelectId, blockSelectId, selectedBlock) {
+      const distVal = document.getElementById(districtSelectId).value;
+      const blockSel = document.getElementById(blockSelectId);
+      blockSel.innerHTML = '<option value="">-- Select Block / GPU --</option>';
+
+      if (!distVal) return;
+      const found = MarkingOrderData.districtsMaster.find(function (d) { return d.name === distVal; });
+      if (found && found.blocks) {
+        found.blocks.forEach(function (b) {
+          const opt = new Option(b, b);
+          if (selectedBlock && selectedBlock === b) opt.selected = true;
+          blockSel.add(opt);
+        });
+      }
+    }
+
+    function handleDivisionChange(selectedRange) {
+      const divVal = document.getElementById('selDivision').value;
+      const rangeSel = document.getElementById('selRange');
+      rangeSel.innerHTML = '<option value="">-- Select Forest Range --</option>';
+
+      if (!divVal) return;
+      const foundDiv = MarkingOrderData.divisionsMaster.find(function (d) { return d.name === divVal; });
+      if (foundDiv && foundDiv.ranges) {
+        foundDiv.ranges.forEach(function (r) {
+          const opt = new Option(r, r);
+          if (selectedRange && selectedRange === r) opt.selected = true;
+          rangeSel.add(opt);
+        });
+      }
+    }
+
+    function updatePurposeAuthorityHint() {
+      const purVal = document.getElementById('selPurpose').value;
+      const hintEl = document.getElementById('purposeAuthorityHint');
+      if (purVal === 'Firewood') {
+        hintEl.innerHTML = '<i class="bi bi-shield-check text-success me-1"></i><strong>Firewood Authority Limit:</strong> RO (Up to 3 trees), ACF (Up to 6 trees), DFO (Up to 10 trees).';
+      } else if (purVal === 'Timber') {
+        hintEl.innerHTML = '<i class="bi bi-shield-check text-primary me-1"></i><strong>Timber Authority Limit:</strong> RO (Up to 3 trees), ACF (Up to 6 trees), DFO (Up to 10 trees).';
+      } else {
+        hintEl.innerHTML = '<i class="bi bi-shield-check text-success me-1"></i><strong>Statutory Processing Limit:</strong> RO (Up to 3 trees), ACF (Up to 6 trees), DFO (Up to 10 trees).';
+      }
+    }
+
+    function toggleResidentialAddressSection() {
+      const isSame = document.getElementById('sameAddressYes').checked;
+      const resSection = document.getElementById('residentialAddressSection');
+      if (isSame) {
+        resSection.classList.add('d-none');
+      } else {
+        resSection.classList.remove('d-none');
+      }
+    }
+
+    function toggleConditionalNocSection() {
+      const inApplicantName = document.getElementById('parchaInNameYes').checked;
+      const nocSection = document.getElementById('nocLandOwnerSection');
+      if (inApplicantName) {
+        nocSection.classList.add('d-none');
+      } else {
+        nocSection.classList.remove('d-none');
+      }
+    }
+
+    // =========================================================================
+    // 3. FILE UPLOAD SIMULATION (Section 10)
+    // =========================================================================
+    function handleFileUpload(docType) {
+      const fileInput = document.getElementById('file' + docType);
+      const emptyPrompt = document.getElementById(docType.toLowerCase() + 'EmptyPrompt');
+      const uploadedInfo = document.getElementById(docType.toLowerCase() + 'UploadedInfo');
+      const fileNameLabel = document.getElementById('lbl' + docType + 'FileName');
+      const box = document.getElementById('box' + docType + 'Upload');
+
+      let filename = 'Supporting_Document.pdf';
+      let fileSize = '1.8 MB';
+
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        filename = fileInput.files[0].name;
+        fileSize = (fileInput.files[0].size / (1024 * 1024)).toFixed(1) + ' MB';
+      } else {
+        filename = docType === 'Parcha' ? 'Sikkim_Land_Khatiyan_Plot_142.pdf' :
+                   docType === 'Noc' ? 'Landowner_Consent_NOC.pdf' : 'Panchayat_Verification_Report.pdf';
+      }
+
+      mockUploadedFiles[docType] = {
+        name: filename,
+        size: fileSize,
+        uploadedAt: new Date().toLocaleTimeString()
+      };
+
+      if (fileNameLabel) fileNameLabel.textContent = filename + ' (' + fileSize + ')';
+      if (emptyPrompt) emptyPrompt.classList.add('d-none');
+      if (uploadedInfo) uploadedInfo.classList.remove('d-none');
+      if (box) box.classList.add('uploaded');
+
+      // Clear validation error if visible
+      const err = document.getElementById('err' + docType + 'Required');
+      if (err) err.classList.add('d-none');
+    }
+
+    function removeUploadedFile(docType) {
+      mockUploadedFiles[docType] = null;
+      const emptyPrompt = document.getElementById(docType.toLowerCase() + 'EmptyPrompt');
+      const uploadedInfo = document.getElementById(docType.toLowerCase() + 'UploadedInfo');
+      const box = document.getElementById('box' + docType + 'Upload');
+      const fileInput = document.getElementById('file' + docType);
+
+      if (fileInput) fileInput.value = '';
+      if (emptyPrompt) emptyPrompt.classList.remove('d-none');
+      if (uploadedInfo) uploadedInfo.classList.add('d-none');
+      if (box) box.classList.remove('uploaded');
+    }
+
+    // =========================================================================
+    // 4. DYNAMIC TREE ROWS (Section 7 - Strict Max 10 Trees)
+    // =========================================================================
+    function addTreeRow(initialData) {
+      if (treeCount >= maxTrees) {
+        showToast('Maximum permitted limit of 10 trees reached.');
+        return;
+      }
+
+      treeCount++;
+      const container = document.getElementById('treeRowsContainer');
+      const rowId = 'treeRow_' + treeCount;
+
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'tree-row-box';
+      rowDiv.id = rowId;
+
+      // Species Options
+      let speciesOptions = '<option value="">-- Select Species --</option>';
+      MarkingOrderData.treeSpeciesMaster.forEach(function (sp) {
+        const isSel = initialData && initialData.species === sp.commonName ? 'selected' : '';
+        speciesOptions += '<option value="' + sp.commonName + '" ' + isSel + '>' + sp.commonName + ' (' + sp.scientificName + ' &bull; ' + sp.category + ')</option>';
+      });
+
+      const removeBtnHtml = treeCount > 1
+        ? '<button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="removeTreeRow(\'' + rowId + '\')"><i class="bi bi-trash3 me-1"></i> Remove</button>'
+        : '<span class="badge bg-light text-secondary border small">Primary Tree</span>';
+
+      rowDiv.innerHTML =
+        '<div class="tree-row-header">' +
+          '<div class="d-flex align-items-center gap-2">' +
+            '<span class="badge bg-success-subtle text-success border border-success-subtle fw-bold tree-index-badge">Tree #' + treeCount + '</span>' +
+            '<span class="small text-muted">Statutory Tree Record</span>' +
+          '</div>' +
+          '<div>' + removeBtnHtml + '</div>' +
+        '</div>' +
+        '<div class="row g-3">' +
+          '<div class="col-md-5">' +
+            '<label class="form-label small fw-bold text-dark">Tree Name / Species <span class="text-danger">*</span></label>' +
+            '<select class="form-select form-select-sm tree-species-sel" required>' + speciesOptions + '</select>' +
+            '<div class="invalid-feedback small">Species selection is mandatory.</div>' +
+          '</div>' +
+          '<div class="col-md-4">' +
+            '<label class="form-label small fw-bold text-dark">Plot / Khasra No. <span class="text-danger">*</span></label>' +
+            '<input type="text" class="form-control form-control-sm tree-plot-input" placeholder="e.g. 142/B or 88" value="' + (initialData && initialData.plotNo ? initialData.plotNo : '') + '" required>' +
+            '<div class="invalid-feedback small">Plot / Khasra No. is mandatory.</div>' +
+          '</div>' +
+          '<div class="col-md-3">' +
+            '<label class="form-label small fw-bold text-dark">GBH (Feet) <span class="text-danger">*</span></label>' +
+            '<input type="number" step="0.1" min="0.5" max="30" class="form-control form-control-sm tree-gbh-input" placeholder="e.g. 4.5" value="' + (initialData && initialData.gbhFeet ? initialData.gbhFeet : '') + '" required>' +
+            '<div class="invalid-feedback small">Valid GBH in feet is mandatory.</div>' +
+          '</div>' +
+        '</div>';
+
+      container.appendChild(rowDiv);
+      updateTreeCounters();
+    }
+
+    function removeTreeRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.remove();
+        reindexTreeRows();
+      }
+    }
+
+    function reindexTreeRows() {
+      const rows = document.querySelectorAll('#treeRowsContainer .tree-row-box');
+      treeCount = 0;
+      rows.forEach(function (r, idx) {
+        treeCount++;
+        r.id = 'treeRow_' + treeCount;
+        r.querySelector('.tree-index-badge').textContent = 'Tree #' + treeCount;
+      });
+      updateTreeCounters();
+    }
+
+    function updateTreeCounters() {
+      document.getElementById('badgeTreeCount').textContent = 'Trees Added: ' + treeCount + ' of ' + maxTrees;
+      const addBtn = document.getElementById('btnAddTreeRow');
+      const maxAlert = document.getElementById('alertMaxTreesReached');
+
+      if (treeCount >= maxTrees) {
+        addBtn.disabled = true;
+        maxAlert.classList.remove('d-none');
+      } else {
+        addBtn.disabled = false;
+        maxAlert.classList.add('d-none');
+      }
+    }
+
+    function getEnteredTrees() {
+      const trees = [];
+      const rows = document.querySelectorAll('#treeRowsContainer .tree-row-box');
+      rows.forEach(function (r, idx) {
+        const species = r.querySelector('.tree-species-sel').value;
+        const plotNo = r.querySelector('.tree-plot-input').value.trim();
+        const gbh = r.querySelector('.tree-gbh-input').value.trim();
+        trees.push({
+          treeNo: idx + 1,
+          species: species,
+          plotNo: plotNo,
+          gbhFeet: gbh ? parseFloat(gbh) : 0
+        });
+      });
+      return trees;
+    }
+
+    // =========================================================================
+    // 5. STEPPER NAVIGATION & VALIDATION (Sections 4, 8, 9)
+    // =========================================================================
+    function navigateToStep(targetStep) {
+      // Allow moving backward anytime; forward only if current step validates
+      if (targetStep < currentStep) {
+        setStep(targetStep);
+      } else if (targetStep > currentStep) {
+        if (validateStep(currentStep)) {
+          setStep(targetStep);
+        }
+      }
+    }
+
+    function validateAndProceedStep(stepNumber) {
+      if (validateStep(stepNumber)) {
+        setStep(stepNumber + 1);
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+      }
+    }
+
+    function setStep(stepNum) {
+      currentStep = stepNum;
+
+      // Update panes
+      for (let i = 1; i <= 4; i++) {
+        const pane = document.getElementById('stepPane' + i);
+        const stepBubble = document.getElementById('stepperStep' + i);
+        if (i === currentStep) {
+          pane.classList.add('active');
+          stepBubble.classList.add('active');
+          stepBubble.classList.remove('completed');
+        } else if (i < currentStep) {
+          pane.classList.remove('active');
+          stepBubble.classList.add('completed');
+          stepBubble.classList.remove('active');
+        } else {
+          pane.classList.remove('active');
+          stepBubble.classList.remove('active', 'completed');
+        }
+      }
+
+      // If opening preview step 4, populate preview cards
+      if (currentStep === 4) {
+        populatePreviewData();
+      }
+
+      autoSaveDraft();
+    }
+
+    function validateStep(stepNum) {
+      let isValid = true;
+
+      if (stepNum === 1) {
+        const fn = document.getElementById('txtFirstName');
+        const ln = document.getElementById('txtLastName');
+        const rn = document.getElementById('txtRelationName');
+        const mob = document.getElementById('txtMobile');
+        const pAddr1 = document.getElementById('txtPermAddress1');
+        const pDist = document.getElementById('selPermDistrict');
+        const pBlock = document.getElementById('selPermBlock');
+
+        // Text & relation validations
+        if (!fn.value.trim()) { fn.classList.add('is-invalid'); isValid = false; } else { fn.classList.remove('is-invalid'); }
+        if (!ln.value.trim()) { ln.classList.add('is-invalid'); isValid = false; } else { ln.classList.remove('is-invalid'); }
+        if (!rn.value.trim()) { rn.classList.add('is-invalid'); isValid = false; } else { rn.classList.remove('is-invalid'); }
+
+        // Mobile validation: 10 digits
+        const mobVal = mob.value.trim();
+        if (!mobVal || !/^\d{10}$/.test(mobVal.replace(/[^0-9]/g, ''))) {
+          mob.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          mob.classList.remove('is-invalid');
+        }
+
+        if (!pAddr1.value.trim()) { pAddr1.classList.add('is-invalid'); isValid = false; } else { pAddr1.classList.remove('is-invalid'); }
+        if (!pDist.value) { pDist.classList.add('is-invalid'); isValid = false; } else { pDist.classList.remove('is-invalid'); }
+        if (!pBlock.value) { pBlock.classList.add('is-invalid'); isValid = false; } else { pBlock.classList.remove('is-invalid'); }
+
+        // Residential address check if not same
+        const isSame = document.getElementById('sameAddressYes').checked;
+        if (!isSame) {
+          const rAddr1 = document.getElementById('txtResAddress1');
+          const rDist = document.getElementById('selResDistrict');
+          const rBlock = document.getElementById('selResBlock');
+
+          if (!rAddr1.value.trim()) { rAddr1.classList.add('is-invalid'); isValid = false; } else { rAddr1.classList.remove('is-invalid'); }
+          if (!rDist.value) { rDist.classList.add('is-invalid'); isValid = false; } else { rDist.classList.remove('is-invalid'); }
+          if (!rBlock.value) { rBlock.classList.add('is-invalid'); isValid = false; } else { rBlock.classList.remove('is-invalid'); }
+        }
+      } else if (stepNum === 2) {
+        const div = document.getElementById('selDivision');
+        const range = document.getElementById('selRange');
+        const pur = document.getElementById('selPurpose');
+        const errParcha = document.getElementById('errParchaRequired');
+        const errNoc = document.getElementById('errNocRequired');
+
+        if (!div.value) { div.classList.add('is-invalid'); isValid = false; } else { div.classList.remove('is-invalid'); }
+        if (!range.value) { range.classList.add('is-invalid'); isValid = false; } else { range.classList.remove('is-invalid'); }
+        if (!pur.value) { pur.classList.add('is-invalid'); isValid = false; } else { pur.classList.remove('is-invalid'); }
+
+        // Mandatory Parcha Document
+        if (!mockUploadedFiles.Parcha) {
+          errParcha.classList.remove('d-none');
+          isValid = false;
+        } else {
+          errParcha.classList.add('d-none');
+        }
+
+        // Conditional NOC
+        const inApplicantName = document.getElementById('parchaInNameYes').checked;
+        if (!inApplicantName) {
+          if (!mockUploadedFiles.Noc) {
+            errNoc.classList.remove('d-none');
+            isValid = false;
+          } else {
+            errNoc.classList.add('d-none');
+          }
+        }
+      } else if (stepNum === 3) {
+        const trees = getEnteredTrees();
+        if (trees.length === 0) {
+          showToast('Please add at least one tree record.');
+          isValid = false;
+        }
+
+        const rows = document.querySelectorAll('#treeRowsContainer .tree-row-box');
+        rows.forEach(function (r) {
+          const species = r.querySelector('.tree-species-sel');
+          const plot = r.querySelector('.tree-plot-input');
+          const gbh = r.querySelector('.tree-gbh-input');
+
+          if (!species.value) { species.classList.add('is-invalid'); isValid = false; } else { species.classList.remove('is-invalid'); }
+          if (!plot.value.trim()) { plot.classList.add('is-invalid'); isValid = false; } else { plot.classList.remove('is-invalid'); }
+          if (!gbh.value || parseFloat(gbh.value) <= 0) { gbh.classList.add('is-invalid'); isValid = false; } else { gbh.classList.remove('is-invalid'); }
+        });
+      }
+
+      if (!isValid) {
+        showToast('Please complete all mandatory fields correctly before proceeding.');
+      }
+      return isValid;
+    }
+
+    // =========================================================================
+    // 6. PREVIEW DATA POPULATION (Section 8)
+    // =========================================================================
+    function populatePreviewData() {
+      // Applicant Details
+      const isOthers = document.getElementById('appForOthers').checked;
+      const fn = document.getElementById('txtFirstName').value.trim();
+      const mn = document.getElementById('txtMiddleName').value.trim();
+      const ln = document.getElementById('txtLastName').value.trim();
+      const relType = document.querySelector('input[name="relationType"]:checked').value;
+      const relName = document.getElementById('txtRelationName').value.trim();
+      const mob = document.getElementById('txtMobile').value.trim();
+
+      const fullName = (fn + ' ' + (mn ? mn + ' ' : '') + ln).trim();
+      document.getElementById('prevAppFor').innerHTML = isOthers
+        ? '<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Apply for Others</span>'
+        : '<span class="badge bg-success-subtle text-success border border-success-subtle">Self</span>';
+
+      document.getElementById('prevFullName').textContent = fullName || '-';
+      document.getElementById('prevRelationLabel').textContent = relType + ' Name';
+      document.getElementById('prevRelationName').textContent = relName || '-';
+      document.getElementById('prevMobile').textContent = mob || '-';
+
+      // Addresses
+      const pAddr1 = document.getElementById('txtPermAddress1').value.trim();
+      const pAddr2 = document.getElementById('txtPermAddress2').value.trim();
+      const pDist = document.getElementById('selPermDistrict').value;
+      const pBlock = document.getElementById('selPermBlock').value;
+      const permFull = pAddr1 + (pAddr2 ? ', ' + pAddr2 : '') + ', ' + pBlock + ', ' + pDist + ' District, Sikkim';
+      document.getElementById('prevPermAddress').textContent = permFull;
+
+      const isSame = document.getElementById('sameAddressYes').checked;
+      if (isSame) {
+        document.getElementById('prevResAddress').innerHTML = '<span class="text-muted"><i class="bi bi-check2 me-1"></i>Same as Permanent Address</span>';
+      } else {
+        const rAddr1 = document.getElementById('txtResAddress1').value.trim();
+        const rAddr2 = document.getElementById('txtResAddress2').value.trim();
+        const rDist = document.getElementById('selResDistrict').value;
+        const rBlock = document.getElementById('selResBlock').value;
+        document.getElementById('prevResAddress').textContent = rAddr1 + (rAddr2 ? ', ' + rAddr2 : '') + ', ' + rBlock + ', ' + rDist + ' District, Sikkim';
+      }
+
+      // Forest & Land
+      const div = document.getElementById('selDivision').value;
+      const range = document.getElementById('selRange').value;
+      const purpose = document.getElementById('selPurpose').value;
+      const inApplicantName = document.getElementById('parchaInNameYes').checked;
+
+      document.getElementById('prevDivision').textContent = div ? div + ' Division' : '-';
+      document.getElementById('prevRange').textContent = range || '-';
+      document.getElementById('prevPurpose').innerHTML = '<span class="badge bg-light text-dark border">' + (purpose || '-') + '</span>';
+      document.getElementById('prevParchaOwnership').innerHTML = inApplicantName
+        ? '<span class="badge bg-success-subtle text-success border border-success-subtle">Yes (Applicant\'s Name)</span>'
+        : '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">No (NOC Required)</span>';
+
+      // Supporting Documents Table
+      const docsTbody = document.getElementById('prevDocsTableBody');
+      let docsHtml = '';
+
+      // 1. Parcha
+      docsHtml += '<tr>' +
+        '<td class="fw-semibold">Land Parcha / Khatiyan</td>' +
+        '<td><span class="badge bg-danger-subtle text-danger border border-danger-subtle">Mandatory</span></td>' +
+        '<td class="font-monospace text-primary">' + (mockUploadedFiles.Parcha ? mockUploadedFiles.Parcha.name : 'Missing') + '</td>' +
+        '<td><span class="badge bg-success-subtle text-success border border-success-subtle">Verified Upload</span></td>' +
+      '</tr>';
+
+      // 2. NOC (Conditional)
+      if (!inApplicantName) {
+        docsHtml += '<tr>' +
+          '<td class="fw-semibold">NOC from Land Owner / Revenue Officer</td>' +
+          '<td><span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Conditional Mandatory</span></td>' +
+          '<td class="font-monospace text-primary">' + (mockUploadedFiles.Noc ? mockUploadedFiles.Noc.name : 'Missing') + '</td>' +
+          '<td><span class="badge bg-success-subtle text-success border border-success-subtle">Verified Upload</span></td>' +
+        '</tr>';
+      }
+
+      // 3. Panchayat Report (Optional)
+      docsHtml += '<tr>' +
+        '<td class="fw-semibold">NOC / Verification Report from Panchayat</td>' +
+        '<td><span class="badge bg-light text-muted border">Optional / Conditional</span></td>' +
+        '<td class="font-monospace text-muted">' + (mockUploadedFiles.Panchayat ? mockUploadedFiles.Panchayat.name : 'Not Provided (Optional)') + '</td>' +
+        '<td><span class="badge bg-light text-secondary border">' + (mockUploadedFiles.Panchayat ? 'Attached' : 'Optional') + '</span></td>' +
+      '</tr>';
+
+      docsTbody.innerHTML = docsHtml;
+
+      // Tree Information Table
+      const trees = getEnteredTrees();
+      document.getElementById('prevTreeCountBadge').textContent = trees.length + (trees.length === 1 ? ' Tree' : ' Trees');
+      const treesTbody = document.getElementById('prevTreesTableBody');
+      treesTbody.innerHTML = trees.map(function (t) {
+        return '<tr>' +
+          '<td class="fw-bold">Tree #' + t.treeNo + '</td>' +
+          '<td>' + t.species + '</td>' +
+          '<td class="font-monospace">' + t.plotNo + '</td>' +
+          '<td>' + t.gbhFeet + ' Feet</td>' +
+        '</tr>';
+      }).join('');
+
+      const remarks = document.getElementById('txtAdditionalRemarks').value.trim();
+      document.getElementById('prevRemarks').textContent = remarks || 'None';
+    }
+
+    function handleDeclarationToggle() {
+      const isChecked = document.getElementById('chkFinalDeclaration').checked;
+      document.getElementById('btnSubmitApplication').disabled = !isChecked;
+    }
+
+    // =========================================================================
+    // 7. FINAL SUBMISSION (Sections 12, 13)
+    // =========================================================================
+    function submitFinalApplication() {
+      if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
+        showToast('Application validation failed. Please check previous steps.');
+        return;
+      }
+      if (!document.getElementById('chkFinalDeclaration').checked) {
+        showToast('Please check the mandatory applicant declaration before submitting.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btnSubmitApplication');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Submitting Application...';
+
+      setTimeout(function () {
+        // Generate Unique Application Number AP/2026/XXXX or retain existing on correction
+        const urlParams = new URLSearchParams(window.location.search);
+        const existingAppNo = urlParams.get('appNo');
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const appNo = existingAppNo ? existingAppNo : ('AP/2026/' + randomNum);
+        const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+        const isOthers = document.getElementById('appForOthers').checked;
+        const fn = document.getElementById('txtFirstName').value.trim();
+        const mn = document.getElementById('txtMiddleName').value.trim();
+        const ln = document.getElementById('txtLastName').value.trim();
+        const relType = document.querySelector('input[name="relationType"]:checked').value;
+        const relName = document.getElementById('txtRelationName').value.trim();
+        const mob = document.getElementById('txtMobile').value.trim();
+        const applicantName = (fn + ' ' + (mn ? mn + ' ' : '') + ln).trim();
+
+        const pAddr1 = document.getElementById('txtPermAddress1').value.trim();
+        const pAddr2 = document.getElementById('txtPermAddress2').value.trim();
+        const pDist = document.getElementById('selPermDistrict').value;
+        const pBlock = document.getElementById('selPermBlock').value;
+        const isSame = document.getElementById('sameAddressYes').checked;
+
+        let rAddr1 = pAddr1, rAddr2 = pAddr2, rDist = pDist, rBlock = pBlock;
+        if (!isSame) {
+          rAddr1 = document.getElementById('txtResAddress1').value.trim();
+          rAddr2 = document.getElementById('txtResAddress2').value.trim();
+          rDist = document.getElementById('selResDistrict').value;
+          rBlock = document.getElementById('selResBlock').value;
+        }
+
+        const div = document.getElementById('selDivision').value;
+        const range = document.getElementById('selRange').value;
+        const purpose = document.getElementById('selPurpose').value;
+        const inApplicantName = document.getElementById('parchaInNameYes').checked;
+        const remarks = document.getElementById('txtAdditionalRemarks').value.trim();
+        const trees = getEnteredTrees();
+
+        // Identify actual creator (Citizen or Assisting Officer)
+        const activeUser = MarkingOrderData.getActiveUser();
+        const appliedByUserId = officerRole
+          ? (activeUser && activeUser.role === officerRole ? activeUser.id : (officerRole === 'ro' ? 'RO-RANIPOOL' : (officerRole === 'bo' ? 'BO-RANIPOOL-1' : 'OFFICER-' + officerRole.toUpperCase())))
+          : 'CIT-DEMO-01';
+        const appliedByRole = officerRole || 'citizen';
+        const appliedByUserName = officerRole
+          ? (activeUser && activeUser.role === officerRole ? activeUser.name : ('Department Officer (' + officerRole.toUpperCase() + ')'))
+          : 'Citizen Demo User (Primary)';
+
+        // Create Application Record
+        const newApp = {
+          appNo: appNo,
+          submittedByCitizenId: appliedByUserId,
+          submittedByCitizenName: appliedByUserName,
+          appliedByUserId: appliedByUserId,
+          appliedByRole: appliedByRole,
+          appliedByUserName: appliedByUserName,
+          applicationFor: isOthers ? 'Apply for Others' : 'Self',
+          applicantName: applicantName,
+          firstName: fn,
+          middleName: mn,
+          lastName: ln,
+          relationType: relType,
+          relationName: relName,
+          mobile: mob,
+          submissionDate: todayStr,
+          lastUpdatedDate: todayStr,
+          district: pDist,
+          division: div,
+          range: range,
+          purpose: purpose,
+          khatiyanInApplicantName: inApplicantName,
+          permanentAddress: {
+            address1: pAddr1,
+            address2: pAddr2,
+            district: pDist,
+            blockGpu: pBlock,
+            sameAsPermanent: isSame
+          },
+          residentialAddress: {
+            address1: rAddr1,
+            address2: rAddr2,
+            district: rDist,
+            blockGpu: rBlock
+          },
+          trees: trees.map(function (t) {
+            return {
+              treeNo: t.treeNo,
+              species: t.species,
+              plotNo: t.plotNo,
+              gbhFeet: t.gbhFeet,
+              boMatchStatus: 'Pending Verification'
+            };
+          }),
+          documents: [
+            {
+              id: 'DOC-PARCHA',
+              name: 'Land Parcha / Khatiyan',
+              fileName: mockUploadedFiles.Parcha ? mockUploadedFiles.Parcha.name : 'Land_Parcha.pdf',
+              status: 'Uploaded'
+            }
+          ],
+          additionalRemarks: remarks || 'None',
+          currentStatus: 'Application Submitted',
+          workflowStageIndex: 1,
+          approvalStatus: 'Pending Preliminary Review',
+          paymentStatus: 'Application Fee Payment Pending (₹50)',
+          markingOrderStatus: 'Pending Approval & Payment',
+          markingOrderNo: null,
+          markingOrderIssueDate: null,
+          transitPermitNo: null,
+          transitPermitStatus: null,
+          requiresCitizenAction: false,
+          nextExpectedAction: 'Pending Range Officer preliminary scrutiny and Block Officer field inspection assignment.',
+          history: [
+            {
+              date: todayStr,
+              stage: 'Application Submitted',
+              actor: isOthers ? 'Applicant (' + applicantName + ') via ' + (officerRole ? officerRole.toUpperCase() : 'Citizen Portal') : applicantName + ' (Self)',
+              remarks: 'Marking Order application submitted online for ' + trees.length + ' ' + purpose + ' trees in ' + range + '.'
+            }
+          ]
+        };
+
+        if (!inApplicantName && mockUploadedFiles.Noc) {
+          newApp.documents.push({
+            id: 'DOC-NOC',
+            name: 'NOC from Land Owner / Revenue Officer',
+            fileName: mockUploadedFiles.Noc.name,
+            status: 'Uploaded'
+          });
+        }
+        if (mockUploadedFiles.Panchayat) {
+          newApp.documents.push({
+            id: 'DOC-PANCHAYAT',
+            name: 'NOC / Verification Report from Panchayat',
+            fileName: mockUploadedFiles.Panchayat.name,
+            status: 'Uploaded'
+          });
+        }
+
+        // Preserve history and appNo if correcting an existing application
+        if (existingAppNo) {
+          const oldApp = MarkingOrderData.getApplicationByNo(existingAppNo);
+          if (oldApp) {
+            newApp.appNo = existingAppNo;
+            newApp.history = (oldApp.history || []).concat([{
+              date: todayStr,
+              stage: 'Application Resubmitted',
+              actor: applicantName,
+              remarks: 'Corrected application resubmitted by applicant following return remarks.'
+            }]);
+          }
+          MarkingOrderData.updateApplication(existingAppNo, newApp);
+        } else {
+          MarkingOrderData.saveCustomApplication(newApp);
+        }
+        MarkingOrderData.clearDraft();
+
+        // Hide form and stepper, show Acknowledgement View
+        document.getElementById('stepperContainer').classList.add('d-none');
+        document.getElementById('moApplicationForm').classList.add('d-none');
+        document.getElementById('roleAssistanceBanner').classList.add('d-none');
+        document.getElementById('draftResumeAlert').classList.add('d-none');
+
+        const ackView = document.getElementById('submissionAckView');
+        ackView.classList.remove('d-none');
+
+        document.getElementById('ackAppNo').textContent = appNo;
+        document.getElementById('ackApplicantName').textContent = applicantName + ' (' + newApp.applicationFor + ')';
+        document.getElementById('ackDivisionRange').textContent = div + ' Division \u2022 ' + range;
+        document.getElementById('ackPurposeTrees').textContent = purpose + ' (' + trees.length + ' Trees)';
+        document.getElementById('ackSubmissionDate').textContent = 'Submitted on ' + todayStr;
+        document.getElementById('ackBtnTrack').href = 'dashboard.html?track=' + encodeURIComponent(appNo);
+
+        window.scrollTo({ top: 40, behavior: 'smooth' });
+      }, 700);
+    }
+
+    // =========================================================================
+    // 8. DRAFT SAVING & RESUME (Section 11)
+    // =========================================================================
+    function getFormDataAsObject() {
+      return {
+        step: currentStep,
+        officerRole: officerRole,
+        applicationFor: document.querySelector('input[name="applicationFor"]:checked').value,
+        firstName: document.getElementById('txtFirstName').value,
+        middleName: document.getElementById('txtMiddleName').value,
+        lastName: document.getElementById('txtLastName').value,
+        relationType: document.querySelector('input[name="relationType"]:checked').value,
+        relationName: document.getElementById('txtRelationName').value,
+        mobile: document.getElementById('txtMobile').value,
+        permAddress1: document.getElementById('txtPermAddress1').value,
+        permAddress2: document.getElementById('txtPermAddress2').value,
+        permDistrict: document.getElementById('selPermDistrict').value,
+        permBlock: document.getElementById('selPermBlock').value,
+        sameAddress: document.querySelector('input[name="sameAsPerm"]:checked').value,
+        resAddress1: document.getElementById('txtResAddress1').value,
+        resAddress2: document.getElementById('txtResAddress2').value,
+        resDistrict: document.getElementById('selResDistrict').value,
+        resBlock: document.getElementById('selResBlock').value,
+        division: document.getElementById('selDivision').value,
+        range: document.getElementById('selRange').value,
+        purpose: document.getElementById('selPurpose').value,
+        parchaInApplicantName: document.querySelector('input[name="parchaInName"]:checked').value,
+        uploadedFiles: mockUploadedFiles,
+        trees: getEnteredTrees(),
+        remarks: document.getElementById('txtAdditionalRemarks').value
+      };
+    }
+
+    function autoSaveDraft() {
+      const draft = getFormDataAsObject();
+      MarkingOrderData.saveDraft(draft);
+      const badge = document.getElementById('draftStatusBadge');
+      if (badge) badge.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Draft auto-saved';
+    }
+
+    function manualSaveDraft() {
+      autoSaveDraft();
+      showToast('Application draft saved successfully. You can safely return and resume anytime.');
+    }
+
+    function checkForExistingDraft() {
+      const draft = MarkingOrderData.getDraft();
+      if (draft && draft.firstName) {
+        document.getElementById('draftResumeAlert').classList.remove('d-none');
+      } else {
+        // Initial setup with 1 blank tree row
+        if (treeCount === 0) addTreeRow();
+      }
+    }
+
+    function loadDraftData() {
+      const draft = MarkingOrderData.getDraft();
+      if (!draft) return;
+
+      document.getElementById('draftResumeAlert').classList.add('d-none');
+      populateFormFromObject(draft);
+      setStep(draft.step || 1);
+      showToast('Saved draft restored successfully.');
+    }
+
+    function discardDraft() {
+      MarkingOrderData.clearDraft();
+      document.getElementById('draftResumeAlert').classList.add('d-none');
+      showToast('Draft discarded.');
+      if (treeCount === 0) addTreeRow();
+    }
+
+    function populateFormFromObject(data) {
+      if (!data) return;
+
+      if (data.applicationFor === 'Apply for Others') {
+        document.getElementById('appForOthers').checked = true;
+      } else {
+        document.getElementById('appForSelf').checked = true;
+      }
+      handleAppForChange();
+
+      document.getElementById('txtFirstName').value = data.firstName || '';
+      document.getElementById('txtMiddleName').value = data.middleName || '';
+      document.getElementById('txtLastName').value = data.lastName || '';
+
+      if (data.relationType === 'Husband') {
+        document.getElementById('relHusband').checked = true;
+      } else {
+        document.getElementById('relFather').checked = true;
+      }
+      document.getElementById('txtRelationName').value = data.relationName || '';
+      document.getElementById('txtMobile').value = data.mobile || '';
+
+      document.getElementById('txtPermAddress1').value = data.permAddress1 || '';
+      document.getElementById('txtPermAddress2').value = data.permAddress2 || '';
+
+      if (data.permDistrict) {
+        document.getElementById('selPermDistrict').value = data.permDistrict;
+        populateDistrictBlocks('selPermDistrict', 'selPermBlock', data.permBlock);
+      }
+
+      if (data.sameAddress === 'No') {
+        document.getElementById('sameAddressNo').checked = true;
+        toggleResidentialAddressSection();
+        document.getElementById('txtResAddress1').value = data.resAddress1 || '';
+        document.getElementById('txtResAddress2').value = data.resAddress2 || '';
+        if (data.resDistrict) {
+          document.getElementById('selResDistrict').value = data.resDistrict;
+          populateDistrictBlocks('selResDistrict', 'selResBlock', data.resBlock);
+        }
+      } else {
+        document.getElementById('sameAddressYes').checked = true;
+        toggleResidentialAddressSection();
+      }
+
+      if (data.division) {
+        document.getElementById('selDivision').value = data.division;
+        handleDivisionChange(data.range);
+      }
+      if (data.purpose) {
+        document.getElementById('selPurpose').value = data.purpose;
+        updatePurposeAuthorityHint();
+      }
+
+      if (data.parchaInApplicantName === 'No') {
+        document.getElementById('parchaInNameNo').checked = true;
+        toggleConditionalNocSection();
+      } else {
+        document.getElementById('parchaInNameYes').checked = true;
+        toggleConditionalNocSection();
+      }
+
+      // Restoring mock uploads
+      if (data.uploadedFiles) {
+        mockUploadedFiles = data.uploadedFiles;
+        ['Parcha', 'Noc', 'Panchayat'].forEach(function (dt) {
+          if (mockUploadedFiles[dt]) {
+            const fileNameLabel = document.getElementById('lbl' + dt + 'FileName');
+            const emptyPrompt = document.getElementById(dt.toLowerCase() + 'EmptyPrompt');
+            const uploadedInfo = document.getElementById(dt.toLowerCase() + 'UploadedInfo');
+            const box = document.getElementById('box' + dt + 'Upload');
+            if (fileNameLabel) fileNameLabel.textContent = mockUploadedFiles[dt].name;
+            if (emptyPrompt) emptyPrompt.classList.add('d-none');
+            if (uploadedInfo) uploadedInfo.classList.remove('d-none');
+            if (box) box.classList.add('uploaded');
+          }
+        });
+      }
+
+      // Restore tree rows
+      document.getElementById('treeRowsContainer').innerHTML = '';
+      treeCount = 0;
+      if (data.trees && data.trees.length > 0) {
+        data.trees.forEach(function (t) {
+          addTreeRow(t);
+        });
+      } else {
+        addTreeRow();
+      }
+
+      document.getElementById('txtAdditionalRemarks').value = data.remarks || '';
+    }
+
+    // =========================================================================
+    // 9. PREFILL SAMPLE DEMO DATA (Section 22)
+    // =========================================================================
+    function prefillDemoData() {
+      const demoData = {
+        step: 1,
+        applicationFor: officerRole ? 'Apply for Others' : 'Self',
+        firstName: 'Tenzing',
+        middleName: 'Norbu',
+        lastName: 'Bhutia',
+        relationType: 'Father',
+        relationName: 'Lobsang Bhutia',
+        mobile: '9800000101',
+        permAddress1: 'House No. 58, Upper Martam Ward',
+        permAddress2: 'Near Community Health Centre',
+        permDistrict: 'Gangtok',
+        permBlock: 'Ranka GPU',
+        sameAddress: 'Yes',
+        division: 'Gangtok',
+        range: 'Ranipool Range',
+        purpose: 'Firewood',
+        parchaInApplicantName: 'Yes',
+        uploadedFiles: {
+          Parcha: { name: 'Khatiyan_Parcha_No_142.pdf', size: '2.1 MB' },
+          Noc: null,
+          Panchayat: null
+        },
+        trees: [
+          { treeNo: 1, species: 'Utis', plotNo: '142/A', gbhFeet: 4.2 },
+          { treeNo: 2, species: 'Chilaune', plotNo: '142/A', gbhFeet: 3.8 }
+        ],
+        remarks: 'Trees situated on private boundary hedge posing risk to residential compound boundary wall during monsoon.'
+      };
+
+      populateFormFromObject(demoData);
+      showToast('Sample demonstration data loaded successfully.');
+    }
+
+    function loadApplicationForCorrection(appNo) {
+      const app = MarkingOrderData.getApplicationByNo(appNo);
+      if (!app) return;
+
+      const correctedData = {
+        step: 2,
+        applicationFor: app.applicationFor,
+        firstName: app.firstName,
+        middleName: app.middleName,
+        lastName: app.lastName,
+        relationType: app.relationType,
+        relationName: app.relationName,
+        mobile: app.mobile,
+        permAddress1: app.permanentAddress.address1,
+        permAddress2: app.permanentAddress.address2,
+        permDistrict: app.district,
+        permBlock: app.permanentAddress.blockGpu,
+        sameAddress: app.permanentAddress.sameAsPermanent ? 'Yes' : 'No',
+        resAddress1: app.residentialAddress.address1,
+        resAddress2: app.residentialAddress.address2,
+        resDistrict: app.residentialAddress.district,
+        resBlock: app.residentialAddress.blockGpu,
+        division: app.division,
+        range: app.range,
+        purpose: app.purpose,
+        parchaInApplicantName: app.khatiyanInApplicantName ? 'Yes' : 'No',
+        uploadedFiles: {
+          Parcha: { name: 'Parcha_Land_Khatiyan.pdf', size: '1.9 MB' },
+          Noc: { name: 'Landowner_Revenue_NOC.pdf', size: '1.2 MB' },
+          Panchayat: null
+        },
+        trees: app.trees,
+        remarks: app.additionalRemarks
+      };
+
+      populateFormFromObject(correctedData);
+      setStep(2);
+      showToast('Application ' + appNo + ' loaded for correction and resubmission.');
+    }
+
+    function showToast(msg) {
+      const toastEl = document.getElementById('liveToast');
+      document.getElementById('toastMessage').textContent = msg;
+      const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+      toast.show();
+    }
+  </script>
+</body>
+</html>

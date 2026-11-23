@@ -1,0 +1,168 @@
+{
+  "serviceId": "marking-order",
+  "serviceName": "Marking Order",
+  "currentStage": "Stage 02 – Role Selection, Citizen Access, Menus and Dashboards",
+  "screens": {
+    "landing": "index.html",
+    "roleSelection": "role-select.html",
+    "citizenDashboard": "dashboard.html",
+    "preApplicationInstructions": "instructions.html",
+    "applicationForm": "apply.html",
+    "roDashboard": "dashboard-ro.html",
+    "boDashboard": "dashboard-bo.html",
+    "acfDashboard": "dashboard-acf.html",
+    "dfoDashboard": "dashboard-dfo.html",
+    "superAdminDashboard": "dashboard-admin.html"
+  },
+  "statutoryAuthorityLimits": {
+    "RO": { "Firewood": 3, "Timber": 3 },
+    "ACF": { "Firewood": 6, "Timber": 6 },
+    "DFO": { "Firewood": 10, "Timber": 10 },
+    "maxTreesPerApplication": 10
+  },
+  "departmentName": "Forest and Environment Department",
+  "governmentName": "Government of Sikkim",
+  "governmentNameNepali": "सिक्किम सरकार",
+  "theme": "forest-green",
+  "themeColors": {
+    "primary": "#114b3f",
+    "secondary": "#165b4c",
+    "accent": "#d97706",
+    "utilityBg": "#0d382f",
+    "footerBg": "#0f2923"
+  },
+  "servicePurpose": "Provide citizens with information and a common entry point for applying for a Marking Order for tree felling through the Forest and Environment Department, Government of Sikkim.",
+  "officeAddress": "Forest Secretariat, Deorali, Gangtok, Sikkim",
+  "helplinePhone": "Pending departmental confirmation",
+  "officialEmail": "Pending departmental confirmation",
+  "sikkimGoLoginUrl": "role-select.html",
+  "webInformationManager": "Forest and Environment Department, Government of Sikkim",
+  "highlights": [
+    {
+      "id": "online-access",
+      "title": "Online Application Access",
+      "description": "Submit Marking Order requests online via Sikkim GO"
+    },
+    {
+      "id": "tree-marking-info",
+      "title": "Tree Marking Information",
+      "description": "Structured capture of land, plot, and tree details"
+    },
+    {
+      "id": "department-verification",
+      "title": "Department Verification",
+      "description": "Field verification and review as per departmental procedures"
+    },
+    {
+      "id": "marking-order-process",
+      "title": "Marking Order Process",
+      "description": "Guided process from application submission to order issuance"
+    }
+  ],
+  "eligibilityPlaceholder": "Eligibility details are subject to departmental confirmation.",
+  "requiredDocumentsPlaceholder": "Required document details are pending departmental confirmation.",
+  "feesAndTimelinesPlaceholder": "Fee and processing timeline details are pending departmental confirmation.",
+  "howToApplySteps": [
+    {
+      "step": 1,
+      "title": "Explore Marking Order Service",
+      "description": "Review the Marking Order service overview, eligibility information, and departmental guidelines on this portal."
+    },
+    {
+      "step": 2,
+      "title": "Login through Sikkim GO",
+      "description": "Authenticate securely through Sikkim GO Single Sign-On (SSO) to access online citizen services."
+    },
+    {
+      "step": 3,
+      "title": "Access the Marking Order application",
+      "description": "Select the Marking Order service under the Forest and Environment Department after logging in."
+    },
+    {
+      "step": 4,
+      "title": "Complete the application and provide the required supporting information",
+      "description": "Enter applicant, district/forest range, land/plot, and tree details along with supporting documents prescribed by the department."
+    },
+    {
+      "step": 5,
+      "title": "Submit and track the application",
+      "description": "Submit the completed application online and track progress through the applicable departmental procedure."
+    }
+  ],
+  "notifications": [],
+  "notificationsEmptyState": "No notifications are currently available.",
+  "resources": [],
+  "resourcesPotential": [
+    "Marking Order Guidelines",
+    "Application Instructions",
+    "Required Document Checklist",
+    "Official Application Forms",
+    "Department Notifications"
+  ],
+  "districts": [
+    {
+      "name": "Gangtok",
+      "office": "Forest and Environment Department — Gangtok District",
+      "note": "District office contact details are pending departmental confirmation."
+    },
+    {
+      "name": "Mangan",
+      "office": "Forest and Environment Department — Mangan District",
+      "note": "District office contact details are pending departmental confirmation."
+    },
+    {
+      "name": "Namchi",
+      "office": "Forest and Environment Department — Namchi District",
+      "note": "District office contact details are pending departmental confirmation."
+    },
+    {
+      "name": "Gyalshing",
+      "office": "Forest and Environment Department — Gyalshing District",
+      "note": "District office contact details are pending departmental confirmation."
+    },
+    {
+      "name": "Pakyong",
+      "office": "Forest and Environment Department — Pakyong District",
+      "note": "District office contact details are pending departmental confirmation."
+    },
+    {
+      "name": "Soreng",
+      "office": "Forest and Environment Department — Soreng District",
+      "note": "District office contact details are pending departmental confirmation."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What is a Marking Order?",
+      "answer": "A Marking Order is an official service of the Forest and Environment Department, Government of Sikkim, providing citizens with a common entry point to request tree marking for tree felling in accordance with applicable departmental procedures."
+    },
+    {
+      "question": "Which department handles Marking Order applications?",
+      "answer": "Marking Order applications are handled by the Forest and Environment Department, Government of Sikkim."
+    },
+    {
+      "question": "Who can apply for a Marking Order?",
+      "answer": "Citizens seeking a Marking Order for tree felling in Sikkim may apply through this service. Eligibility details are subject to departmental confirmation. Please refer to the official departmental guidelines or contact the department for confirmation."
+    },
+    {
+      "question": "What documents are required?",
+      "answer": "Applicants must provide the supporting documents prescribed by the Forest and Environment Department. Required document details are pending departmental confirmation. Please refer to the official departmental guidelines or contact the department for confirmation."
+    },
+    {
+      "question": "How can I apply for a Marking Order?",
+      "answer": "You can apply by reviewing the service overview on this page, logging in via Sikkim GO (https://sso.sikkim.gov.in/), accessing the Marking Order application, completing the required application and supporting information, and submitting your request online."
+    },
+    {
+      "question": "Is there any application fee?",
+      "answer": "Applicable fee and payment requirements for the Marking Order service are pending departmental confirmation. Please refer to the official departmental guidelines or contact the department for confirmation."
+    },
+    {
+      "question": "How can I track my application?",
+      "answer": "Applicants will be able to monitor the progress of their submitted Marking Order request online after logging in through Sikkim GO once application tracking is configured. Please refer to the official departmental guidelines or contact the department for confirmation."
+    },
+    {
+      "question": "How can I contact the Forest and Environment Department?",
+      "answer": "Citizens may contact the Forest and Environment Department at the Forest Secretariat, Deorali, Gangtok, Sikkim, or reach out to their respective District Helpdesk. Specific helpline telephone numbers and email addresses are pending departmental confirmation. Please refer to the official departmental guidelines or contact the department for confirmation."
+    }
+  ]
+}
