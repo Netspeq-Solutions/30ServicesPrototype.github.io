@@ -10,7 +10,7 @@
   'use strict';
 
   var SESSION_KEY = 'tl_demo_session';
-  var STATE_KEY = 'tl_demo_state_v8';
+  var STATE_KEY = 'tl_demo_state_v9';
   var FILE_DB = 'tl_demo_files';
   var SEED = global.TL_DATA;
 
