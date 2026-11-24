@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <title>Application Instructions &bull; Marking Order Service &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .instruction-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .instruction-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: #114b3f;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+    .agreement-container {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      transition: all 0.2s ease;
+    }
+    .agreement-container.checked {
+      border-color: #114b3f;
+      background: #e6f4ea;
+    }
+    .info-pill-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 50rem;
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link -->
+  <a class="gov-skip-link" href="#main-instructions-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Accessibility Toolbar -->
+  <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
+    <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+          <i class="bi bi-flask-fill me-1"></i> STAGE 02 DEMO
+        </span>
+        <span class="small text-white-50 d-none d-sm-inline">Citizen Workspace &bull; Pre-Application Instructions</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+          <i class="bi bi-people-fill me-1"></i> Switch Role
+        </a>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="decrease" title="Decrease font size">A-</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm active" data-font-action="reset" title="Reset font size">A</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="increase" title="Increase font size">A+</button>
+        </div>
+        <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast">
+          <i class="bi bi-circle-half me-1"></i>Contrast
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle Citizen Menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <a href="index.html" class="d-inline-block">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 48px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Forest and Environment Department &bull; Government of Sikkim</div>
+            <h1 class="h5 fw-bold text-dark mb-0">Marking Order &ndash; Application Instructions</h1>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small">Citizen Demo User (Primary)</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-success-subtle text-success border border-success-subtle me-1">Role: Citizen</span>
+              <span>District: Gangtok &bull; Ranipool Range</span>
+            </div>
+          </div>
+          <a href="dashboard.html" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1.5">
+            <i class="bi bi-arrow-left"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Switch Role</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Citizen Workspace Layout -->
+  <div class="gov-workspace-layout flex-grow-1">
+
+    <!-- Citizen Navigation Menu -->
+    <aside class="gov-sidebar px-2 py-3 d-none d-lg-block" id="sidebar-nav" aria-label="Citizen Navigation Menu">
+      <div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">
+        <span class="fw-bold small text-muted">CITIZEN MENU</span>
+        <button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>
+      </div>
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+        Citizen Workspace
+      </div>
+      <ul class="gov-sidebar-nav">
+        <li>
+          <a href="dashboard.html#dashboard" class="gov-sidebar-link" id="nav-dashboard">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="instructions.html" class="gov-sidebar-link active text-success fw-semibold" id="nav-instructions">
+            <i class="bi bi-plus-circle-fill text-success"></i>
+            <span>Apply for Marking Order</span>
+          </a>
+        </li>
+        <li>
+          <a href="dashboard.html#applications" class="gov-sidebar-link" id="nav-applications">
+            <i class="bi bi-journal-text"></i>
+            <span>My Applications</span>
+          </a>
+        </li>
+        <li>
+          <a href="dashboard.html#tracking" class="gov-sidebar-link" id="nav-tracking">
+            <i class="bi bi-geo-alt-fill text-primary"></i>
+            <span>Track Application</span>
+          </a>
+        </li>
+        <li>
+          <a href="dashboard.html#notifications" class="gov-sidebar-link" id="nav-notifications">
+            <i class="bi bi-bell-fill text-warning"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+        <li>
+          <a href="dashboard.html#support" class="gov-sidebar-link" id="nav-support">
+            <i class="bi bi-headset"></i>
+            <span>Help and Support</span>
+          </a>
+        </li>
+        <li>
+          <a href="dashboard.html#profile" class="gov-sidebar-link" id="nav-profile">
+            <i class="bi bi-person-badge"></i>
+            <span>My Profile</span>
+          </a>
+        </li>
+        <li class="mt-2 pt-2 border-top">
+          <a href="role-select.html" class="gov-sidebar-link text-danger">
+            <i class="bi bi-box-arrow-left text-danger"></i>
+            <span>Switch Role / Logout</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">
+        <div class="fw-bold text-dark"><i class="bi bi-tree-fill text-success me-1"></i> Marking Order Service</div>
+        <div class="text-muted mt-1" style="font-size: 0.73rem;">Forest and Environment Department, Government of Sikkim</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-instructions-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
+      <div class="container-fluid px-0" style="max-width: 980px;">
+
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small mb-0">
+          <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Citizen Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Instructions for Marking Order Application</li>
+        </ol>
+      </nav>
+
+      <!-- Before You Apply Banner Card -->
+      <div class="bg-white p-4 rounded-3 border shadow-xs mb-4">
+        <div class="d-flex align-items-start gap-3">
+          <div class="gov-icon-circle bg-success-subtle text-success d-none d-sm-inline-flex flex-shrink-0">
+            <i class="bi bi-tree-fill"></i>
+          </div>
+          <div class="flex-grow-1">
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold px-2.5 py-1 mb-2">
+              Before You Apply
+            </span>
+            <h2 class="h4 fw-bold text-dark mb-2">Instructions for Marking Order Application</h2>
+            <p class="text-secondary small mb-3" style="line-height: 1.6;">
+              Welcome to the online Marking Order application service of the Forest and Environment Department, Government of Sikkim. To ensure a smooth application process, please keep the required personal, land, and tree details along with clear copies of your supporting documents ready before you begin.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="info-pill-label bg-success-subtle text-success border border-success-subtle">
+                <i class="bi bi-check-circle-fill"></i> Required Information
+              </span>
+              <span class="info-pill-label bg-primary-subtle text-primary border border-primary-subtle">
+                <i class="bi bi-file-earmark-check-fill"></i> Documents You Must Provide
+              </span>
+              <span class="info-pill-label bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                <i class="bi bi-info-circle-fill"></i> Additional Documents, If Applicable
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section A: Applicant Information -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num">A</span>
+            <h3 class="h6 fw-bold text-dark mb-0">Applicant Information</h3>
+          </div>
+          <span class="info-pill-label bg-success-subtle text-success border border-success-subtle">Required Information</span>
+        </div>
+        <p class="text-secondary small mb-3">
+          You will be asked to provide the following details about the applicant:
+        </p>
+        <ul class="small text-secondary mb-3 ps-3" style="line-height: 1.7;">
+          <li><strong>Applicant&rsquo;s Full Name:</strong> Your first name (and middle or last name, as applicable).</li>
+          <li><strong>Father&rsquo;s or Husband&rsquo;s Name:</strong> The full name of the applicant&rsquo;s father or husband.</li>
+          <li><strong>Mobile Number:</strong> An active mobile number for receiving application updates and field verification notifications.</li>
+          <li><strong>Who the Application is For:</strong> Indicate whether you are submitting the application for yourself or on behalf of another person.</li>
+        </ul>
+        <div class="row g-2 small">
+          <div class="col-md-6">
+            <div class="p-2.5 border rounded bg-light h-100">
+              <strong class="text-dark d-block mb-1"><i class="bi bi-person-check-fill text-success me-1"></i> Applying for Yourself (Self)</strong>
+              <span class="text-secondary">Choose this option if you are applying for a Marking Order in your own name.</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-2.5 border rounded bg-light h-100">
+              <strong class="text-dark d-block mb-1"><i class="bi bi-people-fill text-primary me-1"></i> Applying on Behalf of Another Person</strong>
+              <span class="text-secondary">Choose this option if you are assisting a family member or another citizen, and enter that person&rsquo;s applicant details.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section B: Address Information -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num">B</span>
+            <h3 class="h6 fw-bold text-dark mb-0">Address Information</h3>
+          </div>
+          <span class="info-pill-label bg-success-subtle text-success border border-success-subtle">Required Information</span>
+        </div>
+        <p class="text-secondary small mb-2">
+          Please keep the applicant&rsquo;s complete address details ready:
+        </p>
+        <ul class="small text-secondary mb-0 ps-3" style="line-height: 1.75;">
+          <li><strong>Permanent Address:</strong> House number, village, ward, or locality details.</li>
+          <li><strong>District:</strong> The district in Sikkim where the applicant resides.</li>
+          <li><strong>Block / GPU / Nagar Panchayat / Municipality:</strong> Your corresponding Gram Panchayat Unit (GPU), Block, Nagar Panchayat, or Municipality, as applicable.</li>
+          <li><strong>Present Residential Address:</strong> You will be asked whether your present residential address is the same as your permanent address. If your current residence is different, please provide your present residential address separately.</li>
+        </ul>
+      </div>
+
+      <!-- Section C: Forest and Land Information -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num">C</span>
+            <h3 class="h6 fw-bold text-dark mb-0">Forest and Land Information</h3>
+          </div>
+          <span class="info-pill-label bg-primary-subtle text-primary border border-primary-subtle">Information &amp; Supporting Documents</span>
+        </div>
+        <p class="text-secondary small mb-3">
+          You will need to provide details of the forest jurisdiction, the purpose of tree felling, and the land ownership documents:
+        </p>
+
+        <!-- Required Forest & Land Information -->
+        <div class="p-3 rounded-2 bg-light border mb-3">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <strong class="small text-dark"><i class="bi bi-geo-alt-fill text-success me-1"></i> 1. Forest Jurisdiction &amp; Purpose of Tree Felling</strong>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Required Information</span>
+          </div>
+          <ul class="small text-secondary mb-0 ps-3" style="line-height: 1.7;">
+            <li><strong>Division and Forest Range:</strong> First select your Forest Division, then select the corresponding Forest Range under that division where the land is located.</li>
+            <li><strong>Purpose of Tree Felling:</strong> Select the purpose for which tree marking is requested (such as <strong>Firewood</strong> or <strong>Timber</strong>).</li>
+          </ul>
+        </div>
+
+        <!-- Mandatory Document -->
+        <div class="p-3 rounded-2 bg-light border mb-3">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <strong class="small text-dark"><i class="bi bi-file-earmark-text-fill text-primary me-1"></i> 2. Documents You Must Provide</strong>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Required Document</span>
+          </div>
+          <ul class="small text-secondary mb-0 ps-3" style="line-height: 1.7;">
+            <li><strong>Land Parcha / Khatiyan:</strong> Please provide a clear copy of the Land Parcha or Khatiyan for the plot where the trees are located.</li>
+          </ul>
+        </div>
+
+        <!-- Conditional / Additional Documents -->
+        <div class="p-3 rounded-2 bg-light border">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <strong class="small text-dark"><i class="bi bi-file-earmark-plus-fill text-warning-emphasis me-1"></i> 3. Additional Documents, If Applicable</strong>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Required Only If Applicable</span>
+          </div>
+          <ul class="small text-secondary mb-0 ps-3" style="line-height: 1.75;">
+            <li class="mb-1">
+              <strong>No Objection Certificate (NOC) from the Landowner or Revenue Officer:</strong>
+              If the Land Parcha / Khatiyan is not in the applicant&rsquo;s own name, you must provide an NOC from the recorded landowner or the concerned Revenue Officer.
+            </li>
+            <li>
+              <strong>NOC / Verification Report from the Panchayat:</strong>
+              If there is any land-related dispute or where additional local verification is required, an NOC or Verification Report from the Panchayat may be provided where applicable.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Section D: Tree Information -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num">D</span>
+            <h3 class="h6 fw-bold text-dark mb-0">Tree Information</h3>
+          </div>
+          <span class="info-pill-label bg-success-subtle text-success border border-success-subtle">Required Information</span>
+        </div>
+        <p class="small text-secondary mb-3">
+          For each tree you wish to include in the application, please keep the following details ready:
+        </p>
+        <div class="row g-2 small mb-3">
+          <div class="col-sm-4">
+            <div class="p-2.5 border rounded bg-light h-100">
+              <strong class="text-dark d-block mb-1">1. Tree Species / Name</strong>
+              <span class="text-secondary">The local or botanical species name of the tree proposed for marking.</span>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="p-2.5 border rounded bg-light h-100">
+              <strong class="text-dark d-block mb-1">2. Plot / Khasra Number</strong>
+              <span class="text-secondary">The specific Plot or Khasra number on which the tree stands.</span>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="p-2.5 border rounded bg-light h-100">
+              <strong class="text-dark d-block mb-1">3. GBH (in Feet)</strong>
+              <span class="text-secondary">The Girth at Breast Height (GBH) of the tree measured in feet.</span>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-warning border-warning-subtle d-flex align-items-center gap-2 py-2.5 px-3 small mb-0">
+          <i class="bi bi-exclamation-circle-fill text-warning-emphasis fs-5 flex-shrink-0"></i>
+          <div class="text-dark">
+            <strong>Important Note:</strong> A maximum of <strong>10 trees</strong> can be included in one application.
+          </div>
+        </div>
+      </div>
+
+      <!-- Section E: Additional Information -->
+      <div class="instruction-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num">E</span>
+            <h3 class="h6 fw-bold text-dark mb-0">Additional Information</h3>
+          </div>
+          <span class="info-pill-label bg-light text-secondary border">Optional</span>
+        </div>
+        <p class="small text-secondary mb-0">
+          Applicants may also share any additional remarks or relevant details in support of their Marking Order request before submitting the application.
+        </p>
+      </div>
+
+      <!-- Mandatory Applicant Declaration & Agreement -->
+      <div class="agreement-container shadow-xs mb-4" id="agreementBox">
+        <div class="form-check d-flex align-items-start gap-2 mb-0">
+          <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="chkAgreement" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+          <label class="form-check-label text-dark fw-semibold small" for="chkAgreement" style="cursor: pointer; line-height: 1.5;">
+            I have read and understood the instructions above and have kept the required information and supporting documents ready to apply for a Marking Order.
+          </label>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-4">
+        <a href="dashboard.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold">
+          <i class="bi bi-arrow-left me-1"></i> Back to Citizen Dashboard
+        </a>
+        <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" id="btnAgreeProceed" disabled onclick="proceedToApplication()">
+          <span>Agree and Proceed to Application</span>
+          <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+  <!-- Standard Government Footer -->
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto" role="contentinfo">
+    <div class="container-xl">
+      <div class="row align-items-center g-3 small">
+        <div class="col-md-8">
+          <p class="mb-1 text-white-50">
+            Content owned, maintained &amp; updated by <strong>Forest and Environment Department</strong>, Government of Sikkim.
+          </p>
+          <p class="mb-0 text-white-50">
+            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end text-white-50">
+          <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      MarkingOrderData.initDashboardCommon();
+
+      var chk = document.getElementById('chkAgreement');
+      var btn = document.getElementById('btnAgreeProceed');
+      var box = document.getElementById('agreementBox');
+      if (chk && btn) {
+        chk.addEventListener('change', function () {
+          btn.disabled = !this.checked;
+          box.classList.toggle('checked', this.checked);
+        });
+      }
+    });
+
+    function proceedToApplication() {
+      window.location.href = 'apply.html';
+    }
+  </script>
+</body>
+</html>

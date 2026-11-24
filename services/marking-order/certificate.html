@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Marking Order (FORM - D) &bull; Forest &amp; Environment Department, Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    :root {
+      --fed-primary: #114b3f;
+      --fed-dark: #0a2e26;
+      --fed-accent: #1e7e68;
+    }
+
+    body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-family: 'Noto Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Screen Top Action / Control Bar */
+    .doc-control-bar {
+      background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);
+      color: #ffffff;
+      padding: 10px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Document Sheet Container (A4 Portrait format) */
+    .mo-sheet-container {
+      max-width: 840px;
+      margin: 1.5rem auto 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .mo-page {
+      background: #ffffff;
+      padding: 3.5rem 4rem;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+      border-radius: 4px;
+      line-height: 1.6;
+      box-sizing: border-box;
+      min-height: 1050px;
+    }
+
+    /* Emblem watermark (screen preview) */
+    .mo-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 320px;
+      opacity: 0.04;
+      pointer-events: none;
+      background-image: url('../../shared/images/emblem-black.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      z-index: 0;
+    }
+
+    .mo-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Official FORM - D Typography */
+    .form-d-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-d-title {
+      font-family: 'Noto Serif', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #000000;
+      border-bottom: 2px solid #000000;
+      display: inline-block;
+      padding-bottom: 3px;
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+    }
+
+    .rule-reference {
+      font-size: 0.9rem;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    /* Dotted fill for official blanks */
+    .dotted-fill {
+      border-bottom: 1px dotted #000000;
+      padding: 0 4px;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    /* Table styling matching supplied PDF */
+    .mo-tree-table {
+      border: 1.5px solid #000000 !important;
+      margin-bottom: 1.5rem;
+    }
+
+    .mo-tree-table th {
+      border: 1.5px solid #000000 !important;
+      background-color: #f8fafc !important;
+      color: #000000;
+      font-weight: 700;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    .mo-tree-table td {
+      border: 1px solid #000000 !important;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.875rem;
+      color: #000000;
+    }
+
+    /* Conditions text block */
+    .conditions-block {
+      font-size: 0.835rem;
+      line-height: 1.75;
+      color: #1e293b;
+      margin-top: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .conditions-block p {
+      margin-bottom: 0.45rem;
+    }
+
+    /* Transit Permit History (Page 2) */
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .tp-page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #000000;
+    }
+
+    /* Print Optimization Rules */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm 15mm 15mm 15mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        font-size: 10.5pt !important;
+        color: #000000 !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .mo-sheet-container {
+        margin: 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+
+      .mo-page {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+        min-height: auto !important;
+      }
+
+      .mo-watermark {
+        opacity: 0.035 !important;
+      }
+
+      .mo-tree-table, .mo-tree-table th, .mo-tree-table td {
+        border-color: #000000 !important;
+      }
+
+      .page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="forest-green">
+
+  <!-- TOP ACTION & NAVIGATION CONTROLS (Screen view only) -->
+  <nav class="navbar navbar-expand-lg doc-control-bar sticky-top no-print" aria-label="Document Navigation & Controls">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button type="button" class="btn btn-sm btn-outline-light d-inline-flex align-items-center gap-1.5" onclick="handleBackNavigation()">
+          <i class="bi bi-arrow-left"></i>
+          <span id="navBackText">Back</span>
+        </button>
+        <span class="navbar-text small text-white-50 ms-2 d-none d-md-inline">
+          <i class="bi bi-file-earmark-check-fill text-warning me-1"></i> Stage 05 Official Document Deliverable &bull; FORM - D
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Sample Demonstration Switcher -->
+        <div class="d-flex align-items-center gap-1 bg-white bg-opacity-10 px-2 py-1 rounded">
+          <label for="demoSampleSelect" class="small text-white-50 me-1" style="font-size:0.75rem;">Sample Demo:</label>
+          <select class="form-select form-select-sm py-0 px-2 border-0 bg-dark text-white font-monospace" id="demoSampleSelect" style="font-size:0.78rem; width:auto;" onchange="switchDemoSample(this.value)">
+            <option value="GTK/RAN/2026-27/006" selected>Ref PDF: GTK/RAN/2026-27/006 (TP: No)</option>
+            <option value="SK-MO-2026-00108">Record A: SK-MO-2026-00108 (TP: No)</option>
+            <option value="SK-MO-2026-00118">Record B: SK-MO-2026-00118 (TP: Yes &bull; 2 Pages)</option>
+          </select>
+        </div>
+
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small" id="docStatusBadge">
+          <i class="bi bi-patch-check-fill me-1"></i> Marking Order Issued
+        </span>
+
+        <button type="button" class="btn btn-sm btn-light text-dark fw-semibold d-inline-flex align-items-center gap-1 shadow-xs" onclick="window.print()">
+          <i class="bi bi-printer-fill text-primary"></i>
+          <span>Print / Save as PDF</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN DOCUMENT CANVAS CONTAINER -->
+  <main class="mo-sheet-container">
+
+    <!-- Document Sheet Page -->
+    <article class="mo-page" id="printableMarkingOrderDocument">
+
+      <!-- Faint Sikkim Emblem Watermark -->
+      <div class="mo-watermark" aria-hidden="true"></div>
+
+      <div class="mo-inner">
+
+        <!-- ============================================================== -->
+        <!-- PAGE 1: FORM - D / MARKING ORDER                               -->
+        <!-- ============================================================== -->
+        <section id="docPage1Section">
+
+          <!-- Top Section: Date & Form Header -->
+          <div class="d-flex justify-content-end mb-1 small text-dark">
+            <div>Date: <strong id="lblMoDate">26 Sep 2026</strong></div>
+          </div>
+
+          <header class="form-d-header">
+            <div class="fw-bold fs-6 text-uppercase" style="letter-spacing:1px;">FORM - D</div>
+            <div class="rule-reference">(See Rule 21)</div>
+            <h1 class="form-d-title">MARKING ORDER</h1>
+          </header>
+
+          <!-- Application & MO Reference Line -->
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary-subtle small">
+            <div>
+              <span class="text-muted">Application No.:</span>
+              <strong class="font-monospace text-dark ms-1" id="lblMoAppNo">GTK/RAN/2026-27/006</strong>
+            </div>
+            <div>
+              <span class="text-muted">MO No.:</span>
+              <strong class="font-monospace text-dark ms-1" id="lblMoNumber">MO/GTK/RAN/2026-27/006</strong>
+            </div>
+          </div>
+
+          <!-- Issuing & Receiving Officer Block (2 Columns) -->
+          <div class="row g-3 mb-3 small">
+            <div class="col-6">
+              <span class="text-muted d-block" style="font-size:0.75rem;">From:</span>
+              <strong class="text-dark d-block" id="lblMoFromOfficer">Range Officer / Competent Issuing Officer</strong>
+              <span class="text-secondary" id="lblMoFromRange">Ranipool Range (T)</span><br>
+              <span class="text-muted" style="font-size:0.72rem;">Forest &amp; Environment Department, Government of Sikkim</span>
+            </div>
+            <div class="col-6 text-end">
+              <span class="text-muted d-block" style="font-size:0.75rem;">To:</span>
+              <strong class="text-dark d-block" id="lblMoToOfficer">Block Officer</strong>
+              <span class="text-secondary" id="lblMoToBlock">Ranipool Block / Jurisdiction</span>
+            </div>
+          </div>
+
+          <!-- Formal Marking Instruction Statement (verbatim as per supplied PDF) -->
+          <div class="mb-3 small" style="line-height: 2.1; font-family: 'Noto Serif', serif; font-size: 0.95rem; color: #000000;">
+            Please arrange to mark the under mentioned tree / trees in favour of <span class="dotted-fill" id="lblMoApplicantName">Ramesh Kumar</span>.<br>
+            Father / Husband Name: <span class="dotted-fill" id="lblMoRelationName">Mohan Kumar</span><br>
+            from <span class="dotted-fill" id="lblMoForestDetails">Ranipool Range (T)</span> forest on payment of royalty at <span class="dotted-fill" id="lblMoRoyaltyLocation">Gangtok Territorial Division</span>.<br>
+            These / It should be marked before felling and only on silvicultural availability.
+          </div>
+
+          <!-- Tree Details Table -->
+          <div class="table-responsive mb-3">
+            <table class="table mo-tree-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th style="width: 50%;">Particulars of trees</th>
+                  <th style="width: 25%;">Girth (in ft)</th>
+                  <th style="width: 25%;">Plot/Khasra number</th>
+                </tr>
+              </thead>
+              <tbody id="tblMoTreesBody">
+                <!-- Populated dynamically -->
+                <tr>
+                  <td>Oak</td>
+                  <td class="text-center font-monospace">4.10 ft</td>
+                  <td class="text-center font-monospace">101</td>
+                </tr>
+                <tr>
+                  <td>Pine</td>
+                  <td class="text-center font-monospace">3.20 ft</td>
+                  <td class="text-center font-monospace">101</td>
+                </tr>
+                <tr>
+                  <td>Alnus</td>
+                  <td class="text-center font-monospace">2.70 ft</td>
+                  <td class="text-center font-monospace">102</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mandatory Marking Conditions & Printed Statements (verbatim as per supplied PDF) -->
+          <div class="conditions-block">
+            <p class="fw-semibold text-dark">*Dragging, rolling and sliding the timbers in the forest are strictly prohibited.</p>
+            <p>All timbers must be hammer marked before removal from the saw bench which may be allowed for showing the above mentioned trees only.</p>
+            <p id="lblMoValidity">This Marking Order is valid for 3 months from the date of issue, or upto the applicable validity date, whichever is earlier.</p>
+            <p class="fst-italic text-secondary">This is a system generated Marking Order approved by RO / competent authority.</p>
+            <p class="fw-bold text-dark mb-0">Note - The applicant must plant 10 number of saplings for every tree felled.</p>
+          </div>
+
+          <!-- Issuing Officer Sign-off Block -->
+          <div class="row align-items-end pt-3 mt-4 border-top border-secondary-subtle">
+            <div class="col-6">
+              <div class="p-2 border rounded bg-light d-inline-block text-center font-monospace" style="font-size:0.68rem;">
+                <div id="svgQrPlaceholder" class="mb-1"></div>
+                <span class="text-muted">SYSTEM GENERATED &bull; SECURE FORM-D</span>
+              </div>
+            </div>
+            <div class="col-6 text-end">
+              <div class="fw-bold text-dark fs-6" id="lblMoIssuingOfficerTitle">Issuing Officer</div>
+              <div class="text-dark small fw-semibold">Forest &amp; Environment Department</div>
+              <div class="text-secondary small">Government of Sikkim</div>
+              <div class="text-muted" style="font-size:0.72rem;" id="lblMoIssuedDateStamp">Issued on: 26 Sep 2026</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- PAGE 2: TRANSIT PERMIT HISTORY (CONDITIONAL)                   -->
+        <!-- Generated ONLY when IsTransitPermitRequired === true           -->
+        <!-- ============================================================== -->
+        <section id="docPage2TransitSection" class="page-break d-none">
+
+          <!-- Section Heading -->
+          <header class="tp-page-header">
+            <h2 class="h5 fw-bold text-dark text-uppercase mb-1" style="font-family:'Noto Serif', Georgia, serif; letter-spacing:1px;">
+              Transit Permit History
+            </h2>
+            <div class="small fw-semibold text-secondary">Forest &amp; Environment Department, Government of Sikkim</div>
+            <div class="d-flex justify-content-center gap-4 mt-2 small text-muted">
+              <span>Marking Order No.: <strong class="font-monospace text-dark" id="lblTpMoNo">MO/GTK/RAN/2026-27/006</strong></span>
+              <span>Application No.: <strong class="font-monospace text-dark" id="lblTpAppNo">GTK/RAN/2026-27/006</strong></span>
+            </div>
+          </header>
+
+          <!-- History Table -->
+          <div class="table-responsive mb-4">
+            <table class="table mo-tree-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th style="width: 40%; text-align: left;">Issuing Officer</th>
+                  <th style="width: 60%; text-align: left;">Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="tblTpHistoryBody">
+                <!-- Dynamically populated from actual Transit Permit action records -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Supporting Text (verbatim as per supplied PDF) -->
+          <div class="p-3 bg-light rounded border border-secondary-subtle text-center text-muted small fst-italic mb-4">
+            This page is reserved for Transit Permit entries after Marking Order issuance.
+          </div>
+
+          <!-- Department Sign-off -->
+          <div class="row align-items-center pt-3 border-top border-secondary-subtle small">
+            <div class="col-6">
+              <span class="text-muted">Document Type:</span> <strong class="text-dark">Transit Permit History Registry</strong>
+            </div>
+            <div class="col-6 text-end">
+              <div class="fw-bold text-dark">Forest &amp; Environment Department</div>
+              <div class="text-secondary small">Government of Sikkim</div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </article>
+
+  </main>
+
+  <!-- SCRIPTS -->
+  <script src="../../common/js/accessibility.js"></script>
+  <script src="citizen-data.js"></script>
+  <script src="document-service.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+
+      const activeAppNo = getQueryParam('appNo') || 'GTK/RAN/2026-27/006';
+      const activeRole = getQueryParam('role') || 'citizen';
+
+      // Load Application Dossier
+      function loadMarkingOrderDocument(appNo) {
+        let app = null;
+        if (window.MarkingOrderData && MarkingOrderData.getApplicationByNo) {
+          app = MarkingOrderData.getApplicationByNo(appNo);
+        }
+
+        if (!app) {
+          alert('Marking Order record not found for application: ' + appNo);
+          return;
+        }
+
+        // Verify document availability
+        const isPaid = (app.paymentStatus && (app.paymentStatus.includes('Paid') || app.paymentStatus.includes('Completed'))) ||
+                       (app.currentStatus && (app.currentStatus.includes('Marking Order Issued') || app.currentStatus.includes('Payment Completed')));
+        const isMoIssued = Boolean(app.markingOrderNo) || app.currentStatus === 'Marking Order Issued';
+
+        if (!isPaid || !isMoIssued) {
+          alert('Access Denied:\nMarking Order document is not yet available for this application.\nCurrent Status: ' + app.currentStatus);
+          return;
+        }
+
+        if (app.isTransitPermitRequired && (app.transitPermitStatus === 'Pending with ACF/DFO' || !app.transitPermitNo)) {
+          alert('Access Restricted:\nPayment completed. Transit Permit action is pending with the concerned department.\nThe certificate will be available for download after the Transit Permit is issued.');
+          return;
+        }
+
+        renderDocument(app);
+      }
+
+      function renderDocument(app) {
+        const moNo = app.markingOrderNo || 'MO/GTK/RAN/2026-27/006';
+        const appNo = app.appNo || 'GTK/RAN/2026-27/006';
+        const issueDate = app.markingOrderIssueDate || app.lastUpdatedDate || '26 Sep 2026';
+        const applicantName = app.applicantName || 'Ramesh Kumar';
+        const relationName = app.relationName || 'Mohan Kumar';
+        const range = app.range || 'Ranipool Range (T)';
+        const division = app.division || 'Gangtok Territorial Division';
+        const boName = app.assignedBoName || 'Block Officer, Ranipool';
+        const validityText = app.markingOrderValidity || 'This Marking Order is valid for 3 months from the date of issue, or upto the applicable validity date, whichever is earlier.';
+
+        // Update Page Titles & Badges
+        document.getElementById('pageTitle').textContent = 'Marking Order FORM - D • ' + moNo + ' • Government of Sikkim';
+        document.getElementById('lblMoDate').textContent = issueDate;
+        document.getElementById('lblMoAppNo').textContent = appNo;
+        document.getElementById('lblMoNumber').textContent = moNo;
+
+        // Officer details
+        document.getElementById('lblMoFromOfficer').textContent = app.approvedByRole || 'Range Officer / Competent Issuing Officer';
+        document.getElementById('lblMoFromRange').textContent = range;
+        document.getElementById('lblMoToOfficer').textContent = 'Block Officer';
+        document.getElementById('lblMoToBlock').textContent = boName + ' (' + range + ')';
+
+        // Statements
+        document.getElementById('lblMoApplicantName').textContent = applicantName;
+        document.getElementById('lblMoRelationName').textContent = relationName;
+        document.getElementById('lblMoForestDetails').textContent = range;
+        document.getElementById('lblMoRoyaltyLocation').textContent = division;
+        document.getElementById('lblMoValidity').textContent = validityText;
+
+        // Issuing Officer sign-off
+        document.getElementById('lblMoIssuedDateStamp').textContent = 'Issued on: ' + issueDate;
+
+        // Trees Table
+        const trees = app.trees || [];
+        const treeRows = trees.map(function (t) {
+          const speciesName = t.verifiedSpecies || t.species || 'Timber Species';
+          const gbh = t.verifiedGbhFeet || t.gbhFeet || 'N/A';
+          const plot = t.plotNo || 'N/A';
+          return '<tr>' +
+            '<td><strong>' + speciesName + '</strong></td>' +
+            '<td class="text-center font-monospace">' + gbh + '</td>' +
+            '<td class="text-center font-monospace">' + plot + '</td>' +
+          '</tr>';
+        }).join('');
+        document.getElementById('tblMoTreesBody').innerHTML = treeRows || '<tr><td colspan="3" class="text-center text-muted">No approved trees recorded.</td></tr>';
+
+        // Render QR Code placeholder SVG
+        renderSvgQrPlaceholder('svgQrPlaceholder', moNo);
+
+        // ==============================================================
+        // TRANSIT PERMIT HISTORY (PAGE 2) CONDITIONAL HANDLING
+        // ==============================================================
+        const page2El = document.getElementById('docPage2TransitSection');
+
+        if (app.isTransitPermitRequired === true) {
+          // SCENARIO A: Transit Permit Required = YES
+          page2El.classList.remove('d-none');
+          document.getElementById('lblTpMoNo').textContent = moNo;
+          document.getElementById('lblTpAppNo').textContent = appNo;
+
+          // Build History Entries from actual records
+          const tpRows = [];
+
+          // Primary Transit Permit Action entry
+          if (app.transitPermitNo || app.transitPermitStatus === 'Approved/Issued' || app.transitPermitStatus === 'Transit Permit Issued') {
+            const officerInfo = '<strong>' + (app.transitPermitOfficer || 'ACF / DFO (Gangtok Division)') + '</strong><div class="small text-muted font-monospace mt-0.5">Permit No: ' + (app.transitPermitNo || 'N/A') + ' &bull; Date: ' + (app.transitPermitIssueDate || issueDate) + '</div>';
+            const remarksInfo = (app.transitPermitRemarks || 'Transit Permit issued for felling material movement along approved corridor.') +
+              (app.transitPermitRoute ? '<div class="small text-secondary mt-1"><strong>Approved Route:</strong> ' + app.transitPermitRoute + '</div>' : '');
+
+            tpRows.push('<tr><td>' + officerInfo + '</td><td>' + remarksInfo + '</td></tr>');
+          }
+
+          // Check history items for additional transit stages
+          if (app.history && app.history.length > 0) {
+            app.history.forEach(function (h) {
+              if (h.stage && h.stage.toLowerCase().includes('transit') && !tpRows.some(function(r){ return r.includes(h.remarks); })) {
+                tpRows.push('<tr><td><strong>' + h.actor + '</strong><div class="small text-muted font-monospace mt-0.5">' + h.date + '</div></td><td>' + h.remarks + '</td></tr>');
+              }
+            });
+          }
+
+          if (tpRows.length === 0) {
+            tpRows.push('<tr><td><span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Transit Permit Pending</span></td><td class="text-muted">Transit Permit action pending clearance by concerned ACF/DFO desk.</td></tr>');
+          }
+
+          document.getElementById('tblTpHistoryBody').innerHTML = tpRows.join('');
+        } else {
+          // SCENARIO B: Transit Permit Required = NO
+          // Completely omit Page 2 from DOM and print output!
+          page2El.classList.add('d-none');
+          page2El.innerHTML = '';
+        }
+
+        // Save persistent document metadata
+        if (window.MarkingOrderDocumentService) {
+          MarkingOrderDocumentService.getDocumentStatus(app.appNo);
+        }
+      }
+
+      function renderSvgQrPlaceholder(containerId, text) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML =
+          '<svg width="70" height="70" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto;">' +
+            '<rect width="100" height="100" fill="#ffffff"/>' +
+            '<rect x="6" y="6" width="26" height="26" fill="#114b3f" rx="2"/>' +
+            '<rect x="10" y="10" width="18" height="18" fill="#ffffff" rx="1"/>' +
+            '<rect x="14" y="14" width="10" height="10" fill="#114b3f"/>' +
+            '<rect x="68" y="6" width="26" height="26" fill="#114b3f" rx="2"/>' +
+            '<rect x="72" y="10" width="18" height="18" fill="#ffffff" rx="1"/>' +
+            '<rect x="76" y="14" width="10" height="10" fill="#114b3f"/>' +
+            '<rect x="6" y="68" width="26" height="26" fill="#114b3f" rx="2"/>' +
+            '<rect x="10" y="72" width="18" height="18" fill="#ffffff" rx="1"/>' +
+            '<rect x="14" y="76" width="10" height="10" fill="#114b3f"/>' +
+            '<rect x="38" y="10" width="6" height="6" fill="#114b3f"/>' +
+            '<rect x="48" y="10" width="6" height="6" fill="#114b3f"/>' +
+            '<rect x="58" y="10" width="6" height="6" fill="#114b3f"/>' +
+            '<rect x="10" y="38" width="6" height="6" fill="#114b3f"/>' +
+            '<rect x="10" y="48" width="6" height="6" fill="#114b3f"/>' +
+            '<rect x="10" y="58" width="6" height="6" fill="#114b3f"/>' +
+            '<rect x="38" y="38" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="52" y="38" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="68" y="38" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="38" y="52" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="52" y="52" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="68" y="52" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="38" y="68" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="52" y="68" width="8" height="8" fill="#114b3f"/>' +
+            '<rect x="68" y="68" width="8" height="8" fill="#114b3f"/>' +
+          '</svg>';
+      }
+
+      // Back navigation button behavior
+      const backNavText = document.getElementById('navBackText');
+      if (activeRole === 'ro') {
+        backNavText.textContent = 'Back to RO Desk';
+      } else if (activeRole === 'bo') {
+        backNavText.textContent = 'Back to BO Desk';
+      } else if (activeRole === 'acf') {
+        backNavText.textContent = 'Back to ACF Desk';
+      } else if (activeRole === 'dfo') {
+        backNavText.textContent = 'Back to DFO Desk';
+      } else {
+        backNavText.textContent = 'Back to Citizen Dashboard';
+      }
+
+      window.handleBackNavigation = function () {
+        if (activeRole === 'ro') {
+          window.location.href = 'dashboard-ro.html';
+        } else if (activeRole === 'bo') {
+          window.location.href = 'dashboard-bo.html';
+        } else if (activeRole === 'acf') {
+          window.location.href = 'dashboard-acf.html';
+        } else if (activeRole === 'dfo') {
+          window.location.href = 'dashboard-dfo.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      };
+
+      // Sample demonstration switcher
+      window.switchDemoSample = function (selectedAppNo) {
+        loadMarkingOrderDocument(selectedAppNo);
+      };
+
+      // Initialize on DOM ready
+      document.addEventListener('DOMContentLoaded', function () {
+        // Sync sample switcher with activeAppNo if in list
+        const sel = document.getElementById('demoSampleSelect');
+        if (sel) {
+          let found = false;
+          for (let i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].value === activeAppNo) {
+              sel.selectedIndex = i;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            const newOpt = document.createElement('option');
+            newOpt.value = activeAppNo;
+            newOpt.textContent = 'Active: ' + activeAppNo;
+            newOpt.selected = true;
+            sel.appendChild(newOpt);
+          }
+        }
+
+        loadMarkingOrderDocument(activeAppNo);
+      });
+
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <title>Block Officer (BO) Dashboard &bull; Marking Order Service &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .gov-scenario-bar {
+      background: #0d382f;
+      color: #f8fafc;
+      font-size: 0.8125rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .bo-view-pane {
+      display: none;
+    }
+    .bo-view-pane.active {
+      display: block;
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link -->
+  <a class="gov-skip-link" href="#main-bo-content">Skip to Main Content</a>
+
+  <!-- Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Prototype Demo Bar (BO User Switcher) -->
+  <aside class="gov-scenario-bar" aria-label="Prototype Demo Block Officer Controller">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-geo-alt-fill me-1"></i> STAGE 02 &bull; BO WORKSPACE
+          </span>
+          <label for="boUserSwitcher" class="fw-semibold text-white mb-0">Demonstration Block Officer:</label>
+          <select id="boUserSwitcher" class="form-select form-select-sm py-0.5 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 360px; font-size: 0.8rem;" onchange="switchBoDemoUser(this.value)">
+            <option value="BO-RANIPOOL-1" selected>BO Demo User 1 (Ranipool Block) &bull; Ranipool Range</option>
+            <option value="BO-RANIPOOL-2">BO Demo User 2 (Assam Lingzey Block) &bull; Ranipool Range</option>
+            <option value="BO-GANGTOK-1">BO Demo User 3 (Gangtok Block) &bull; Gangtok Range</option>
+            <option value="BO-NAMCHI-1">BO Demo User 4 (Namchi Block) &bull; Namchi Range</option>
+          </select>
+          <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+            <i class="bi bi-people-fill me-1"></i> Switch Role
+          </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-gov-light" data-font-action="increase" title="Increase font size">A+</button>
+          </div>
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle BO Menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <a href="index.html" class="d-inline-block">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Forest and Environment Department &bull; Government of Sikkim</div>
+            <h1 class="h5 fw-bold text-dark mb-0" id="boHeaderTitle">Block Officer Dashboard &bull; Ranipool Range</h1>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="boHeaderUserName">BO Demo User 1 (Ranipool Block)</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle me-1">Role: Block Officer (BO)</span>
+              <span id="boHeaderJurisdiction">Division: Gangtok &bull; Range: Ranipool Range</span>
+            </div>
+          </div>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Switch Role / Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <div class="officer-workspace-container flex-grow-1">
+
+    <!-- 8.3 BO Navigation Menu (7 Required Items) -->
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block" id="sidebar-nav" aria-label="Block Officer Navigation">
+      <div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">
+        <span class="fw-bold small text-muted">BO WORKSPACE MENU</span>
+        <button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>
+      </div>
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+        Field Verification Desk
+      </div>
+      <nav class="nav flex-column gap-1">
+        <!-- 1. Dashboard -->
+        <a href="#dashboard" class="officer-nav-link active" id="boNav-dashboard" onclick="switchBoPane('dashboard', event)">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="apply.html?role=bo" class="officer-nav-link text-success fw-semibold">
+          <i class="bi bi-person-plus-fill text-success"></i>
+          <span>Assist Citizen (Apply)</span>
+        </a>
+        <!-- 2. Assigned Applications -->
+        <a href="#assigned" class="officer-nav-link" id="boNav-assigned" onclick="switchBoPane('assigned', event)">
+          <i class="bi bi-inbox-fill text-primary"></i>
+          <span>Assigned Applications</span>
+          <span class="badge bg-primary" id="boBadgeAssigned">0</span>
+        </a>
+        <!-- 3. Scheduled Verification -->
+        <a href="#scheduled" class="officer-nav-link" id="boNav-scheduled" onclick="switchBoPane('scheduled', event)">
+          <i class="bi bi-calendar-event-fill text-warning"></i>
+          <span>Scheduled Verification</span>
+          <span class="badge bg-warning text-dark" id="boBadgeScheduled">0</span>
+        </a>
+        <!-- 4. Verified Applications -->
+        <a href="#verified" class="officer-nav-link" id="boNav-verified" onclick="switchBoPane('verified', event)">
+          <i class="bi bi-check2-circle text-success"></i>
+          <span>Verified Applications</span>
+          <span class="badge bg-success" id="boBadgeVerified">0</span>
+        </a>
+        <!-- 5. Submitted Reports -->
+        <a href="#reports" class="officer-nav-link" id="boNav-reports" onclick="switchBoPane('reports', event)">
+          <i class="bi bi-file-earmark-check-fill text-info"></i>
+          <span>Submitted Reports</span>
+          <span class="badge bg-info text-dark" id="boBadgeReports">0</span>
+        </a>
+        <!-- 6. Tree Details -->
+        <a href="#tree-details" class="officer-nav-link" id="boNav-trees" onclick="switchBoPane('trees', event)">
+          <i class="bi bi-tree-fill text-success"></i>
+          <span>Tree Details</span>
+        </a>
+        <!-- 7. Reports & Summary -->
+        <a href="reports.html?role=bo&user=BO-RANIPOOL-1" class="officer-nav-link" id="boNav-reports-page">
+          <i class="bi bi-file-earmark-bar-graph text-info"></i>
+          <span>Reports &amp; Summary</span>
+        </a>
+        <!-- 8. Switch Role / Logout -->
+        <a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">
+          <i class="bi bi-box-arrow-left text-danger"></i>
+          <span>Switch Role / Logout</span>
+        </a>
+      </nav>
+
+      <!-- BO Authority Boundary Card -->
+      <div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">
+        <div class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill text-warning-emphasis me-1"></i> BO Authority Rule</div>
+        <div class="text-secondary" style="font-size: 0.74rem;">
+          BO conducts on-site verification and submits reports to RO. <strong>BO cannot reject an application.</strong> Where discrepancies are found, BO forwards the report with remarks to RO.
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main BO Content -->
+    <main id="main-bo-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
+
+      <!-- 8.1 BO Dashboard Welcome Section -->
+      <div class="card border-0 bg-white p-4 shadow-xs mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h2 class="h4 fw-bold text-dark mb-0">Welcome to Block Officer Dashboard</h2>
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Role: Block Officer (BO)</span>
+            </div>
+            <p class="text-muted small mb-2">
+              View your assigned field verification applications and manage on-site verification activities.
+            </p>
+            <div class="d-flex flex-wrap gap-3 small">
+              <span><i class="bi bi-person-badge text-success me-1"></i><strong>User:</strong> <span id="welcomeBoUser">BO Demo User 1 (Ranipool Block)</span></span>
+              <span><i class="bi bi-diagram-2 text-success me-1"></i><strong>Division:</strong> <span id="welcomeBoDivision">Gangtok</span></span>
+              <span><i class="bi bi-geo-alt text-success me-1"></i><strong>Range:</strong> <span id="welcomeBoRange">Ranipool Range</span></span>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="reports.html?role=bo&user=BO-RANIPOOL-1" id="boWelcomeReportsBtn" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-bar-chart me-1"></i> Block Reports
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mandatory Business Rule Banner (No Rejection Power) -->
+      <div class="alert alert-warning border-0 shadow-xs py-2.5 px-3 small mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-shield-exclamation fs-5 text-warning-emphasis flex-shrink-0"></i>
+        <div>
+          <strong>Statutory Field Verification Rule:</strong> The Block Officer is responsible for on-site verification of land, plot, and tree details, capturing GPS coordinates and site photographs, and submitting the verification report to the Range Officer. <strong>The Block Officer cannot reject an application.</strong> Where discrepancies or issues are identified, the application is forwarded to the Range Officer with remarks.
+        </div>
+      </div>
+
+      <!-- 8.2 BO Dashboard Summary Cards (5 Dynamically Calculated Cards) -->
+      <div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchBoPane('assigned')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-primary" id="kpiBoAssigned">0</div>
+                <div class="gov-kpi-label">Assigned Applications</div>
+              </div>
+              <i class="bi bi-inbox-fill fs-4 text-primary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Total assigned by RO</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchBoPane('scheduled')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-info" id="kpiBoUpcoming">0</div>
+                <div class="gov-kpi-label">Upcoming Verifications</div>
+              </div>
+              <i class="bi bi-calendar-event-fill fs-4 text-info"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Due today &amp; upcoming</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchBoPane('scheduled')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-warning" id="kpiBoPending">0</div>
+                <div class="gov-kpi-label">Verification Pending</div>
+              </div>
+              <i class="bi bi-hourglass-split fs-4 text-warning"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Report pending submission</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchBoPane('reports')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-success" id="kpiBoSubmitted">0</div>
+                <div class="gov-kpi-label">Verification Reports Submitted</div>
+              </div>
+              <i class="bi bi-file-earmark-check-fill fs-4 text-success"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Submitted to RO</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchBoPane('reports')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-danger" id="kpiBoForwardedRemarks">0</div>
+                <div class="gov-kpi-label">Applications Forwarded with Remarks</div>
+              </div>
+              <i class="bi bi-chat-left-dots-fill fs-4 text-danger"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Discrepancies reported to RO</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 1: DASHBOARD OVERVIEW -->
+      <div id="boPane-dashboard" class="bo-view-pane active">
+        <!-- Scheduled Verification Queue with Visual Schedule Indicators -->
+        <div class="card border-0 shadow-xs bg-white mb-4">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-calendar-check-fill text-warning me-2"></i>Scheduled Field Verifications (Due Today, Upcoming &amp; Report Pending)</h3>
+              <span class="small text-muted">On-site verification schedule assigned by Range Officer</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchBoPane('scheduled')">View All Scheduled</button>
+          </div>
+          <div class="card-body p-0" id="boDashScheduledTable"></div>
+        </div>
+
+        <!-- Assigned Applications Table -->
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-inbox-fill text-primary me-2"></i>All Assigned Applications</h3>
+              <span class="small text-muted">Applications assigned to <strong id="dashBoNameLabel">BO Demo User 1</strong></span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchBoPane('assigned')">Open Full Queue</button>
+          </div>
+          <div class="card-body p-0" id="boDashAssignedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 2: 8.4 ASSIGNED APPLICATIONS -->
+      <div id="boPane-assigned" class="bo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Assigned Applications (Assigned by Range Officer)</h3>
+          </div>
+          <div class="card-body p-0" id="boFullAssignedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 3: 8.5 SCHEDULED VERIFICATION -->
+      <div id="boPane-scheduled" class="bo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Scheduled Verification (Upcoming, Due Today &amp; Past Scheduled Date / Report Pending)</h3>
+          </div>
+          <div class="card-body p-0" id="boFullScheduledTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 4: VERIFIED APPLICATIONS -->
+      <div id="boPane-verified" class="bo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Verified Applications (Field Inspection Completed)</h3>
+          </div>
+          <div class="card-body p-0" id="boFullVerifiedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 5: 8.7 SUBMITTED REPORTS & FORWARDED WITH REMARKS -->
+      <div id="boPane-reports" class="bo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Submitted Verification Reports (Including Applications Forwarded with Remarks)</h3>
+          </div>
+          <div class="card-body p-0" id="boFullReportsTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 6: TREE DETAILS -->
+      <div id="boPane-trees" class="bo-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-1"><i class="bi bi-tree-fill text-success me-2"></i>Assigned Application Tree Details</h3>
+          <p class="small text-muted mb-3">Tree-wise Species, Plot/Khasra Number, GBH (Feet), and Field Match/Mismatch status for applications assigned to <strong id="treeBoNameLabel">BO Demo User 1</strong>.</p>
+          <div class="table-responsive" id="boTreeDetailsTable"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Standard Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white mt-auto" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 small text-white-50">
+      <div>&copy; 2026 Forest and Environment Department, Government of Sikkim &bull; Marking Order Service (BO Desk &ndash; Stage 02)</div>
+      <div>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script src="document-service.js"></script>
+  <script>
+    var currentBoUser = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      MarkingOrderData.initDashboardCommon();
+
+      var params = new URLSearchParams(window.location.search);
+      var userId = params.get('user') || localStorage.getItem('mo_bo_user') || 'BO-RANIPOOL-1';
+      var switcher = document.getElementById('boUserSwitcher');
+      if (switcher) switcher.value = userId;
+
+      switchBoDemoUser(userId);
+
+      var activePane = params.get('pane') || (window.location.hash ? window.location.hash.replace('#', '') : 'dashboard');
+      if (activePane && ['dashboard', 'assigned', 'scheduled', 'verified', 'reports', 'trees'].indexOf(activePane) !== -1) {
+        switchBoPane(activePane);
+      }
+    });
+
+    function switchBoDemoUser(userId) {
+      localStorage.setItem('mo_bo_user', userId);
+      currentBoUser = MarkingOrderData.demoUsers.blockOfficers.find(function (u) { return u.id === userId; }) || MarkingOrderData.demoUsers.blockOfficers[0];
+
+      document.getElementById('boHeaderTitle').textContent = 'Block Officer Dashboard \u2022 ' + currentBoUser.range;
+      document.getElementById('boHeaderUserName').textContent = currentBoUser.name;
+      document.getElementById('boHeaderJurisdiction').textContent = 'Division: ' + currentBoUser.division + ' \u2022 Range: ' + currentBoUser.range;
+
+      document.getElementById('welcomeBoUser').textContent = currentBoUser.name;
+      document.getElementById('welcomeBoDivision').textContent = currentBoUser.division;
+      document.getElementById('welcomeBoRange').textContent = currentBoUser.range;
+      document.getElementById('dashBoNameLabel').textContent = currentBoUser.name;
+      document.getElementById('treeBoNameLabel').textContent = currentBoUser.name;
+
+      var repLink = document.getElementById('boNav-reports-page');
+      if (repLink) repLink.href = 'reports.html?role=bo&user=' + encodeURIComponent(userId);
+      var repWelcome = document.getElementById('boWelcomeReportsBtn');
+      if (repWelcome) repWelcome.href = 'reports.html?role=bo&user=' + encodeURIComponent(userId);
+
+      renderBoDashboard();
+    }
+
+    function renderBoDashboard() {
+      var allApps = MarkingOrderData.getAllApplications();
+      var assignedApps = allApps.filter(function (a) {
+        if (!currentBoUser) return false;
+        // Match by BO ID
+        if (a.assignedBoId === currentBoUser.id) return true;
+        if (a.assignedOfficerId === currentBoUser.id || a.officerId === currentBoUser.id) return true;
+        // Match by applied by BO
+        if (a.appliedByUserId === currentBoUser.id) return true;
+        // Match by BO name or block jurisdiction
+        if (a.assignedBoName) {
+          if (a.assignedBoName === currentBoUser.name) return true;
+          if (currentBoUser.blockName && a.assignedBoName.toLowerCase().includes(currentBoUser.blockName.toLowerCase())) return true;
+          if (currentBoUser.id === 'BO-RANIPOOL-1' && a.assignedBoName.toLowerCase().includes('ranipool')) return true;
+          if (currentBoUser.id === 'BO-RANIPOOL-2' && a.assignedBoName.toLowerCase().includes('assam lingzey')) return true;
+        }
+        return false;
+      });
+
+      var scheduledPending = assignedApps.filter(function (a) {
+        return a.currentStatus === 'Verification Scheduled' || a.currentStatus === 'Scheduled';
+      });
+      var upcomingOrToday = scheduledPending.filter(function (a) {
+        return a.boScheduleTag === 'Due Today' || a.boScheduleTag === 'Upcoming Verification' || !a.boScheduleTag;
+      });
+      var submittedReports = assignedApps.filter(function (a) {
+        return Boolean(a.boReportDate) || Boolean(a.verificationCompletedDate) || Boolean(a.verificationReport) || a.currentStatus === 'BO Verification Completed' || a.currentStatus === 'BO Verified';
+      });
+      var forwardedWithRemarks = submittedReports.filter(function (a) {
+        return a.boForwardedWithRemarks || (a.verificationReport && a.verificationReport.hasDiscrepancy);
+      });
+
+      // Update KPI Summary Cards & Badges
+      document.getElementById('kpiBoAssigned').textContent = assignedApps.length;
+      document.getElementById('kpiBoUpcoming').textContent = upcomingOrToday.length;
+      document.getElementById('kpiBoPending').textContent = scheduledPending.length;
+      document.getElementById('kpiBoSubmitted').textContent = submittedReports.length;
+      document.getElementById('kpiBoForwardedRemarks').textContent = forwardedWithRemarks.length;
+
+      document.getElementById('boBadgeAssigned').textContent = assignedApps.length;
+      document.getElementById('boBadgeScheduled').textContent = scheduledPending.length;
+      document.getElementById('boBadgeVerified').textContent = submittedReports.length;
+      document.getElementById('boBadgeReports').textContent = submittedReports.length;
+
+      var scheduledHtml = buildBoScheduledTable(scheduledPending);
+      document.getElementById('boDashScheduledTable').innerHTML = scheduledHtml;
+      document.getElementById('boFullScheduledTable').innerHTML = scheduledHtml;
+
+      var assignedHtml = buildBoAssignedTable(assignedApps);
+      document.getElementById('boDashAssignedTable').innerHTML = assignedHtml;
+      document.getElementById('boFullAssignedTable').innerHTML = assignedHtml;
+
+      var reportsHtml = buildBoSubmittedReportsTable(submittedReports);
+      document.getElementById('boFullVerifiedTable').innerHTML = reportsHtml;
+      document.getElementById('boFullReportsTable').innerHTML = reportsHtml;
+
+      renderBoTreesTable(assignedApps);
+    }
+
+    function getScheduleVisualBadge(tag) {
+      if (tag === 'Due Today') {
+        return '<span class="badge bg-warning text-dark"><i class="bi bi-alarm-fill me-1"></i>Verification Due Today</span>';
+      }
+      if (tag === 'Upcoming Verification') {
+        return '<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle"><i class="bi bi-calendar-event me-1"></i>Upcoming Verification</span>';
+      }
+      if (tag && tag.includes('Past Scheduled Date')) {
+        return '<span class="badge bg-danger text-white"><i class="bi bi-exclamation-circle-fill me-1"></i>Past Scheduled Date &bull; Verification Report Pending</span>';
+      }
+      if (tag === 'Forwarded with Remarks') {
+        return '<span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="bi bi-chat-left-dots me-1"></i>Forwarded with Remarks</span>';
+      }
+      return '<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle me-1"></i>Report Submitted</span>';
+    }
+
+    // 8.4 Assigned Applications Table (All 10 required fields; strictly NO Reject button)
+    function buildBoAssignedTable(list) {
+      if (list.length === 0) return '<div class="p-4 text-center text-muted small">No applications assigned to ' + currentBoUser.name + '.</div>';
+      var rows = list.map(function (a) {
+        var canPay = MarkingOrderData.canUserPayForApplication(a, currentBoUser);
+        var actionBtns = '';
+
+        if (canPay) {
+          actionBtns = '<button type="button" class="btn btn-sm btn-danger py-1 px-2.5 fw-semibold" onclick="MarkingOrderData.openPaymentModal(\'' + a.appNo + '\', renderBoDashboard)"><i class="bi bi-wallet2 me-1"></i> Pay Fee (₹50)</button>' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>';
+        } else if (a.currentStatus === 'Verification Scheduled' || a.currentStatus === 'Application Submitted') {
+          actionBtns = '<a href="review.html?appNo=' + encodeURIComponent(a.appNo) + '&role=bo" class="btn btn-sm btn-gov-primary"><i class="bi bi-geo-alt-fill"></i> Conduct Field Verification</a>' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>';
+        } else {
+          actionBtns = '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+            '<a href="review.html?appNo=' + encodeURIComponent(a.appNo) + '&role=bo" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-text"></i> Dossier</a>';
+        }
+
+        var villageAddress = (a.permanentAddress && a.permanentAddress.address1) ? (a.permanentAddress.address1 + ', ' + (a.permanentAddress.blockGpu || '')) : (a.address || (a.revenueBlock ? a.revenueBlock + ', ' + (a.district || '') : a.district || ''));
+        var verDate = a.verificationDate || a.verificationScheduledDate || 'TBD';
+        var assignedTag = a.boScheduleTag || (a.currentStatus === 'Verification Scheduled' ? 'Upcoming Verification' : (a.boReportDate || a.verificationCompletedDate ? 'Report Submitted' : 'Due Today'));
+
+        return '<tr>' +
+          '<td class="font-monospace fw-bold text-primary"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td>' + a.applicantName + (a.appliedByUserId === currentBoUser.id ? ' <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle" style="font-size:0.65rem;">Applied by BO</span>' : '') + '</td>' +
+          '<td>' + (a.district || 'Gangtok') + '</td>' +
+          '<td class="small">' + villageAddress + '</td>' +
+          '<td><strong>' + verDate + '</strong><div class="mt-0.5">' + getScheduleVisualBadge(assignedTag) + '</div></td>' +
+          '<td>' + a.purpose + '</td>' +
+          '<td>' + (a.trees ? a.trees.length : 0) + ' Trees</td>' +
+          '<td>' + (a.boAssignedDate || a.submittedDate || '-') + '</td>' +
+          '<td>' + MarkingOrderData.getStatusBadgeHtml(a.currentStatus) + '</td>' +
+          '<td class="text-end text-nowrap">' +
+            '<div class="d-inline-flex align-items-center gap-1.5 text-nowrap">' +
+              actionBtns +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Application No.</th><th>Applicant Name</th><th>District</th><th>Village / Address</th><th>Verification Date</th><th>Purpose</th><th>Trees</th><th>Assigned Date</th><th>Status</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    // 8.5 Scheduled Verification Table
+    function buildBoScheduledTable(list) {
+      if (list.length === 0) return '<div class="p-4 text-center text-muted small">No pending scheduled field verifications for ' + currentBoUser.name + '.</div>';
+      var rows = list.map(function (a) {
+        var villageAddress = (a.permanentAddress && a.permanentAddress.address1) ? (a.permanentAddress.address1 + ', ' + (a.permanentAddress.blockGpu || '')) : (a.address || (a.revenueBlock ? a.revenueBlock + ', ' + (a.district || '') : a.district || ''));
+        var verDate = a.verificationDate || a.verificationScheduledDate || 'TBD';
+        var schedTag = a.boScheduleTag || 'Upcoming Verification';
+
+        return '<tr>' +
+          '<td class="font-monospace fw-bold text-primary"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td><div class="fw-semibold text-dark">' + a.applicantName + '</div><div class="small text-muted">' + villageAddress + '</div></td>' +
+          '<td><strong>' + verDate + '</strong></td>' +
+          '<td>' + getScheduleVisualBadge(schedTag) + '</td>' +
+          '<td>' + a.purpose + ' (' + (a.trees ? a.trees.length : 0) + ' Trees)</td>' +
+          '<td class="text-end text-nowrap">' +
+            '<div class="d-inline-flex align-items-center gap-1.5 text-nowrap">' +
+              '<a href="review.html?appNo=' + encodeURIComponent(a.appNo) + '&role=bo" class="btn btn-sm btn-gov-primary"><i class="bi bi-geo-alt-fill"></i> Conduct Field Verification</a>' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Application No.</th><th>Applicant &amp; Village/Address</th><th>Scheduled Date</th><th>Verification Schedule Indicator</th><th>Purpose &amp; Trees</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    function buildBoSubmittedReportsTable(list) {
+      if (list.length === 0) return '<div class="p-4 text-center text-muted small">No verification reports submitted yet by ' + currentBoUser.name + '.</div>';
+      var rows = list.map(function (a) {
+        var outcomeBadge = a.boForwardedWithRemarks
+          ? '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">Forwarded with Discrepancy Remarks to RO</span>'
+          : '<span class="badge bg-success-subtle text-success border border-success-subtle">Verified &amp; Submitted to RO</span>';
+        var repDate = a.boReportDate || a.verificationCompletedDate || (a.verificationReport ? a.verificationReport.verificationDate : '-');
+        var verDate = a.verificationDate || a.verificationScheduledDate || repDate;
+        var repRemarks = a.boRemarks || (a.verificationReport ? a.verificationReport.overallRecommendation : '');
+
+        return '<tr>' +
+          '<td class="font-monospace fw-bold text-primary"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td>' + a.applicantName + '</td>' +
+          '<td>' + verDate + '</td>' +
+          '<td>' + repDate + '</td>' +
+          '<td>' + outcomeBadge + '<div class="small text-secondary mt-1">' + repRemarks + '</div></td>' +
+          '<td class="text-end text-nowrap">' +
+            '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Application No.</th><th>Applicant Name</th><th>Verification Date</th><th>Report Submitted On</th><th>BO Verification Outcome &amp; Remarks</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    function renderBoTreesTable(assignedApps) {
+      var container = document.getElementById('boTreeDetailsTable');
+      if (assignedApps.length === 0) {
+        container.innerHTML = '<div class="p-4 text-center text-muted small">No assigned tree records.</div>';
+        return;
+      }
+      var rows = '';
+      assignedApps.forEach(function (app) {
+        (app.trees || []).forEach(function (t, idx) {
+          rows += '<tr>' +
+            '<td class="font-monospace fw-bold text-primary">' + app.appNo + '</td>' +
+            '<td>' + app.applicantName + '</td>' +
+            '<td>Tree #' + (t.treeNo || (idx + 1)) + ' &bull; ' + (t.species || t.verifiedSpecies || 'Tree') + '</td>' +
+            '<td class="font-monospace">' + (t.plotNo || app.khasraNo || '101') + '</td>' +
+            '<td>' + (t.gbhFeet || (t.girthInches ? (t.girthInches / 12).toFixed(2) + ' ft' : '3.00 ft')) + '</td>' +
+            '<td><span class="badge bg-light text-dark border">' + (t.boMatchStatus || (t.verified ? 'Verified & Matched' : 'Pending')) + '</span></td>' +
+          '</tr>';
+        });
+      });
+      container.innerHTML = '<table class="table table-sm table-bordered align-middle small mb-0">' +
+        '<thead class="table-light"><tr><th>Application No.</th><th>Applicant Name</th><th>Tree Species</th><th>Plot / Khasra No.</th><th>GBH (Feet)</th><th>Field Match / Mismatch Status</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table>';
+    }
+
+    // 8.6 BO Field Verification Navigation (Strictly NO Reject action)
+    function openBoVerificationContextModal(appNo) {
+      window.location.href = 'review.html?appNo=' + encodeURIComponent(appNo) + '&role=bo';
+    }
+
+    function switchBoPane(paneId, evt) {
+      if (evt) evt.preventDefault();
+      document.querySelectorAll('.bo-view-pane').forEach(function (p) { p.classList.remove('active'); });
+      var target = document.getElementById('boPane-' + paneId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('#sidebar-nav .officer-nav-link').forEach(function (l) { l.classList.remove('active'); });
+      var nav = document.getElementById('boNav-' + paneId);
+      if (nav) nav.classList.add('active');
+
+      try {
+        if (history.pushState) {
+          history.pushState(null, null, '#' + paneId);
+        } else {
+          window.location.hash = paneId;
+        }
+      } catch (e) {}
+    }
+  </script>
+</body>
+</html>

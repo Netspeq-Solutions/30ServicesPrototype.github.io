@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <title>Reports &amp; Application Summary &bull; Marking Order Service &bull; Forest and Environment Department &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    body {
+      background-color: #f8fafc;
+      font-family: 'Noto Sans', sans-serif;
+      color: #1e293b;
+    }
+    .gov-scenario-bar {
+      background: #0d382f;
+      color: #f8fafc;
+      font-size: 0.8125rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .report-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.875rem 1rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      height: 100%;
+    }
+    .report-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(17, 75, 63, 0.08);
+      border-color: #114b3f;
+    }
+    .report-kpi-card.active-kpi {
+      border: 2px solid #114b3f !important;
+      background-color: #f2f8f6 !important;
+      box-shadow: 0 0 0 3px rgba(17, 75, 63, 0.15);
+    }
+    .report-kpi-number {
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .filter-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .table-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .cursor-pointer { cursor: pointer; }
+
+    /* Quick Filter Pills */
+    .filter-pill {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: #114b3f;
+      color: #ffffff;
+      border-color: #114b3f;
+    }
+
+    /* Print Specific Styling */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 8mm 10mm;
+      }
+      body {
+        background: #ffffff !important;
+        font-size: 8pt !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .table-container {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .gov-table-compact {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+      .gov-table-compact th, .gov-table-compact td {
+        padding: 4px 6px !important;
+        border: 1px solid #94a3b8 !important;
+        font-size: 7.5pt !important;
+      }
+      .report-kpi-card {
+        border: 1px solid #cbd5e1 !important;
+        padding: 0.4rem !important;
+      }
+      .report-kpi-number {
+        font-size: 1.1rem !important;
+      }
+    }
+    @media screen {
+      .print-only {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100">
+
+  <!-- Accessibility Skip Link (No-Print) -->
+  <a class="gov-skip-link no-print" href="#main-reports-content">Skip to Main Content</a>
+
+  <!-- Top Tricolor Stripe (No-Print) -->
+  <div class="gov-flag-stripe no-print" aria-hidden="true"></div>
+
+  <!-- Prototype Reviewer Demonstrator Bar (No-Print) -->
+  <aside class="gov-scenario-bar no-print" aria-label="Reviewer Demonstration Controller">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-shield-check me-1"></i> STAGE 06 &bull; REPORTS &amp; SUMMARY
+          </span>
+          <span class="small text-white-50 d-none d-sm-inline">Role-Based Operational Module</span>
+          <span class="text-white-50">|</span>
+          <label for="demoRoleSelect" class="small text-white fw-semibold mb-0">Active Officer / Scope:</label>
+          <select id="demoRoleSelect" class="form-select form-select-sm py-0.5 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 360px; font-size: 0.8rem;" onchange="handleRoleSwitch(this.value)">
+            <optgroup label="Range Officers (Range Jurisdiction Scoped)">
+              <option value="ro-RO-RANIPOOL" selected>RO Demo User (Ranipool) &bull; Ranipool Range (Gangtok)</option>
+              <option value="ro-RO-GANGTOK">RO Demo User (Gangtok) &bull; Gangtok Range (Gangtok)</option>
+              <option value="ro-RO-NAMCHI">RO Demo User (Namchi) &bull; Namchi Range (Namchi)</option>
+              <option value="ro-RO-PAKYONG">RO Demo User (Pakyong) &bull; Pakyong Range (Pakyong)</option>
+            </optgroup>
+            <optgroup label="Block Officers (Assigned Field Verifications)">
+              <option value="bo-BO-RANIPOOL-1">BO Demo User 1 &bull; Ranipool Block (Assigned)</option>
+              <option value="bo-BO-RANIPOOL-2">BO Demo User 2 &bull; Assam Lingzey Block (Assigned)</option>
+              <option value="bo-BO-GANGTOK-1">BO Demo User 3 &bull; Gangtok North Block (Assigned)</option>
+              <option value="bo-BO-NAMCHI-1">BO Demo User 4 &bull; Namthang Block (Assigned)</option>
+            </optgroup>
+            <optgroup label="Assistant Conservators of Forests (Division Purview)">
+              <option value="acf-ACF-GANGTOK">ACF Demo User &bull; Gangtok Division Purview</option>
+              <option value="acf-ACF-NAMCHI">ACF Demo User &bull; Namchi Division Purview</option>
+            </optgroup>
+            <optgroup label="Divisional Forest Officers (Division Purview)">
+              <option value="dfo-DFO-GANGTOK">DFO Demo User &bull; Gangtok Division Statutory Purview</option>
+              <option value="dfo-DFO-NAMCHI">DFO Demo User &bull; Namchi Division Statutory Purview</option>
+            </optgroup>
+            <optgroup label="State Headquarters / Super Admin (Statewide Full Access)">
+              <option value="admin-ADMIN-STATE">Super Admin Demo User &bull; Statewide (All 6 Divisions)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-light py-0 px-2" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-light py-0 px-2 active" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-light py-0 px-2" data-font-action="increase" title="Increase font size">A+</button>
+          </div>
+          <button type="button" class="btn btn-outline-light btn-sm py-0 px-2" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+          <span class="text-white-50">|</span>
+          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetPrototypeData()" title="Reset applications to clean initial seed dataset">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Data
+          </button>
+          <span class="text-white-50">|</span>
+          <a href="dashboard.html" class="text-white text-decoration-none small" title="Switch to Citizen View">
+            <i class="bi bi-person me-1"></i> Citizen View
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Official Print Letterhead (Print-Only) -->
+  <div class="print-only container-fluid mb-3 pb-2 border-bottom">
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem" style="height: 52px; width: auto;">
+        <div>
+          <h1 class="h6 fw-bold mb-0 text-uppercase" style="letter-spacing: 0.5px;">Government of Sikkim</h1>
+          <div class="small fw-semibold text-secondary">Forest and Environment Department &bull; Forest Secretariat, Deorali, Gangtok</div>
+          <div class="small text-muted" id="printReportTitle">Marking Order Applications &amp; Tree Felling Summary Register</div>
+        </div>
+      </div>
+      <div class="text-end small">
+        <div>Generated: <strong id="printTimestamp">-</strong></div>
+        <div>Reporting Authority: <strong id="printReportingOfficer">-</strong></div>
+        <div>Jurisdiction Scope: <strong id="printScopeBadge">-</strong></div>
+      </div>
+    </div>
+    <div class="mt-2 p-2 bg-light border small" id="printFilterCriteriaNotice">
+      <strong>Active Filter Criteria:</strong> <span id="printFilterCriteriaText">All records within reporting scope</span>
+    </div>
+  </div>
+
+  <!-- Government Branding Header (No-Print) -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs no-print" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <a href="index.html" class="d-inline-block">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Forest and Environment Department &bull; Government of Sikkim</div>
+            <h1 class="h5 fw-bold text-dark mb-0" id="headerMainTitle">Marking Order Reports &amp; Application Summary</h1>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <button type="button" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 shadow-xs" onclick="exportReportCsv()" title="Export filtered records as CSV/Excel">
+            <i class="bi bi-file-earmark-excel"></i>
+            <span>Export to Excel (CSV)</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-xs" onclick="printReportDocument()" title="Print official report view">
+            <i class="bi bi-printer"></i>
+            <span>Print Report</span>
+          </button>
+          <a href="dashboard-ro.html" id="btnBackToDashboard" class="btn btn-sm btn-gov-primary d-inline-flex align-items-center gap-1 shadow-xs">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Reports Content -->
+  <main id="main-reports-content" class="flex-grow-1 p-3 p-lg-4" tabindex="-1">
+    <div class="container-fluid px-0">
+
+      <!-- Active Scope & Governance Banner (No-Print) -->
+      <div class="card border-0 bg-white p-3 shadow-xs mb-3 no-print" style="border-left: 4px solid #114b3f !important;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <span class="badge bg-success text-white px-2 py-1" id="scopeRoleBadge">Role: Range Officer (RO)</span>
+              <h2 class="h6 fw-bold text-dark mb-0" id="scopeTitle">Ranipool Range Jurisdiction &bull; Gangtok Territorial Division</h2>
+              <span class="badge bg-light text-secondary border small" id="scopeIsolationBadge">Isolated Range Scope</span>
+            </div>
+            <div class="d-flex flex-wrap gap-3 small text-muted">
+              <span><i class="bi bi-person-badge text-success me-1"></i><strong>Logged-in Authority:</strong> <span id="scopeUserName">RO Demo User (Ranipool)</span></span>
+              <span><i class="bi bi-diagram-2 text-success me-1"></i><strong>Division:</strong> <span id="scopeDivision">Gangtok</span></span>
+              <span><i class="bi bi-geo-alt text-success me-1"></i><strong>Forest Range:</strong> <span id="scopeRange">Ranipool Range</span></span>
+              <span><i class="bi bi-shield-check text-success me-1"></i><strong>Statutory Purview:</strong> <span id="scopePurview">Firewood &le; 3 / Timber &le; 3 Trees</span></span>
+            </div>
+          </div>
+          <div class="text-end">
+            <div class="small text-muted">Live Jurisdiction Applications:</div>
+            <div class="h5 fw-bold text-success mb-0" id="scopeTotalBadge">14 Records</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Panel Card (No-Print) -->
+      <div class="card border-0 shadow-xs mb-3 filter-card no-print">
+        <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="fw-bold small text-dark d-flex align-items-center gap-1">
+            <i class="bi bi-funnel-fill text-success"></i>
+            <span>Application Filters &amp; Query Parameters</span>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="small text-muted">Quick Presets:</span>
+            <span class="filter-pill" onclick="setQuickDatePreset('all')">All Time</span>
+            <span class="filter-pill" onclick="setQuickDatePreset('today')">Today</span>
+            <span class="filter-pill" onclick="setQuickDatePreset('last7')">Last 7 Days</span>
+            <span class="filter-pill" onclick="setQuickDatePreset('thisMonth')">This Month</span>
+            <span class="filter-pill" onclick="quickFilterByStatus('pending')">Pending Scrutiny</span>
+            <span class="filter-pill" onclick="quickFilterByStatus('mo_issued')">Marking Orders Issued</span>
+          </div>
+        </div>
+
+        <div class="card-body p-3">
+          <div class="row g-2">
+            <!-- From Date -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterFromDate" class="form-label small fw-semibold text-muted mb-1">From Date</label>
+              <input type="date" id="filterFromDate" class="form-control form-control-sm">
+            </div>
+
+            <!-- To Date -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterToDate" class="form-label small fw-semibold text-muted mb-1">To Date</label>
+              <input type="date" id="filterToDate" class="form-control form-control-sm">
+            </div>
+
+            <!-- Division (Cascading) -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterDivision" class="form-label small fw-semibold text-muted mb-1">Division</label>
+              <select id="filterDivision" class="form-select form-select-sm" onchange="onDivisionFilterChange()">
+                <option value="">All Divisions</option>
+              </select>
+            </div>
+
+            <!-- Forest Range (Cascading) -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterRange" class="form-label small fw-semibold text-muted mb-1">Forest Range</label>
+              <select id="filterRange" class="form-select form-select-sm" onchange="onRangeFilterChange()">
+                <option value="">All Ranges</option>
+              </select>
+            </div>
+
+            <!-- Block / GPU (Cascading) -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterBlock" class="form-label small fw-semibold text-muted mb-1">Block / GPU</label>
+              <select id="filterBlock" class="form-select form-select-sm">
+                <option value="">All Blocks</option>
+              </select>
+            </div>
+
+            <!-- Application Status -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterStatus" class="form-label small fw-semibold text-muted mb-1">Application Status</label>
+              <select id="filterStatus" class="form-select form-select-sm">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending Scrutiny / Review</option>
+                <option value="scheduled">Verification Scheduled</option>
+                <option value="verified">Field Verification Completed / BO Verified</option>
+                <option value="forwarded_acf">Forwarded to ACF</option>
+                <option value="forwarded_dfo">Forwarded to DFO</option>
+                <option value="approved">Approved (Authority Sanctioned)</option>
+                <option value="payment_pending">Payment Pending</option>
+                <option value="payment_completed">Payment Completed</option>
+                <option value="mo_issued">Marking Order Issued</option>
+                <option value="rejected">Rejected Applications</option>
+              </select>
+            </div>
+
+            <!-- Purpose / Category -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterPurpose" class="form-label small fw-semibold text-muted mb-1">Purpose / Category</label>
+              <select id="filterPurpose" class="form-select form-select-sm">
+                <option value="">All Purposes</option>
+                <option value="Firewood">Firewood</option>
+                <option value="Timber">Timber</option>
+              </select>
+            </div>
+
+            <!-- Payment Status -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterPaymentStatus" class="form-label small fw-semibold text-muted mb-1">Payment Status</label>
+              <select id="filterPaymentStatus" class="form-select form-select-sm">
+                <option value="">All Payment Statuses</option>
+                <option value="Completed">Completed (Fee Paid)</option>
+                <option value="Pending">Pending Payment</option>
+              </select>
+            </div>
+
+            <!-- Transit Permit Status -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterTransitStatus" class="form-label small fw-semibold text-muted mb-1">Transit Permit</label>
+              <select id="filterTransitStatus" class="form-select form-select-sm">
+                <option value="">All Transit Statuses</option>
+                <option value="required">Transit Permit Required</option>
+                <option value="not_required">Not Required</option>
+                <option value="issued">Transit Permit Issued</option>
+                <option value="pending">Transit Permit Pending</option>
+              </select>
+            </div>
+
+            <!-- Application No. Search -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterAppNo" class="form-label small fw-semibold text-muted mb-1">Application No.</label>
+              <input type="text" id="filterAppNo" class="form-control form-control-sm" placeholder="e.g. GTK/RAN/2026-27/001">
+            </div>
+
+            <!-- Marking Order No. Search -->
+            <div class="col-6 col-md-3 col-lg-2">
+              <label for="filterMoNo" class="form-label small fw-semibold text-muted mb-1">Marking Order No.</label>
+              <input type="text" id="filterMoNo" class="form-control form-control-sm" placeholder="e.g. MO/GTK/RAN/2026-27/001">
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="col-12 col-md-6 col-lg-2 d-flex align-items-end gap-2">
+              <button type="button" id="btnApplyFilters" class="btn btn-sm btn-gov-primary flex-grow-1" onclick="applyReportFilters()">
+                <i class="bi bi-check2-circle me-1"></i> Apply Filters
+              </button>
+              <button type="button" id="btnClearFilters" class="btn btn-sm btn-outline-secondary" onclick="clearReportFilters()" title="Reset all filters">
+                <i class="bi bi-x-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Live Summary KPI Cards (7 Cards) -->
+      <div class="row g-2 mb-3">
+        <!-- 1. Total Applications -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiTotal" onclick="quickFilterByStatus('')" title="Click to view all applications in scope">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-dark" id="kpiReportTotal">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Total Applications</div>
+              </div>
+              <i class="bi bi-collection-fill fs-4 text-secondary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">In active scope</div>
+          </div>
+        </div>
+
+        <!-- 2. Pending Scrutiny -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiPending" onclick="quickFilterByStatus('pending')" title="Click to filter by Pending Scrutiny / Review">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-warning" id="kpiReportPending">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Pending Scrutiny</div>
+              </div>
+              <i class="bi bi-hourglass-split fs-4 text-warning"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">Awaiting RO/officer action</div>
+          </div>
+        </div>
+
+        <!-- 3. Verification Scheduled -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiScheduled" onclick="quickFilterByStatus('scheduled')" title="Click to filter by Verification Scheduled / BO In-Progress">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-info" id="kpiReportVerification">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Verification Pending</div>
+              </div>
+              <i class="bi bi-calendar-check-fill fs-4 text-info"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">Assigned to BOs</div>
+          </div>
+        </div>
+
+        <!-- 4. Forwarded to Higher Authority -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiForwarded" onclick="quickFilterByStatus('forwarded_acf')" title="Click to filter by Forwarded to ACF/DFO">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-secondary" id="kpiReportForwarded">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Forwarded (ACF/DFO)</div>
+              </div>
+              <i class="bi bi-send-check-fill fs-4 text-secondary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">Beyond local authority</div>
+          </div>
+        </div>
+
+        <!-- 5. Approved Applications -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiApproved" onclick="quickFilterByStatus('approved')" title="Click to filter by Approved Applications">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-primary" id="kpiReportApproved">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Approved Applications</div>
+              </div>
+              <i class="bi bi-check-circle-fill fs-4 text-primary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">Sanctioned / Fee stage</div>
+          </div>
+        </div>
+
+        <!-- 6. Rejected Applications -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiRejected" onclick="quickFilterByStatus('rejected')" title="Click to filter by Rejected Applications">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-danger" id="kpiReportRejected">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Rejected</div>
+              </div>
+              <i class="bi bi-x-circle-fill fs-4 text-danger"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">Not sanctioned</div>
+          </div>
+        </div>
+
+        <!-- 7. Marking Orders Issued -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg">
+          <div class="report-kpi-card" id="cardKpiMoIssued" onclick="quickFilterByStatus('mo_issued')" title="Click to filter by Marking Orders Officially Issued">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="report-kpi-number text-success" id="kpiReportMoIssued">0</div>
+                <div class="small fw-semibold text-muted" style="font-size: 0.75rem;">Orders Issued</div>
+              </div>
+              <i class="bi bi-award-fill fs-4 text-success"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size: 0.7rem;">Final MO generated</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Summary & Records Table -->
+      <div class="card border-0 shadow-xs table-container mb-4">
+        <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <h3 class="h6 fw-bold text-dark mb-0">
+              <i class="bi bi-table text-success me-1"></i>
+              <span>Marking Order Applications Register</span>
+            </h3>
+            <span class="badge bg-secondary-subtle text-secondary border small" id="lblTableRecordCount">Showing 0 of 0 records</span>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 flex-wrap no-print">
+            <!-- Table Quick Search -->
+            <div class="input-group input-group-sm" style="max-width: 240px;">
+              <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+              <input type="text" id="tableQuickSearch" class="form-control border-start-0" placeholder="Quick search..." oninput="onTableSearchInput(this.value)">
+            </div>
+
+            <!-- Page Size -->
+            <div class="d-flex align-items-center gap-1">
+              <label for="tablePageSize" class="small text-muted mb-0">Show:</label>
+              <select id="tablePageSize" class="form-select form-select-sm py-0 px-2" style="width: 75px;" onchange="onPageSizeChange(this.value)">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table gov-table-compact align-middle table-hover mb-0" id="reportMainTable">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 40px;" class="text-center">#</th>
+                <th>Application No.</th>
+                <th>Marking Order No.</th>
+                <th>Applicant Name</th>
+                <th>Application Date</th>
+                <th>Division &amp; Range</th>
+                <th>Block / GPU &amp; Plot</th>
+                <th>Purpose &amp; Species</th>
+                <th class="text-center">Trees</th>
+                <th>Current Status</th>
+                <th>Payment Status</th>
+                <th>Transit Permit</th>
+                <th class="text-end no-print" style="width: 100px;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination Controls (No-Print) -->
+        <div class="card-footer bg-white py-2 px-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2 no-print" id="tableFooterPagination">
+          <div class="small text-muted" id="lblPaginationSummary">
+            Showing 1 to 10 of 14 records
+          </div>
+          <nav aria-label="Report table navigation">
+            <ul class="pagination pagination-sm mb-0" id="reportPaginationUl">
+              <!-- Dynamically generated pagination items -->
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Official Government Footer (No-Print) -->
+  <footer class="gov-footer mt-auto py-3 bg-dark text-white-50 border-top no-print" role="contentinfo">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 small">
+        <div>
+          &copy; 2026 <strong>Forest and Environment Department, Government of Sikkim</strong>. All rights reserved.
+        </div>
+        <div class="d-flex gap-3">
+          <a href="javascript:void(0)" class="text-white-50 text-decoration-none">Privacy Policy</a>
+          <a href="javascript:void(0)" class="text-white-50 text-decoration-none">Terms of Service</a>
+          <a href="javascript:void(0)" class="text-white-50 text-decoration-none">GIGW Compliance</a>
+          <a href="javascript:void(0)" class="text-white-50 text-decoration-none">Helpdesk</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core Data Service -->
+  <script src="citizen-data.js"></script>
+
+  <!-- Reporting & Analytics Controller -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Application State
+      let currentRole = 'ro';
+      let currentUserId = 'RO-RANIPOOL';
+      let currentOfficer = null;
+      let scopedApplications = [];
+      let filteredApplications = [];
+      let currentPage = 1;
+      let pageSize = 10;
+      let tableSearchQuery = '';
+      let activeKpiFilter = '';
+
+      document.addEventListener('DOMContentLoaded', function () {
+        parseUrlParams();
+        initOfficerContext();
+        initFilterDropdowns();
+        applyReportFilters();
+        initAccessibility();
+      });
+
+      // 1. URL Query Parameter Parser
+      function parseUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const roleParam = urlParams.get('role');
+        const userParam = urlParams.get('user');
+
+        if (roleParam && ['ro', 'bo', 'acf', 'dfo', 'admin', 'superadmin'].includes(roleParam.toLowerCase())) {
+          currentRole = roleParam.toLowerCase() === 'superadmin' ? 'admin' : roleParam.toLowerCase();
+          if (userParam) currentUserId = userParam;
+          else {
+            if (currentRole === 'ro') currentUserId = 'RO-RANIPOOL';
+            else if (currentRole === 'bo') currentUserId = 'BO-RANIPOOL-1';
+            else if (currentRole === 'acf') currentUserId = 'ACF-GANGTOK';
+            else if (currentRole === 'dfo') currentUserId = 'DFO-GANGTOK';
+            else if (currentRole === 'admin') currentUserId = 'ADMIN-STATE';
+          }
+        } else {
+          // Fall back to active role in localStorage if available
+          const active = MarkingOrderData.getActiveUser();
+          if (active && active.role && ['ro', 'bo', 'acf', 'dfo', 'admin'].includes(active.role)) {
+            currentRole = active.role;
+            currentUserId = active.id;
+          } else {
+            currentRole = 'ro';
+            currentUserId = 'RO-RANIPOOL';
+          }
+        }
+
+        // Sync demo role switcher selector in UI
+        const selectKey = currentRole + '-' + currentUserId;
+        const roleSelect = document.getElementById('demoRoleSelect');
+        if (roleSelect) {
+          const matchOpt = Array.from(roleSelect.options).find(opt => opt.value === selectKey);
+          if (matchOpt) roleSelect.value = selectKey;
+        }
+      }
+
+      // 2. Initialize Officer Context & Scope
+      function initOfficerContext() {
+        const demoUsers = MarkingOrderData.demoUsers;
+        if (currentRole === 'ro') {
+          currentOfficer = demoUsers.rangeOfficers.find(u => u.id === currentUserId) || demoUsers.rangeOfficers[0];
+          currentOfficer.roleKey = 'ro';
+        } else if (currentRole === 'bo') {
+          currentOfficer = demoUsers.blockOfficers.find(u => u.id === currentUserId) || demoUsers.blockOfficers[0];
+          currentOfficer.roleKey = 'bo';
+        } else if (currentRole === 'acf') {
+          currentOfficer = demoUsers.acfUsers.find(u => u.id === currentUserId) || demoUsers.acfUsers[0];
+          currentOfficer.roleKey = 'acf';
+        } else if (currentRole === 'dfo') {
+          currentOfficer = demoUsers.dfoUsers.find(u => u.id === currentUserId) || demoUsers.dfoUsers[0];
+          currentOfficer.roleKey = 'dfo';
+        } else if (currentRole === 'admin') {
+          currentOfficer = (demoUsers.superAdmins && demoUsers.superAdmins[0]) || {
+            id: 'ADMIN-STATE',
+            name: 'Super Admin Demo User',
+            role: 'Super Admin',
+            division: 'All Divisions',
+            range: 'All Ranges',
+            district: 'Statewide'
+          };
+          currentOfficer.roleKey = 'admin';
+        }
+
+        // Update UI Context Header & Banners
+        updateContextBanners();
+        updateDashboardBackLink();
+      }
+
+      function updateContextBanners() {
+        if (!currentOfficer) return;
+
+        // Role Badge & Titles
+        const roleBadge = document.getElementById('scopeRoleBadge');
+        const scopeTitle = document.getElementById('scopeTitle');
+        const scopeIsolationBadge = document.getElementById('scopeIsolationBadge');
+        const scopeUserName = document.getElementById('scopeUserName');
+        const scopeDivision = document.getElementById('scopeDivision');
+        const scopeRange = document.getElementById('scopeRange');
+        const scopePurview = document.getElementById('scopePurview');
+        const headerTitle = document.getElementById('headerMainTitle');
+
+        if (roleBadge) roleBadge.textContent = 'Role: ' + (currentOfficer.role || currentRole.toUpperCase());
+        if (scopeUserName) scopeUserName.textContent = currentOfficer.name;
+        if (scopeDivision) scopeDivision.textContent = currentOfficer.division || 'All Divisions';
+        if (scopeRange) scopeRange.textContent = currentOfficer.range || currentOfficer.blockName || 'All Ranges';
+
+        if (currentRole === 'ro') {
+          if (headerTitle) headerTitle.textContent = 'Marking Order Range Reports \u2022 ' + currentOfficer.range;
+          if (scopeTitle) scopeTitle.textContent = currentOfficer.range + ' Jurisdiction \u2022 ' + currentOfficer.division + ' Division';
+          if (scopeIsolationBadge) scopeIsolationBadge.textContent = 'Isolated Range Scope';
+          if (scopePurview) scopePurview.textContent = 'Firewood \u2264 3 / Timber \u2264 3 Trees (RO Statutory Authority)';
+        } else if (currentRole === 'bo') {
+          if (headerTitle) headerTitle.textContent = 'Block Verification Reports \u2022 ' + (currentOfficer.blockName || currentOfficer.name);
+          if (scopeTitle) scopeTitle.textContent = (currentOfficer.blockName || 'Field Block') + ' \u2022 ' + currentOfficer.range;
+          if (scopeIsolationBadge) scopeIsolationBadge.textContent = 'Assigned Applications Scope';
+          if (scopePurview) scopePurview.textContent = 'Field Verification, GPS Coordinates & Tree Enumeration';
+        } else if (currentRole === 'acf') {
+          if (headerTitle) headerTitle.textContent = 'Division Reports & Summary \u2022 ' + currentOfficer.division + ' Division (ACF)';
+          if (scopeTitle) scopeTitle.textContent = currentOfficer.division + ' Territorial Division Purview';
+          if (scopeIsolationBadge) scopeIsolationBadge.textContent = 'Division Purview Scope';
+          if (scopePurview) scopePurview.textContent = 'Firewood \u2264 5 / Timber \u2264 5 Trees (ACF Statutory Authority)';
+        } else if (currentRole === 'dfo') {
+          if (headerTitle) headerTitle.textContent = 'Division Statutory Reports \u2022 ' + currentOfficer.division + ' Division (DFO)';
+          if (scopeTitle) scopeTitle.textContent = currentOfficer.division + ' Territorial Division \u2022 Full Statutory Scope';
+          if (scopeIsolationBadge) scopeIsolationBadge.textContent = 'Division Statutory Scope';
+          if (scopePurview) scopePurview.textContent = 'Firewood > 5 / Timber > 5 Trees / Commercial / Escalated';
+        } else if (currentRole === 'admin') {
+          if (headerTitle) headerTitle.textContent = 'Statewide Marking Order MIS Reports & Analytics (Super Admin)';
+          if (scopeTitle) scopeTitle.textContent = 'Statewide Consolidated Oversight \u2022 All 6 Territorial Divisions';
+          if (scopeIsolationBadge) scopeIsolationBadge.textContent = 'Full Statewide Scope';
+          if (scopePurview) scopePurview.textContent = 'Super Admin / Department Secretariat Full Jurisdiction';
+        }
+      }
+
+      function updateDashboardBackLink() {
+        const btnBack = document.getElementById('btnBackToDashboard');
+        if (!btnBack) return;
+        if (currentRole === 'ro') {
+          btnBack.href = 'dashboard-ro.html';
+          btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to RO Dashboard';
+        } else if (currentRole === 'bo') {
+          btnBack.href = 'dashboard-bo.html';
+          btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to BO Dashboard';
+        } else if (currentRole === 'acf') {
+          btnBack.href = 'dashboard-acf.html';
+          btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to ACF Dashboard';
+        } else if (currentRole === 'dfo') {
+          btnBack.href = 'dashboard-dfo.html';
+          btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to DFO Dashboard';
+        } else if (currentRole === 'admin') {
+          btnBack.href = 'dashboard-admin.html';
+          btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to Admin Dashboard';
+        }
+      }
+
+      // 3. Populate Filter Dropdowns (Division, Range, Block)
+      function initFilterDropdowns() {
+        const selDiv = document.getElementById('filterDivision');
+        const selRange = document.getElementById('filterRange');
+        const selBlock = document.getElementById('filterBlock');
+
+        const divisionsMaster = MarkingOrderData.divisionsMaster || [];
+        const rangesMaster = MarkingOrderData.rangesMaster || [];
+
+        // Clear existing options except default
+        selDiv.innerHTML = '<option value="">All Divisions</option>';
+        selRange.innerHTML = '<option value="">All Ranges</option>';
+        selBlock.innerHTML = '<option value="">All Blocks</option>';
+
+        // Populate Divisions
+        divisionsMaster.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.name;
+          opt.textContent = d.name + (d.name.includes('Division') ? '' : ' Division');
+          selDiv.appendChild(opt);
+        });
+
+        // Set Role Constraints
+        if (currentRole === 'ro' || currentRole === 'bo') {
+          // Division & Range locked to officer's jurisdiction
+          if (currentOfficer.division) {
+            selDiv.value = currentOfficer.division;
+            selDiv.disabled = true;
+          }
+          populateRangesForDivision(currentOfficer.division);
+          if (currentOfficer.range) {
+            // Find best matching range value
+            const optMatch = Array.from(selRange.options).find(o => o.value.toLowerCase().includes(currentOfficer.range.toLowerCase().replace(/ range.*$/i, '')));
+            if (optMatch) selRange.value = optMatch.value;
+            selRange.disabled = true;
+          }
+          populateBlocksForRange(selRange.value || currentOfficer.range);
+        } else if (currentRole === 'acf' || currentRole === 'dfo') {
+          // Division locked to officer's division; Ranges within division selectable
+          if (currentOfficer.division) {
+            selDiv.value = currentOfficer.division;
+            selDiv.disabled = true;
+          }
+          populateRangesForDivision(currentOfficer.division);
+          populateBlocksForRange('');
+        } else {
+          // Admin has full access
+          selDiv.disabled = false;
+          selRange.disabled = false;
+          selBlock.disabled = false;
+          populateRangesForDivision('');
+          populateBlocksForRange('');
+        }
+      }
+
+      function populateRangesForDivision(divName) {
+        const selRange = document.getElementById('filterRange');
+        selRange.innerHTML = '<option value="">All Ranges</option>';
+        const rangesMaster = MarkingOrderData.rangesMaster || [];
+
+        const filteredRanges = divName
+          ? rangesMaster.filter(r => r.division.toLowerCase() === divName.toLowerCase())
+          : rangesMaster;
+
+        filteredRanges.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r.name;
+          opt.textContent = r.name;
+          selRange.appendChild(opt);
+        });
+      }
+
+      function populateBlocksForRange(rangeName) {
+        const selBlock = document.getElementById('filterBlock');
+        selBlock.innerHTML = '<option value="">All Blocks</option>';
+
+        const rangesMaster = MarkingOrderData.rangesMaster || [];
+        let blocks = [];
+
+        if (rangeName) {
+          const rangeObj = rangesMaster.find(r => r.name.toLowerCase().includes(rangeName.toLowerCase().replace(/ range.*$/i, '')));
+          if (rangeObj && rangeObj.blocksCovered) {
+            blocks = rangeObj.blocksCovered;
+          }
+        }
+
+        // If no blocks found via master, inspect all scoped applications for distinct blocks/GPUs
+        if (blocks.length === 0) {
+          const allApps = MarkingOrderData.getAllApplications();
+          const uniqueBlocks = new Set();
+          allApps.forEach(a => {
+            if (!rangeName || (a.range && a.range.toLowerCase().includes(rangeName.toLowerCase().replace(/ range.*$/i, '')))) {
+              if (a.revenueBlock) uniqueBlocks.add(a.revenueBlock);
+              if (a.gpu) uniqueBlocks.add(a.gpu);
+            }
+          });
+          blocks = Array.from(uniqueBlocks);
+        }
+
+        blocks.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b;
+          opt.textContent = b;
+          selBlock.appendChild(opt);
+        });
+      }
+
+      window.onDivisionFilterChange = function () {
+        const divName = document.getElementById('filterDivision').value;
+        populateRangesForDivision(divName);
+        populateBlocksForRange('');
+      };
+
+      window.onRangeFilterChange = function () {
+        const rangeName = document.getElementById('filterRange').value;
+        populateBlocksForRange(rangeName);
+      };
+
+      // 4. Role Switch Handler from Scenario Bar
+      window.handleRoleSwitch = function (val) {
+        if (!val) return;
+        const parts = val.split('-');
+        const role = parts[0];
+        const userId = parts.slice(1).join('-');
+
+        window.location.search = '?role=' + encodeURIComponent(role) + '&user=' + encodeURIComponent(userId);
+      };
+
+      // 5. Scoped Applications Engine (Enforcing strict administrative boundaries)
+      function getScopedApplications() {
+        const all = MarkingOrderData.getAllApplications() || [];
+        if (!currentOfficer) return all;
+
+        if (currentRole === 'ro') {
+          // Strictly applications in RO's range & division
+          const roRangeClean = (currentOfficer.range || '').toLowerCase().replace(/ range.*$/i, '').trim();
+          const roDivClean = (currentOfficer.division || '').toLowerCase().replace(/ division.*$/i, '').trim();
+
+          return all.filter(a => {
+            const aRange = (a.range || '').toLowerCase();
+            const aDiv = (a.division || '').toLowerCase();
+            const rangeMatch = aRange.includes(roRangeClean);
+            const divMatch = !roDivClean || aDiv.includes(roDivClean);
+            return rangeMatch && divMatch;
+          });
+        } else if (currentRole === 'bo') {
+          // Strictly applications assigned to or submitted by this BO
+          const boId = currentOfficer.id;
+          const boNameClean = (currentOfficer.name || '').toLowerCase();
+          const boBlockClean = (currentOfficer.blockName || '').toLowerCase();
+
+          return all.filter(a => {
+            if (a.assignedBoId === boId) return true;
+            if (a.assignedOfficerId === boId || a.officerId === boId) return true;
+            if (a.appliedByUserId === boId) return true;
+            if (a.assignedBoName) {
+              const assignedLower = a.assignedBoName.toLowerCase();
+              if (assignedLower === boNameClean) return true;
+              if (boBlockClean && assignedLower.includes(boBlockClean)) return true;
+              if (boId === 'BO-RANIPOOL-1' && assignedLower.includes('ranipool')) return true;
+              if (boId === 'BO-RANIPOOL-2' && assignedLower.includes('assam lingzey')) return true;
+            }
+            return false;
+          });
+        } else if (currentRole === 'acf') {
+          // All applications in ACF's Territorial Division
+          const acfDivClean = (currentOfficer.division || '').toLowerCase().replace(/ division.*$/i, '').trim();
+          return all.filter(a => {
+            const aDiv = (a.division || '').toLowerCase();
+            return !acfDivClean || aDiv.includes(acfDivClean);
+          });
+        } else if (currentRole === 'dfo') {
+          // All applications in DFO's Territorial Division
+          const dfoDivClean = (currentOfficer.division || '').toLowerCase().replace(/ division.*$/i, '').trim();
+          return all.filter(a => {
+            const aDiv = (a.division || '').toLowerCase();
+            return !dfoDivClean || aDiv.includes(dfoDivClean);
+          });
+        } else {
+          // Super Admin - statewide access
+          return all;
+        }
+      }
+
+      // Helper to parse dates like "18 Nov 2026", "2026-11-18", or Date objects
+      function parseApplicationDate(dateStr) {
+        if (!dateStr) return null;
+        if (dateStr instanceof Date) return dateStr;
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) return d;
+
+        // Try format "DD Mon YYYY" (e.g. "18 Nov 2026")
+        const parts = String(dateStr).trim().split(/\s+/);
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const monthStr = parts[1].toLowerCase().slice(0, 3);
+          const year = parseInt(parts[2], 10);
+          const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+          const month = months.indexOf(monthStr);
+          if (month !== -1 && !isNaN(day) && !isNaN(year)) {
+            return new Date(year, month, day);
+          }
+        }
+        return null;
+      }
+
+      // 6. Application of Multi-Dimensional Filters
+      window.applyReportFilters = function () {
+        scopedApplications = getScopedApplications();
+
+        const fromDateVal = document.getElementById('filterFromDate').value;
+        const toDateVal = document.getElementById('filterToDate').value;
+        const fromDate = fromDateVal ? new Date(fromDateVal) : null;
+        const toDate = toDateVal ? new Date(toDateVal) : null;
+        if (toDate) toDate.setHours(23, 59, 59, 999);
+
+        const selDiv = document.getElementById('filterDivision').value.trim().toLowerCase();
+        const selRange = document.getElementById('filterRange').value.trim().toLowerCase();
+        const selBlock = document.getElementById('filterBlock').value.trim().toLowerCase();
+        const selStatus = document.getElementById('filterStatus').value.trim();
+        const selPurpose = document.getElementById('filterPurpose').value.trim().toLowerCase();
+        const selPayment = document.getElementById('filterPaymentStatus').value.trim();
+        const selTransit = document.getElementById('filterTransitStatus').value.trim();
+        const appNoQuery = document.getElementById('filterAppNo').value.trim().toLowerCase();
+        const moNoQuery = document.getElementById('filterMoNo').value.trim().toLowerCase();
+
+        filteredApplications = scopedApplications.filter(a => {
+          // Date Filter
+          if (fromDate || toDate) {
+            const aDate = parseApplicationDate(a.submittedDate || a.submissionDate);
+            if (aDate) {
+              if (fromDate && aDate < fromDate) return false;
+              if (toDate && aDate > toDate) return false;
+            }
+          }
+
+          // Division Filter
+          if (selDiv) {
+            const aDiv = (a.division || '').toLowerCase();
+            if (!aDiv.includes(selDiv.replace(/ division.*$/i, ''))) return false;
+          }
+
+          // Range Filter
+          if (selRange) {
+            const aRange = (a.range || '').toLowerCase();
+            if (!aRange.includes(selRange.replace(/ range.*$/i, ''))) return false;
+          }
+
+          // Block / GPU Filter
+          if (selBlock) {
+            const aBlock = (a.revenueBlock || '').toLowerCase();
+            const aGpu = (a.gpu || '').toLowerCase();
+            if (!aBlock.includes(selBlock) && !aGpu.includes(selBlock)) return false;
+          }
+
+          // Status Filter
+          if (selStatus) {
+            if (!matchesStatusFilter(a, selStatus)) return false;
+          }
+
+          // Purpose Filter
+          if (selPurpose) {
+            const aPurp = (a.purpose || '').toLowerCase();
+            if (!aPurp.includes(selPurpose)) return false;
+          }
+
+          // Payment Status Filter
+          if (selPayment) {
+            const isPaid = a.isPaid || (a.paymentStatus && a.paymentStatus.toLowerCase().includes('completed'));
+            if (selPayment === 'Completed' && !isPaid) return false;
+            if (selPayment === 'Pending' && isPaid) return false;
+          }
+
+          // Transit Permit Filter
+          if (selTransit) {
+            const req = Boolean(a.isTransitPermitRequired);
+            const issued = Boolean(a.transitPermitNo) || (a.transitPermitStatus && (a.transitPermitStatus.includes('Issued') || a.transitPermitStatus.includes('Approved')));
+            if (selTransit === 'required' && !req) return false;
+            if (selTransit === 'not_required' && req) return false;
+            if (selTransit === 'issued' && !issued) return false;
+            if (selTransit === 'pending' && (!req || issued)) return false;
+          }
+
+          // Application No Search
+          if (appNoQuery) {
+            const aNo = (a.appNo || '').toLowerCase();
+            const ackNo = (a.ackNo || '').toLowerCase();
+            if (!aNo.includes(appNoQuery) && !ackNo.includes(appNoQuery)) return false;
+          }
+
+          // Marking Order No Search
+          if (moNoQuery) {
+            const moNo = (a.markingOrderNo || '').toLowerCase();
+            if (!moNo.includes(moNoQuery)) return false;
+          }
+
+          // In-table search query
+          if (tableSearchQuery) {
+            const q = tableSearchQuery.toLowerCase();
+            const applicant = (a.applicantName || '').toLowerCase();
+            const appNo = (a.appNo || '').toLowerCase();
+            const moNo = (a.markingOrderNo || '').toLowerCase();
+            const blk = (a.revenueBlock || a.gpu || '').toLowerCase();
+            const species = (a.trees ? a.trees.map(t => t.species).join(' ') : '').toLowerCase();
+            if (!applicant.includes(q) && !appNo.includes(q) && !moNo.includes(q) && !blk.includes(q) && !species.includes(q)) {
+              return false;
+            }
+          }
+
+          return true;
+        });
+
+        // Reset to page 1 upon new search
+        currentPage = 1;
+
+        // Update UI
+        updateKpiSummaryCards();
+        renderReportTable();
+        updatePrintMetadata();
+      };
+
+      function matchesStatusFilter(a, statusKey) {
+        const s = (a.currentStatus || '').toLowerCase();
+        if (statusKey === 'pending') {
+          return s.includes('submitted') || s.includes('ro review') || s.includes('scrutiny');
+        } else if (statusKey === 'scheduled') {
+          return s.includes('scheduled') || a.currentStatus === 'Verification Scheduled' || a.currentStatus === 'Scheduled';
+        } else if (statusKey === 'verified') {
+          return s.includes('verified') || s.includes('verification completed') || a.currentStatus === 'BO Verified' || a.currentStatus === 'BO Verification Completed';
+        } else if (statusKey === 'forwarded_acf') {
+          return s.includes('forwarded to acf') || a.currentStatus === 'Forwarded to ACF' || Boolean(a.forwardedByRo);
+        } else if (statusKey === 'forwarded_dfo') {
+          return s.includes('forwarded to dfo') || a.currentStatus === 'Forwarded to DFO';
+        } else if (statusKey === 'approved') {
+          return s.includes('approved') || a.currentStatus === 'Approved' || a.approvalStatus === 'Application Approved';
+        } else if (statusKey === 'payment_pending') {
+          return s.includes('payment') && !a.isPaid;
+        } else if (statusKey === 'payment_completed') {
+          return a.isPaid || (a.paymentStatus && a.paymentStatus.includes('Completed'));
+        } else if (statusKey === 'mo_issued') {
+          return Boolean(a.markingOrderNo) || s.includes('order issued');
+        } else if (statusKey === 'rejected') {
+          return s.includes('rejected');
+        }
+        return true;
+      }
+
+      // 7. Clear Filters
+      window.clearReportFilters = function () {
+        document.getElementById('filterFromDate').value = '';
+        document.getElementById('filterToDate').value = '';
+        document.getElementById('filterStatus').value = '';
+        document.getElementById('filterPurpose').value = '';
+        document.getElementById('filterPaymentStatus').value = '';
+        document.getElementById('filterTransitStatus').value = '';
+        document.getElementById('filterAppNo').value = '';
+        document.getElementById('filterMoNo').value = '';
+        document.getElementById('tableQuickSearch').value = '';
+        tableSearchQuery = '';
+        activeKpiFilter = '';
+
+        // Reset cascading dropdowns while respecting role boundaries
+        initFilterDropdowns();
+
+        // Clear active KPI card highlights
+        document.querySelectorAll('.report-kpi-card').forEach(c => c.classList.remove('active-kpi'));
+
+        applyReportFilters();
+      };
+
+      // 8. Quick Filter by Status (from KPI Cards & Pills)
+      window.quickFilterByStatus = function (statusKey) {
+        document.getElementById('filterStatus').value = statusKey;
+        activeKpiFilter = statusKey;
+
+        // Highlight corresponding KPI card
+        document.querySelectorAll('.report-kpi-card').forEach(c => c.classList.remove('active-kpi'));
+        if (statusKey === '') document.getElementById('cardKpiTotal').classList.add('active-kpi');
+        else if (statusKey === 'pending') document.getElementById('cardKpiPending').classList.add('active-kpi');
+        else if (statusKey === 'scheduled') document.getElementById('cardKpiScheduled').classList.add('active-kpi');
+        else if (statusKey === 'forwarded_acf') document.getElementById('cardKpiForwarded').classList.add('active-kpi');
+        else if (statusKey === 'approved') document.getElementById('cardKpiApproved').classList.add('active-kpi');
+        else if (statusKey === 'rejected') document.getElementById('cardKpiRejected').classList.add('active-kpi');
+        else if (statusKey === 'mo_issued') document.getElementById('cardKpiMoIssued').classList.add('active-kpi');
+
+        applyReportFilters();
+      };
+
+      // 9. Quick Date Presets
+      window.setQuickDatePreset = function (preset) {
+        const fromInput = document.getElementById('filterFromDate');
+        const toInput = document.getElementById('filterToDate');
+        const today = new Date();
+
+        if (preset === 'all') {
+          fromInput.value = '';
+          toInput.value = '';
+        } else if (preset === 'today') {
+          const str = today.toISOString().split('T')[0];
+          fromInput.value = str;
+          toInput.value = str;
+        } else if (preset === 'last7') {
+          const past7 = new Date();
+          past7.setDate(today.getDate() - 7);
+          fromInput.value = past7.toISOString().split('T')[0];
+          toInput.value = today.toISOString().split('T')[0];
+        } else if (preset === 'thisMonth') {
+          const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+          fromInput.value = firstDay.toISOString().split('T')[0];
+          toInput.value = today.toISOString().split('T')[0];
+        }
+
+        applyReportFilters();
+      };
+
+      // 10. Update KPI Summary Cards
+      function updateKpiSummaryCards() {
+        const total = scopedApplications.length;
+        const pending = scopedApplications.filter(a => matchesStatusFilter(a, 'pending')).length;
+        const scheduled = scopedApplications.filter(a => matchesStatusFilter(a, 'scheduled')).length;
+        const forwarded = scopedApplications.filter(a => matchesStatusFilter(a, 'forwarded_acf') || matchesStatusFilter(a, 'forwarded_dfo')).length;
+        const approved = scopedApplications.filter(a => matchesStatusFilter(a, 'approved')).length;
+        const rejected = scopedApplications.filter(a => matchesStatusFilter(a, 'rejected')).length;
+        const moIssued = scopedApplications.filter(a => matchesStatusFilter(a, 'mo_issued')).length;
+
+        document.getElementById('kpiReportTotal').textContent = total;
+        document.getElementById('kpiReportPending').textContent = pending;
+        document.getElementById('kpiReportVerification').textContent = scheduled;
+        document.getElementById('kpiReportForwarded').textContent = forwarded;
+        document.getElementById('kpiReportApproved').textContent = approved;
+        document.getElementById('kpiReportRejected').textContent = rejected;
+        document.getElementById('kpiReportMoIssued').textContent = moIssued;
+
+        // Update scope total badge
+        const scopeTotalBadge = document.getElementById('scopeTotalBadge');
+        if (scopeTotalBadge) scopeTotalBadge.textContent = total + ' Records';
+      }
+
+      // 11. Render Report Table & Pagination
+      function renderReportTable() {
+        const tbody = document.getElementById('reportTableBody');
+        const countBadge = document.getElementById('lblTableRecordCount');
+        const paginationSummary = document.getElementById('lblPaginationSummary');
+        const paginationUl = document.getElementById('reportPaginationUl');
+
+        const totalRecords = filteredApplications.length;
+        countBadge.textContent = 'Showing ' + totalRecords + ' of ' + scopedApplications.length + ' records';
+
+        if (totalRecords === 0) {
+          tbody.innerHTML = '<tr><td colspan="13" class="text-center p-4 text-muted">' +
+            '<i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>' +
+            '<strong>No application records match your specified criteria.</strong><br>' +
+            '<span class="small">Try resetting your date range, status, or search query.</span>' +
+            '<div class="mt-2"><button type="button" class="btn btn-sm btn-outline-gov-primary" onclick="clearReportFilters()"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters</button></div>' +
+            '</td></tr>';
+          paginationSummary.textContent = 'Showing 0 records';
+          paginationUl.innerHTML = '';
+          return;
+        }
+
+        // Pagination slice
+        const effectivePageSize = pageSize === 'all' ? totalRecords : parseInt(pageSize, 10);
+        const totalPages = Math.ceil(totalRecords / effectivePageSize);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * effectivePageSize;
+        const endIndex = Math.min(startIndex + effectivePageSize, totalRecords);
+        const pageRecords = filteredApplications.slice(startIndex, endIndex);
+
+        paginationSummary.textContent = 'Showing ' + (startIndex + 1) + ' to ' + endIndex + ' of ' + totalRecords + ' records';
+
+        // Build Table Rows
+        let html = '';
+        pageRecords.forEach((a, idx) => {
+          const slNo = startIndex + idx + 1;
+          const statusBadge = MarkingOrderData.getStatusBadgeHtml(a.currentStatus);
+
+          // Marking Order No representation
+          let moHtml = '<span class="badge bg-secondary-subtle text-secondary border">Not Issued</span>';
+          if (a.markingOrderNo) {
+            moHtml = '<span class="font-monospace fw-bold text-success"><i class="bi bi-check-circle-fill me-1"></i>' + a.markingOrderNo + '</span>';
+          }
+
+          // Trees & Species summary
+          const treesCount = a.trees ? a.trees.length : 0;
+          let speciesSummary = 'Standard Species';
+          if (a.trees && a.trees.length > 0) {
+            const speciesArr = a.trees.map(t => t.species).filter(Boolean);
+            speciesSummary = speciesArr.slice(0, 2).join(', ') + (speciesArr.length > 2 ? ' +' + (speciesArr.length - 2) : '');
+          }
+
+          // Payment Status
+          let payHtml = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Pending</span>';
+          if (a.isPaid || (a.paymentStatus && a.paymentStatus.toLowerCase().includes('completed'))) {
+            payHtml = '<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-all me-1"></i>Paid (\u20B9' + (a.feeAmount || 50) + ')</span>';
+          }
+
+          // Transit Permit
+          let transitHtml = '<span class="text-muted small">Not Req.</span>';
+          if (a.isTransitPermitRequired) {
+            if (a.transitPermitNo || (a.transitPermitStatus && a.transitPermitStatus.includes('Issued'))) {
+              transitHtml = '<span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-truck me-1"></i>Issued</span>';
+            } else {
+              transitHtml = '<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Required</span>';
+            }
+          }
+
+          html += '<tr>' +
+            '<td class="text-center text-muted small">' + slNo + '</td>' +
+            '<td class="font-monospace fw-bold text-primary">' +
+              '<a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none" title="Click to view full application details">' +
+                a.appNo +
+              '</a>' +
+            '</td>' +
+            '<td>' + moHtml + '</td>' +
+            '<td>' +
+              '<div class="fw-semibold text-dark">' + a.applicantName + '</div>' +
+              '<div class="small text-muted">' + (a.applicantCategory || 'Citizen') + ' &bull; ' + (a.phone || '-') + '</div>' +
+            '</td>' +
+            '<td class="small text-nowrap">' + (a.submittedDate || a.submissionDate || '-') + '</td>' +
+            '<td class="small">' +
+              '<div>' + (a.division || '-') + '</div>' +
+              '<div class="text-muted">' + (a.range || '-') + '</div>' +
+            '</td>' +
+            '<td class="small">' +
+              '<div>' + (a.revenueBlock || a.gpu || '-') + '</div>' +
+              '<div class="text-muted">Plot ' + (a.khasraNo || '-') + '</div>' +
+            '</td>' +
+            '<td class="small">' +
+              '<div><span class="badge bg-light text-dark border">' + (a.purpose || 'Tree Felling') + '</span></div>' +
+              '<div class="text-muted" style="font-size: 0.72rem;">' + speciesSummary + '</div>' +
+            '</td>' +
+            '<td class="text-center fw-bold text-dark">' + treesCount + '</td>' +
+            '<td>' + statusBadge + '</td>' +
+            '<td>' + payHtml + '</td>' +
+            '<td>' + transitHtml + '</td>' +
+            '<td class="text-end no-print">' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" title="View details">' +
+                '<i class="bi bi-eye"></i> Details' +
+              '</button>' +
+            '</td>' +
+          '</tr>';
+        });
+
+        tbody.innerHTML = html;
+
+        // Render Pagination Ul
+        renderPagination(totalPages);
+      }
+
+      function renderPagination(totalPages) {
+        const ul = document.getElementById('reportPaginationUl');
+        if (totalPages <= 1) {
+          ul.innerHTML = '';
+          return;
+        }
+
+        let pgnHtml = '';
+        // Previous Button
+        pgnHtml += '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">' +
+          '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + (currentPage - 1) + ')">&laquo;</a>' +
+        '</li>';
+
+        // Page Numbers
+        for (let i = 1; i <= totalPages; i++) {
+          if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+            pgnHtml += '<li class="page-item ' + (i === currentPage ? 'active' : '') + '">' +
+              '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + i + ')">' + i + '</a>' +
+            '</li>';
+          } else if (i === currentPage - 3 || i === currentPage + 3) {
+            pgnHtml += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+          }
+        }
+
+        // Next Button
+        pgnHtml += '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">' +
+          '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + (currentPage + 1) + ')">&raquo;</a>' +
+        '</li>';
+
+        ul.innerHTML = pgnHtml;
+      }
+
+      window.goToPage = function (pageNum) {
+        currentPage = pageNum;
+        renderReportTable();
+      };
+
+      window.onPageSizeChange = function (val) {
+        pageSize = val;
+        currentPage = 1;
+        renderReportTable();
+      };
+
+      window.onTableSearchInput = function (val) {
+        tableSearchQuery = val.trim();
+        applyReportFilters();
+      };
+
+      // 12. CSV Export Algorithm (Excel-Compatible with UTF-8 BOM)
+      window.exportReportCsv = function () {
+        if (!filteredApplications || filteredApplications.length === 0) {
+          alert('No matching records available to export.');
+          return;
+        }
+
+        const headers = [
+          'Sl No',
+          'Application No',
+          'Acknowledgment No',
+          'Marking Order No',
+          'Applicant Name',
+          'Applicant Category',
+          'Phone',
+          'Email',
+          'Address',
+          'Submission Date',
+          'Division',
+          'Forest Range',
+          'Revenue Block',
+          'GPU',
+          'Plot / Khasra No',
+          'Total Area (Acres)',
+          'Purpose',
+          'Tree Count',
+          'Tree Species Summary',
+          'Current Status',
+          'Fee Amount (INR)',
+          'Payment Status',
+          'Transit Permit Required',
+          'Transit Permit Status',
+          'Transit Permit No',
+          'Assigned BO',
+          'Approval Authority'
+        ];
+
+        function escapeCsv(val) {
+          if (val === null || val === undefined) return '""';
+          const str = String(val).replace(/"/g, '""');
+          return '"' + str + '"';
+        }
+
+        const rows = [];
+        rows.push(headers.map(escapeCsv).join(','));
+
+        filteredApplications.forEach((a, idx) => {
+          const treesCount = a.trees ? a.trees.length : 0;
+          const speciesSummary = a.trees ? a.trees.map(t => t.species).filter(Boolean).join('; ') : '';
+          const isPaid = a.isPaid || (a.paymentStatus && a.paymentStatus.toLowerCase().includes('completed'));
+
+          const rowData = [
+            idx + 1,
+            a.appNo || '',
+            a.ackNo || '',
+            a.markingOrderNo || 'Not Issued',
+            a.applicantName || '',
+            a.applicantCategory || 'Citizen',
+            a.phone || '',
+            a.email || '',
+            a.address || '',
+            a.submittedDate || a.submissionDate || '',
+            a.division || '',
+            a.range || '',
+            a.revenueBlock || '',
+            a.gpu || '',
+            a.khasraNo || '',
+            a.totalAreaAcres || '',
+            a.purpose || '',
+            treesCount,
+            speciesSummary,
+            a.currentStatus || '',
+            a.feeAmount || 50,
+            isPaid ? 'Completed' : 'Pending',
+            a.isTransitPermitRequired ? 'Yes' : 'No',
+            a.transitPermitStatus || (a.isTransitPermitRequired ? 'Pending' : 'Not Required'),
+            a.transitPermitNo || '',
+            a.assignedBoName || 'Unassigned',
+            a.approvalAuthority || (a.approvedByRole ? a.approvedByRole.toUpperCase() : 'RO')
+          ];
+
+          rows.push(rowData.map(escapeCsv).join(','));
+        });
+
+        // Add UTF-8 BOM (\uFEFF) for Microsoft Excel compatibility
+        const csvContent = '\uFEFF' + rows.join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const filename = 'Marking_Order_Report_' + (currentRole ? currentRole.toUpperCase() + '_' : '') + dateStr + '.csv';
+
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      };
+
+      // 13. Print Report
+      function updatePrintMetadata() {
+        const now = new Date();
+        const printTimestamp = document.getElementById('printTimestamp');
+        const printReportingOfficer = document.getElementById('printReportingOfficer');
+        const printScopeBadge = document.getElementById('printScopeBadge');
+        const printFilterCriteriaText = document.getElementById('printFilterCriteriaText');
+
+        if (printTimestamp) {
+          printTimestamp.textContent = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+            ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        if (printReportingOfficer && currentOfficer) {
+          printReportingOfficer.textContent = currentOfficer.name + ' (' + (currentOfficer.role || currentRole.toUpperCase()) + ')';
+        }
+        if (printScopeBadge && currentOfficer) {
+          printScopeBadge.textContent = (currentOfficer.range || currentOfficer.division || 'Statewide') + ' (' + filteredApplications.length + ' records)';
+        }
+
+        // Build active filter summary text
+        const filters = [];
+        const fromDateVal = document.getElementById('filterFromDate').value;
+        const toDateVal = document.getElementById('filterToDate').value;
+        if (fromDateVal) filters.push('From: ' + fromDateVal);
+        if (toDateVal) filters.push('To: ' + toDateVal);
+
+        const selDiv = document.getElementById('filterDivision').value;
+        if (selDiv) filters.push('Division: ' + selDiv);
+
+        const selRange = document.getElementById('filterRange').value;
+        if (selRange) filters.push('Range: ' + selRange);
+
+        const selStatus = document.getElementById('filterStatus').value;
+        if (selStatus) filters.push('Status: ' + selStatus);
+
+        const selPurpose = document.getElementById('filterPurpose').value;
+        if (selPurpose) filters.push('Purpose: ' + selPurpose);
+
+        if (printFilterCriteriaText) {
+          printFilterCriteriaText.textContent = filters.length > 0 ? filters.join(' | ') : 'All records in officer purview';
+        }
+      }
+
+      window.printReportDocument = function () {
+        updatePrintMetadata();
+        window.print();
+      };
+
+      // 14. Prototype Data Reset
+      window.resetPrototypeData = function () {
+        if (confirm('Reset prototype applications data to clean initial state?')) {
+          localStorage.removeItem('mo_custom_applications');
+          localStorage.removeItem('mo_patched_applications');
+          localStorage.removeItem('mo_plot_verifications');
+          alert('Prototype data reset successfully.');
+          window.location.reload();
+        }
+      };
+
+      // 15. Accessibility Controls (Font Resize & High Contrast)
+      function initAccessibility() {
+        // Font size buttons
+        const fontBtns = document.querySelectorAll('[data-font-action]');
+        fontBtns.forEach(btn => {
+          btn.addEventListener('click', function () {
+            const action = this.getAttribute('data-font-action');
+            fontBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            if (action === 'increase') document.documentElement.setAttribute('data-font-size', 'large');
+            else if (action === 'decrease') document.documentElement.setAttribute('data-font-size', 'small');
+            else document.documentElement.setAttribute('data-font-size', 'normal');
+          });
+        });
+
+        // Contrast toggle
+        const contrastBtn = document.getElementById('btn-contrast-toggle');
+        if (contrastBtn) {
+          contrastBtn.addEventListener('click', function () {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'high-contrast') {
+              document.body.setAttribute('data-theme', 'forest-green');
+            } else {
+              document.body.setAttribute('data-theme', 'high-contrast');
+            }
+          });
+        }
+      }
+
+    })();
+  </script>
+</body>
+</html>

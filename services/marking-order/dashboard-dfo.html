@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <title>DFO Dashboard &bull; Marking Order Service &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .gov-scenario-bar {
+      background: #0d382f;
+      color: #f8fafc;
+      font-size: 0.8125rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .dfo-view-pane {
+      display: none;
+    }
+    .dfo-view-pane.active {
+      display: block;
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link -->
+  <a class="gov-skip-link" href="#main-dfo-content">Skip to Main Content</a>
+
+  <!-- Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Prototype Demo Bar (DFO User Switcher) -->
+  <aside class="gov-scenario-bar" aria-label="Prototype Demo DFO Controller">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-award-fill me-1"></i> STAGE 02 &bull; DFO WORKSPACE
+          </span>
+          <label for="dfoUserSwitcher" class="fw-semibold text-white mb-0">Demonstration DFO Officer:</label>
+          <select id="dfoUserSwitcher" class="form-select form-select-sm py-0.5 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 340px; font-size: 0.8rem;" onchange="switchDfoDemoUser(this.value)">
+            <option value="DFO-GANGTOK" selected>DFO Demo User (Gangtok Division) &bull; Division: Gangtok</option>
+            <option value="DFO-NAMCHI">DFO Demo User (Namchi Division) &bull; Division: Namchi</option>
+          </select>
+          <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+            <i class="bi bi-people-fill me-1"></i> Switch Role
+          </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-gov-light" data-font-action="increase" title="Increase font size">A+</button>
+          </div>
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle DFO Menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <a href="index.html" class="d-inline-block">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Forest and Environment Department &bull; Government of Sikkim</div>
+            <h1 class="h5 fw-bold text-dark mb-0" id="dfoHeaderTitle">DFO Dashboard &bull; Gangtok Division</h1>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small" id="dfoHeaderUserName">DFO Demo User (Gangtok Division)</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-1">Role: Divisional Forest Officer (DFO)</span>
+              <span id="dfoHeaderJurisdiction">Division: Gangtok</span>
+            </div>
+          </div>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Switch Role / Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <div class="officer-workspace-container flex-grow-1">
+
+    <!-- 10.3 DFO Navigation Menu (11 Required Items) -->
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block" id="sidebar-nav" aria-label="DFO Navigation">
+      <div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">
+        <span class="fw-bold small text-muted">DFO WORKSPACE MENU</span>
+        <button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>
+      </div>
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+        DFO Authority (<span id="sidebarDfoDivisionLabel">Gangtok</span>)
+      </div>
+      <nav class="nav flex-column gap-1">
+        <!-- 1. Dashboard -->
+        <a href="#dashboard" class="officer-nav-link active" id="dfoNav-dashboard" onclick="switchDfoPane('dashboard', event)">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="apply.html?role=dfo" class="officer-nav-link text-success fw-semibold">
+          <i class="bi bi-person-plus-fill text-success"></i>
+          <span>Assist Citizen (Apply)</span>
+        </a>
+        <!-- 2. Forwarded Applications -->
+        <a href="#forwarded" class="officer-nav-link" id="dfoNav-forwarded" onclick="switchDfoPane('forwarded', event)">
+          <i class="bi bi-inbox-fill text-primary"></i>
+          <span>Forwarded Applications</span>
+          <span class="badge bg-primary" id="dfoBadgeForwarded">0</span>
+        </a>
+        <!-- 3. Pending Applications -->
+        <a href="#pending" class="officer-nav-link" id="dfoNav-pending" onclick="switchDfoPane('pending', event)">
+          <i class="bi bi-hourglass-split text-warning"></i>
+          <span>Pending Applications</span>
+          <span class="badge bg-warning text-dark" id="dfoBadgePending">0</span>
+        </a>
+        <!-- 4. Approved Applications -->
+        <a href="#approved" class="officer-nav-link" id="dfoNav-approved" onclick="switchDfoPane('approved', event)">
+          <i class="bi bi-check-circle-fill text-success"></i>
+          <span>Approved Applications</span>
+          <span class="badge bg-success" id="dfoBadgeApproved">0</span>
+        </a>
+        <!-- 5. Rejected Applications -->
+        <a href="#rejected" class="officer-nav-link" id="dfoNav-rejected" onclick="switchDfoPane('rejected', event)">
+          <i class="bi bi-x-circle-fill text-danger"></i>
+          <span>Rejected Applications</span>
+          <span class="badge bg-danger" id="dfoBadgeRejected">0</span>
+        </a>
+        <!-- 6. Delayed Applications -->
+        <a href="#delayed" class="officer-nav-link" id="dfoNav-delayed" onclick="switchDfoPane('delayed', event)">
+          <i class="bi bi-alarm-fill text-danger"></i>
+          <span>Delayed Applications</span>
+          <span class="badge bg-danger" id="dfoBadgeDelayed">0</span>
+        </a>
+        <!-- 7. Issued Marking Orders -->
+        <a href="#issued-orders" class="officer-nav-link" id="dfoNav-orders" onclick="switchDfoPane('orders', event)">
+          <i class="bi bi-file-earmark-check-fill text-success"></i>
+          <span>Issued Marking Orders</span>
+          <span class="badge bg-success" id="dfoBadgeOrders">0</span>
+        </a>
+        <!-- 8. Tree Details -->
+        <a href="#tree-details" class="officer-nav-link" id="dfoNav-trees" onclick="switchDfoPane('trees', event)">
+          <i class="bi bi-tree-fill text-success"></i>
+          <span>Tree Details</span>
+        </a>
+        <!-- 9. Transit Permit -->
+        <a href="#transit-permit" class="officer-nav-link" id="dfoNav-transit" onclick="switchDfoPane('transit', event)">
+          <i class="bi bi-truck text-primary"></i>
+          <span>Transit Permit</span>
+        </a>
+        <!-- 10. Reports & Analytics -->
+        <a href="reports.html?role=dfo&user=DFO-GANGTOK" class="officer-nav-link" id="dfoNav-reports-page">
+          <i class="bi bi-file-earmark-bar-graph text-success"></i>
+          <span>Reports &amp; Analytics</span>
+        </a>
+        <!-- 11. Switch Role / Logout -->
+        <a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">
+          <i class="bi bi-box-arrow-left text-danger"></i>
+          <span>Switch Role / Logout</span>
+        </a>
+      </nav>
+
+      <!-- DFO Statutory Authority Reference Card -->
+      <div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">
+        <div class="fw-bold text-dark mb-1"><i class="bi bi-award-fill text-success me-1"></i> DFO Statutory Authority</div>
+        <div class="text-secondary" style="font-size: 0.74rem;">
+          &bull; <strong>Timber:</strong> Max 10 trees<br>
+          &bull; <strong>Firewood:</strong> Max 10 trees<br>
+          &bull; Final in-scope approval authority &amp; sole authority to cancel an issued Marking Order.
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main DFO Content -->
+    <main id="main-dfo-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
+
+      <!-- 10.1 DFO Dashboard Welcome Section -->
+      <div class="card border-0 bg-white p-4 shadow-xs mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h2 class="h4 fw-bold text-dark mb-0">Welcome to DFO Dashboard</h2>
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Role: Divisional Forest Officer (DFO)</span>
+            </div>
+            <p class="text-muted small mb-2">
+              Monitor division-wide Marking Order applications, review escalated cases and oversee application processing within your jurisdiction.
+            </p>
+            <div class="d-flex flex-wrap gap-3 small">
+              <span><i class="bi bi-person-badge text-success me-1"></i><strong>User:</strong> <span id="welcomeDfoUser">DFO Demo User (Gangtok Division)</span></span>
+              <span><i class="bi bi-diagram-2 text-success me-1"></i><strong>Assigned Division:</strong> <span id="welcomeDfoDivision">Gangtok</span></span>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="switchDfoPane('delayed')">
+              <i class="bi bi-alarm me-1"></i> Delayed Applications
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10.5 DFO Statutory Authority Reference Banner -->
+      <div class="card border-0 shadow-xs bg-white p-3 mb-3" style="border-left: 4px solid #114b3f !important;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="small">
+            <strong class="text-dark"><i class="bi bi-award-fill text-success me-1"></i>DFO Statutory Authority Limits (Final In-Scope Approval Authority):</strong>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2">Timber: Up to 10 Trees</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle ms-1">Firewood: Up to 10 Trees</span>
+            <span class="text-muted ms-2">Sole authority to cancel an already-issued Marking Order (with mandatory reason &amp; Transit Permit invalidation).</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10.2 DFO Dashboard Summary Cards (8 Dynamically Calculated Cards) -->
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('forwarded')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-primary" id="kpiDfoForwarded">0</div>
+                <div class="gov-kpi-label">Forwarded Applications</div>
+              </div>
+              <i class="bi bi-inbox-fill fs-4 text-primary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Forwarded by ACF to DFO</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('pending')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-warning" id="kpiDfoPending">0</div>
+                <div class="gov-kpi-label">Pending DFO Review</div>
+              </div>
+              <i class="bi bi-hourglass-split fs-4 text-warning"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Awaiting DFO final decision</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('approved')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-success" id="kpiDfoApproved">0</div>
+                <div class="gov-kpi-label">Approved Applications</div>
+              </div>
+              <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Division-wide approved</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('rejected')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-danger" id="kpiDfoRejected">0</div>
+                <div class="gov-kpi-label">Rejected Applications</div>
+              </div>
+              <i class="bi bi-x-circle-fill fs-4 text-danger"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Division-wide rejected</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('orders')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-success" id="kpiDfoMoIssued">0</div>
+                <div class="gov-kpi-label">Marking Orders Issued</div>
+              </div>
+              <i class="bi bi-file-earmark-check-fill fs-4 text-success"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Active issued Marking Orders</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('transit')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-info" id="kpiDfoTpIssued">0</div>
+                <div class="gov-kpi-label">Transit Permits Issued</div>
+              </div>
+              <i class="bi bi-truck fs-4 text-info"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Active Transit Permits</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('delayed')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-danger" id="kpiDfoDelayed">0</div>
+                <div class="gov-kpi-label">Delayed Applications</div>
+              </div>
+              <i class="bi bi-alarm-fill fs-4 text-danger"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Pending action &gt; 7 days</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchDfoPane('orders')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-secondary" id="kpiDfoCancelled">0</div>
+                <div class="gov-kpi-label">Cancelled Marking Orders</div>
+              </div>
+              <i class="bi bi-slash-circle-fill fs-4 text-secondary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Cancelled under DFO authority</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 1: DASHBOARD OVERVIEW -->
+      <div id="dfoPane-dashboard" class="dfo-view-pane active">
+        <!-- Forwarded by ACF Table -->
+        <div class="card border-0 shadow-xs bg-white mb-4">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-inbox-fill text-primary me-2"></i>Applications Forwarded by ACF to DFO</h3>
+              <span class="small text-muted">Escalated cases exceeding ACF statutory limit (Timber &gt; 6 / Firewood &gt; 6)</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchDfoPane('forwarded')">Open Full Queue</button>
+          </div>
+          <div class="card-body p-0" id="dfoDashForwardedTable"></div>
+        </div>
+
+        <!-- Delayed Applications Preview (> 7 Days, Sorted Descending by Days Delayed) -->
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-danger"><i class="bi bi-alarm-fill me-2"></i>Division-Wide Delayed Applications (&gt; 7 Days Pending &ndash; Sorted Most Delayed First)</h3>
+              <span class="small text-muted">Sorted by Days Delayed in descending order</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="switchDfoPane('delayed')">Open Delayed Monitoring View</button>
+          </div>
+          <div class="card-body p-0" id="dfoDashDelayedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 2: 10.4 FORWARDED APPLICATIONS -->
+      <div id="dfoPane-forwarded" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Forwarded Applications (Escalated by ACF to DFO)</h3>
+          </div>
+          <div class="card-body p-0" id="dfoFullForwardedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 3: PENDING APPLICATIONS -->
+      <div id="dfoPane-pending" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Pending DFO Review Queue</h3>
+          </div>
+          <div class="card-body p-0" id="dfoFullPendingTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 4: APPROVED APPLICATIONS -->
+      <div id="dfoPane-approved" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Approved Applications in Division</h3>
+          </div>
+          <div class="card-body p-0" id="dfoFullApprovedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 5: REJECTED APPLICATIONS -->
+      <div id="dfoPane-rejected" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Rejected Applications in Division</h3>
+          </div>
+          <div class="card-body p-0" id="dfoFullRejectedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 6: 10.6 DELAYED APPLICATIONS -->
+      <div id="dfoPane-delayed" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-danger"><i class="bi bi-alarm-fill me-2"></i>Delayed Applications Monitoring (Sorted by Days Delayed Descending)</h3>
+              <span class="small text-muted">Applications pending action for more than 7 days are highlighted in red; most delayed displayed first.</span>
+            </div>
+            <span class="badge bg-danger text-white">Threshold: &gt; 7 Days Pending</span>
+          </div>
+          <div class="card-body p-0" id="dfoFullDelayedTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 7: 10.7 & 10.8 ISSUED MARKING ORDERS & CANCELLATION CONTEXT -->
+      <div id="dfoPane-orders" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white mb-4">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-file-earmark-check-fill text-success me-2"></i>Issued Marking Orders &amp; DFO Cancellation Authority</h3>
+              <span class="small text-muted">The DFO has the sole authority to cancel an already-issued Marking Order (with mandatory reason and Transit Permit invalidation).</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="openDfoCancelContextModal()">
+              <i class="bi bi-slash-circle me-1"></i> Cancellation Context Preview
+            </button>
+          </div>
+          <div class="card-body p-0" id="dfoIssuedOrdersTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 8: TREE DETAILS -->
+      <div id="dfoPane-trees" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-tree-fill text-success me-2"></i>Division-Wide Tree Details</h3>
+          <div class="table-responsive" id="dfoTreesTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 9: 10.9 TRANSIT PERMIT -->
+      <div id="dfoPane-transit" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-truck text-primary me-2"></i>Division Transit Permit Overview</h3>
+          <div class="table-responsive" id="dfoTransitTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 10: 10.10 REPORTS & ANALYTICS -->
+      <div id="dfoPane-reports" class="dfo-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+              <h3 class="h6 fw-bold text-dark mb-1"><i class="bi bi-file-earmark-bar-graph text-success me-2"></i>Division-Wide Reports &amp; Summary</h3>
+              <p class="small text-muted mb-0">Summary of application volumes and statuses in <strong id="dfoReportDivName">Gangtok</strong> Division. Multi-dimensional filters and CSV exports available.</p>
+            </div>
+            <a href="reports.html?role=dfo&user=DFO-GANGTOK" id="dfoBtnLaunchReports" class="btn btn-sm btn-gov-primary">
+              <i class="bi bi-file-earmark-bar-graph me-1"></i> Open Full Reports &amp; Application Summary
+            </a>
+          </div>
+          <div class="table-responsive" id="dfoReportsTable"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Standard Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white mt-auto" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 small text-white-50">
+      <div>&copy; 2026 Forest and Environment Department, Government of Sikkim &bull; Marking Order Service (DFO Desk &ndash; Stage 02)</div>
+      <div>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script src="document-service.js"></script>
+  <script>
+    var currentDfoUser = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      MarkingOrderData.initDashboardCommon();
+
+      var params = new URLSearchParams(window.location.search);
+      var userId = params.get('user') || localStorage.getItem('mo_dfo_user') || 'DFO-GANGTOK';
+      var switcher = document.getElementById('dfoUserSwitcher');
+      if (switcher) switcher.value = userId;
+
+      switchDfoDemoUser(userId);
+
+      var activePane = params.get('pane') || (window.location.hash ? window.location.hash.replace('#', '') : 'dashboard');
+      if (activePane && ['dashboard', 'forwarded', 'pending', 'approved', 'rejected', 'delayed', 'orders', 'trees', 'transit', 'reports'].indexOf(activePane) !== -1) {
+        switchDfoPane(activePane);
+      }
+    });
+
+    function switchDfoDemoUser(userId) {
+      localStorage.setItem('mo_dfo_user', userId);
+      currentDfoUser = MarkingOrderData.demoUsers.dfoUsers.find(function (u) { return u.id === userId; }) || MarkingOrderData.demoUsers.dfoUsers[0];
+
+      document.getElementById('dfoHeaderTitle').textContent = 'DFO Dashboard \u2022 ' + currentDfoUser.division + ' Division';
+      document.getElementById('dfoHeaderUserName').textContent = currentDfoUser.name;
+      document.getElementById('dfoHeaderJurisdiction').textContent = 'Division: ' + currentDfoUser.division;
+      document.getElementById('sidebarDfoDivisionLabel').textContent = currentDfoUser.division;
+
+      document.getElementById('welcomeDfoUser').textContent = currentDfoUser.name;
+      document.getElementById('welcomeDfoDivision').textContent = currentDfoUser.division;
+      document.getElementById('dfoReportDivName').textContent = currentDfoUser.division;
+
+      var repLink = document.getElementById('dfoNav-reports-page');
+      if (repLink) repLink.href = 'reports.html?role=dfo&user=' + encodeURIComponent(userId);
+      var repLaunch = document.getElementById('dfoBtnLaunchReports');
+      if (repLaunch) repLaunch.href = 'reports.html?role=dfo&user=' + encodeURIComponent(userId);
+
+      renderDfoDashboard();
+    }
+
+    function renderDfoDashboard() {
+      var divApps = MarkingOrderData.getAllApplications().filter(function (a) {
+        return a.division === currentDfoUser.division || !a.division || (currentDfoUser.division && a.division.toLowerCase().includes(currentDfoUser.division.toLowerCase().replace(/ division.*$/i, '')));
+      });
+
+      var forwardedByAcf = divApps.filter(function (a) {
+        return Boolean(a.forwardedByAcf) || a.currentStatus === 'Forwarded to DFO' || a.currentStatus === 'Pending DFO Review' || a.dfoQueue === 'pending' || (a.approvalAuthority === 'DFO' && (a.currentStatus.includes('Forwarded') || a.currentStatus.includes('Pending DFO')));
+      });
+      var pendingDfo = forwardedByAcf.filter(function (a) {
+        return a.dfoQueue === 'pending' || a.currentStatus === 'Forwarded to DFO' || a.currentStatus === 'Pending DFO Review';
+      });
+      var approvedDiv = divApps.filter(function (a) {
+        return a.approvalStatus === 'Application Approved' || (a.currentStatus && a.currentStatus.includes('Approved')) || (a.currentStatus && a.currentStatus.includes('Marking Order Issued'));
+      });
+      var rejectedDiv = divApps.filter(function (a) {
+        return a.currentStatus === 'Rejected';
+      });
+      var moIssuedDiv = divApps.filter(function (a) {
+        return Boolean(a.markingOrderNo) || a.currentStatus === 'Marking Order Issued' || a.markingOrderStatus === 'Marking Order Issued';
+      });
+      var tpIssuedDiv = divApps.filter(function (a) {
+        return Boolean(a.transitPermitNo) && (a.transitPermitStatus === 'Approved/Issued' || a.transitPermitStatus === 'Transit Permit Issued');
+      });
+      var cancelledOrders = divApps.filter(function (a) {
+        return a.currentStatus === 'Cancelled Marking Order' || a.currentStatus === 'Cancelled';
+      });
+
+      // 10.6 Delayed Applications (> 7 days pending, plus all pending sorted by daysDelayed descending)
+      var delayedExceeding7 = divApps.filter(function (a) { return a.daysDelayed > 7; }).sort(function (a, b) {
+        return b.daysDelayed - a.daysDelayed;
+      });
+      var allPendingSorted = divApps.filter(function (a) { return a.daysDelayed > 0; }).sort(function (a, b) {
+        return b.daysDelayed - a.daysDelayed;
+      });
+
+      document.getElementById('kpiDfoForwarded').textContent = forwardedByAcf.length;
+      document.getElementById('kpiDfoPending').textContent = pendingDfo.length;
+      document.getElementById('kpiDfoApproved').textContent = approvedDiv.length;
+      document.getElementById('kpiDfoRejected').textContent = rejectedDiv.length;
+      document.getElementById('kpiDfoMoIssued').textContent = moIssuedDiv.length;
+      document.getElementById('kpiDfoTpIssued').textContent = tpIssuedDiv.length;
+      document.getElementById('kpiDfoDelayed').textContent = delayedExceeding7.length;
+      document.getElementById('kpiDfoCancelled').textContent = cancelledOrders.length;
+
+      document.getElementById('dfoBadgeForwarded').textContent = forwardedByAcf.length;
+      document.getElementById('dfoBadgePending').textContent = pendingDfo.length;
+      document.getElementById('dfoBadgeApproved').textContent = approvedDiv.length;
+      document.getElementById('dfoBadgeRejected').textContent = rejectedDiv.length;
+      document.getElementById('dfoBadgeDelayed').textContent = delayedExceeding7.length;
+      document.getElementById('dfoBadgeOrders').textContent = (moIssuedDiv.length + cancelledOrders.length);
+
+      var fwdHtml = buildDfoForwardedTable(forwardedByAcf);
+      document.getElementById('dfoDashForwardedTable').innerHTML = fwdHtml;
+      document.getElementById('dfoFullForwardedTable').innerHTML = fwdHtml;
+
+      document.getElementById('dfoFullPendingTable').innerHTML = buildDfoForwardedTable(pendingDfo);
+      document.getElementById('dfoFullApprovedTable').innerHTML = buildDfoForwardedTable(approvedDiv);
+      document.getElementById('dfoFullRejectedTable').innerHTML = buildDfoForwardedTable(rejectedDiv);
+
+      var delayedHtml = buildDfoDelayedTable(allPendingSorted);
+      document.getElementById('dfoDashDelayedTable').innerHTML = buildDfoDelayedTable(delayedExceeding7);
+      document.getElementById('dfoFullDelayedTable').innerHTML = delayedHtml;
+
+      document.getElementById('dfoIssuedOrdersTable').innerHTML = buildDfoIssuedOrdersTable(moIssuedDiv.concat(cancelledOrders));
+
+      renderDfoTrees(divApps);
+      renderDfoTransit(divApps.filter(function (a) { return Boolean(a.isTransitPermitRequired); }));
+      renderDfoReports(divApps, forwardedByAcf, pendingDfo, approvedDiv, rejectedDiv, moIssuedDiv, tpIssuedDiv, delayedExceeding7, cancelledOrders);
+    }
+
+    function buildDfoForwardedTable(list) {
+      if (list.length === 0) return '<div class="p-4 text-center text-muted small">No matching applications in ' + currentDfoUser.division + ' Division.</div>';
+      var rows = list.map(function (a) {
+        var auth = MarkingOrderData.evaluateAuthority(a.purpose, a.trees.length);
+        return '<tr>' +
+          '<td class="font-monospace fw-bold text-primary"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td>' + a.applicantName + '</td>' +
+          '<td>' + a.district + ' / ' + a.division + '<div class="small text-muted">' + a.range + '</div></td>' +
+          '<td><strong>' + a.purpose + '</strong> (' + a.trees.length + ' Trees)<div class="mt-0.5"><span class="badge bg-success-subtle text-success border border-success-subtle">' + auth.dfoClassificationText + '</span></div></td>' +
+          '<td>' + (a.forwardedByAcf || a.forwardedByRo || 'Division Officer') + '<div class="small text-muted">' + (a.forwardedToDfoDate || a.lastUpdatedDate) + '</div></td>' +
+          '<td>' + MarkingOrderData.getStatusBadgeHtml(a.currentStatus) + '</td>' +
+          '<td class="text-end text-nowrap">' +
+            '<div class="d-inline-flex align-items-center gap-1.5 text-nowrap">' +
+              '<a href="review.html?appNo=' + encodeURIComponent(a.appNo) + '&role=dfo" class="btn btn-sm btn-gov-primary"><i class="bi bi-shield-check"></i> Review &amp; Decide</a>' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Application No.</th><th>Applicant Name</th><th>District / Division / Range</th><th>Purpose, Trees &amp; DFO Authority</th><th>Forwarded By &amp; Date</th><th>Current Status</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    // 10.6 Delayed Applications Table (Sorted Descending by Days Delayed; clearly distinguishes > 7 days)
+    function buildDfoDelayedTable(list) {
+      if (list.length === 0) return '<div class="p-4 text-center text-muted small">No delayed applications in ' + currentDfoUser.division + ' Division.</div>';
+      var rows = list.map(function (a) {
+        var isOver7 = a.daysDelayed > 7;
+        var delayBadge = isOver7
+          ? '<span class="badge bg-danger text-white"><i class="bi bi-alarm-fill me-1"></i>' + a.daysDelayed + ' Days Delayed (&gt; 7 Days)</span>'
+          : '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">' + a.daysDelayed + ' Days Pending (&le; 7 Days)</span>';
+
+        return '<tr class="' + (isOver7 ? 'table-danger bg-opacity-10' : '') + '">' +
+          '<td class="font-monospace fw-bold text-primary"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td>' + a.applicantName + '</td>' +
+          '<td>' + a.district + '<div class="small text-muted">' + a.range + '</div></td>' +
+          '<td>' + MarkingOrderData.getStatusBadgeHtml(a.currentStatus) + '</td>' +
+          '<td><strong class="small text-dark">' + a.pendingWithRole + '</strong></td>' +
+          '<td>' + a.pendingSinceDate + '</td>' +
+          '<td>' + delayBadge + '</td>' +
+          '<td class="text-end text-nowrap">' +
+            '<div class="d-inline-flex align-items-center gap-1.5 text-nowrap">' +
+              '<button type="button" class="btn btn-sm btn-outline-danger" onclick="sendDfoDelayAlertNow(\'' + a.appNo + '\')"><i class="bi bi-bell-fill"></i> Send Delay Alert</button>' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Application No.</th><th>Applicant Name</th><th>District &amp; Forest Range</th><th>Current Status</th><th>Pending With</th><th>Pending Since</th><th>Days Delayed</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    // 10.7 & 10.8 Issued Marking Orders Table
+    function buildDfoIssuedOrdersTable(list) {
+      if (list.length === 0) return '<div class="p-4 text-center text-muted small">No issued Marking Orders in ' + currentDfoUser.division + ' Division.</div>';
+      var rows = list.map(function (a) {
+        var isCancelled = a.currentStatus === 'Cancelled Marking Order';
+        return '<tr>' +
+          '<td class="font-monospace fw-bold ' + (isCancelled ? 'text-danger text-decoration-line-through' : 'text-success') + '">' + a.markingOrderNo + '</td>' +
+          '<td class="font-monospace"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td>' + a.applicantName + '</td>' +
+          '<td>' + a.district + ' &bull; ' + a.range + '</td>' +
+          '<td>' + a.markingOrderIssueDate + '</td>' +
+          '<td class="small">' + (a.markingOrderValidity || 'As per order conditions') + '</td>' +
+          '<td>' + MarkingOrderData.getStatusBadgeHtml(isCancelled ? 'Cancelled Marking Order' : 'Marking Order Issued') + (a.cancellationReason ? '<div class="small text-danger mt-1">' + a.cancellationReason + '</div>' : '') + '</td>' +
+          '<td class="text-end text-nowrap">' +
+            '<div class="d-inline-flex align-items-center gap-1.5 text-nowrap">' +
+              (MarkingOrderData.canDownloadCertificate(a) ? '<button type="button" class="btn btn-sm btn-success fw-semibold" onclick="MarkingOrderData.downloadMarkingOrderCertificate(\'' + a.appNo + '\')"><i class="bi bi-file-earmark-arrow-down-fill me-1"></i> Certificate</button>' : '') +
+              (!isCancelled ? '<a href="review.html?appNo=' + encodeURIComponent(a.appNo) + '&role=dfo" class="btn btn-sm btn-outline-danger"><i class="bi bi-slash-circle"></i> Cancel Order</a>' : '') +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Marking Order No.</th><th>Application No.</th><th>Applicant Name</th><th>District &amp; Range</th><th>Issue Date</th><th>Validity</th><th>Status</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    function renderDfoTrees(list) {
+      var rows = '';
+      list.forEach(function (app) {
+        app.trees.forEach(function (t) {
+          rows += '<tr>' +
+            '<td class="font-monospace fw-bold text-primary">' + app.appNo + '</td>' +
+            '<td>' + app.range + '</td>' +
+            '<td>' + app.purpose + '</td>' +
+            '<td>Tree #' + t.treeNo + ' &bull; ' + t.species + '</td>' +
+            '<td class="font-monospace">' + t.plotNo + '</td>' +
+            '<td>' + t.gbhFeet + '</td>' +
+          '</tr>';
+        });
+      });
+      document.getElementById('dfoTreesTable').innerHTML = '<table class="table table-sm table-bordered align-middle small mb-0">' +
+        '<thead class="table-light"><tr><th>Application No.</th><th>Forest Range</th><th>Purpose</th><th>Tree Species</th><th>Plot / Khasra No.</th><th>GBH (Feet)</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table>';
+    }
+
+    function renderDfoTransit(list) {
+      if (!list || list.length === 0) {
+        document.getElementById('dfoTransitTable').innerHTML = '<div class="p-4 text-center text-muted small">No Transit Permit applications found in division. Applications without transit permit requirements are excluded.</div>';
+        return;
+      }
+      var rows = list.map(function (a) {
+        var actionBtn = '';
+        if (a.transitPermitStatus === 'Pending with ACF/DFO' || !a.transitPermitNo) {
+          actionBtn = '<button type="button" class="btn btn-xs btn-gov-primary fw-bold" onclick="MarkingOrderData.openIssueTransitPermitModal(\'' + a.appNo + '\', renderDfoDashboard)"><i class="bi bi-truck me-1"></i> Issue Transit Permit</button>';
+        } else if (MarkingOrderData.canDownloadCertificate(a)) {
+          actionBtn = '<button type="button" class="btn btn-xs btn-outline-success fw-semibold" onclick="MarkingOrderData.downloadMarkingOrderCertificate(\'' + a.appNo + '\')"><i class="bi bi-download me-1"></i> Download Certificate</button>';
+        }
+
+        return '<tr>' +
+          '<td class="font-monospace fw-bold text-success">' + (a.markingOrderNo || 'Pending') + '</td>' +
+          '<td class="font-monospace">' + a.appNo + '</td>' +
+          '<td>' + a.applicantName + ' (' + a.range + ')</td>' +
+          '<td class="font-monospace">' + (a.transitPermitNo || '<span class="text-muted">Not Issued</span>') + '</td>' +
+          '<td><span class="badge ' + (a.transitPermitNo ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-warning-subtle text-warning-emphasis border border-warning-subtle') + '">' + a.transitPermitStatus + '</span></td>' +
+          '<td class="text-end text-nowrap">' + actionBtn + '</td>' +
+        '</tr>';
+      }).join('');
+      document.getElementById('dfoTransitTable').innerHTML = '<table class="table table-sm table-bordered align-middle small mb-0">' +
+        '<thead class="table-light"><tr><th>Marking Order No.</th><th>Application No.</th><th>Applicant &amp; Range</th><th>Transit Permit No.</th><th>Transit Permit Status</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table>';
+    }
+
+    function renderDfoReports(all, fwd, pending, approved, rejected, moIssued, tpIssued, delayed, cancelled) {
+      document.getElementById('dfoReportsTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>Division Report Metric (' + currentDfoUser.division + ' Division)</th><th>Count</th></tr></thead>' +
+          '<tbody>' +
+            '<tr><td>Total Division Applications</td><td class="fw-bold">' + all.length + '</td></tr>' +
+            '<tr><td>Applications Forwarded by ACF to DFO</td><td class="fw-bold">' + fwd.length + '</td></tr>' +
+            '<tr><td>Pending DFO Review</td><td class="fw-bold">' + pending.length + '</td></tr>' +
+            '<tr><td>Approved Applications (Division-wide)</td><td class="fw-bold text-success">' + approved.length + '</td></tr>' +
+            '<tr><td>Rejected Applications (Division-wide)</td><td class="fw-bold text-danger">' + rejected.length + '</td></tr>' +
+            '<tr><td>Active Marking Orders Issued</td><td class="fw-bold text-success">' + moIssued.length + '</td></tr>' +
+            '<tr><td>Active Transit Permits Issued</td><td class="fw-bold text-primary">' + tpIssued.length + '</td></tr>' +
+            '<tr><td>Delayed Applications (&gt; 7 Days Pending)</td><td class="fw-bold text-danger">' + delayed.length + '</td></tr>' +
+            '<tr><td>Cancelled Marking Orders</td><td class="fw-bold text-secondary">' + cancelled.length + '</td></tr>' +
+          '</tbody>' +
+        '</table>';
+    }
+
+    function openDfoDecisionPlaceholder(appNo) {
+      window.location.href = 'review.html?appNo=' + encodeURIComponent(appNo) + '&role=dfo';
+    }
+
+    function sendDfoDelayAlertNow(appNo) {
+      MarkingOrderData.dfoSendDelayAlert(appNo, currentDfoUser ? currentDfoUser.name : 'Divisional Forest Officer');
+      alert('Delay escalation alert for application ' + appNo + ' successfully dispatched to responsible officer.\nRecorded in audit notifications.');
+    }
+
+    function openDfoAlertOfficerPlaceholder(appNo, officerRole, daysDelayed) {
+      sendDfoDelayAlertNow(appNo);
+    }
+
+    function openDfoCancelContextModal(orderNo, appNo) {
+      window.location.href = 'review.html?appNo=' + encodeURIComponent(appNo) + '&role=dfo';
+    }
+
+    function switchDfoPane(paneId, evt) {
+      if (evt) evt.preventDefault();
+      document.querySelectorAll('.dfo-view-pane').forEach(function (p) { p.classList.remove('active'); });
+      var target = document.getElementById('dfoPane-' + paneId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('#sidebar-nav .officer-nav-link').forEach(function (l) { l.classList.remove('active'); });
+      var nav = document.getElementById('dfoNav-' + paneId);
+      if (nav) nav.classList.add('active');
+
+      try {
+        if (history.pushState) {
+          history.pushState(null, null, '#' + paneId);
+        } else {
+          window.location.hash = paneId;
+        }
+      } catch (e) {}
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#114b3f">
+  <title>Super Admin Dashboard &bull; Marking Order Service &bull; Government of Sikkim</title>
+
+  <!-- Google Fonts: Noto Sans & Noto Serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Shared Framework CSS -->
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    .gov-scenario-bar {
+      background: #0d382f;
+      color: #f8fafc;
+      font-size: 0.8125rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .admin-view-pane {
+      display: none;
+    }
+    .admin-view-pane.active {
+      display: block;
+    }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Skip Link -->
+  <a class="gov-skip-link" href="#main-admin-content">Skip to Main Content</a>
+
+  <!-- Tricolor Stripe -->
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <!-- Prototype Demo Bar -->
+  <aside class="gov-scenario-bar" aria-label="Prototype Demo Super Admin Bar">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+            <i class="bi bi-gear-wide-connected me-1"></i> STAGE 02 &bull; SUPER ADMIN WORKSPACE
+          </span>
+          <span class="small text-white-50">Active User: <strong class="text-white">Super Admin Demo User</strong> &bull; Statewide System Administration</span>
+          <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+            <i class="bi bi-people-fill me-1"></i> Switch Role
+          </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
+            <button type="button" class="btn btn-outline-gov-light" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-gov-light active" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-gov-light" data-font-action="increase" title="Increase font size">A+</button>
+          </div>
+          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Government Branding Header -->
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle Admin Menu">
+            <i class="bi bi-list"></i>
+          </button>
+          <a href="index.html" class="d-inline-block">
+            <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+          </a>
+          <div>
+            <div class="gov-header-dept-eyebrow" style="font-size: 0.75rem;">Forest and Environment Department &bull; Government of Sikkim</div>
+            <h1 class="h5 fw-bold text-dark mb-0">Marking Order &ndash; Super Admin Dashboard</h1>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="text-end d-none d-sm-block">
+            <div class="fw-bold text-dark small">Super Admin Demo User</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              <span class="badge bg-dark-subtle text-dark border border-secondary-subtle me-1">Role: Super Admin</span>
+              <span>Statewide System Administration</span>
+            </div>
+          </div>
+          <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Switch Role / Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace Container -->
+  <div class="officer-workspace-container flex-grow-1">
+
+    <!-- 11.3 Super Admin Navigation Menu (12 Required Items) -->
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block" id="sidebar-nav" aria-label="Super Admin Navigation">
+      <div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">
+        <span class="fw-bold small text-muted">SUPER ADMIN MENU</span>
+        <button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>
+      </div>
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+        System Administration
+      </div>
+      <nav class="nav flex-column gap-1">
+        <!-- 1. Dashboard -->
+        <a href="#dashboard" class="officer-nav-link active" id="adminNav-dashboard" onclick="switchAdminPane('dashboard', event)">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+        <!-- 2. User Management -->
+        <a href="#user-management" class="officer-nav-link" id="adminNav-users" onclick="switchAdminPane('users', event)">
+          <i class="bi bi-people-fill text-primary"></i>
+          <span>User Management</span>
+          <span class="badge bg-primary" id="adminBadgeAllUsers">0</span>
+        </a>
+        <!-- 3. Citizen Users -->
+        <a href="#citizen-users" class="officer-nav-link" id="adminNav-citizens" onclick="switchAdminPane('citizens', event)">
+          <i class="bi bi-person-fill text-success"></i>
+          <span>Citizen Users</span>
+          <span class="badge bg-success" id="adminBadgeCitizens">0</span>
+        </a>
+        <!-- 4. Department Users -->
+        <a href="#department-users" class="officer-nav-link" id="adminNav-deptUsers" onclick="switchAdminPane('deptUsers', event)">
+          <i class="bi bi-person-badge-fill text-info"></i>
+          <span>Department Users</span>
+          <span class="badge bg-info text-dark" id="adminBadgeDeptUsers">0</span>
+        </a>
+        <!-- 5. Division Management -->
+        <a href="#division-management" class="officer-nav-link" id="adminNav-divisions" onclick="switchAdminPane('divisions', event)">
+          <i class="bi bi-diagram-3-fill"></i>
+          <span>Division Management</span>
+        </a>
+        <!-- 6. Forest Range Management -->
+        <a href="#range-management" class="officer-nav-link" id="adminNav-ranges" onclick="switchAdminPane('ranges', event)">
+          <i class="bi bi-pin-map-fill"></i>
+          <span>Forest Range Management</span>
+        </a>
+        <!-- 7. District Management -->
+        <a href="#district-management" class="officer-nav-link" id="adminNav-districts" onclick="switchAdminPane('districts', event)">
+          <i class="bi bi-geo-alt-fill"></i>
+          <span>District Management</span>
+        </a>
+        <!-- 8. Tree Species Master -->
+        <a href="#tree-species" class="officer-nav-link" id="adminNav-species" onclick="switchAdminPane('species', event)">
+          <i class="bi bi-tree-fill text-success"></i>
+          <span>Tree Species Master</span>
+        </a>
+        <!-- 9. Purpose Master -->
+        <a href="#purpose-master" class="officer-nav-link" id="adminNav-purpose" onclick="switchAdminPane('purpose', event)">
+          <i class="bi bi-tags-fill text-warning"></i>
+          <span>Purpose Master</span>
+        </a>
+        <!-- 10. Application Overview -->
+        <a href="#application-overview" class="officer-nav-link" id="adminNav-apps" onclick="switchAdminPane('apps', event)">
+          <i class="bi bi-folder2-open text-primary"></i>
+          <span>Application Overview</span>
+          <span class="badge bg-secondary" id="adminBadgeApps">0</span>
+        </a>
+        <!-- 11. Reports -->
+        <a href="reports.html?role=admin&user=ADMIN-STATE" class="officer-nav-link" id="adminNav-reports-page">
+          <i class="bi bi-file-earmark-bar-graph text-warning"></i>
+          <span>Reports &amp; Analytics</span>
+        </a>
+        <!-- 12. Switch Role / Logout -->
+        <a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">
+          <i class="bi bi-box-arrow-left text-danger"></i>
+          <span>Switch Role / Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Admin Content -->
+    <main id="main-admin-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
+
+      <!-- 11.1 Welcome Section -->
+      <div class="card border-0 bg-white p-4 shadow-xs mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h2 class="h4 fw-bold text-dark mb-0">Welcome to Super Admin Dashboard</h2>
+              <span class="badge bg-dark-subtle text-dark border border-secondary-subtle">Role: Super Admin</span>
+            </div>
+            <p class="text-muted small mb-2">
+              Manage system configuration, demonstration users and administrative information for the Marking Order service.
+            </p>
+            <div class="d-flex flex-wrap gap-3 small">
+              <span><i class="bi bi-person-gear text-success me-1"></i><strong>User:</strong> Super Admin Demo User</span>
+              <span><i class="bi bi-globe text-success me-1"></i><strong>Scope:</strong> Statewide (All 6 Districts, Divisions &amp; Forest Ranges)</span>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="switchAdminPane('apps')">
+              <i class="bi bi-folder2-open me-1"></i> System Applications
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11.2 Dashboard Summary (8 Dynamically Calculated Cards) -->
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-dark" id="kpiAdminTotal">0</div>
+                <div class="gov-kpi-label">Total Applications</div>
+              </div>
+              <i class="bi bi-files fs-4 text-secondary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Statewide total records</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-warning" id="kpiAdminPending">0</div>
+                <div class="gov-kpi-label">Pending Applications</div>
+              </div>
+              <i class="bi bi-inbox-fill fs-4 text-warning"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Awaiting preliminary action</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-info" id="kpiAdminScheduled">0</div>
+                <div class="gov-kpi-label">Verification Scheduled</div>
+              </div>
+              <i class="bi bi-calendar-check-fill fs-4 text-info"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Assigned to Block Officers</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-primary" id="kpiAdminReports">0</div>
+                <div class="gov-kpi-label">Verification Reports Submitted</div>
+              </div>
+              <i class="bi bi-clipboard2-data-fill fs-4 text-primary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">BO site reports submitted</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-success" id="kpiAdminApproved">0</div>
+                <div class="gov-kpi-label">Approved Applications</div>
+              </div>
+              <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Approved across authorities</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-danger" id="kpiAdminRejected">0</div>
+                <div class="gov-kpi-label">Rejected Applications</div>
+              </div>
+              <i class="bi bi-x-circle-fill fs-4 text-danger"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Disallowed applications</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-success" id="kpiAdminMoIssued">0</div>
+                <div class="gov-kpi-label">Marking Orders Issued</div>
+              </div>
+              <i class="bi bi-file-earmark-check-fill fs-4 text-success"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Active issued Marking Orders</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="gov-kpi-card" onclick="switchAdminPane('apps')">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="gov-kpi-count text-primary" id="kpiAdminForwarded">0</div>
+                <div class="gov-kpi-label">Forwarded Applications</div>
+              </div>
+              <i class="bi bi-send-check-fill fs-4 text-primary"></i>
+            </div>
+            <div class="small text-muted mt-1" style="font-size:0.72rem;">Escalated to ACF / DFO</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 1: DASHBOARD OVERVIEW -->
+      <div id="adminPane-dashboard" class="admin-view-pane active">
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <div class="card border-0 shadow-xs bg-white h-100">
+              <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-people-fill text-primary me-2"></i>Role-Wise Demonstration Users Summary</h3>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="switchAdminPane('users')">View User Directory</button>
+              </div>
+              <div class="card-body p-0" id="adminDashUsersTable"></div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="card border-0 shadow-xs bg-white h-100 p-4">
+              <h3 class="h6 fw-bold text-dark mb-3"><i class="bi bi-sliders text-success me-2"></i>Master Configuration Modules</h3>
+              <div class="list-group list-group-flush small">
+                <a href="javascript:void(0)" onclick="switchAdminPane('districts')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                  <span><i class="bi bi-geo-alt text-success me-2"></i><strong>District Management</strong> (Sikkim Districts)</span>
+                  <span class="badge bg-light text-dark border">6 Districts</span>
+                </a>
+                <a href="javascript:void(0)" onclick="switchAdminPane('divisions')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                  <span><i class="bi bi-diagram-3 text-success me-2"></i><strong>Division Management</strong> (Territorial Divisions)</span>
+                  <span class="badge bg-light text-dark border">6 Divisions</span>
+                </a>
+                <a href="javascript:void(0)" onclick="switchAdminPane('ranges')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                  <span><i class="bi bi-pin-map text-success me-2"></i><strong>Forest Range &amp; BO Management</strong></span>
+                  <span class="badge bg-light text-dark border">8 Ranges</span>
+                </a>
+                <a href="javascript:void(0)" onclick="switchAdminPane('species')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                  <span><i class="bi bi-tree text-success me-2"></i><strong>Tree Species Master</strong></span>
+                  <span class="badge bg-light text-dark border">8 Species</span>
+                </a>
+                <a href="javascript:void(0)" onclick="switchAdminPane('purpose')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                  <span><i class="bi bi-tags text-success me-2"></i><strong>Purpose Master &amp; Authority Limits</strong></span>
+                  <span class="badge bg-light text-dark border">2 Purposes</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 2: 11.4 USER MANAGEMENT (ALL USERS) -->
+      <div id="adminPane-users" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <h3 class="h6 fw-bold mb-0 text-dark">User Management &ndash; All Demonstration Users</h3>
+              <span class="small text-muted">Prototype demonstration accounts organized by role, division, and forest range (read-only in Stage 02)</span>
+            </div>
+            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Prototype Demo Accounts Only</span>
+          </div>
+          <div class="card-body p-0" id="adminAllUsersTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 3: CITIZEN USERS -->
+      <div id="adminPane-citizens" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Citizen Users (Demonstration Citizen Profiles)</h3>
+          </div>
+          <div class="card-body p-0" id="adminCitizenUsersTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 4: DEPARTMENT USERS -->
+      <div id="adminPane-deptUsers" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-header bg-white py-3">
+            <h3 class="h6 fw-bold mb-0 text-dark">Department Users (RO, BO, ACF, DFO &amp; Super Admin)</h3>
+          </div>
+          <div class="card-body p-0" id="adminDeptUsersTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 5: 11.5 DIVISION MANAGEMENT -->
+      <div id="adminPane-divisions" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-diagram-3-fill text-success me-2"></i>Division Management Master</h3>
+          <div class="table-responsive" id="adminDivisionsTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 6: FOREST RANGE MANAGEMENT -->
+      <div id="adminPane-ranges" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-pin-map-fill text-success me-2"></i>Forest Range &amp; Block Officer Master</h3>
+          <div class="table-responsive" id="adminRangesTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 7: DISTRICT MANAGEMENT -->
+      <div id="adminPane-districts" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-geo-alt-fill text-success me-2"></i>District Management Master (6 Districts of Sikkim)</h3>
+          <div class="table-responsive" id="adminDistrictsTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 8: TREE SPECIES MASTER -->
+      <div id="adminPane-species" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-tree-fill text-success me-2"></i>Tree Species Master</h3>
+          <div class="table-responsive" id="adminSpeciesTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 9: PURPOSE MASTER -->
+      <div id="adminPane-purpose" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-tags-fill text-success me-2"></i>Purpose of Felling Master &amp; Statutory Tree Limits</h3>
+          <div class="table-responsive" id="adminPurposeTable"></div>
+        </div>
+      </div>
+
+      <!-- PANE 10: 11.6 SYSTEM-WIDE APPLICATION OVERVIEW -->
+      <div id="adminPane-apps" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-3 mb-3">
+          <h3 class="h6 fw-bold text-dark mb-2"><i class="bi bi-folder2-open text-primary me-2"></i>System-Wide Application Overview</h3>
+          <div class="row g-2 align-items-center">
+            <div class="col-md-2">
+              <label for="adminFilterDistrict" class="visually-hidden">Filter by District</label>
+              <select id="adminFilterDistrict" class="form-select form-select-sm" onchange="renderAdminApplicationsOverview()">
+                <option value="">All Districts</option>
+                <option value="Gangtok">Gangtok</option>
+                <option value="Namchi">Namchi</option>
+                <option value="Mangan">Mangan</option>
+                <option value="Gyalshing">Gyalshing</option>
+                <option value="Pakyong">Pakyong</option>
+                <option value="Soreng">Soreng</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="adminFilterDivision" class="visually-hidden">Filter by Division</label>
+              <select id="adminFilterDivision" class="form-select form-select-sm" onchange="renderAdminApplicationsOverview()">
+                <option value="">All Divisions</option>
+                <option value="Gangtok">Gangtok Division</option>
+                <option value="Namchi">Namchi Division</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="adminFilterRange" class="visually-hidden">Filter by Range</label>
+              <select id="adminFilterRange" class="form-select form-select-sm" onchange="renderAdminApplicationsOverview()">
+                <option value="">All Forest Ranges</option>
+                <option value="Ranipool Range">Ranipool Range</option>
+                <option value="Gangtok Range">Gangtok Range</option>
+                <option value="Namchi Range">Namchi Range</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="adminFilterStatus" class="visually-hidden">Filter by Status</label>
+              <select id="adminFilterStatus" class="form-select form-select-sm" onchange="renderAdminApplicationsOverview()">
+                <option value="">All Statuses</option>
+                <option value="Application Submitted">Application Submitted</option>
+                <option value="Verification Scheduled">Verification Scheduled</option>
+                <option value="BO Verified">BO Verified</option>
+                <option value="RO Review">RO Review</option>
+                <option value="Forwarded to ACF">Forwarded to ACF</option>
+                <option value="Forwarded to DFO">Forwarded to DFO</option>
+                <option value="Approved">Approved (Fee Pending/Paid)</option>
+                <option value="Marking Order Issue">Marking Order Issue</option>
+                <option value="Transit Permit Issue">Transit Permit Issue</option>
+                <option value="Cancelled Marking Order">Cancelled Marking Order</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="adminFilterPurpose" class="visually-hidden">Filter by Purpose</label>
+              <select id="adminFilterPurpose" class="form-select form-select-sm" onchange="renderAdminApplicationsOverview()">
+                <option value="">All Purposes</option>
+                <option value="Firewood">Firewood</option>
+                <option value="Timber">Timber</option>
+              </select>
+            </div>
+            <div class="col-md-1 text-end">
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="resetAdminFilters()" title="Reset Filters">
+                <i class="bi bi-arrow-counterclockwise"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-xs bg-white">
+          <div class="card-body p-0" id="adminApplicationsTableContainer"></div>
+        </div>
+      </div>
+
+      <!-- PANE 11: REPORTS -->
+      <div id="adminPane-reports" class="admin-view-pane">
+        <div class="card border-0 shadow-xs bg-white p-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+              <h3 class="h6 fw-bold text-dark mb-1"><i class="bi bi-file-earmark-bar-graph text-success me-2"></i>System-Wide Reports Summary</h3>
+              <p class="small text-muted mb-0">Statewide summary across all divisions and ranges. Multi-dimensional filters and CSV exports available.</p>
+            </div>
+            <a href="reports.html?role=admin&user=ADMIN-STATE" id="adminBtnLaunchReports" class="btn btn-sm btn-gov-primary">
+              <i class="bi bi-file-earmark-bar-graph me-1"></i> Open Full Reports &amp; Application Summary
+            </a>
+          </div>
+          <div class="table-responsive" id="adminReportsTable"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Standard Footer -->
+  <footer class="gov-footer py-3 bg-dark text-white mt-auto" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 small text-white-50">
+      <div>&copy; 2026 Forest and Environment Department, Government of Sikkim &bull; Marking Order Service (Super Admin &ndash; Stage 02)</div>
+      <div>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="citizen-data.js"></script>
+  <script src="document-service.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      MarkingOrderData.initDashboardCommon();
+      renderAdminDashboard();
+    });
+
+    function renderAdminDashboard() {
+      var apps = MarkingOrderData.getAllApplications();
+      var allUsers = MarkingOrderData.getAllDemoUsers();
+      var citizens = MarkingOrderData.demoUsers.citizens;
+      var deptUsers = allUsers.filter(function (u) { return u.role !== 'Citizen'; });
+
+      var pending = apps.filter(function (a) { return a.currentStatus === 'Application Submitted' || a.currentStatus === 'Returned for Correction'; });
+      var scheduled = apps.filter(function (a) { return a.currentStatus === 'Verification Scheduled'; });
+      var reports = apps.filter(function (a) { return Boolean(a.boReportDate); });
+      var approved = apps.filter(function (a) { return a.approvalStatus === 'Application Approved'; });
+      var rejected = apps.filter(function (a) { return a.currentStatus === 'Rejected'; });
+      var moIssued = apps.filter(function (a) { return Boolean(a.markingOrderNo) && a.markingOrderStatus === 'Marking Order Issued'; });
+      var forwarded = apps.filter(function (a) { return Boolean(a.forwardedByRo); });
+
+      document.getElementById('kpiAdminTotal').textContent = apps.length;
+      document.getElementById('kpiAdminPending').textContent = pending.length;
+      document.getElementById('kpiAdminScheduled').textContent = scheduled.length;
+      document.getElementById('kpiAdminReports').textContent = reports.length;
+      document.getElementById('kpiAdminApproved').textContent = approved.length;
+      document.getElementById('kpiAdminRejected').textContent = rejected.length;
+      document.getElementById('kpiAdminMoIssued').textContent = moIssued.length;
+      document.getElementById('kpiAdminForwarded').textContent = forwarded.length;
+
+      document.getElementById('adminBadgeAllUsers').textContent = allUsers.length;
+      document.getElementById('adminBadgeCitizens').textContent = citizens.length;
+      document.getElementById('adminBadgeDeptUsers').textContent = deptUsers.length;
+      document.getElementById('adminBadgeApps').textContent = apps.length;
+
+      var allUsersHtml = buildUsersTable(allUsers);
+      document.getElementById('adminDashUsersTable').innerHTML = allUsersHtml;
+      document.getElementById('adminAllUsersTable').innerHTML = allUsersHtml;
+      document.getElementById('adminCitizenUsersTable').innerHTML = buildUsersTable(citizens);
+      document.getElementById('adminDeptUsersTable').innerHTML = buildUsersTable(deptUsers);
+
+      renderMasters();
+      renderAdminApplicationsOverview();
+      renderAdminReports(apps, pending, scheduled, reports, approved, rejected, moIssued, forwarded);
+    }
+
+    // 11.4 User Management Table (All 7 required fields)
+    function buildUsersTable(users) {
+      var rows = users.map(function (u) {
+        return '<tr>' +
+          '<td><strong class="text-dark">' + u.name + '</strong><div class="small font-monospace text-muted">' + u.id + '</div></td>' +
+          '<td><span class="badge bg-primary-subtle text-primary border border-primary-subtle">' + u.role + '</span></td>' +
+          '<td class="small">' + u.department + '</td>' +
+          '<td>' + u.district + '</td>' +
+          '<td>' + u.division + '</td>' +
+          '<td>' + u.range + '</td>' +
+          '<td><span class="badge bg-success-subtle text-success border border-success-subtle">' + u.status + '</span></td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>User Name / Role Label</th><th>User Role</th><th>Department</th><th>District</th><th>Division</th><th>Forest Range</th><th>Status</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    // 11.5 Master Configuration Views
+    function renderMasters() {
+      // Districts
+      document.getElementById('adminDistrictsTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>District Code</th><th>District Name</th><th>Headquarters</th><th>Configured Blocks / GPUs / Municipalities</th></tr></thead>' +
+          '<tbody>' + MarkingOrderData.districtsMaster.map(function (d) {
+            return '<tr><td class="font-monospace">' + d.code + '</td><td class="fw-bold">' + d.name + '</td><td>' + d.headquarters + '</td><td>' + d.blocks.join(', ') + '</td></tr>';
+          }).join('') + '</tbody></table>';
+
+      // Divisions
+      document.getElementById('adminDivisionsTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>Division Code</th><th>Division Name</th><th>Full Territorial Title</th><th>District</th><th>Mapped Forest Ranges</th></tr></thead>' +
+          '<tbody>' + MarkingOrderData.divisionsMaster.map(function (d) {
+            return '<tr><td class="font-monospace">' + d.code + '</td><td class="fw-bold">' + d.name + '</td><td>' + d.fullTitle + '</td><td>' + d.district + '</td><td>' + d.ranges.join(', ') + '</td></tr>';
+          }).join('') + '</tbody></table>';
+
+      // Forest Ranges & Block Officers
+      document.getElementById('adminRangesTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>Range Code</th><th>Forest Range Name</th><th>Division</th><th>District</th><th>Blocks Covered</th></tr></thead>' +
+          '<tbody>' + MarkingOrderData.rangesMaster.map(function (r) {
+            return '<tr><td class="font-monospace">' + r.code + '</td><td class="fw-bold">' + r.name + '</td><td>' + r.division + '</td><td>' + r.district + '</td><td>' + r.blocksCovered.join(', ') + '</td></tr>';
+          }).join('') + '</tbody></table>';
+
+      // Tree Species Master
+      document.getElementById('adminSpeciesTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>Species Code</th><th>Common Name</th><th>Scientific Name</th><th>Classification</th></tr></thead>' +
+          '<tbody>' + MarkingOrderData.treeSpeciesMaster.map(function (s) {
+            return '<tr><td class="font-monospace">' + s.code + '</td><td class="fw-bold">' + s.commonName + '</td><td class="fst-italic">' + s.scientificName + '</td><td>' + s.category + '</td></tr>';
+          }).join('') + '</tbody></table>';
+
+      // Purpose Master
+      document.getElementById('adminPurposeTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>Purpose Code</th><th>Purpose of Felling</th><th>Description</th><th>RO Max Trees</th><th>ACF Max Trees</th><th>DFO Max Trees</th></tr></thead>' +
+          '<tbody>' + MarkingOrderData.purposeMaster.map(function (p) {
+            return '<tr><td class="font-monospace">' + p.code + '</td><td class="fw-bold">' + p.name + '</td><td>' + p.description + '</td><td>Up to ' + p.roMaxTrees + ' trees</td><td>Up to ' + p.acfMaxTrees + ' trees</td><td>Up to ' + p.dfoMaxTrees + ' trees</td></tr>';
+          }).join('') + '</tbody></table>';
+    }
+
+    // 11.6 System-Wide Application Overview with Filters
+    function renderAdminApplicationsOverview() {
+      var dist = document.getElementById('adminFilterDistrict').value;
+      var div = document.getElementById('adminFilterDivision').value;
+      var rng = document.getElementById('adminFilterRange').value;
+      var st = document.getElementById('adminFilterStatus').value;
+      var pur = document.getElementById('adminFilterPurpose').value;
+
+      var filtered = MarkingOrderData.getAllApplications().filter(function (a) {
+        return (!dist || a.district === dist) &&
+               (!div || a.division === div) &&
+               (!rng || a.range === rng) &&
+               (!st || a.currentStatus.toLowerCase().includes(st.toLowerCase())) &&
+               (!pur || a.purpose === pur);
+      });
+
+      var container = document.getElementById('adminApplicationsTableContainer');
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="p-4 text-center text-muted small">No application records match the selected system filters.</div>';
+        return;
+      }
+
+      var rows = filtered.map(function (a) {
+        return '<tr>' +
+          '<td class="font-monospace fw-bold text-primary"><a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')" class="text-decoration-none">' + a.appNo + '</a></td>' +
+          '<td>' + a.applicantName + ' <span class="badge bg-light text-secondary border ms-1">' + a.applicationFor + '</span></td>' +
+          '<td>' + a.district + ' &bull; ' + a.division + '<div class="small text-muted">' + a.range + '</div></td>' +
+          '<td>' + a.purpose + ' (' + a.trees.length + ' Trees)</td>' +
+          '<td>' + MarkingOrderData.getStatusBadgeHtml(a.currentStatus) + '</td>' +
+          '<td class="text-end text-nowrap">' +
+            '<div class="d-inline-flex align-items-center gap-1.5 text-nowrap">' +
+              '<button type="button" class="btn btn-sm btn-outline-primary" onclick="MarkingOrderData.openApplicationTrackingModal(\'' + a.appNo + '\')"><i class="bi bi-geo-alt"></i> Track</button>' +
+              '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="MarkingOrderData.openApplicationDetailModal(\'' + a.appNo + '\')"><i class="bi bi-eye"></i> Details</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+
+      container.innerHTML = '<div class="table-responsive"><table class="table gov-table-compact align-middle mb-0">' +
+        '<thead><tr><th>Application No.</th><th>Applicant &amp; Mode</th><th>District / Division / Range</th><th>Purpose &amp; Trees</th><th>Current Status</th><th class="text-end">Action</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>';
+    }
+
+    function resetAdminFilters() {
+      document.getElementById('adminFilterDistrict').value = '';
+      document.getElementById('adminFilterDivision').value = '';
+      document.getElementById('adminFilterRange').value = '';
+      document.getElementById('adminFilterStatus').value = '';
+      document.getElementById('adminFilterPurpose').value = '';
+      renderAdminApplicationsOverview();
+    }
+
+    function renderAdminReports(all, pending, scheduled, reports, approved, rejected, moIssued, forwarded) {
+      document.getElementById('adminReportsTable').innerHTML =
+        '<table class="table table-sm table-bordered align-middle small mb-0">' +
+          '<thead class="table-light"><tr><th>System-Wide Summary Indicator</th><th>Statewide Count</th></tr></thead>' +
+          '<tbody>' +
+            '<tr><td>Total Marking Order Applications</td><td class="fw-bold">' + all.length + '</td></tr>' +
+            '<tr><td>Pending Applications (Preliminary Action)</td><td class="fw-bold">' + pending.length + '</td></tr>' +
+            '<tr><td>Field Verification Scheduled</td><td class="fw-bold">' + scheduled.length + '</td></tr>' +
+            '<tr><td>BO Verification Reports Submitted</td><td class="fw-bold">' + reports.length + '</td></tr>' +
+            '<tr><td>Approved Applications</td><td class="fw-bold text-success">' + approved.length + '</td></tr>' +
+            '<tr><td>Rejected Applications</td><td class="fw-bold text-danger">' + rejected.length + '</td></tr>' +
+            '<tr><td>Active Marking Orders Issued</td><td class="fw-bold text-success">' + moIssued.length + '</td></tr>' +
+            '<tr><td>Forwarded Applications (Escalated to ACF / DFO)</td><td class="fw-bold text-primary">' + forwarded.length + '</td></tr>' +
+          '</tbody>' +
+        '</table>';
+    }
+
+    function switchAdminPane(paneId, evt) {
+      if (evt) evt.preventDefault();
+      document.querySelectorAll('.admin-view-pane').forEach(function (p) { p.classList.remove('active'); });
+      var target = document.getElementById('adminPane-' + paneId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('#sidebar-nav .officer-nav-link').forEach(function (l) { l.classList.remove('active'); });
+      var nav = document.getElementById('adminNav-' + paneId);
+      if (nav) nav.classList.add('active');
+    }
+  </script>
+</body>
+</html>
