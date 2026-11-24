@@ -509,14 +509,14 @@ window.MarkingOrderData = (function () {
       verificationReport: {
         boName: 'BO Demo User 1 (Ranipool Block)',
         verificationDate: '16 Nov 2026',
-        gpsCoordinates: '27.3114° N, 88.5912° E',
+        gpsCoordinates: '27.3114� N, 88.5912� E',
         boundaryFindings: 'Verified within private boundaries as per Khatiyan Parcha No. KP-2024-RNK-0103.',
         safetyCompliance: 'Safe for silvicultural removal without hazard to adjoining structures or power lines.',
         treeObservations: 'All 3 trees physically inspected, hammer numbered and eligible for removal.',
         overallRecommendation: 'Recommended for approval under RO statutory limit (3 Firewood trees).'
       },
       approvalAuthority: 'RO',
-      approvalStatus: 'Verification Completed – Awaiting RO Decision',
+      approvalStatus: 'Verification Completed � Awaiting RO Decision',
       approvedByOfficer: null,
       approvedByRole: null,
       approvalDate: null,
@@ -586,7 +586,7 @@ window.MarkingOrderData = (function () {
       verificationReport: {
         boName: 'BO Demo User 1 (Ranipool Block)',
         verificationDate: '15 Nov 2026',
-        gpsCoordinates: '27.3195° N, 88.6015° E',
+        gpsCoordinates: '27.3195� N, 88.6015� E',
         boundaryFindings: 'Verified on private holding. Safe from public road and boundary line.',
         safetyCompliance: 'Silviculturally sound for selective felling.',
         treeObservations: '5 Timber trees inspected and verified.',
@@ -666,7 +666,7 @@ window.MarkingOrderData = (function () {
       verificationReport: {
         boName: 'BO Demo User 1 (Ranipool Block)',
         verificationDate: '14 Nov 2026',
-        gpsCoordinates: '27.3201° N, 88.6102° E',
+        gpsCoordinates: '27.3201� N, 88.6102� E',
         boundaryFindings: 'Verified on private holding. Safe from public infrastructure.',
         safetyCompliance: 'Proper spacing maintained.',
         treeObservations: 'All 8 trees verified and measured.',
@@ -742,7 +742,7 @@ window.MarkingOrderData = (function () {
       verificationReport: {
         boName: 'Block Officer, Ranipool',
         verificationDate: '24 Sep 2026',
-        gpsCoordinates: '27.3115° N, 88.5915° E',
+        gpsCoordinates: '27.3115� N, 88.5915� E',
         boundaryFindings: 'Verified on private holding as per Khatiyan Parcha No. KP-2024-RNK-0101.',
         safetyCompliance: 'Proper safety clearance verified. No hazard to nearby buildings or road.',
         treeObservations: 'All 3 trees physically inspected, hammer marked on saw bench and verified.',
@@ -753,7 +753,7 @@ window.MarkingOrderData = (function () {
       approvedByOfficer: 'Range Officer / Competent Issuing Officer',
       approvedByRole: 'Range Officer, Ranipool Range (T)',
       approvalDate: '25 Sep 2026',
-      paymentStatus: 'Paid / Completed (₹50 Paid via Sikkim GO)',
+      paymentStatus: 'Paid / Completed (?50 Paid via Sikkim GO)',
       paymentAmount: 50,
       paymentReceiptNo: 'RCP-SK-2026-0926-0042',
       paymentDate: '26 Sep 2026',
@@ -768,7 +768,7 @@ window.MarkingOrderData = (function () {
         { stage: 'Verification Scheduled', date: '22 Sep 2026', actor: 'Range Officer (Ranipool)', remarks: 'Assigned to Block Officer, Ranipool for 23 Sep 2026.' },
         { stage: 'BO Verification Completed', date: '24 Sep 2026', actor: 'Block Officer, Ranipool', remarks: 'Site inspection completed and report submitted.' },
         { stage: 'Application Approved', date: '25 Sep 2026', actor: 'Range Officer (Ranipool)', remarks: 'Approved under RO statutory limit (3 Timber trees <= 3).' },
-        { stage: 'Payment Completed', date: '26 Sep 2026', actor: 'Ramesh Kumar (Citizen)', remarks: 'Statutory fee of ₹50.00 paid. Transit Permit opted: No.' },
+        { stage: 'Payment Completed', date: '26 Sep 2026', actor: 'Ramesh Kumar (Citizen)', remarks: 'Statutory fee of ?50.00 paid. Transit Permit opted: No.' },
         { stage: 'Marking Order Issued', date: '26 Sep 2026', actor: 'Range Officer / Competent Issuing Officer', remarks: 'Official Marking Order (FORM - D) MO/GTK/RAN/2026-27/006 generated.' }
       ]
     },
@@ -816,7 +816,7 @@ window.MarkingOrderData = (function () {
       verificationReport: {
         boName: 'Block Officer, Ranipool',
         verificationDate: '26 Sep 2026',
-        gpsCoordinates: '27.3188° N, 88.5980° E',
+        gpsCoordinates: '27.3188� N, 88.5980� E',
         boundaryFindings: 'Verified on private holding. Clear of boundaries.',
         safetyCompliance: 'Proper safety clearance observed.',
         treeObservations: 'All 3 trees physically inspected and verified.',
@@ -827,7 +827,7 @@ window.MarkingOrderData = (function () {
       approvedByOfficer: 'Range Officer / Competent Issuing Officer',
       approvedByRole: 'Range Officer, Ranipool Range (T)',
       approvalDate: '27 Sep 2026',
-      paymentStatus: 'Paid / Completed (₹50 Paid via Sikkim GO)',
+      paymentStatus: 'Paid / Completed (?50 Paid via Sikkim GO)',
       paymentAmount: 50,
       paymentReceiptNo: 'RCP-SK-2026-0928-0058',
       paymentDate: '28 Sep 2026',
@@ -855,7 +855,7 @@ window.MarkingOrderData = (function () {
       ackNo: 'ACK-FED-2026-00208',
       submittedDate: '24 Sep 2026',
       lastUpdatedDate: '30 Sep 2026',
-      currentStatus: 'Payment Completed – Transit Permit Pending',
+      currentStatus: 'Payment Completed � Transit Permit Pending',
       statusClass: 'status-verified',
       applicantName: 'Sonam Wangdi Lepcha',
       relationType: 'Son of',
@@ -895,7 +895,7 @@ window.MarkingOrderData = (function () {
       verificationReport: {
         boName: 'Block Officer, Assam Lingzey',
         verificationDate: '28 Sep 2026',
-        gpsCoordinates: '27.2980° N, 88.5820° E',
+        gpsCoordinates: '27.2980� N, 88.5820� E',
         boundaryFindings: 'Verified within private plot. Clear title verified.',
         safetyCompliance: 'Proper safety observed.',
         treeObservations: 'All 4 trees physically inspected.',
@@ -906,7 +906,7 @@ window.MarkingOrderData = (function () {
       approvedByOfficer: 'ACF Demo User (Gangtok Division)',
       approvedByRole: 'Assistant Conservator of Forests',
       approvalDate: '29 Sep 2026',
-      paymentStatus: 'Paid / Completed (₹50 Paid via Sikkim GO)',
+      paymentStatus: 'Paid / Completed (?50 Paid via Sikkim GO)',
       paymentAmount: 50,
       paymentReceiptNo: 'RCP-SK-2026-0930-0071',
       paymentDate: '30 Sep 2026',
@@ -920,7 +920,7 @@ window.MarkingOrderData = (function () {
         { stage: 'Application Submitted', date: '24 Sep 2026', actor: 'Sonam Wangdi Lepcha', remarks: 'Submitted for 4 Timber trees.' },
         { stage: 'BO Verification Completed', date: '28 Sep 2026', actor: 'Block Officer, Assam Lingzey', remarks: 'Verification completed.' },
         { stage: 'Approved by ACF', date: '29 Sep 2026', actor: 'ACF Gangtok Division', remarks: 'Approved within ACF statutory limit (4 Timber <= 6).' },
-        { stage: 'Payment Completed', date: '30 Sep 2026', actor: 'Sonam Wangdi Lepcha', remarks: 'Payment of ₹50.00 confirmed. Transit Permit opted: Yes.' },
+        { stage: 'Payment Completed', date: '30 Sep 2026', actor: 'Sonam Wangdi Lepcha', remarks: 'Payment of ?50.00 confirmed. Transit Permit opted: Yes.' },
         { stage: 'Transit Permit Pending Action', date: '30 Sep 2026', actor: 'System Gateway', remarks: 'Transit Permit action pending clearance by ACF/DFO desk. Official document download locked until Transit Permit is issued.' }
       ]
     },
@@ -1392,7 +1392,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '25 Oct 2026',
       lastUpdatedDate: '16 Nov 2026',
       workflowStageIndex: 4, // Approved at RO Review; awaiting payment before Stage 5 Marking Order Issue
-      currentStatus: 'Approved \u2013 Fee Payment Pending',
+      currentStatus: 'Approved � Fee Payment Pending',
       roQueue: 'approved',
       assignedBoId: 'BO-RANIPOOL-1',
       assignedBoName: 'BO Demo User 1 (Ranipool Block)',
@@ -1430,7 +1430,7 @@ window.MarkingOrderData = (function () {
         { stage: 'Application Submitted', date: '25 Oct 2026', actor: 'Citizen Demo User (Primary)', remarks: 'Application submitted for 4 Firewood trees.' },
         { stage: 'Verification Scheduled', date: '28 Oct 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Verification scheduled for 04 Nov 2026.' },
         { stage: 'BO Verified', date: '05 Nov 2026', actor: 'BO Demo User 1 (Ranipool Block)', remarks: 'Field verification completed and submitted.' },
-        { stage: 'RO Review (Approved â€“ Fee Payment Pending)', date: '16 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Application approved within RO authority. Fee payment unlocked for applicant.' }
+        { stage: 'RO Review (Approved � Fee Payment Pending)', date: '16 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Application approved within RO authority. Fee payment unlocked for applicant.' }
       ]
     },
 
@@ -1477,7 +1477,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '20 Oct 2026',
       lastUpdatedDate: '17 Nov 2026',
       workflowStageIndex: 4, // Payment completed, awaiting Stage 5 Marking Order Issue
-      currentStatus: 'Payment Completed \u2013 Marking Order Pending',
+      currentStatus: 'Payment Completed � Marking Order Pending',
       roQueue: 'approved',
       assignedBoId: 'BO-RANIPOOL-1',
       assignedBoName: 'BO Demo User 1 (Ranipool Block)',
@@ -1565,7 +1565,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '10 Oct 2026',
       lastUpdatedDate: '05 Nov 2026',
       workflowStageIndex: 5, // 5: Marking Order Issue completed
-      currentStatus: 'Marking Order Issue',
+      currentStatus: 'Marking Order Issued',
       roQueue: 'approved',
       assignedBoId: 'BO-RANIPOOL-1',
       assignedBoName: 'BO Demo User 1 (Ranipool Block)',
@@ -1782,9 +1782,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00111',
       submittedByCitizenId: 'CIT-OTHER-01',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Samdong',
+      submittedByCitizenName: 'Applicant Demo Record � Samdong',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Samdong',
+      applicantName: 'Applicant Demo Record � Samdong',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Samdong',
@@ -1856,7 +1856,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '10 Nov 2026',
       daysDelayed: 9,
       history: [
-        { stage: 'Application Submitted', date: '10 Nov 2026', actor: 'Applicant Demo Record â€“ Samdong', remarks: 'Submitted for 4 Timber trees.' }
+        { stage: 'Application Submitted', date: '10 Nov 2026', actor: 'Applicant Demo Record � Samdong', remarks: 'Submitted for 4 Timber trees.' }
       ]
     },
 
@@ -1864,9 +1864,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00112',
       submittedByCitizenId: 'CIT-OTHER-02',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Ranka East',
+      submittedByCitizenName: 'Applicant Demo Record � Ranka East',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Ranka East',
+      applicantName: 'Applicant Demo Record � Ranka East',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Ranka',
@@ -1939,7 +1939,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '17 Nov 2026',
       daysDelayed: 2,
       history: [
-        { stage: 'Application Submitted', date: '14 Nov 2026', actor: 'Applicant Demo Record â€“ Ranka East', remarks: 'Submitted for 5 Firewood trees.' },
+        { stage: 'Application Submitted', date: '14 Nov 2026', actor: 'Applicant Demo Record � Ranka East', remarks: 'Submitted for 5 Firewood trees.' },
         { stage: 'Verification Scheduled', date: '17 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Assigned to BO Demo User 1 for field verification on 22 Nov 2026.' }
       ]
     },
@@ -1948,9 +1948,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00113',
       submittedByCitizenId: 'CIT-OTHER-03',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Lingzey Upper',
+      submittedByCitizenName: 'Applicant Demo Record � Lingzey Upper',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Lingzey Upper',
+      applicantName: 'Applicant Demo Record � Lingzey Upper',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Lingzey',
@@ -2022,7 +2022,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '08 Nov 2026',
       daysDelayed: 11,
       history: [
-        { stage: 'Application Submitted', date: '04 Nov 2026', actor: 'Applicant Demo Record â€“ Lingzey Upper', remarks: 'Submitted for 3 Timber trees.' },
+        { stage: 'Application Submitted', date: '04 Nov 2026', actor: 'Applicant Demo Record � Lingzey Upper', remarks: 'Submitted for 3 Timber trees.' },
         { stage: 'Verification Scheduled', date: '06 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Verification scheduled for 08 Nov 2026.' }
       ]
     },
@@ -2031,9 +2031,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00114',
       submittedByCitizenId: 'CIT-OTHER-04',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Nandok',
+      submittedByCitizenName: 'Applicant Demo Record � Nandok',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Nandok',
+      applicantName: 'Applicant Demo Record � Nandok',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Nandok',
@@ -2109,7 +2109,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '16 Nov 2026',
       daysDelayed: 3,
       history: [
-        { stage: 'Application Submitted', date: '06 Nov 2026', actor: 'Applicant Demo Record â€“ Nandok', remarks: 'Submitted for 7 Firewood trees.' },
+        { stage: 'Application Submitted', date: '06 Nov 2026', actor: 'Applicant Demo Record � Nandok', remarks: 'Submitted for 7 Firewood trees.' },
         { stage: 'Verification Scheduled', date: '09 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Verification scheduled for 14 Nov 2026.' },
         { stage: 'BO Verified (Forwarded with Remarks)', date: '16 Nov 2026', actor: 'BO Demo User 1 (Ranipool Block)', remarks: 'BO recorded stream-bank & GBH discrepancy on Tree #7 and forwarded report to RO.' }
       ]
@@ -2119,9 +2119,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00115',
       submittedByCitizenId: 'CIT-OTHER-05',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Tadong',
+      submittedByCitizenName: 'Applicant Demo Record � Tadong',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Tadong',
+      applicantName: 'Applicant Demo Record � Tadong',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Tadong',
@@ -2195,7 +2195,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '09 Nov 2026',
       daysDelayed: 10,
       history: [
-        { stage: 'Application Submitted', date: '30 Oct 2026', actor: 'Applicant Demo Record â€“ Tadong', remarks: 'Submitted for 4 Timber trees.' },
+        { stage: 'Application Submitted', date: '30 Oct 2026', actor: 'Applicant Demo Record � Tadong', remarks: 'Submitted for 4 Timber trees.' },
         { stage: 'Verification Scheduled', date: '01 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Verification scheduled.' },
         { stage: 'BO Verified', date: '06 Nov 2026', actor: 'BO Demo User 1 (Ranipool Block)', remarks: '4 trees verified.' },
         { stage: 'Forwarded to ACF', date: '09 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Forwarded to ACF (Timber 4 > RO limit 2; within ACF limit 5).' }
@@ -2206,9 +2206,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00116',
       submittedByCitizenId: 'CIT-OTHER-06',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Pangthang',
+      submittedByCitizenName: 'Applicant Demo Record � Pangthang',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Pangthang',
+      applicantName: 'Applicant Demo Record � Pangthang',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Pangthang',
@@ -2260,12 +2260,12 @@ window.MarkingOrderData = (function () {
       boScheduleTag: 'Report Submitted',
       boReportDate: '11 Nov 2026',
       boForwardedWithRemarks: false,
-      boRemarks: 'All 7 Timber trees verified on Plots 401â€“403.',
+      boRemarks: 'All 7 Timber trees verified on Plots 401�403.',
       forwardedByRo: 'RO Demo User (Gangtok Range)',
       forwardedToAcfDate: '15 Nov 2026',
       forwardedByAcf: null,
       forwardedToDfoDate: null,
-      approvalStatus: 'Exceeds ACF Limit \u2013 To Forward to DFO',
+      approvalStatus: 'Exceeds ACF Limit � To Forward to DFO',
       approvedByRole: null,
       approvalDate: null,
       paymentStatus: 'Not Applicable Yet',
@@ -2285,7 +2285,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '15 Nov 2026',
       daysDelayed: 4,
       history: [
-        { stage: 'Application Submitted', date: '03 Nov 2026', actor: 'Applicant Demo Record â€“ Pangthang', remarks: 'Submitted for 7 Timber trees.' },
+        { stage: 'Application Submitted', date: '03 Nov 2026', actor: 'Applicant Demo Record � Pangthang', remarks: 'Submitted for 7 Timber trees.' },
         { stage: 'BO Verified', date: '11 Nov 2026', actor: 'BO Demo User 3 (Gangtok Block)', remarks: '7 Timber trees verified.' },
         { stage: 'Forwarded to ACF', date: '15 Nov 2026', actor: 'RO Demo User (Gangtok Range)', remarks: 'Forwarded to ACF; exceeds RO and ACF Timber limits.' }
       ]
@@ -2295,9 +2295,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00117',
       submittedByCitizenId: 'CIT-OTHER-07',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Rumtek',
+      submittedByCitizenName: 'Applicant Demo Record � Rumtek',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Rumtek',
+      applicantName: 'Applicant Demo Record � Rumtek',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Rumtek',
@@ -2341,7 +2341,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '12 Oct 2026',
       lastUpdatedDate: '08 Nov 2026',
       workflowStageIndex: 5,
-      currentStatus: 'Marking Order Issue',
+      currentStatus: 'Marking Order Issued',
       roQueue: 'forwarded',
       acfQueue: 'approved',
       assignedBoId: 'BO-RANIPOOL-1',
@@ -2351,7 +2351,7 @@ window.MarkingOrderData = (function () {
       boScheduleTag: 'Report Submitted',
       boReportDate: '21 Oct 2026',
       boForwardedWithRemarks: false,
-      boRemarks: 'All 9 Firewood trees verified on Plots 501â€“503.',
+      boRemarks: 'All 9 Firewood trees verified on Plots 501�503.',
       forwardedByRo: 'RO Demo User (Ranipool)',
       forwardedToAcfDate: '24 Oct 2026',
       forwardedByAcf: null,
@@ -2376,7 +2376,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '08 Nov 2026',
       daysDelayed: 0,
       history: [
-        { stage: 'Application Submitted', date: '12 Oct 2026', actor: 'Applicant Demo Record â€“ Rumtek', remarks: 'Submitted for 9 Firewood trees.' },
+        { stage: 'Application Submitted', date: '12 Oct 2026', actor: 'Applicant Demo Record � Rumtek', remarks: 'Submitted for 9 Firewood trees.' },
         { stage: 'BO Verified', date: '21 Oct 2026', actor: 'BO Demo User 1 (Ranipool Block)', remarks: '9 trees verified on site.' },
         { stage: 'Forwarded to ACF', date: '24 Oct 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Forwarded to ACF (Firewood 9 > RO limit 5).' },
         { stage: 'Marking Order Issue', date: '08 Nov 2026', actor: 'ACF Demo User (Gangtok Division)', remarks: 'Approved by ACF, fee payment confirmed, Marking Order MO/FED/GTK/2026/0039 issued.' }
@@ -2387,9 +2387,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00118',
       submittedByCitizenId: 'CIT-OTHER-08',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Burtuk',
+      submittedByCitizenName: 'Applicant Demo Record � Burtuk',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Burtuk',
+      applicantName: 'Applicant Demo Record � Burtuk',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Burtuk',
@@ -2428,7 +2428,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '02 Oct 2026',
       lastUpdatedDate: '04 Nov 2026',
       workflowStageIndex: 6, // 6: Transit Permit Issue
-      currentStatus: 'Transit Permit Issue',
+      currentStatus: 'Transit Permit Issued',
       roQueue: 'forwarded',
       acfQueue: 'approved',
       assignedBoId: 'BO-GANGTOK-1',
@@ -2463,7 +2463,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '04 Nov 2026',
       daysDelayed: 0,
       history: [
-        { stage: 'Application Submitted', date: '02 Oct 2026', actor: 'Applicant Demo Record â€“ Burtuk', remarks: 'Submitted for 4 Timber trees.' },
+        { stage: 'Application Submitted', date: '02 Oct 2026', actor: 'Applicant Demo Record � Burtuk', remarks: 'Submitted for 4 Timber trees.' },
         { stage: 'BO Verified', date: '10 Oct 2026', actor: 'BO Demo User 3 (Gangtok Block)', remarks: 'Verified on site.' },
         { stage: 'Forwarded to ACF', date: '13 Oct 2026', actor: 'RO Demo User (Gangtok Range)', remarks: 'Forwarded to ACF (Timber 4 > RO limit 2).' },
         { stage: 'Marking Order Issue', date: '27 Oct 2026', actor: 'ACF Demo User (Gangtok Division)', remarks: 'Marking Order MO/FED/GTK/2026/0031 issued after fee payment.' },
@@ -2475,9 +2475,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00119',
       submittedByCitizenId: 'CIT-OTHER-09',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Martam',
+      submittedByCitizenName: 'Applicant Demo Record � Martam',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Martam',
+      applicantName: 'Applicant Demo Record � Martam',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Martam',
@@ -2531,7 +2531,7 @@ window.MarkingOrderData = (function () {
       boScheduleTag: 'Report Submitted',
       boReportDate: '30 Oct 2026',
       boForwardedWithRemarks: false,
-      boRemarks: 'All 8 Timber trees verified on Plots 710â€“712.',
+      boRemarks: 'All 8 Timber trees verified on Plots 710�712.',
       forwardedByRo: 'RO Demo User (Ranipool)',
       forwardedToAcfDate: '01 Nov 2026',
       forwardedByAcf: 'ACF Demo User (Gangtok Division)',
@@ -2556,7 +2556,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '05 Nov 2026',
       daysDelayed: 14,
       history: [
-        { stage: 'Application Submitted', date: '22 Oct 2026', actor: 'Applicant Demo Record â€“ Martam', remarks: 'Submitted for 8 Timber trees.' },
+        { stage: 'Application Submitted', date: '22 Oct 2026', actor: 'Applicant Demo Record � Martam', remarks: 'Submitted for 8 Timber trees.' },
         { stage: 'BO Verified', date: '30 Oct 2026', actor: 'BO Demo User 2 (Assam Lingzey Block)', remarks: '8 trees verified.' },
         { stage: 'Forwarded to ACF', date: '01 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Forwarded to ACF (Timber 8 > RO limit 2).' },
         { stage: 'Forwarded to DFO', date: '05 Nov 2026', actor: 'ACF Demo User (Gangtok Division)', remarks: 'Forwarded to DFO (Timber 8 > ACF limit 5; within DFO limit 10).' }
@@ -2567,9 +2567,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00120',
       submittedByCitizenId: 'CIT-OTHER-10',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Tashi View',
+      submittedByCitizenName: 'Applicant Demo Record � Tashi View',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Tashi View',
+      applicantName: 'Applicant Demo Record � Tashi View',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'TashiView',
@@ -2646,7 +2646,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '11 Nov 2026',
       daysDelayed: 8,
       history: [
-        { stage: 'Application Submitted', date: '29 Oct 2026', actor: 'Applicant Demo Record â€“ Tashi View', remarks: 'Submitted for 6 Timber trees.' },
+        { stage: 'Application Submitted', date: '29 Oct 2026', actor: 'Applicant Demo Record � Tashi View', remarks: 'Submitted for 6 Timber trees.' },
         { stage: 'BO Verified', date: '06 Nov 2026', actor: 'BO Demo User 3 (Gangtok Block)', remarks: '6 trees verified.' },
         { stage: 'Forwarded to ACF', date: '08 Nov 2026', actor: 'RO Demo User (Gangtok Range)', remarks: 'Forwarded to ACF.' },
         { stage: 'Forwarded to DFO', date: '11 Nov 2026', actor: 'ACF Demo User (Gangtok Division)', remarks: 'Forwarded to DFO for final authority decision.' }
@@ -2657,9 +2657,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00121',
       submittedByCitizenId: 'CIT-OTHER-11',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Luing',
+      submittedByCitizenName: 'Applicant Demo Record � Luing',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Luing',
+      applicantName: 'Applicant Demo Record � Luing',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Luing',
@@ -2703,7 +2703,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '01 Oct 2026',
       lastUpdatedDate: '01 Nov 2026',
       workflowStageIndex: 6,
-      currentStatus: 'Transit Permit Issue',
+      currentStatus: 'Transit Permit Issued',
       roQueue: 'forwarded',
       acfQueue: 'forwarded_dfo',
       dfoQueue: 'approved',
@@ -2714,7 +2714,7 @@ window.MarkingOrderData = (function () {
       boScheduleTag: 'Report Submitted',
       boReportDate: '09 Oct 2026',
       boForwardedWithRemarks: false,
-      boRemarks: 'All 9 Timber trees verified on Plots 805â€“807.',
+      boRemarks: 'All 9 Timber trees verified on Plots 805�807.',
       forwardedByRo: 'RO Demo User (Gangtok Range)',
       forwardedToAcfDate: '11 Oct 2026',
       forwardedByAcf: 'ACF Demo User (Gangtok Division)',
@@ -2739,7 +2739,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '01 Nov 2026',
       daysDelayed: 0,
       history: [
-        { stage: 'Application Submitted', date: '01 Oct 2026', actor: 'Applicant Demo Record â€“ Luing', remarks: 'Submitted for 9 Timber trees.' },
+        { stage: 'Application Submitted', date: '01 Oct 2026', actor: 'Applicant Demo Record � Luing', remarks: 'Submitted for 9 Timber trees.' },
         { stage: 'BO Verified', date: '09 Oct 2026', actor: 'BO Demo User 3 (Gangtok Block)', remarks: 'Verified 9 trees.' },
         { stage: 'Forwarded to ACF', date: '11 Oct 2026', actor: 'RO Demo User (Gangtok Range)', remarks: 'Forwarded to ACF.' },
         { stage: 'Forwarded to DFO', date: '15 Oct 2026', actor: 'ACF Demo User (Gangtok Division)', remarks: 'Forwarded to DFO (9 Timber trees > ACF limit 5).' },
@@ -2752,9 +2752,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00122',
       submittedByCitizenId: 'CIT-OTHER-12',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Penlong',
+      submittedByCitizenName: 'Applicant Demo Record � Penlong',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Penlong',
+      applicantName: 'Applicant Demo Record � Penlong',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Penlong',
@@ -2791,7 +2791,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '05 Oct 2026',
       lastUpdatedDate: '12 Nov 2026',
       workflowStageIndex: 5,
-      currentStatus: 'Cancelled Marking Order',
+      currentStatus: 'Cancelled',
       roQueue: 'forwarded',
       acfQueue: 'approved',
       dfoQueue: 'cancelled',
@@ -2828,7 +2828,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '12 Nov 2026',
       daysDelayed: 0,
       history: [
-        { stage: 'Application Submitted', date: '05 Oct 2026', actor: 'Applicant Demo Record â€“ Penlong', remarks: 'Submitted for 3 Timber trees.' },
+        { stage: 'Application Submitted', date: '05 Oct 2026', actor: 'Applicant Demo Record � Penlong', remarks: 'Submitted for 3 Timber trees.' },
         { stage: 'Marking Order Issue', date: '24 Oct 2026', actor: 'ACF Demo User (Gangtok Division)', remarks: 'Marking Order MO/FED/GTK/2026/0019 issued.' },
         { stage: 'Marking Order Cancelled', date: '12 Nov 2026', actor: 'DFO Demo User (Gangtok Division)', remarks: 'Marking Order cancelled by DFO with mandatory reason; Transit Permit invalidated.' }
       ]
@@ -2838,9 +2838,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00123',
       submittedByCitizenId: 'CIT-OTHER-13',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Marchak',
+      submittedByCitizenName: 'Applicant Demo Record � Marchak',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Marchak',
+      applicantName: 'Applicant Demo Record � Marchak',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Marchak',
@@ -2917,7 +2917,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '07 Nov 2026',
       daysDelayed: 0,
       history: [
-        { stage: 'Application Submitted', date: '18 Oct 2026', actor: 'Applicant Demo Record â€“ Marchak', remarks: 'Submitted for 6 Timber trees.' },
+        { stage: 'Application Submitted', date: '18 Oct 2026', actor: 'Applicant Demo Record � Marchak', remarks: 'Submitted for 6 Timber trees.' },
         { stage: 'BO Verified (Forwarded with Remarks)', date: '26 Oct 2026', actor: 'BO Demo User 2 (Assam Lingzey Block)', remarks: 'Forwarded to RO with ownership dispute remarks.' },
         { stage: 'Forwarded to ACF', date: '29 Oct 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Forwarded to ACF.' },
         { stage: 'Rejected', date: '07 Nov 2026', actor: 'DFO Demo User (Gangtok Division)', remarks: 'Rejected due to unresolved ownership dispute.' }
@@ -2928,9 +2928,9 @@ window.MarkingOrderData = (function () {
     {
       appNo: 'SK-MO-2026-00124',
       submittedByCitizenId: 'CIT-OTHER-14',
-      submittedByCitizenName: 'Applicant Demo Record â€“ Namthang',
+      submittedByCitizenName: 'Applicant Demo Record � Namthang',
       applicationFor: 'Self',
-      applicantName: 'Applicant Demo Record â€“ Namthang',
+      applicantName: 'Applicant Demo Record � Namthang',
       firstName: 'Applicant',
       middleName: 'Demo',
       lastName: 'Namthang',
@@ -3006,7 +3006,7 @@ window.MarkingOrderData = (function () {
       pendingSinceDate: '14 Nov 2026',
       daysDelayed: 5,
       history: [
-        { stage: 'Application Submitted', date: '05 Nov 2026', actor: 'Applicant Demo Record â€“ Namthang', remarks: 'Submitted for 6 Firewood trees.' },
+        { stage: 'Application Submitted', date: '05 Nov 2026', actor: 'Applicant Demo Record � Namthang', remarks: 'Submitted for 6 Firewood trees.' },
         { stage: 'BO Verified', date: '12 Nov 2026', actor: 'BO Demo User 4 (Namchi Block)', remarks: '6 trees verified.' },
         { stage: 'Forwarded to ACF', date: '14 Nov 2026', actor: 'RO Demo User (Namchi Range)', remarks: 'Forwarded to ACF Namchi.' }
       ]
@@ -3058,7 +3058,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '10 Nov 2026',
       lastUpdatedDate: '18 Nov 2026',
       workflowStageIndex: 4,
-      currentStatus: 'Approved â€“ Payment Pending',
+      currentStatus: 'Approved � Payment Pending',
       roQueue: 'approved',
       assignedBoId: 'BO-RANIPOOL-1',
       assignedBoName: 'BO Demo User 1 (Ranipool Block)',
@@ -3067,18 +3067,18 @@ window.MarkingOrderData = (function () {
       approvalStatus: 'Approved by Range Officer',
       approvedByRole: 'Range Officer (RO)',
       approvalDate: '18 Nov 2026',
-      paymentStatus: 'Payment Pending (â‚¹50.00)',
+      paymentStatus: 'Payment Pending (&#8377;50.00)',
       markingOrderStatus: 'Not Issued',
       markingOrderNo: null,
       transitPermitStatus: 'Not Applicable Yet',
       transitPermitNo: null,
-      departmentRemarks: 'Application created by RO on behalf of citizen. Approved within RO statutory limit (2 trees <= 3). Payment of â‚¹50 pending by RO creator.',
-      nextExpectedAction: 'Range Officer (RO-RANIPOOL) who created this application must complete the â‚¹50 fee payment.',
+      departmentRemarks: 'Application created by RO on behalf of citizen. Approved within RO statutory limit (2 trees <= 3). Payment of &#8377;50 pending by RO creator.',
+      nextExpectedAction: 'Range Officer (RO-RANIPOOL) who created this application must complete the &#8377;50 fee payment.',
       requiresCitizenAction: false,
       history: [
         { stage: 'Application Submitted', date: '10 Nov 2026', actor: 'RO Demo User (Ranipool) [On behalf of Citizen]', remarks: 'Application submitted by RO on behalf of citizen.' },
         { stage: 'BO Verified', date: '15 Nov 2026', actor: 'BO Demo User 1 (Ranipool Block)', remarks: '2 trees verified on Plot 58/A.' },
-        { stage: 'Application Approved (RO)', date: '18 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Approved within RO authority. Payment of â‚¹50 pending by RO creator.' }
+        { stage: 'Application Approved (RO)', date: '18 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Approved within RO authority. Payment of &#8377;50 pending by RO creator.' }
       ]
     },
 
@@ -3127,7 +3127,7 @@ window.MarkingOrderData = (function () {
       submissionDate: '11 Nov 2026',
       lastUpdatedDate: '18 Nov 2026',
       workflowStageIndex: 4,
-      currentStatus: 'Approved â€“ Payment Pending',
+      currentStatus: 'Approved � Payment Pending',
       roQueue: 'approved',
       assignedBoId: 'BO-RANIPOOL-1',
       assignedBoName: 'BO Demo User 1 (Ranipool Block)',
@@ -3136,29 +3136,1199 @@ window.MarkingOrderData = (function () {
       approvalStatus: 'Approved by Range Officer',
       approvedByRole: 'Range Officer (RO)',
       approvalDate: '18 Nov 2026',
-      paymentStatus: 'Payment Pending (â‚¹50.00)',
+      paymentStatus: 'Payment Pending (&#8377;50.00)',
       markingOrderStatus: 'Not Issued',
       markingOrderNo: null,
       transitPermitStatus: 'Not Applicable Yet',
       transitPermitNo: null,
-      departmentRemarks: 'Application created by Block Officer on behalf of citizen. Approved within RO statutory limit (1 tree <= 3). Payment of â‚¹50 pending by BO creator.',
-      nextExpectedAction: 'Block Officer (BO-RANIPOOL-1) who created this application must complete the â‚¹50 fee payment.',
+      departmentRemarks: 'Application created by Block Officer on behalf of citizen. Approved within RO statutory limit (1 tree <= 3). Payment of &#8377;50 pending by BO creator.',
+      nextExpectedAction: 'Block Officer (BO-RANIPOOL-1) who created this application must complete the &#8377;50 fee payment.',
       requiresCitizenAction: false,
       history: [
         { stage: 'Application Submitted', date: '11 Nov 2026', actor: 'BO Demo User 1 (Ranipool Block) [On behalf of Citizen]', remarks: 'Application submitted by Block Officer on behalf of citizen.' },
         { stage: 'BO Verified', date: '15 Nov 2026', actor: 'BO Demo User 1 (Ranipool Block)', remarks: '1 timber tree verified on Plot 77/B.' },
-        { stage: 'Application Approved (RO)', date: '18 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Approved within RO authority. Payment of â‚¹50 pending by BO creator.' }
+        { stage: 'Application Approved (RO)', date: '18 Nov 2026', actor: 'RO Demo User (Ranipool)', remarks: 'Approved within RO authority. Payment of &#8377;50 pending by BO creator.' }
+      ]
+    }
+    ,
+    // =========================================================================
+    // ADDITIONAL STANDARDIZED REPRESENTATIVE APPLICATIONS (00127 - 00144)
+    // =========================================================================
+    {
+      appNo: 'SK-MO-2026-00127',
+      ackNo: 'ACK-FED-2026-00327',
+      submittedDate: '16 Nov 2026',
+      lastUpdatedDate: '16 Nov 2026',
+      currentStatus: 'Application Submitted',
+      statusClass: 'status-submitted',
+      applicantName: 'Karma Tshering Lepcha',
+      relationType: 'Son of',
+      relationName: 'Tenzing Lepcha',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832044551',
+      email: 'karma.tshering@sikkimdemo.in',
+      address: 'Penlong Busty, Gangtok Range',
+      district: 'Gangtok',
+      division: 'Gangtok Territorial Division',
+      range: 'Gangtok Range',
+      revenueBlock: 'Penlong Block',
+      gpu: 'Penlong GPU',
+      khasraNo: '312',
+      khatiyanParchaNo: 'KP-2024-GTK-0312',
+      totalAreaAcres: '1.80 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Karma Tshering Lepcha',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Bonafide domestic firewood for winter season heating and cooking.',
+      trees: [
+        { id: 'T-127-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 32, gbhFeet: '2.67 ft', plotNo: '312', estimatedVolumeCuM: 0.85, condition: 'Green / Mature', photoId: 'P-127-1' },
+        { id: 'T-127-2', treeNo: 2, species: 'Castanopsis (Katus)', girthInches: 38, gbhFeet: '3.17 ft', plotNo: '312', estimatedVolumeCuM: 1.20, condition: 'Mature', photoId: 'P-127-2' }
+      ],
+      assignedBoId: null,
+      assignedBoName: null,
+      verificationScheduledDate: null,
+      verificationCompletedDate: null,
+      approvalAuthority: 'RO',
+      approvalStatus: 'Pending Preliminary Review',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Approval',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '16 Nov 2026', actor: 'Karma Tshering Lepcha (Citizen)', remarks: 'Application submitted online for 2 Firewood trees in Gangtok Range.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00128',
+      ackNo: 'ACK-FED-2026-00328',
+      submittedDate: '15 Nov 2026',
+      lastUpdatedDate: '15 Nov 2026',
+      currentStatus: 'Application Submitted',
+      statusClass: 'status-submitted',
+      applicantName: 'Passang Lepcha',
+      relationType: 'Son of',
+      relationName: 'N. T. Lepcha',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832055662',
+      email: 'passang.lepcha@sikkimdemo.in',
+      address: 'Kabi Lungchok, Mangan District',
+      district: 'Mangan',
+      division: 'Mangan Territorial Division',
+      range: 'Mangan Range',
+      revenueBlock: 'Kabi Block',
+      gpu: 'Kabi Lungchok GPU',
+      khasraNo: '88',
+      khatiyanParchaNo: 'KP-2024-MGN-0088',
+      totalAreaAcres: '2.50 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-02',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Passang Lepcha',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide rural timber requirement for kitchen roof and attic construction.',
+      trees: [
+        { id: 'T-128-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 42, gbhFeet: '3.50 ft', plotNo: '88', estimatedVolumeCuM: 1.40, condition: 'Mature', photoId: 'P-128-1' },
+        { id: 'T-128-2', treeNo: 2, species: 'Alnus (Utis)', girthInches: 36, gbhFeet: '3.00 ft', plotNo: '88', estimatedVolumeCuM: 1.10, condition: 'Mature', photoId: 'P-128-2' }
+      ],
+      assignedBoId: null,
+      assignedBoName: null,
+      verificationScheduledDate: null,
+      verificationCompletedDate: null,
+      approvalAuthority: 'RO',
+      approvalStatus: 'Pending Preliminary Review',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Approval',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '15 Nov 2026', actor: 'Passang Lepcha (Citizen)', remarks: 'Application submitted online for 2 Timber trees in Mangan Range.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00129',
+      ackNo: 'ACK-FED-2026-00329',
+      submittedDate: '10 Nov 2026',
+      lastUpdatedDate: '15 Nov 2026',
+      currentStatus: 'BO Verified',
+      statusClass: 'status-verified',
+      applicantName: 'Kinzang Wangchuk Bhutia',
+      relationType: 'Son of',
+      relationName: 'P. W. Bhutia',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832066773',
+      email: 'kinzang.wangchuk@sikkimdemo.in',
+      address: 'Namthang Busty, Namchi District',
+      district: 'Namchi',
+      division: 'Namchi Territorial Division',
+      range: 'Namchi Range',
+      revenueBlock: 'Namthang Block',
+      gpu: 'Namthang GPU',
+      khasraNo: '144',
+      khatiyanParchaNo: 'KP-2024-NMC-0144',
+      totalAreaAcres: '1.40 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Kinzang Wangchuk Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Bonafide domestic firewood and hearth fuel.',
+      trees: [
+        { id: 'T-129-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 30, gbhFeet: '2.50 ft', plotNo: '144', estimatedVolumeCuM: 0.80, condition: 'Mature', photoId: 'P-129-1', boMatchStatus: 'Matched on Site', verifiedSpecies: 'Utis', verifiedGbhFeet: '2.50 ft', boVerified: true }
+      ],
+      assignedBoId: 'BO-NAMCHI-1',
+      assignedBoName: 'BO Namchi Demo User (Namchi Range)',
+      verificationScheduledDate: '14 Nov 2026',
+      verificationCompletedDate: '15 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Field Verification Completed',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Approval',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '10 Nov 2026', actor: 'Kinzang Wangchuk (Citizen)', remarks: 'Application submitted for 1 Firewood tree.' },
+        { stage: 'Verification Scheduled', date: '12 Nov 2026', actor: 'RO Namchi Demo User', remarks: 'Field verification assigned to BO Namchi.' },
+        { stage: 'BO Verified', date: '15 Nov 2026', actor: 'BO Namchi Demo User', remarks: 'Site inspection completed. Tree verified on plot 144.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00130',
+      ackNo: 'ACK-FED-2026-00330',
+      submittedDate: '09 Nov 2026',
+      lastUpdatedDate: '14 Nov 2026',
+      currentStatus: 'BO Verified',
+      statusClass: 'status-verified',
+      applicantName: 'Dechen Palden Bhutia',
+      relationType: 'Daughter of',
+      relationName: 'Karma Palden',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832077884',
+      email: 'dechen.palden@sikkimdemo.in',
+      address: 'Yuksom Ward, Gyalshing District',
+      district: 'Gyalshing',
+      division: 'Gyalshing Territorial Division',
+      range: 'Gyalshing Range',
+      revenueBlock: 'Yuksom Block',
+      gpu: 'Yuksom GPU',
+      khasraNo: '95',
+      khatiyanParchaNo: 'KP-2024-GYL-0095',
+      totalAreaAcres: '2.00 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Dechen Palden Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide domestic timber for traditional farmhouse maintenance.',
+      trees: [
+        { id: 'T-130-1', treeNo: 1, species: 'Cryptomeria (Dhupi)', girthInches: 44, gbhFeet: '3.67 ft', plotNo: '95', estimatedVolumeCuM: 1.55, condition: 'Mature', photoId: 'P-130-1', boMatchStatus: 'Matched on Site', verifiedSpecies: 'Dhupi (Cryptomeria)', verifiedGbhFeet: '3.67 ft', boVerified: true },
+        { id: 'T-130-2', treeNo: 2, species: 'Schima (Chilaune)', girthInches: 38, gbhFeet: '3.17 ft', plotNo: '95', estimatedVolumeCuM: 1.25, condition: 'Mature', photoId: 'P-130-2', boMatchStatus: 'Matched on Site', verifiedSpecies: 'Chilaune', verifiedGbhFeet: '3.17 ft', boVerified: true }
+      ],
+      assignedBoId: 'BO-GYALSHING-1',
+      assignedBoName: 'BO Gyalshing Demo User',
+      verificationScheduledDate: '12 Nov 2026',
+      verificationCompletedDate: '14 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Field Verification Completed',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Approval',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '09 Nov 2026', actor: 'Dechen Palden (Citizen)', remarks: 'Application submitted for 2 Timber trees.' },
+        { stage: 'Verification Scheduled', date: '11 Nov 2026', actor: 'RO Gyalshing Demo User', remarks: 'Verification assigned to BO Gyalshing.' },
+        { stage: 'BO Verified', date: '14 Nov 2026', actor: 'BO Gyalshing Demo User', remarks: 'Field verification submitted with site coordinates.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00131',
+      ackNo: 'ACK-FED-2026-00331',
+      submittedDate: '05 Nov 2026',
+      lastUpdatedDate: '16 Nov 2026',
+      currentStatus: 'Forwarded to DFO',
+      statusClass: 'status-forwarded',
+      applicantName: 'Tshering Ongmu Bhutia',
+      relationType: 'Wife of',
+      relationName: 'Late S. T. Bhutia',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832088995',
+      email: 'tshering.ongmu@sikkimdemo.in',
+      address: 'Ravangla Sub-Division, Namchi',
+      district: 'Namchi',
+      division: 'Namchi Territorial Division',
+      range: 'Ravangla Range',
+      revenueBlock: 'Ravangla Block',
+      gpu: 'Ravangla GPU',
+      khasraNo: '230',
+      khatiyanParchaNo: 'KP-2024-NMC-0230',
+      totalAreaAcres: '3.80 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Tshering Ongmu Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide family house reconstruction following severe storm damage (8 Timber trees).',
+      trees: [
+        { id: 'T-131-1', treeNo: 1, species: 'Cryptomeria (Dhupi)', girthInches: 46, gbhFeet: '3.83 ft', plotNo: '230', estimatedVolumeCuM: 1.70, condition: 'Mature', photoId: 'P-131-1', boMatchStatus: 'Matched on Site', boVerified: true },
+        { id: 'T-131-2', treeNo: 2, species: 'Cryptomeria (Dhupi)', girthInches: 42, gbhFeet: '3.50 ft', plotNo: '230', estimatedVolumeCuM: 1.45, condition: 'Mature', photoId: 'P-131-2', boMatchStatus: 'Matched on Site', boVerified: true },
+        { id: 'T-131-3', treeNo: 3, species: 'Schima (Chilaune)', girthInches: 40, gbhFeet: '3.33 ft', plotNo: '230', estimatedVolumeCuM: 1.30, condition: 'Mature', photoId: 'P-131-3', boMatchStatus: 'Matched on Site', boVerified: true },
+        { id: 'T-131-4', treeNo: 4, species: 'Castanopsis (Katus)', girthInches: 44, gbhFeet: '3.67 ft', plotNo: '230', estimatedVolumeCuM: 1.55, condition: 'Mature', photoId: 'P-131-4', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-NAMCHI-1',
+      assignedBoName: 'BO Namchi Demo User',
+      verificationScheduledDate: '09 Nov 2026',
+      verificationCompletedDate: '12 Nov 2026',
+      approvalAuthority: 'DFO',
+      approvalStatus: 'Forwarded to DFO (Timber > 6 Trees)',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending DFO Approval',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '05 Nov 2026', actor: 'Tshering Ongmu (Citizen)', remarks: 'Application submitted for 8 Timber trees.' },
+        { stage: 'BO Verified', date: '12 Nov 2026', actor: 'BO Namchi Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Forwarded to ACF', date: '14 Nov 2026', actor: 'RO Namchi Demo User', remarks: 'Tree count exceeds RO authority.' },
+        { stage: 'Forwarded to DFO', date: '16 Nov 2026', actor: 'ACF Namchi Demo User', remarks: 'Tree count exceeds ACF authority (Timber > 6). Escalated to DFO.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00132',
+      ackNo: 'ACK-FED-2026-00332',
+      submittedDate: '11 Nov 2026',
+      lastUpdatedDate: '16 Nov 2026',
+      currentStatus: 'Returned for Correction',
+      statusClass: 'status-returned',
+      applicantName: 'Birkha Bahadur Subba',
+      relationType: 'Son of',
+      relationName: 'M. B. Subba',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832099006',
+      email: 'birkha.subba@sikkimdemo.in',
+      address: 'Pakyong Bazar Ward, Pakyong',
+      district: 'Pakyong',
+      division: 'Pakyong Territorial Division',
+      range: 'Pakyong Range',
+      revenueBlock: 'Pakyong Block',
+      gpu: 'Pakyong GPU',
+      khasraNo: '175',
+      khatiyanParchaNo: 'KP-2024-PKY-0175',
+      totalAreaAcres: '1.20 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Birkha Bahadur Subba',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Bonafide firewood requirement.',
+      trees: [
+        { id: 'T-132-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 28, gbhFeet: '2.33 ft', plotNo: '175', estimatedVolumeCuM: 0.70, condition: 'Mature', photoId: 'P-132-1' }
+      ],
+      assignedBoId: null,
+      assignedBoName: null,
+      verificationScheduledDate: null,
+      verificationCompletedDate: null,
+      approvalAuthority: 'RO',
+      approvalStatus: 'Returned for Correction',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Scrutiny',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '11 Nov 2026', actor: 'Birkha Bahadur Subba (Citizen)', remarks: 'Application submitted online.' },
+        { stage: 'Returned for Correction', date: '16 Nov 2026', actor: 'RO Pakyong Demo User', remarks: 'The uploaded Land Parcha (KP-2024-PKY-0175) is illegible and missing the official revenue revenue seal. Please re-upload a clear scanned copy of the valid Parcha.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00133',
+      ackNo: 'ACK-FED-2026-00333',
+      submittedDate: '12 Nov 2026',
+      lastUpdatedDate: '17 Nov 2026',
+      currentStatus: 'Returned for Correction',
+      statusClass: 'status-returned',
+      applicantName: 'Norbu Tamang',
+      relationType: 'Son of',
+      relationName: 'D. Tamang',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832100117',
+      email: 'norbu.tamang@sikkimdemo.in',
+      address: 'Sombaria Ward, Soreng District',
+      district: 'Soreng',
+      division: 'Soreng Territorial Division',
+      range: 'Soreng Range',
+      revenueBlock: 'Sombaria Block',
+      gpu: 'Sombaria GPU',
+      khasraNo: '62',
+      khatiyanParchaNo: 'KP-2024-SRG-0062',
+      totalAreaAcres: '2.10 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Norbu Tamang',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Timber for cowshed and storehouse repair.',
+      trees: [
+        { id: 'T-133-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 36, gbhFeet: '3.00 ft', plotNo: '62', estimatedVolumeCuM: 1.10, condition: 'Mature', photoId: 'P-133-1' }
+      ],
+      assignedBoId: null,
+      assignedBoName: null,
+      verificationScheduledDate: null,
+      verificationCompletedDate: null,
+      approvalAuthority: 'RO',
+      approvalStatus: 'Returned for Correction',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Scrutiny',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '12 Nov 2026', actor: 'Norbu Tamang (Citizen)', remarks: 'Application submitted online.' },
+        { stage: 'Returned for Correction', date: '17 Nov 2026', actor: 'RO Soreng Demo User', remarks: 'Khasra plot number 62 indicated in form does not correspond with the khasra plot listed in the uploaded land document. Please correct the plot number.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00134',
+      ackNo: 'ACK-FED-2026-00334',
+      submittedDate: '13 Nov 2026',
+      lastUpdatedDate: '17 Nov 2026',
+      currentStatus: 'Returned for Correction',
+      statusClass: 'status-returned',
+      applicantName: 'Ongyal Bhutia',
+      relationType: 'Son of',
+      relationName: 'K. Bhutia',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832111228',
+      email: 'ongyal.bhutia@sikkimdemo.in',
+      address: 'Mangan Bazar, Mangan District',
+      district: 'Mangan',
+      division: 'Mangan Territorial Division',
+      range: 'Mangan Range',
+      revenueBlock: 'Mangan Block',
+      gpu: 'Mangan Nagar Panchayat',
+      khasraNo: '119',
+      khatiyanParchaNo: 'KP-2024-MGN-0119',
+      totalAreaAcres: '1.60 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-02',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Ongyal Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Bonafide domestic firewood.',
+      trees: [
+        { id: 'T-134-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 30, gbhFeet: '2.50 ft', plotNo: '119', estimatedVolumeCuM: 0.80, condition: 'Mature', photoId: 'P-134-1' }
+      ],
+      assignedBoId: null,
+      assignedBoName: null,
+      verificationScheduledDate: null,
+      verificationCompletedDate: null,
+      approvalAuthority: 'RO',
+      approvalStatus: 'Returned for Correction',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Pending Scrutiny',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '13 Nov 2026', actor: 'Ongyal Bhutia (Citizen)', remarks: 'Application submitted online.' },
+        { stage: 'Returned for Correction', date: '17 Nov 2026', actor: 'RO Mangan Demo User', remarks: 'Applicant identity proof file was corrupted during upload. Please re-upload a readable Aadhaar / Sikkim Certificate of Identification copy.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00135',
+      ackNo: 'ACK-FED-2026-00335',
+      submittedDate: '08 Nov 2026',
+      lastUpdatedDate: '17 Nov 2026',
+      currentStatus: 'Approved � Payment Pending',
+      statusClass: 'status-approved',
+      applicantName: 'Tenzing Norbu Sherpa',
+      relationType: 'Son of',
+      relationName: 'D. Sherpa',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832122339',
+      email: 'tenzing.norbu@sikkimdemo.in',
+      address: 'Chandmari Ward, Gangtok',
+      district: 'Gangtok',
+      division: 'Gangtok Territorial Division',
+      range: 'Gangtok Range',
+      revenueBlock: 'Gangtok Block',
+      gpu: 'Gangtok Municipal Corporation',
+      khasraNo: '412',
+      khatiyanParchaNo: 'KP-2024-GTK-0412',
+      totalAreaAcres: '0.90 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Tenzing Norbu Sherpa',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide domestic timber for dwelling repair.',
+      trees: [
+        { id: 'T-135-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 40, gbhFeet: '3.33 ft', plotNo: '412', estimatedVolumeCuM: 1.30, condition: 'Mature', photoId: 'P-135-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-GANGTOK-1',
+      assignedBoName: 'BO Gangtok Demo User',
+      verificationScheduledDate: '12 Nov 2026',
+      verificationCompletedDate: '15 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Gangtok Demo User',
+      approvedByRole: 'ro',
+      approvalDate: '17 Nov 2026',
+      paymentStatus: 'Pending Fee Payment (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '08 Nov 2026', actor: 'Tenzing Norbu (Citizen)', remarks: 'Application submitted online.' },
+        { stage: 'BO Verified', date: '15 Nov 2026', actor: 'BO Gangtok Demo User', remarks: 'Field verification completed and matched on site.' },
+        { stage: 'Application Approved (RO)', date: '17 Nov 2026', actor: 'RO Gangtok Demo User', remarks: 'Approved within RO authority. Statutory application fee payment of &#8377;50 pending by applicant.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00136',
+      ackNo: 'ACK-FED-2026-00336',
+      submittedDate: '06 Nov 2026',
+      lastUpdatedDate: '17 Nov 2026',
+      currentStatus: 'Payment Completed � Transit Permit Pending',
+      statusClass: 'status-paid',
+      applicantName: 'Karma Wangdi Bhutia',
+      relationType: 'Son of',
+      relationName: 'T. W. Bhutia',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832133440',
+      email: 'karma.wangdi@sikkimdemo.in',
+      address: 'Singhik Ward, Mangan District',
+      district: 'Mangan',
+      division: 'Mangan Territorial Division',
+      range: 'Mangan Range',
+      revenueBlock: 'Singhik Block',
+      gpu: 'Singhik GPU',
+      khasraNo: '77',
+      khatiyanParchaNo: 'KP-2024-MGN-0077',
+      totalAreaAcres: '2.80 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-02',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Karma Wangdi Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide construction timber with transit to sawmill in Mangan.',
+      trees: [
+        { id: 'T-136-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 42, gbhFeet: '3.50 ft', plotNo: '77', estimatedVolumeCuM: 1.45, condition: 'Mature', photoId: 'P-136-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-MANGAN-1',
+      assignedBoName: 'BO Mangan Demo User',
+      verificationScheduledDate: '10 Nov 2026',
+      verificationCompletedDate: '13 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Mangan Demo User',
+      approvedByRole: 'ro',
+      approvalDate: '15 Nov 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-MGN-00336',
+      paymentDate: '17 Nov 2026',
+      isTransitPermitRequired: true,
+      transitPermitStatus: 'Transit Permit Approval Pending',
+      transitPermitNo: null,
+      markingOrderNo: 'MO/FED/MGN/2026/0014',
+      markingOrderIssueDate: '17 Nov 2026',
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '06 Nov 2026', actor: 'Karma Wangdi (Citizen)', remarks: 'Application submitted for 1 Timber tree.' },
+        { stage: 'BO Verified', date: '13 Nov 2026', actor: 'BO Mangan Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Approved (RO)', date: '15 Nov 2026', actor: 'RO Mangan Demo User', remarks: 'Approved by Range Officer.' },
+        { stage: 'Payment Completed', date: '17 Nov 2026', actor: 'Karma Wangdi (Citizen)', remarks: 'Statutory fee of &#8377;50 paid. Transit Permit requested for transport to Mangan sawmill.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00137',
+      ackNo: 'ACK-FED-2026-00337',
+      submittedDate: '07 Nov 2026',
+      lastUpdatedDate: '17 Nov 2026',
+      currentStatus: 'Payment Completed � Transit Permit Pending',
+      statusClass: 'status-paid',
+      applicantName: 'Passang Doma Lepcha',
+      relationType: 'Daughter of',
+      relationName: 'K. T. Lepcha',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832144551',
+      email: 'passang.doma@sikkimdemo.in',
+      address: 'Rhenock Ward, Pakyong District',
+      district: 'Pakyong',
+      division: 'Pakyong Territorial Division',
+      range: 'Pakyong Range',
+      revenueBlock: 'Rhenock Block',
+      gpu: 'Rhenock GPU',
+      khasraNo: '189',
+      khatiyanParchaNo: 'KP-2024-PKY-0189',
+      totalAreaAcres: '1.90 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Passang Doma Lepcha',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Firewood material requiring transit to neighboring village hearth depot.',
+      trees: [
+        { id: 'T-137-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 34, gbhFeet: '2.83 ft', plotNo: '189', estimatedVolumeCuM: 0.95, condition: 'Mature', photoId: 'P-137-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-PAKYONG-1',
+      assignedBoName: 'BO Pakyong Demo User',
+      verificationScheduledDate: '11 Nov 2026',
+      verificationCompletedDate: '14 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Pakyong Demo User',
+      approvedByRole: 'ro',
+      approvalDate: '16 Nov 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-PKY-00337',
+      paymentDate: '17 Nov 2026',
+      isTransitPermitRequired: true,
+      transitPermitStatus: 'Transit Permit Approval Pending',
+      transitPermitNo: null,
+      markingOrderNo: 'MO/FED/PKY/2026/0021',
+      markingOrderIssueDate: '17 Nov 2026',
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '07 Nov 2026', actor: 'Passang Doma (Citizen)', remarks: 'Application submitted for 1 Firewood tree.' },
+        { stage: 'BO Verified', date: '14 Nov 2026', actor: 'BO Pakyong Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Approved (RO)', date: '16 Nov 2026', actor: 'RO Pakyong Demo User', remarks: 'Approved by Range Officer.' },
+        { stage: 'Payment Completed', date: '17 Nov 2026', actor: 'Passang Doma (Citizen)', remarks: 'Statutory fee of &#8377;50 paid. Transit Permit requested.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00138',
+      ackNo: 'ACK-FED-2026-00338',
+      submittedDate: '01 Nov 2026',
+      lastUpdatedDate: '12 Nov 2026',
+      currentStatus: 'Marking Order Issued',
+      statusClass: 'status-issued',
+      applicantName: 'Sonam Tobgay Bhutia',
+      relationType: 'Son of',
+      relationName: 'T. Tobgay',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832155662',
+      email: 'sonam.tobgay@sikkimdemo.in',
+      address: 'Pelling Ward, Gyalshing District',
+      district: 'Gyalshing',
+      division: 'Gyalshing Territorial Division',
+      range: 'Gyalshing Range',
+      revenueBlock: 'Pelling Block',
+      gpu: 'Pelling GPU',
+      khasraNo: '305',
+      khatiyanParchaNo: 'KP-2024-GYL-0305',
+      totalAreaAcres: '2.40 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Sonam Tobgay Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide rural construction timber for residential premises.',
+      trees: [
+        { id: 'T-138-1', treeNo: 1, species: 'Cryptomeria (Dhupi)', girthInches: 44, gbhFeet: '3.67 ft', plotNo: '305', estimatedVolumeCuM: 1.55, condition: 'Mature', photoId: 'P-138-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-GYALSHING-1',
+      assignedBoName: 'BO Gyalshing Demo User',
+      verificationScheduledDate: '04 Nov 2026',
+      verificationCompletedDate: '07 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Gyalshing Demo User',
+      approvedByRole: 'ro',
+      approvalDate: '09 Nov 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-GYL-00338',
+      paymentDate: '11 Nov 2026',
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: 'MO/FED/GYL/2026/0012',
+      markingOrderIssueDate: '12 Nov 2026',
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '01 Nov 2026', actor: 'Sonam Tobgay (Citizen)', remarks: 'Application submitted for 1 Timber tree.' },
+        { stage: 'BO Verified', date: '07 Nov 2026', actor: 'BO Gyalshing Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Approved (RO)', date: '09 Nov 2026', actor: 'RO Gyalshing Demo User', remarks: 'Approved by Range Officer.' },
+        { stage: 'Payment Completed', date: '11 Nov 2026', actor: 'Sonam Tobgay (Citizen)', remarks: 'Statutory fee paid.' },
+        { stage: 'Marking Order Issued', date: '12 Nov 2026', actor: 'RO Gyalshing Demo User', remarks: 'Marking Order MO/FED/GYL/2026/0012 issued.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00139',
+      ackNo: 'ACK-FED-2026-00339',
+      submittedDate: '28 Oct 2026',
+      lastUpdatedDate: '10 Nov 2026',
+      currentStatus: 'Transit Permit Issued',
+      statusClass: 'status-issued',
+      applicantName: 'Kinzang Dorjee Lepcha',
+      relationType: 'Son of',
+      relationName: 'N. D. Lepcha',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832166773',
+      email: 'kinzang.dorjee@sikkimdemo.in',
+      address: 'Ranka Lower Ward, Ranipool',
+      district: 'Gangtok',
+      division: 'Gangtok Territorial Division',
+      range: 'Ranipool Range',
+      revenueBlock: 'Ranipool Block',
+      gpu: 'Ranka GPU',
+      khasraNo: '165',
+      khatiyanParchaNo: 'KP-2024-RNK-0165',
+      totalAreaAcres: '2.10 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Kinzang Dorjee Lepcha',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide house construction with transit to Singtam wood depot.',
+      trees: [
+        { id: 'T-139-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 42, gbhFeet: '3.50 ft', plotNo: '165', estimatedVolumeCuM: 1.45, condition: 'Mature', photoId: 'P-139-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-RANIPOOL-1',
+      assignedBoName: 'BO Demo User 1 (Ranipool Block)',
+      verificationScheduledDate: '01 Nov 2026',
+      verificationCompletedDate: '04 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Demo User (Ranipool)',
+      approvedByRole: 'ro',
+      approvalDate: '06 Nov 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-RNK-00339',
+      paymentDate: '07 Nov 2026',
+      isTransitPermitRequired: true,
+      transitPermitStatus: 'Approved/Issued',
+      transitPermitNo: 'TP/FED/GTK/2026/0022',
+      markingOrderNo: 'MO/FED/GTK/2026/0045',
+      markingOrderIssueDate: '08 Nov 2026',
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '28 Oct 2026', actor: 'Kinzang Dorjee (Citizen)', remarks: 'Application submitted for 1 Timber tree.' },
+        { stage: 'BO Verified', date: '04 Nov 2026', actor: 'BO Demo User 1', remarks: 'Field verification completed.' },
+        { stage: 'Approved (RO)', date: '06 Nov 2026', actor: 'RO Demo User', remarks: 'Approved by Range Officer.' },
+        { stage: 'Payment Completed', date: '07 Nov 2026', actor: 'Kinzang Dorjee (Citizen)', remarks: 'Statutory fee paid. Transit Permit requested.' },
+        { stage: 'Marking Order Issued', date: '08 Nov 2026', actor: 'RO Demo User', remarks: 'Marking Order MO/FED/GTK/2026/0045 issued.' },
+        { stage: 'Transit Permit Issued', date: '10 Nov 2026', actor: 'ACF Gangtok Demo User', remarks: 'Transit Permit TP/FED/GTK/2026/0022 approved and issued.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00140',
+      ackNo: 'ACK-FED-2026-00340',
+      submittedDate: '25 Oct 2026',
+      lastUpdatedDate: '08 Nov 2026',
+      currentStatus: 'Transit Permit Issued',
+      statusClass: 'status-issued',
+      applicantName: 'Pem Dorjee Lepcha',
+      relationType: 'Son of',
+      relationName: 'S. Lepcha',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832177884',
+      email: 'pem.dorjee@sikkimdemo.in',
+      address: 'Soreng Bazar, Soreng District',
+      district: 'Soreng',
+      division: 'Soreng Territorial Division',
+      range: 'Soreng Range',
+      revenueBlock: 'Soreng Block',
+      gpu: 'Soreng GPU',
+      khasraNo: '114',
+      khatiyanParchaNo: 'KP-2024-SRG-0114',
+      totalAreaAcres: '1.75 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Pem Dorjee Lepcha',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide rural construction with transit to Sombaria.',
+      trees: [
+        { id: 'T-140-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 40, gbhFeet: '3.33 ft', plotNo: '114', estimatedVolumeCuM: 1.30, condition: 'Mature', photoId: 'P-140-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-SORENG-1',
+      assignedBoName: 'BO Soreng Demo User',
+      verificationScheduledDate: '28 Oct 2026',
+      verificationCompletedDate: '31 Oct 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Soreng Demo User',
+      approvedByRole: 'ro',
+      approvalDate: '03 Nov 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-SRG-00340',
+      paymentDate: '05 Nov 2026',
+      isTransitPermitRequired: true,
+      transitPermitStatus: 'Approved/Issued',
+      transitPermitNo: 'TP/FED/SRG/2026/0005',
+      markingOrderNo: 'MO/FED/SRG/2026/0008',
+      markingOrderIssueDate: '06 Nov 2026',
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '25 Oct 2026', actor: 'Pem Dorjee (Citizen)', remarks: 'Application submitted for 1 Timber tree.' },
+        { stage: 'BO Verified', date: '31 Oct 2026', actor: 'BO Soreng Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Approved (RO)', date: '03 Nov 2026', actor: 'RO Soreng Demo User', remarks: 'Approved by Range Officer.' },
+        { stage: 'Payment Completed', date: '05 Nov 2026', actor: 'Pem Dorjee (Citizen)', remarks: 'Statutory fee paid.' },
+        { stage: 'Marking Order Issued', date: '06 Nov 2026', actor: 'RO Soreng Demo User', remarks: 'Marking Order MO/FED/SRG/2026/0008 issued.' },
+        { stage: 'Transit Permit Issued', date: '08 Nov 2026', actor: 'ACF Soreng Demo User', remarks: 'Transit Permit TP/FED/SRG/2026/0005 issued.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00141',
+      ackNo: 'ACK-FED-2026-00341',
+      submittedDate: '26 Oct 2026',
+      lastUpdatedDate: '07 Nov 2026',
+      currentStatus: 'Transit Permit Issued',
+      statusClass: 'status-issued',
+      applicantName: 'Mingma Sherpa',
+      relationType: 'Son of',
+      relationName: 'P. Sherpa',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832188995',
+      email: 'mingma.sherpa@sikkimdemo.in',
+      address: 'Namchi Municipal Area, Namchi',
+      district: 'Namchi',
+      division: 'Namchi Territorial Division',
+      range: 'Namchi Range',
+      revenueBlock: 'Namchi Block',
+      gpu: 'Namchi Municipal Council',
+      khasraNo: '82',
+      khatiyanParchaNo: 'KP-2024-NMC-0082',
+      totalAreaAcres: '1.30 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Mingma Sherpa',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Bonafide house renovation with timber transit to Jorethang workshop.',
+      trees: [
+        { id: 'T-141-1', treeNo: 1, species: 'Schima (Chilaune)', girthInches: 38, gbhFeet: '3.17 ft', plotNo: '82', estimatedVolumeCuM: 1.25, condition: 'Mature', photoId: 'P-141-1', boMatchStatus: 'Matched on Site', boVerified: true }
+      ],
+      assignedBoId: 'BO-NAMCHI-1',
+      assignedBoName: 'BO Namchi Demo User',
+      verificationScheduledDate: '29 Oct 2026',
+      verificationCompletedDate: '02 Nov 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Approved by Range Officer',
+      approvedByOfficer: 'RO Namchi Demo User',
+      approvedByRole: 'ro',
+      approvalDate: '04 Nov 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-NMC-00341',
+      paymentDate: '05 Nov 2026',
+      isTransitPermitRequired: true,
+      transitPermitStatus: 'Approved/Issued',
+      transitPermitNo: 'TP/FED/NMC/2026/0011',
+      markingOrderNo: 'MO/FED/NMC/2026/0016',
+      markingOrderIssueDate: '06 Nov 2026',
+      validityPeriodMonths: 3,
+      history: [
+        { stage: 'Application Submitted', date: '26 Oct 2026', actor: 'Mingma Sherpa (Citizen)', remarks: 'Application submitted for 1 Timber tree.' },
+        { stage: 'BO Verified', date: '02 Nov 2026', actor: 'BO Namchi Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Approved (RO)', date: '04 Nov 2026', actor: 'RO Namchi Demo User', remarks: 'Approved by Range Officer.' },
+        { stage: 'Payment Completed', date: '05 Nov 2026', actor: 'Mingma Sherpa (Citizen)', remarks: 'Statutory fee paid.' },
+        { stage: 'Marking Order Issued', date: '06 Nov 2026', actor: 'RO Namchi Demo User', remarks: 'Marking Order MO/FED/NMC/2026/0016 issued.' },
+        { stage: 'Transit Permit Issued', date: '07 Nov 2026', actor: 'ACF Namchi Demo User', remarks: 'Transit Permit TP/FED/NMC/2026/0011 issued.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00142',
+      ackNo: 'ACK-FED-2026-00342',
+      submittedDate: '18 Oct 2026',
+      lastUpdatedDate: '02 Nov 2026',
+      currentStatus: 'Rejected',
+      statusClass: 'status-rejected',
+      applicantName: 'Dawa Tshering Lepcha',
+      relationType: 'Son of',
+      relationName: 'G. T. Lepcha',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832199006',
+      email: 'dawa.tshering@sikkimdemo.in',
+      address: 'Phodong Ward, Mangan District',
+      district: 'Mangan',
+      division: 'Mangan Territorial Division',
+      range: 'Mangan Range',
+      revenueBlock: 'Phodong Block',
+      gpu: 'Phodong GPU',
+      khasraNo: '54',
+      khatiyanParchaNo: 'KP-2024-MGN-0054',
+      totalAreaAcres: '3.10 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-02',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Dawa Tshering Lepcha',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Commercial timber felling under guise of domestic firewood.',
+      trees: [
+        { id: 'T-142-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 48, gbhFeet: '4.00 ft', plotNo: '54', estimatedVolumeCuM: 1.80, condition: 'Green / Vigorous', photoId: 'P-142-1' }
+      ],
+      assignedBoId: 'BO-MANGAN-1',
+      assignedBoName: 'BO Mangan Demo User',
+      verificationScheduledDate: '22 Oct 2026',
+      verificationCompletedDate: '26 Oct 2026',
+      approvalAuthority: 'RO',
+      approvalStatus: 'Rejected by Range Officer',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Not Applicable',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 0,
+      history: [
+        { stage: 'Application Submitted', date: '18 Oct 2026', actor: 'Dawa Tshering (Citizen)', remarks: 'Application submitted.' },
+        { stage: 'BO Verified', date: '26 Oct 2026', actor: 'BO Mangan Demo User', remarks: 'Field verification notes tree is on disputed boundary adjacent to monastery forest reserve.' },
+        { stage: 'Rejected', date: '02 Nov 2026', actor: 'RO Mangan Demo User', remarks: 'Application rejected under Sikkim Forest Tree Felling Rules: Plot directly abuts notified monastery reserve forest boundary.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00143',
+      ackNo: 'ACK-FED-2026-00343',
+      submittedDate: '15 Oct 2026',
+      lastUpdatedDate: '28 Oct 2026',
+      currentStatus: 'Cancelled',
+      statusClass: 'status-cancelled',
+      applicantName: 'Dhan Maya Rai',
+      relationType: 'Wife of',
+      relationName: 'K. B. Rai',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832200117',
+      email: 'dhanmaya.rai@sikkimdemo.in',
+      address: 'Ravangla Bazar, Namchi District',
+      district: 'Namchi',
+      division: 'Namchi Territorial Division',
+      range: 'Ravangla Range',
+      revenueBlock: 'Ravangla Block',
+      gpu: 'Ravangla GPU',
+      khasraNo: '99',
+      khatiyanParchaNo: 'KP-2024-NMC-0099',
+      totalAreaAcres: '1.50 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Dhan Maya Rai',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Firewood',
+      fellingReason: 'Applicant decided not to fell the shade trees after family consultation.',
+      trees: [
+        { id: 'T-143-1', treeNo: 1, species: 'Alnus (Utis)', girthInches: 28, gbhFeet: '2.33 ft', plotNo: '99', estimatedVolumeCuM: 0.70, condition: 'Mature', photoId: 'P-143-1' }
+      ],
+      assignedBoId: 'BO-NAMCHI-1',
+      assignedBoName: 'BO Namchi Demo User',
+      verificationScheduledDate: '19 Oct 2026',
+      verificationCompletedDate: null,
+      approvalAuthority: 'RO',
+      approvalStatus: 'Application Cancelled by Applicant',
+      approvedByOfficer: null,
+      approvedByRole: null,
+      approvalDate: null,
+      paymentStatus: 'Not Applicable',
+      paymentAmount: 50,
+      paymentReceiptNo: null,
+      paymentDate: null,
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: null,
+      markingOrderIssueDate: null,
+      validityPeriodMonths: 0,
+      history: [
+        { stage: 'Application Submitted', date: '15 Oct 2026', actor: 'Dhan Maya Rai (Citizen)', remarks: 'Application submitted online.' },
+        { stage: 'Cancelled', date: '28 Oct 2026', actor: 'Dhan Maya Rai (Citizen)', remarks: 'Application voluntarily cancelled by applicant prior to field inspection.' }
+      ]
+    },
+    {
+      appNo: 'SK-MO-2026-00144',
+      ackNo: 'ACK-FED-2026-00344',
+      submittedDate: '10 Oct 2026',
+      lastUpdatedDate: '01 Nov 2026',
+      currentStatus: 'Cancelled',
+      statusClass: 'status-cancelled',
+      applicantName: 'Jigme Namgyal Bhutia',
+      relationType: 'Son of',
+      relationName: 'P. N. Bhutia',
+      applicantCategory: 'Individual Citizen',
+      phone: '9832211228',
+      email: 'jigme.namgyal@sikkimdemo.in',
+      address: 'Gyalshing Bazar, Gyalshing District',
+      district: 'Gyalshing',
+      division: 'Gyalshing Territorial Division',
+      range: 'Gyalshing Range',
+      revenueBlock: 'Gyalshing Block',
+      gpu: 'Gyalshing Nagar Panchayat',
+      khasraNo: '160',
+      khatiyanParchaNo: 'KP-2024-GYL-0160',
+      totalAreaAcres: '2.20 Acres',
+      holdingType: 'Private Holding',
+      landClassification: 'Dry Cultivation (Sukha Khet)',
+      encumbranceStatus: 'Nil / Clean Title',
+      appliedFor: 'Self',
+      beneficiaryName: null,
+      beneficiaryPhone: null,
+      beneficiaryAddress: null,
+      beneficiaryRelation: null,
+      appliedByUserId: 'CIT-DEMO-01',
+      appliedByRole: 'citizen',
+      appliedByUserName: 'Jigme Namgyal Bhutia',
+      submissionMode: 'Online Citizen Portal',
+      purpose: 'Timber',
+      fellingReason: 'Marking Order revoked by Divisional Forest Officer due to subsequent boundary survey realignment.',
+      trees: [
+        { id: 'T-144-1', treeNo: 1, species: 'Cryptomeria (Dhupi)', girthInches: 42, gbhFeet: '3.50 ft', plotNo: '160', estimatedVolumeCuM: 1.45, condition: 'Mature', photoId: 'P-144-1', boMatchStatus: 'Discrepancy Noted', boVerified: true }
+      ],
+      assignedBoId: 'BO-GYALSHING-1',
+      assignedBoName: 'BO Gyalshing Demo User',
+      verificationScheduledDate: '14 Oct 2026',
+      verificationCompletedDate: '18 Oct 2026',
+      approvalAuthority: 'DFO',
+      approvalStatus: 'Marking Order Cancelled by DFO',
+      approvedByOfficer: 'DFO Gyalshing Demo User',
+      approvedByRole: 'dfo',
+      approvalDate: '22 Oct 2026',
+      paymentStatus: 'Fee Paid (&#8377;50)',
+      paymentAmount: 50,
+      paymentReceiptNo: 'REC-FED-2026-GYL-00344',
+      paymentDate: '24 Oct 2026',
+      isTransitPermitRequired: false,
+      transitPermitStatus: 'Not Required',
+      transitPermitNo: null,
+      markingOrderNo: 'MO/FED/GYL/2026/0006',
+      markingOrderIssueDate: '26 Oct 2026',
+      validityPeriodMonths: 0,
+      history: [
+        { stage: 'Application Submitted', date: '10 Oct 2026', actor: 'Jigme Namgyal (Citizen)', remarks: 'Application submitted for 1 Timber tree.' },
+        { stage: 'BO Verified', date: '18 Oct 2026', actor: 'BO Gyalshing Demo User', remarks: 'Field verification completed.' },
+        { stage: 'Approved (DFO)', date: '22 Oct 2026', actor: 'DFO Gyalshing Demo User', remarks: 'Approved by Divisional Forest Officer.' },
+        { stage: 'Payment Completed', date: '24 Oct 2026', actor: 'Jigme Namgyal (Citizen)', remarks: 'Statutory fee paid.' },
+        { stage: 'Marking Order Issued', date: '26 Oct 2026', actor: 'DFO Gyalshing Demo User', remarks: 'Marking Order MO/FED/GYL/2026/0006 issued.' },
+        { stage: 'Cancelled', date: '01 Nov 2026', actor: 'DFO Gyalshing Demo User', remarks: 'Marking Order formally cancelled under Section 14: Adjacent parcel re-survey determined tree location lies within public drainage corridor.' }
       ]
     }
   ];
-
   // =========================================================================
   // 5. CITIZEN SCENARIOS CONFIGURATION (Section 13.1 & 13.2)
   // =========================================================================
   const citizenScenarios = [
     {
       id: 'scenario1',
-      label: '1. First-Time Citizen â€“ No Applications',
+      label: '1. First-Time Citizen � No Applications',
       citizenName: 'First-Time Citizen Demo User',
       citizenId: 'CIT-DEMO-02',
       district: 'Mangan',
@@ -3218,7 +4388,7 @@ window.MarkingOrderData = (function () {
     },
     {
       id: 'scenario7',
-      label: '7. Citizen with Approved â€“ Payment Pending Application (Action Required)',
+      label: '7. Citizen with Approved � Payment Pending Application (Action Required)',
       citizenName: 'Citizen Demo User (Primary)',
       citizenId: 'CIT-DEMO-01',
       district: 'Gangtok',
@@ -3228,7 +4398,7 @@ window.MarkingOrderData = (function () {
     },
     {
       id: 'scenario8',
-      label: '8. Citizen with Payment Completed â€“ Marking Order Pending',
+      label: '8. Citizen with Payment Completed � Marking Order Pending',
       citizenName: 'Citizen Demo User (Primary)',
       citizenId: 'CIT-DEMO-01',
       district: 'Gangtok',
@@ -3315,7 +4485,7 @@ window.MarkingOrderData = (function () {
     acf: [
       { id: 'N-ACF-1', title: 'Application Forwarded by RO (Ranipool)', description: '8 Firewood trees application forwarded to ACF Desk (Within ACF authority \u2264 10).', appNo: 'SK-MO-2026-00105', date: '15 Nov 2026', unread: true },
       { id: 'N-ACF-2', title: 'Application Exceeding ACF Limit Received', description: '7 Timber trees application received from Gangtok Range; requires forwarding to DFO (Timber > 5).', appNo: 'SK-MO-2026-00116', date: '15 Nov 2026', unread: true },
-      { id: 'N-ACF-3', title: 'Marking Order Issued â€“ Eligible for Transit Permit', description: 'Marking Order MO/FED/GTK/2026/0039 issued in Ranipool Range.', appNo: 'SK-MO-2026-00117', date: '08 Nov 2026', unread: false }
+      { id: 'N-ACF-3', title: 'Marking Order Issued � Eligible for Transit Permit', description: 'Marking Order MO/FED/GTK/2026/0039 issued in Ranipool Range.', appNo: 'SK-MO-2026-00117', date: '08 Nov 2026', unread: false }
     ],
     dfo: [
       { id: 'N-DFO-1', title: 'Delayed Application Alert (> 7 Days)', description: 'Application forwarded by ACF has been pending review for 14 days.', appNo: 'SK-MO-2026-00119', date: '19 Nov 2026', unread: true },
@@ -3444,8 +4614,8 @@ window.MarkingOrderData = (function () {
     }
     if (!merged.paymentStatus) {
       merged.paymentStatus = (merged.currentStatus && (merged.currentStatus.includes('Paid') || merged.currentStatus.includes('Marking Order Issued') || merged.currentStatus.includes('Payment Completed')))
-        ? 'Completed (₹50 Paid via Sikkim GO)'
-        : (merged.currentStatus && merged.currentStatus.includes('Payment Pending') ? 'Pending (₹50 Payable)' : 'Pending Approval');
+        ?'Completed (?50 Paid via Sikkim GO)'
+        : (merged.currentStatus && merged.currentStatus.includes('Payment Pending') ? 'Pending (?50 Payable)' : 'Pending Approval');
     }
     if (!merged.markingOrderStatus) {
       merged.markingOrderStatus = merged.markingOrderNo
@@ -3456,7 +4626,7 @@ window.MarkingOrderData = (function () {
       if (merged.currentStatus === 'Marking Order Issued') {
         merged.nextExpectedAction = merged.isTransitPermitRequired ? 'Transit Permit active / Material transport authorized' : 'Felling operations authorized under Rule 21';
       } else if (merged.currentStatus.includes('Payment Pending')) {
-        merged.nextExpectedAction = 'Applicant must complete ₹50 statutory fee payment';
+        merged.nextExpectedAction = 'Applicant must complete ?50 statutory fee payment';
       } else if (merged.currentStatus === 'Verification Scheduled') {
         merged.nextExpectedAction = 'Block Officer on-site field inspection scheduled for ' + (merged.verificationDate || 'assigned date');
       } else if (merged.currentStatus.includes('BO Verification') || merged.currentStatus.includes('BO Verified')) {
@@ -3508,7 +4678,7 @@ window.MarkingOrderData = (function () {
         merged.history.push({ stage: 'Application Approved', date: merged.approvalDate, actor: merged.approvedByRole || 'Range Officer', remarks: 'Application approved under statutory rules.' });
       }
       if (merged.paymentDate) {
-        merged.history.push({ stage: 'Fee Payment Completed', date: merged.paymentDate, actor: merged.applicantName, remarks: 'Statutory fee of ₹50 paid. Receipt: ' + (merged.paymentReceiptNo || 'RCP-SK-2026-0042') + '.' });
+        merged.history.push({ stage: 'Fee Payment Completed', date: merged.paymentDate, actor: merged.applicantName, remarks: 'Statutory fee of ?50 paid. Receipt: ' + (merged.paymentReceiptNo || 'RCP-SK-2026-0042') + '.' });
       }
       if (merged.markingOrderNo) {
         merged.history.push({ stage: 'Marking Order Issued', date: merged.markingOrderIssueDate || merged.approvalDate || '26 Sep 2026', actor: 'Range Officer / Issuing Authority', remarks: 'Official Marking Order (FORM - D) ' + merged.markingOrderNo + ' issued.' });
@@ -3642,8 +4812,8 @@ window.MarkingOrderData = (function () {
         index: 2,
         title: '2. Verification Scheduled',
         desc: (app.verificationDate || app.verificationScheduledDate)
-          ? 'Scheduled for ' + (app.verificationDate || app.verificationScheduledDate) + ' • Assigned to ' + (app.assignedBoName || 'Block Officer')
-          : 'Range Officer performs preliminary check and assigns Block Officer.'
+            ? 'Scheduled for ' + (app.verificationDate || app.verificationScheduledDate) + ' � Assigned to ' + (app.assignedBoName || 'Block Officer')
+            : 'Range Officer performs preliminary check and assigns Block Officer.'
       },
       {
         index: 3,
@@ -3656,34 +4826,34 @@ window.MarkingOrderData = (function () {
         index: 4,
         title: '4. RO Review',
         desc: (app.currentStatus && app.currentStatus.includes('Payment Pending'))
-          ? 'Application Approved on ' + (app.approvalDate || 'Approved') + ' • Application Fee Payment Pending (₹50)'
-          : (app.currentStatus && app.currentStatus.includes('Payment Completed'))
-            ? 'Application Approved (' + (app.approvalDate || 'Recent') + ') & Payment Completed • Marking Order Pending Issuance'
-            : (app.currentStatus === 'Forwarded to ACF'
-              ? 'Forwarded to ACF on ' + (app.forwardedToAcfDate || 'Recent') + ' (Exceeds RO statutory authority)'
-              : (app.currentStatus === 'Forwarded to DFO'
-                ? 'Escalated to DFO on ' + (app.forwardedToDfoDate || 'Recent') + ' (Exceeds ACF statutory authority)'
-                : 'Range Officer reviews verification report and checks statutory authority limits.'))
+            ? 'Application Approved on ' + (app.approvalDate || 'Approved') + ' � Application Fee Payment Pending (?50)'
+            : (app.currentStatus && app.currentStatus.includes('Payment Completed'))
+                ? 'Application Approved (' + (app.approvalDate || 'Recent') + ') & Payment Completed � Marking Order Pending Issuance'
+                : (app.currentStatus === 'Forwarded to ACF'
+                  ? 'Forwarded to ACF on ' + (app.forwardedToAcfDate || 'Recent') + ' (Exceeds RO statutory authority)'
+                  : (app.currentStatus === 'Forwarded to DFO'
+                    ? 'Escalated to DFO on ' + (app.forwardedToDfoDate || 'Recent') + ' (Exceeds ACF statutory authority)'
+                    : 'Range Officer reviews verification report and checks statutory authority limits.'))
       },
       {
         index: 5,
         title: '5. Forwarded to ACF / Marking Order Issue',
         desc: app.markingOrderNo
-          ? 'Marking Order Issued: ' + app.markingOrderNo + ' (' + (app.markingOrderIssueDate || app.approvalDate || 'Recent') + ') • Status: ' + app.markingOrderStatus
-          : (app.currentStatus === 'Forwarded to ACF'
-            ? 'Forwarded to ACF Desk • Awaiting Sub-Divisional Approval'
-            : (app.currentStatus === 'Forwarded to DFO'
-              ? 'Forwarded to DFO Desk • Awaiting Final Division Approval'
-              : 'Forwarded to higher authority if beyond limit, or Marking Order issued after fee payment confirmation.'))
+            ? 'Marking Order Issued: ' + app.markingOrderNo + ' (' + (app.markingOrderIssueDate || app.approvalDate || 'Recent') + ') � Status: ' + app.markingOrderStatus
+            : (app.currentStatus === 'Forwarded to ACF'
+                ? 'Forwarded to ACF Desk � Awaiting Sub-Divisional Approval'
+                : (app.currentStatus === 'Forwarded to DFO'
+                    ? 'Forwarded to DFO Desk � Awaiting Final Division Approval'
+                    : 'Forwarded to higher authority if beyond limit, or Marking Order issued after fee payment confirmation.'))
       },
       {
         index: 6,
         title: '6. Transit Permit Issue',
         desc: app.transitPermitNo
-          ? 'Transit Permit: ' + app.transitPermitNo + ' (' + app.transitPermitStatus + ') • Route: ' + (app.transitPermitRoute || 'Authorized Highway Corridor')
-          : (app.isTransitPermitRequired
-            ? 'Transit Permit Required: Yes • ' + (app.transitPermitStatus || 'Pending Issuance with ACF/DFO')
-            : 'Transit Permit Required: No • Material felling for on-site / domestic use.')
+            ? 'Transit Permit: ' + app.transitPermitNo + ' (' + app.transitPermitStatus + ') � Route: ' + (app.transitPermitRoute || 'Authorized Highway Corridor')
+            : (app.isTransitPermitRequired
+              ? 'Transit Permit Required: Yes � ' + (app.transitPermitStatus || 'Pending Issuance with ACF/DFO')
+              : 'Transit Permit Required: No � Material felling for on-site / domestic use.')
       }
     ];
 
@@ -3728,21 +4898,21 @@ window.MarkingOrderData = (function () {
           } else {
             itemClass = 'active';
             iconHtml = '<i class="bi bi-arrow-right"></i>';
-            badgeHtml = '<span class="badge bg-warning text-dark small">Current Stage • ' + app.currentStatus + '</span>';
+            badgeHtml = '<span class="badge bg-warning text-dark small">Current Stage � ' + app.currentStatus + '</span>';
           }
         }
       }
 
       stepsHtml +=
         '<div class="gov-timeline-item ' + itemClass + '">' +
-          '<div class="gov-timeline-point">' + iconHtml + '</div>' +
-          '<div class="gov-timeline-content">' +
-            '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">' +
-              '<strong class="text-dark small">' + st.title + '</strong>' +
-              badgeHtml +
-            '</div>' +
-            '<div class="small text-secondary">' + st.desc + '</div>' +
-          '</div>' +
+        '<div class="gov-timeline-point">' + iconHtml + '</div>' +
+        '<div class="gov-timeline-content">' +
+        '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">' +
+        '<strong class="text-dark small">' + st.title + '</strong>' +
+        badgeHtml +
+        '</div>' +
+        '<div class="small text-secondary">' + st.desc + '</div>' +
+        '</div>' +
         '</div>';
     });
     stepsHtml += '</div>';
@@ -3750,13 +4920,13 @@ window.MarkingOrderData = (function () {
     // Distinct Approval, Fee Payment, Transit Permit, and Marking Order Issuance Status Strip
     const distinctionStrip =
       '<div class="card border bg-light p-3 rounded-3 mb-3">' +
-        '<div class="small fw-bold text-dark mb-2"><i class="bi bi-shield-check text-success me-1"></i> Approval, Payment &amp; Order Status Details</div>' +
-        '<div class="row g-2 small">' +
-          '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">1. Approval Status</span><strong class="text-dark">' + app.approvalStatus + '</strong></div></div>' +
-          '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">2. Fee Payment Status</span><strong class="' + (app.paymentStatus && app.paymentStatus.includes('Completed') ? 'text-success' : 'text-warning-emphasis') + '">' + app.paymentStatus + '</strong></div></div>' +
-          '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">3. Transit Permit</span><strong class="' + (app.isTransitPermitRequired ? (app.transitPermitNo ? 'text-success' : 'text-warning-emphasis') : 'text-muted') + '">' + (app.isTransitPermitRequired ? (app.transitPermitNo ? 'Issued (' + app.transitPermitNo + ')' : 'Required (Pending)') : 'Not Required') + '</strong></div></div>' +
-          '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">4. Marking Order No.</span><strong class="font-monospace text-success">' + (app.markingOrderNo || 'Not Issued Yet') + '</strong></div></div>' +
-        '</div>' +
+      '<div class="small fw-bold text-dark mb-2"><i class="bi bi-shield-check text-success me-1"></i> Approval, Payment &amp; Order Status Details</div>' +
+      '<div class="row g-2 small">' +
+      '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">1. Approval Status</span><strong class="text-dark">' + app.approvalStatus + '</strong></div></div>' +
+      '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">2. Fee Payment Status</span><strong class="' + (app.paymentStatus && app.paymentStatus.includes('Completed') ? 'text-success' : 'text-warning-emphasis') + '">' + app.paymentStatus + '</strong></div></div>' +
+      '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">3. Transit Permit</span><strong class="' + (app.isTransitPermitRequired ? (app.transitPermitNo ? 'text-success' : 'text-warning-emphasis') : 'text-muted') + '">' + (app.isTransitPermitRequired ? (app.transitPermitNo ? 'Issued (' + app.transitPermitNo + ')' : 'Required (Pending)') : 'Not Required') + '</strong></div></div>' +
+      '<div class="col-sm-6 col-md-3"><div class="p-2 bg-white border rounded-2 h-100"><span class="text-muted d-block" style="font-size:0.72rem;">4. Marking Order No.</span><strong class="font-monospace text-success">' + (app.markingOrderNo || 'Not Issued Yet') + '</strong></div></div>' +
+      '</div>' +
       '</div>';
 
     // Actual Application Processing History Log Table
@@ -3766,18 +4936,18 @@ window.MarkingOrderData = (function () {
         '<td class="small"><span class="badge bg-light text-dark border">' + h.stage + '</span></td>' +
         '<td class="small">' + h.actor + '</td>' +
         '<td class="small text-secondary">' + h.remarks + '</td>' +
-      '</tr>';
+        '</tr>';
     }).join('');
 
     var historySection =
       '<div class="card border-0 shadow-xs p-3 bg-light rounded-3 mt-3">' +
-        '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-clock-history text-success me-1"></i> Actual Application Processing History Log</h6>' +
-        '<div class="table-responsive bg-white rounded border">' +
-          '<table class="table table-sm table-bordered align-middle mb-0">' +
-            '<thead class="table-light"><tr><th>Date</th><th>Workflow Stage</th><th>Actor / Authority</th><th>Remarks</th></tr></thead>' +
-            '<tbody>' + (historyRows || '<tr><td colspan="4" class="text-center text-muted">No historical processing log entries.</td></tr>') + '</tbody>' +
-          '</table>' +
-        '</div>' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-clock-history text-success me-1"></i> Actual Application Processing History Log</h6>' +
+      '<div class="table-responsive bg-white rounded border">' +
+      '<table class="table table-sm table-bordered align-middle mb-0">' +
+      '<thead class="table-light"><tr><th>Date</th><th>Workflow Stage</th><th>Actor / Authority</th><th>Remarks</th></tr></thead>' +
+      '<tbody>' + (historyRows || '<tr><td colspan="4" class="text-center text-muted">No historical processing log entries.</td></tr>') + '</tbody>' +
+      '</table>' +
+      '</div>' +
       '</div>';
 
     return distinctionStrip + stepsHtml + historySection;
@@ -3819,14 +4989,14 @@ window.MarkingOrderData = (function () {
         '<td class="font-monospace">' + (t.plotNo || app.khasraNo || 'N/A') + '</td>' +
         '<td>' + (t.gbhFeet || (t.girthInches ? (t.girthInches / 12).toFixed(2) + ' ft' : '3.00 ft')) + '</td>' +
         '<td><span class="badge bg-light text-dark border">' + (t.boMatchStatus || (t.verified ? 'Verified & Matched' : 'Pending')) + '</span></td>' +
-      '</tr>';
+        '</tr>';
     }).join('');
 
     const docsRows = (app.documents || []).map(function (d) {
       return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 small">' +
         '<div><i class="bi bi-file-earmark-pdf text-danger me-2"></i><strong>' + d.name + '</strong> <span class="text-muted">(' + d.fileName + ')</span></div>' +
         '<span class="badge bg-success-subtle text-success border border-success-subtle">' + d.status + '</span>' +
-      '</li>';
+        '</li>';
     }).join('');
 
     const historyRows = (app.history || []).map(function (h) {
@@ -3835,7 +5005,7 @@ window.MarkingOrderData = (function () {
         '<td class="small"><span class="badge bg-light text-dark border">' + h.stage + '</span></td>' +
         '<td class="small">' + h.actor + '</td>' +
         '<td class="small text-secondary">' + h.remarks + '</td>' +
-      '</tr>';
+        '</tr>';
     }).join('');
 
     const permAddr = app.permanentAddress || {
@@ -3847,114 +5017,114 @@ window.MarkingOrderData = (function () {
 
     const applyForOthersBanner = app.applicationFor === 'Apply for Others'
       ? '<div class="alert alert-info py-2 px-3 small mb-3 d-flex align-items-center gap-2">' +
-          '<i class="bi bi-people-fill fs-5 text-primary"></i>' +
-          '<div><strong>Application For: Apply for Others</strong> • Submitting User: <strong>' + (app.submittedByCitizenName || app.appliedByUserName || 'Citizen') + ' (' + (app.appliedByUserId || '') + ')</strong> • Beneficiary Applicant: <strong>' + app.applicantName + '</strong></div>' +
-        '</div>'
+      '<i class="bi bi-people-fill fs-5 text-primary"></i>' +
+      '<div><strong>Application For: Apply for Others</strong> � Submitting User: <strong>' + (app.submittedByCitizenName || app.appliedByUserName || 'Citizen') + ' (' + (app.appliedByUserId || '') + ')</strong> � Beneficiary Applicant: <strong>' + app.applicantName + '</strong></div>' +
+      '</div>'
       : '<div class="alert alert-light border py-2 px-3 small mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">' +
-          '<div><i class="bi bi-person-check-fill text-success me-1"></i> <strong>Application For:</strong> Self (' + app.applicantName + ')</div>' +
-          '<span class="badge bg-secondary-subtle text-secondary border">Application Dossier Preview</span>' +
-        '</div>';
+      '<div><i class="bi bi-person-check-fill text-success me-1"></i> <strong>Application For:</strong> Self (' + app.applicantName + ')</div>' +
+      '<span class="badge bg-secondary-subtle text-secondary border">Application Dossier Preview</span>' +
+      '</div>';
 
     modalEl.innerHTML =
       '<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">' +
-        '<div class="modal-content border-0 shadow-lg">' +
-          '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
-            '<div>' +
-              '<div class="d-flex align-items-center gap-2 flex-wrap">' +
-                '<h5 class="modal-title fw-bold mb-0 font-monospace">' + app.appNo + '</h5>' +
-                '<span class="badge bg-warning text-dark">' + app.currentStatus + '</span>' +
-              '</div>' +
-              '<div class="small text-white-50">Marking Order Application Dossier Preview • Forest and Environment Department</div>' +
-            '</div>' +
-            '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
-          '</div>' +
-          '<div class="modal-body p-4 bg-light">' +
-            applyForOthersBanner +
-            '<div class="row g-3 mb-3">' +
-              '<div class="col-md-6">' +
-                '<div class="card border-0 shadow-xs h-100 p-3 bg-white">' +
-                  '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-person-vcard text-success me-1"></i> Applicant Details</h6>' +
-                  '<div class="small"><div class="mb-1"><span class="text-muted">Application For:</span> <strong>' + app.applicationFor + '</strong></div>' +
-                  '<div class="mb-1"><span class="text-muted">Applicant Full Name:</span> <strong>' + app.applicantName + '</strong></div>' +
-                  '<div class="mb-1"><span class="text-muted">' + (app.relationType || 'Relation') + ' Name:</span> <strong>' + (app.relationName || 'N/A') + '</strong></div>' +
-                  '<div class="mb-1"><span class="text-muted">Mobile Number:</span> <strong>' + (app.mobile || app.phone || '9876543210') + '</strong></div>' +
-                  '<div><span class="text-muted">Submitted By User:</span> <strong>' + (app.submittedByCitizenName || app.appliedByUserName || 'Citizen') + '</strong></div></div>' +
-                '</div>' +
-              '</div>' +
-              '<div class="col-md-6">' +
-                '<div class="card border-0 shadow-xs h-100 p-3 bg-white">' +
-                  '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-geo-alt text-success me-1"></i> Permanent &amp; Residential Address</h6>' +
-                  '<div class="small">' +
-                    '<div class="mb-1"><span class="text-muted">Permanent Address:</span> <strong>' + permAddr.address1 + ', ' + (permAddr.blockGpu || '') + ', ' + (permAddr.district || '') + '</strong></div>' +
-                    '<div class="mb-1"><span class="text-muted">Same as Permanent Address?</span> <strong>' + (permAddr.sameAsPermanent ? 'Yes' : 'No') + '</strong></div>' +
-                    '<div><span class="text-muted">Residential / Present Address:</span> <strong>' + resAddr.address1 + ', ' + (resAddr.blockGpu || '') + ', ' + (resAddr.district || '') + '</strong></div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
+      '<div class="modal-content border-0 shadow-lg">' +
+      '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
+      '<div>' +
+      '<div class="d-flex align-items-center gap-2 flex-wrap">' +
+      '<h5 class="modal-title fw-bold mb-0 font-monospace">' + app.appNo + '</h5>' +
+      '<span class="badge bg-warning text-dark">' + app.currentStatus + '</span>' +
+      '</div>' +
+      '<div class="small text-white-50">Marking Order Application Dossier Preview � Forest and Environment Department</div>' +
+      '</div>' +
+      '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
+      '</div>' +
+      '<div class="modal-body p-4 bg-light">' +
+      applyForOthersBanner +
+      '<div class="row g-3 mb-3">' +
+      '<div class="col-md-6">' +
+      '<div class="card border-0 shadow-xs h-100 p-3 bg-white">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-person-vcard text-success me-1"></i> Applicant Details</h6>' +
+      '<div class="small"><div class="mb-1"><span class="text-muted">Application For:</span> <strong>' + app.applicationFor + '</strong></div>' +
+      '<div class="mb-1"><span class="text-muted">Applicant Full Name:</span> <strong>' + app.applicantName + '</strong></div>' +
+      '<div class="mb-1"><span class="text-muted">' + (app.relationType || 'Relation') + ' Name:</span> <strong>' + (app.relationName || 'N/A') + '</strong></div>' +
+      '<div class="mb-1"><span class="text-muted">Mobile Number:</span> <strong>' + (app.mobile || app.phone || '9876543210') + '</strong></div>' +
+      '<div><span class="text-muted">Submitted By User:</span> <strong>' + (app.submittedByCitizenName || app.appliedByUserName || 'Citizen') + '</strong></div></div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="col-md-6">' +
+      '<div class="card border-0 shadow-xs h-100 p-3 bg-white">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-geo-alt text-success me-1"></i> Permanent &amp; Residential Address</h6>' +
+      '<div class="small">' +
+      '<div class="mb-1"><span class="text-muted">Permanent Address:</span> <strong>' + permAddr.address1 + ', ' + (permAddr.blockGpu || '') + ', ' + (permAddr.district || '') + '</strong></div>' +
+      '<div class="mb-1"><span class="text-muted">Same as Permanent Address?</span> <strong>' + (permAddr.sameAsPermanent ? 'Yes' : 'No') + '</strong></div>' +
+      '<div><span class="text-muted">Residential / Present Address:</span> <strong>' + resAddr.address1 + ', ' + (resAddr.blockGpu || '') + ', ' + (resAddr.district || '') + '</strong></div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
-              '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-tree text-success me-1"></i> Forest, Land &amp; Statutory Authority Details</h6>' +
-              '<div class="row g-2 small">' +
-                '<div class="col-sm-3"><span class="text-muted d-block">District / Division</span><strong>' + (app.district || 'Gangtok') + ' / ' + (app.division || 'Gangtok Territorial Division') + '</strong></div>' +
-                '<div class="col-sm-3"><span class="text-muted d-block">Forest Range</span><strong>' + (app.range || 'Ranipool Range (T)') + '</strong></div>' +
-                '<div class="col-sm-3"><span class="text-muted d-block">Purpose of Felling</span><strong>' + app.purpose + ' (' + (app.trees ? app.trees.length : 0) + ' Trees)</strong></div>' +
-                '<div class="col-sm-3"><span class="text-muted d-block">Khatiyan in Applicant Name?</span><strong>' + (app.khatiyanInApplicantName ? 'Yes' : 'No (NOC Attached)') + '</strong></div>' +
-                '<div class="col-sm-6 mt-2"><span class="text-muted d-block">RO Statutory Limit Classification</span><span class="badge ' + (auth.withinRO ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-warning-subtle text-warning-emphasis border border-warning-subtle') + '">' + auth.roClassificationText + '</span></div>' +
-                '<div class="col-sm-6 mt-2"><span class="text-muted d-block">ACF / DFO Authority Classification</span><span class="badge ' + (auth.withinACF ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle') + '">' + auth.acfClassificationText + '</span></div>' +
-              '</div>' +
-            '</div>' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-tree text-success me-1"></i> Forest, Land &amp; Statutory Authority Details</h6>' +
+      '<div class="row g-2 small">' +
+      '<div class="col-sm-3"><span class="text-muted d-block">District / Division</span><strong>' + (app.district || 'Gangtok') + ' / ' + (app.division || 'Gangtok Territorial Division') + '</strong></div>' +
+      '<div class="col-sm-3"><span class="text-muted d-block">Forest Range</span><strong>' + (app.range || 'Ranipool Range (T)') + '</strong></div>' +
+      '<div class="col-sm-3"><span class="text-muted d-block">Purpose of Felling</span><strong>' + app.purpose + ' (' + (app.trees ? app.trees.length : 0) + ' Trees)</strong></div>' +
+      '<div class="col-sm-3"><span class="text-muted d-block">Khatiyan in Applicant Name?</span><strong>' + (app.khatiyanInApplicantName ? 'Yes' : 'No (NOC Attached)') + '</strong></div>' +
+      '<div class="col-sm-6 mt-2"><span class="text-muted d-block">RO Statutory Limit Classification</span><span class="badge ' + (auth.withinRO ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-warning-subtle text-warning-emphasis border border-warning-subtle') + '">' + auth.roClassificationText + '</span></div>' +
+      '<div class="col-sm-6 mt-2"><span class="text-muted d-block">ACF / DFO Authority Classification</span><span class="badge ' + (auth.withinACF ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle') + '">' + auth.acfClassificationText + '</span></div>' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
-              '<div class="d-flex justify-content-between align-items-center mb-2">' +
-                '<h6 class="fw-bold text-dark mb-0"><i class="bi bi-list-ol text-success me-1"></i> Tree Information (' + (app.trees ? app.trees.length : 0) + ' of Max 10 Trees)</h6>' +
-                '<span class="badge bg-light text-secondary border small">Max Permitted: 10 Trees</span>' +
-              '</div>' +
-              '<div class="table-responsive">' +
-                '<table class="table table-sm table-bordered align-middle small mb-0">' +
-                  '<thead class="table-light"><tr><th>Tree #</th><th>Species of Tree</th><th>Plot / Khasra No.</th><th>GBH (Feet)</th><th>Verification Status</th></tr></thead>' +
-                  '<tbody>' + (treesRows || '<tr><td colspan="5" class="text-center text-muted">No trees listed.</td></tr>') + '</tbody>' +
-                '</table>' +
-              '</div>' +
-            '</div>' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<div class="d-flex justify-content-between align-items-center mb-2">' +
+      '<h6 class="fw-bold text-dark mb-0"><i class="bi bi-list-ol text-success me-1"></i> Tree Information (' + (app.trees ? app.trees.length : 0) + ' of Max 10 Trees)</h6>' +
+      '<span class="badge bg-light text-secondary border small">Max Permitted: 10 Trees</span>' +
+      '</div>' +
+      '<div class="table-responsive">' +
+      '<table class="table table-sm table-bordered align-middle small mb-0">' +
+      '<thead class="table-light"><tr><th>Tree #</th><th>Species of Tree</th><th>Plot / Khasra No.</th><th>GBH (Feet)</th><th>Verification Status</th></tr></thead>' +
+      '<tbody>' + (treesRows || '<tr><td colspan="5" class="text-center text-muted">No trees listed.</td></tr>') + '</tbody>' +
+      '</table>' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="row g-3 mb-3">' +
-              '<div class="col-md-6">' +
-                '<div class="card border-0 shadow-xs p-3 bg-white h-100">' +
-                  '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-paperclip text-success me-1"></i> Supporting Document List</h6>' +
-                  '<ul class="list-group list-group-flush">' + (docsRows || '<li class="list-group-item text-muted small">No documents attached.</li>') + '</ul>' +
-                '</div>' +
-              '</div>' +
-              '<div class="col-md-6">' +
-                '<div class="card border-0 shadow-xs p-3 bg-white h-100">' +
-                  '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-chat-left-text text-success me-1"></i> Remarks &amp; Current Status</h6>' +
-                  '<div class="small mb-2"><span class="text-muted">Applicant Additional Remarks:</span><div class="p-2 bg-light rounded border mt-1">' + (app.additionalRemarks || app.fellingReason || 'None') + '</div></div>' +
-                  '<div class="small"><span class="text-muted">Department / Verification Remarks:</span><div class="p-2 bg-light rounded border mt-1">' + (app.boRemarks || app.departmentRemarks || (app.verificationReport ? app.verificationReport.overallRecommendation : 'None')) + '</div></div>' +
-                '</div>' +
-              '</div>' +
-            '</div>' +
+      '<div class="row g-3 mb-3">' +
+      '<div class="col-md-6">' +
+      '<div class="card border-0 shadow-xs p-3 bg-white h-100">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-paperclip text-success me-1"></i> Supporting Document List</h6>' +
+      '<ul class="list-group list-group-flush">' + (docsRows || '<li class="list-group-item text-muted small">No documents attached.</li>') + '</ul>' +
+      '</div>' +
+      '</div>' +
+      '<div class="col-md-6">' +
+      '<div class="card border-0 shadow-xs p-3 bg-white h-100">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-chat-left-text text-success me-1"></i> Remarks &amp; Current Status</h6>' +
+      '<div class="small mb-2"><span class="text-muted">Applicant Additional Remarks:</span><div class="p-2 bg-light rounded border mt-1">' + (app.additionalRemarks || app.fellingReason || 'None') + '</div></div>' +
+      '<div class="small"><span class="text-muted">Department / Verification Remarks:</span><div class="p-2 bg-light rounded border mt-1">' + (app.boRemarks || app.departmentRemarks || (app.verificationReport ? app.verificationReport.overallRecommendation : 'None')) + '</div></div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
-              '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-shield-check text-success me-1"></i> Land Parcha &amp; Verification Checklists</h6>' +
-              '<div class="mb-3">' + renderLandParchaHtml(app) + '</div>' +
-              '<div><h6 class="fw-bold text-dark small mb-2">Department Verification Checklists:</h6>' + renderChecklistsHtml(app) + '</div>' +
-            '</div>' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-shield-check text-success me-1"></i> Land Parcha &amp; Verification Checklists</h6>' +
+      '<div class="mb-3">' + renderLandParchaHtml(app) + '</div>' +
+      '<div><h6 class="fw-bold text-dark small mb-2">Department Verification Checklists:</h6>' + renderChecklistsHtml(app) + '</div>' +
+      '</div>' +
 
-            '<div class="card border-0 shadow-xs p-3 bg-white">' +
-              '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-clock-history text-success me-1"></i> Application Processing History</h6>' +
-              '<div class="table-responsive">' +
-                '<table class="table table-sm table-bordered align-middle mb-0">' +
-                  '<thead class="table-light"><tr><th>Date</th><th>Workflow Stage</th><th>Actor / Authority</th><th>Remarks</th></tr></thead>' +
-                  '<tbody>' + (historyRows || '<tr><td colspan="4" class="text-center text-muted">No history recorded yet.</td></tr>') + '</tbody>' +
-                '</table>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="modal-footer bg-white d-flex justify-content-between">' +
-            '<button type="button" class="btn btn-sm btn-outline-primary" onclick="MarkingOrderData.openApplicationTrackingModal(\'' + app.appNo + '\')"><i class="bi bi-diagram-3 me-1"></i> Open Workflow Progress Tracker</button>' +
-            '<button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close Preview</button>' +
-          '</div>' +
-        '</div>' +
+      '<div class="card border-0 shadow-xs p-3 bg-white">' +
+      '<h6 class="fw-bold text-dark border-bottom pb-2 mb-2"><i class="bi bi-clock-history text-success me-1"></i> Application Processing History</h6>' +
+      '<div class="table-responsive">' +
+      '<table class="table table-sm table-bordered align-middle mb-0">' +
+      '<thead class="table-light"><tr><th>Date</th><th>Workflow Stage</th><th>Actor / Authority</th><th>Remarks</th></tr></thead>' +
+      '<tbody>' + (historyRows || '<tr><td colspan="4" class="text-center text-muted">No history recorded yet.</td></tr>') + '</tbody>' +
+      '</table>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="modal-footer bg-white d-flex justify-content-between">' +
+      '<button type="button" class="btn btn-sm btn-outline-primary" onclick="MarkingOrderData.openApplicationTrackingModal(\'' + app.appNo + '\')"><i class="bi bi-diagram-3 me-1"></i> Open Workflow Progress Tracker</button>' +
+      '<button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close Preview</button>' +
+      '</div>' +
+      '</div>' +
       '</div>';
 
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -3990,26 +5160,26 @@ window.MarkingOrderData = (function () {
 
     modalEl.innerHTML =
       '<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">' +
-        '<div class="modal-content border-0 shadow-lg">' +
-          '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
-            '<div>' +
-              '<h5 class="modal-title fw-bold mb-0"><i class="bi bi-geo-alt-fill text-warning me-2"></i>Track Application: <span class="font-monospace">' + app.appNo + '</span></h5>' +
-              '<div class="small text-white-50">Applicant: ' + app.applicantName + ' • ' + (app.range || 'Ranipool Range (T)') + ' (' + (app.division || 'Gangtok') + ')</div>' +
-            '</div>' +
-            '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
-          '</div>' +
-          '<div class="modal-body p-4 bg-white">' +
-            '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">' +
-              '<div><span class="small text-muted d-block">Current Workflow Status</span>' + getStatusBadgeHtml(app.currentStatus) + '</div>' +
-              '<div class="text-sm-end"><span class="small text-muted d-block">Next Expected Action</span><strong class="small text-dark">' + app.nextExpectedAction + '</strong></div>' +
-            '</div>' +
-            buildWorkflowTrackerHtml(app) +
-          '</div>' +
-          '<div class="modal-footer bg-light d-flex justify-content-between">' +
-            '<button type="button" class="btn btn-sm btn-gov-primary px-3 fw-semibold" onclick="MarkingOrderData.openApplicationDetailModal(\'' + app.appNo + '\')"><i class="bi bi-eye me-1"></i> View Full Application Details</button>' +
-            '<button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close Tracker</button>' +
-          '</div>' +
-        '</div>' +
+      '<div class="modal-content border-0 shadow-lg">' +
+      '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
+      '<div>' +
+      '<h5 class="modal-title fw-bold mb-0"><i class="bi bi-geo-alt-fill text-warning me-2"></i>Track Application: <span class="font-monospace">' + app.appNo + '</span></h5>' +
+      '<div class="small text-white-50">Applicant: ' + app.applicantName + ' � ' + (app.range || 'Ranipool Range (T)') + ' (' + (app.division || 'Gangtok') + ')</div>' +
+      '</div>' +
+      '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
+      '</div>' +
+      '<div class="modal-body p-4 bg-white">' +
+      '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">' +
+      '<div><span class="small text-muted d-block">Current Workflow Status</span>' + getStatusBadgeHtml(app.currentStatus) + '</div>' +
+      '<div class="text-sm-end"><span class="small text-muted d-block">Next Expected Action</span><strong class="small text-dark">' + app.nextExpectedAction + '</strong></div>' +
+      '</div>' +
+      buildWorkflowTrackerHtml(app) +
+      '</div>' +
+      '<div class="modal-footer bg-light d-flex justify-content-between">' +
+      '<button type="button" class="btn btn-sm btn-gov-primary px-3 fw-semibold" onclick="MarkingOrderData.openApplicationDetailModal(\'' + app.appNo + '\')"><i class="bi bi-eye me-1"></i> View Full Application Details</button>' +
+      '<button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close Tracker</button>' +
+      '</div>' +
+      '</div>' +
       '</div>';
 
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -4033,25 +5203,25 @@ window.MarkingOrderData = (function () {
 
     modalEl.innerHTML =
       '<div class="modal-dialog modal-dialog-centered modal-lg">' +
-        '<div class="modal-content border-0 shadow-lg">' +
-          '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
-            '<div>' +
-              '<span class="badge bg-warning text-dark fw-bold mb-1">' + stageBadge + '</span>' +
-              '<h5 class="modal-title fw-bold mb-0">' + title + '</h5>' +
-            '</div>' +
-            '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
-          '</div>' +
-          '<div class="modal-body p-4 bg-white">' +
-            '<div class="alert alert-info border-0 small d-flex align-items-start gap-2 mb-3">' +
-              '<i class="bi bi-info-circle-fill fs-5 text-primary mt-0.5"></i>' +
-              '<div><strong>Stage 02 Implementation Boundary:</strong> ' + description + '</div>' +
-            '</div>' +
-            (bulletsHtml ? '<h6 class="fw-bold small text-uppercase text-muted mb-2">Preserved Context for Subsequent Stage:</h6><ul class="list-unstyled small text-secondary mb-0">' + bulletsHtml + '</ul>' : '') +
-          '</div>' +
-          '<div class="modal-footer bg-light">' +
-            '<button type="button" class="btn btn-sm btn-gov-primary" data-bs-dismiss="modal">Understood</button>' +
-          '</div>' +
-        '</div>' +
+      '<div class="modal-content border-0 shadow-lg">' +
+      '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
+      '<div>' +
+      '<span class="badge bg-warning text-dark fw-bold mb-1">' + stageBadge + '</span>' +
+      '<h5 class="modal-title fw-bold mb-0">' + title + '</h5>' +
+      '</div>' +
+      '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
+      '</div>' +
+      '<div class="modal-body p-4 bg-white">' +
+      '<div class="alert alert-info border-0 small d-flex align-items-start gap-2 mb-3">' +
+      '<i class="bi bi-info-circle-fill fs-5 text-primary mt-0.5"></i>' +
+      '<div><strong>Stage 02 Implementation Boundary:</strong> ' + description + '</div>' +
+      '</div>' +
+      (bulletsHtml ? '<h6 class="fw-bold small text-uppercase text-muted mb-2">Preserved Context for Subsequent Stage:</h6><ul class="list-unstyled small text-secondary mb-0">' + bulletsHtml + '</ul>' : '') +
+      '</div>' +
+      '<div class="modal-footer bg-light">' +
+      '<button type="button" class="btn btn-sm btn-gov-primary" data-bs-dismiss="modal">Understood</button>' +
+      '</div>' +
+      '</div>' +
       '</div>';
 
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -4059,7 +5229,7 @@ window.MarkingOrderData = (function () {
   }
 
   /**
-   * Interactive â‚¹50 Application Fee Payment Modal (Section 19)
+   * Interactive ?50 Application Fee Payment Modal (Section 19 / Tasks 1 & 2)
    */
   function openPaymentModal(appNo, onComplete) {
     const app = getApplicationByNo(appNo);
@@ -4081,73 +5251,96 @@ window.MarkingOrderData = (function () {
       document.body.appendChild(modalEl);
     }
 
+    const defaultTpReq = Boolean(app.isTransitPermitRequired);
+
     modalEl.innerHTML =
       '<div class="modal-dialog modal-dialog-centered">' +
-        '<div class="modal-content border-0 shadow-lg">' +
-          '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
-            '<div class="d-flex align-items-center gap-2">' +
-              '<i class="bi bi-credit-card-2-front-fill fs-4 text-warning"></i>' +
-              '<div>' +
-                '<h5 class="modal-title fw-bold mb-0">Pay Application Fee &bull; â‚¹50</h5>' +
-                '<div class="small text-white-50">Sikkim GO Digital Payment Gateway &bull; FED Sikkim</div>' +
-              '</div>' +
-            '</div>' +
-            '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
-          '</div>' +
-          '<div class="modal-body p-4 bg-light">' +
-            '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
-              '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
-                '<span class="text-muted small">Application Number:</span>' +
-                '<strong class="font-monospace text-primary">' + app.appNo + '</strong>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
-                '<span class="text-muted small">Applicant Name:</span>' +
-                '<strong class="text-dark">' + app.applicantName + '</strong>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
-                '<span class="text-muted small">Service:</span>' +
-                '<span class="text-dark">Tree Felling Marking Order</span>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
-                '<span class="text-muted small">Purpose &amp; Tree Count:</span>' +
-                '<strong class="text-dark">' + app.purpose + ' (' + app.trees.length + ' Trees)</strong>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center pt-1">' +
-                '<span class="fw-bold text-dark">Total Fee Payable:</span>' +
-                '<span class="fs-4 fw-bold text-success font-monospace">â‚¹50.00</span>' +
-              '</div>' +
-            '</div>' +
+      '<div class="modal-content border-0 shadow-lg">' +
+      '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
+      '<div class="d-flex align-items-center gap-2">' +
+      '<i class="bi bi-credit-card-2-front-fill fs-4 text-warning"></i>' +
+      '<div>' +
+      '<h5 class="modal-title fw-bold mb-0">Pay Application Fee &bull; &#8377;50</h5>' +
+      '<div class="small text-white-50">Sikkim GO Digital Payment Gateway &bull; FED Sikkim</div>' +
+      '</div>' +
+      '</div>' +
+      '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
+      '</div>' +
+      '<div class="modal-body p-4 bg-light">' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
+      '<span class="text-muted small">Application Number:</span>' +
+      '<strong class="font-monospace text-primary">' + app.appNo + '</strong>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
+      '<span class="text-muted small">Applicant Name:</span>' +
+      '<strong class="text-dark">' + app.applicantName + '</strong>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
+      '<span class="text-muted small">Service:</span>' +
+      '<span class="text-dark">Tree Felling Marking Order</span>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">' +
+      '<span class="text-muted small">Purpose &amp; Tree Count:</span>' +
+      '<strong class="text-dark">' + app.purpose + ' (' + (app.trees ? app.trees.length : 0) + ' Trees)</strong>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center pt-1">' +
+      '<span class="fw-bold text-dark">Total Fee Payable:</span>' +
+      '<span class="fs-4 fw-bold text-success font-monospace">&#8377;50.00</span>' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
-              '<label class="form-label small fw-bold text-dark mb-2"><i class="bi bi-wallet2 text-success me-1"></i> Select Payment Method (Prototype Demo):</label>' +
-              '<div class="d-flex flex-column gap-2 small">' +
-                '<label class="p-2 border rounded-2 d-flex align-items-center gap-2 cursor-pointer bg-light">' +
-                  '<input type="radio" name="payMethod" value="upi" checked class="form-check-input">' +
-                  '<span><i class="bi bi-qr-code text-primary me-1"></i> UPI / QR Code (Google Pay, PhonePe, Paytm)</span>' +
-                '</label>' +
-                '<label class="p-2 border rounded-2 d-flex align-items-center gap-2 cursor-pointer">' +
-                  '<input type="radio" name="payMethod" value="netbanking" class="form-check-input">' +
-                  '<span><i class="bi bi-bank text-primary me-1"></i> Net Banking (SBI, HDFC, ICICI, Axis)</span>' +
-                '</label>' +
-                '<label class="p-2 border rounded-2 d-flex align-items-center gap-2 cursor-pointer">' +
-                  '<input type="radio" name="payMethod" value="card" class="form-check-input">' +
-                  '<span><i class="bi bi-credit-card text-primary me-1"></i> Debit / Credit Card (RuPay, Visa, Mastercard)</span>' +
-                '</label>' +
-              '</div>' +
-            '</div>' +
+      '<!-- Transit Permit Requirement Selection (Task 2) -->' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<label class="form-label small fw-bold text-dark mb-1 d-flex align-items-center gap-1">' +
+      '<i class="bi bi-truck text-success"></i>' +
+      '<span>Do you require a Transit Permit for transportation of timber?</span> <span class="text-danger">*</span>' +
+      '</label>' +
+      '<div class="d-flex gap-4 my-2">' +
+      '<div class="form-check">' +
+      '<input class="form-check-input" type="radio" name="payTransitPermitReq" id="payTransitReqNo" value="no"' + (!defaultTpReq ? ' checked' : '') + '>' +
+      '<label class="form-check-label small fw-semibold text-dark cursor-pointer" for="payTransitReqNo">No</label>' +
+      '</div>' +
+      '<div class="form-check">' +
+      '<input class="form-check-input" type="radio" name="payTransitPermitReq" id="payTransitReqYes" value="yes"' + (defaultTpReq ? ' checked' : '') + '>' +
+      '<label class="form-check-label small fw-semibold text-dark cursor-pointer" for="payTransitReqYes">Yes</label>' +
+      '</div>' +
+      '</div>' +
+      '<div class="text-muted small" style="font-size: 0.75rem;">' +
+      'If you select Yes, the application will require Transit Permit approval from the competent authority before the Transit Permit can be issued.' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="alert alert-info border-0 py-2 px-3 small mb-0 d-flex align-items-center gap-2">' +
-              '<i class="bi bi-shield-check text-primary fs-5"></i>' +
-              '<div><strong>Demonstration Gateway:</strong> Clicking &ldquo;Pay â‚¹50 &amp; Issue Marking Order&rdquo; will simulate instant payment success and generate official Marking Order <strong>MO/2026/XXXX</strong>.</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="modal-footer bg-white d-flex justify-content-between">' +
-            '<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>' +
-            '<button type="button" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold" id="btnConfirmPayMO">' +
-              '<i class="bi bi-check-circle me-1"></i> Pay â‚¹50 &amp; Issue Marking Order' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<label class="form-label small fw-bold text-dark mb-2"><i class="bi bi-wallet2 text-success me-1"></i> Select Payment Method (Prototype Demo):</label>' +
+      '<div class="d-flex flex-column gap-2 small">' +
+      '<label class="p-2 border rounded-2 d-flex align-items-center gap-2 cursor-pointer bg-light">' +
+      '<input type="radio" name="payMethod" value="upi" checked class="form-check-input">' +
+      '<span><i class="bi bi-qr-code text-primary me-1"></i> UPI / QR Code (Google Pay, PhonePe, Paytm)</span>' +
+      '</label>' +
+      '<label class="p-2 border rounded-2 d-flex align-items-center gap-2 cursor-pointer">' +
+      '<input type="radio" name="payMethod" value="netbanking" class="form-check-input">' +
+      '<span><i class="bi bi-bank text-primary me-1"></i> Net Banking (SBI, HDFC, ICICI, Axis)</span>' +
+      '</label>' +
+      '<label class="p-2 border rounded-2 d-flex align-items-center gap-2 cursor-pointer">' +
+      '<input type="radio" name="payMethod" value="card" class="form-check-input">' +
+      '<span><i class="bi bi-credit-card text-primary me-1"></i> Debit / Credit Card (RuPay, Visa, Mastercard)</span>' +
+      '</label>' +
+      '</div>' +
+      '</div>' +
+
+      '<div class="alert alert-info border-0 py-2 px-3 small mb-0 d-flex align-items-center gap-2">' +
+      '<i class="bi bi-shield-check text-primary fs-5"></i>' +
+      '<div><strong>Demonstration Gateway:</strong> Clicking &ldquo;Pay &#8377;50 &amp; Issue Marking Order&rdquo; will simulate instant payment success and generate official Marking Order <strong>MO/2026/XXXX</strong>.</div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="modal-footer bg-white d-flex justify-content-between">' +
+      '<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>' +
+      '<button type="button" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold" id="btnConfirmPayMO">' +
+      '<i class="bi bi-check-circle me-1"></i> Pay &#8377;50 &amp; Issue Marking Order' +
+      '</button>' +
+      '</div>' +
+      '</div>' +
       '</div>';
 
     const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -4156,28 +5349,39 @@ window.MarkingOrderData = (function () {
     const payBtn = document.getElementById('btnConfirmPayMO');
     if (payBtn) {
       payBtn.onclick = function () {
+        const tpRadio = modalEl.querySelector('input[name="payTransitPermitReq"]:checked');
+        const isTp = tpRadio ? tpRadio.value === 'yes' : Boolean(app.isTransitPermitRequired);
+
         payBtn.disabled = true;
-        payBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing â‚¹50...';
+        payBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing &#8377;50...';
 
         setTimeout(function () {
-          const randomMoNum = 'MO/2026/' + Math.floor(1000 + Math.random() * 9000);
+          const randomMoNum = app.markingOrderNo || ('MO/2026/' + Math.floor(1000 + Math.random() * 9000));
           const todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
           const newHistoryItem = {
             date: todayStr,
             stage: 'Payment Completed & Marking Order Issued',
             actor: 'Citizen / Payment Gateway',
-            remarks: 'Statutory fee of â‚¹50.00 successfully paid. Marking Order ' + randomMoNum + ' generated.'
+            remarks: isTp
+              ? 'Statutory fee of \u20B950.00 successfully paid. Marking Order ' + randomMoNum + ' generated. Transit Permit requested by applicant (pending ACF/DFO action).'
+              : 'Statutory fee of \u20B950.00 successfully paid. Marking Order ' + randomMoNum + ' generated. Transit Permit not required.'
           };
 
           const patch = {
-            paymentStatus: 'Application Fee Paid (â‚¹50.00)',
+            isPaid: true,
+            feeAmount: 50,
+            paymentStatus: 'Payment Completed',
             markingOrderStatus: 'Marking Order Issued',
             markingOrderNo: randomMoNum,
             markingOrderIssueDate: todayStr,
-            currentStatus: 'Marking Order Issued',
+            isTransitPermitRequired: isTp,
+            transitPermitStatus: isTp ? 'Transit Permit Approval Pending' : 'Not Required',
+            currentStatus: isTp ? 'Payment Completed � Transit Permit Pending' : 'Marking Order Issued',
             workflowStageIndex: 5,
-            nextExpectedAction: 'Marking Order issued. Citizen may download order and proceed with tree marking.',
+            nextExpectedAction: isTp
+              ? 'Marking Order issued. Transit Permit approval pending with ACF / DFO.'
+              : 'Marking Order issued. Citizen may download order and proceed with tree marking.',
             requiresCitizenAction: false,
             requiredCitizenActionType: null,
             requiredCitizenActionText: null
@@ -4192,7 +5396,11 @@ window.MarkingOrderData = (function () {
           bsModal.hide();
 
           // Show confirmation alert
-          alert('Payment Successful!\n\nâ‚¹50.00 received successfully.\nMarking Order Number: ' + randomMoNum + '\nStatus: Marking Order Issued.');
+          if (isTp) {
+            alert('Payment Successful!\n\n\u20B950.00 received successfully.\nMarking Order Number: ' + randomMoNum + '\nStatus: Payment Completed � Transit Permit Approval Pending.\n\nNote: The application has been routed to ACF / DFO for Transit Permit issuance. Certificate download will be unlocked once Transit Permit is issued.');
+          } else {
+            alert('Payment Successful!\n\n\u20B950.00 received successfully.\nMarking Order Number: ' + randomMoNum + '\nStatus: Marking Order Issued.\n\nNote: You may now download your Marking Order Certificate.');
+          }
 
           if (typeof onComplete === 'function') {
             onComplete(patch);
@@ -4210,6 +5418,26 @@ window.MarkingOrderData = (function () {
   function initDashboardCommon() {
     const html = document.documentElement;
     const body = document.body;
+
+    // Task 4: Ensure long status pill text wraps cleanly without causing horizontal scrolling
+    if (!document.getElementById('gov-status-wrap-styles')) {
+      const styleEl = document.createElement('style');
+      styleEl.id = 'gov-status-wrap-styles';
+      styleEl.textContent = `
+        .gov-status-pill, .badge-status, td .gov-status-pill, td .badge {
+          white-space: normal !important;
+          word-break: normal !important;
+          overflow-wrap: anywhere !important;
+          line-height: 1.25 !important;
+          text-align: left !important;
+          max-width: 220px !important;
+          display: inline-flex !important;
+          align-items: center !important;
+        }
+        table th, table td { vertical-align: middle !important; }
+      `;
+      document.head.appendChild(styleEl);
+    }
 
     // Font Size Controls
     const fontBtns = document.querySelectorAll('[data-font-action]');
@@ -4450,7 +5678,7 @@ window.MarkingOrderData = (function () {
         throw new Error('Cannot approve: Application exceeds RO statutory authority (' + curApp.trees.length + ' trees > ' + auth.roLimit + '). Must forward to ACF.');
       }
       var patch = {
-        currentStatus: 'Approved \u2013 Payment Pending',
+        currentStatus: 'Approved � Payment Pending',
         workflowStageIndex: 4,
         approvalStatus: 'Approved by Range Officer',
         approvedByRole: 'Range Officer (RO)',
@@ -4521,7 +5749,7 @@ window.MarkingOrderData = (function () {
         throw new Error('Cannot approve: Application exceeds ACF statutory authority (' + curApp.trees.length + ' trees > ' + auth.acfLimit + '). Must forward to DFO.');
       }
       var patch = {
-        currentStatus: 'Approved \u2013 Payment Pending',
+        currentStatus: 'Approved � Payment Pending',
         workflowStageIndex: 4,
         approvalStatus: 'Approved by Assistant Conservator of Forests',
         approvedByRole: 'Assistant Conservator of Forests (ACF)',
@@ -4586,7 +5814,7 @@ window.MarkingOrderData = (function () {
 
     if (decision === 'approve') {
       var patch = {
-        currentStatus: 'Approved \u2013 Payment Pending',
+        currentStatus: 'Approved � Payment Pending',
         workflowStageIndex: 4,
         approvalStatus: 'Approved by Divisional Forest Officer',
         approvedByRole: 'Divisional Forest Officer (DFO)',
@@ -4666,7 +5894,7 @@ window.MarkingOrderData = (function () {
       var customAlerts = JSON.parse(localStorage.getItem('mo_delay_alerts') || '[]');
       customAlerts.unshift(alertItem);
       localStorage.setItem('mo_delay_alerts', JSON.stringify(customAlerts));
-    } catch (e) {}
+    } catch (e) { }
     return alertItem;
   }
 
@@ -4755,16 +5983,16 @@ window.MarkingOrderData = (function () {
 
     // 1. Is application approved?
     var isApproved = (app.currentStatus && app.currentStatus.includes('Approved')) ||
-                     (app.approvalStatus && app.approvalStatus.includes('Approved'));
+      (app.approvalStatus && app.approvalStatus.includes('Approved'));
     if (!isApproved) return false;
 
     // 2. Is payment pending?
     var isPaymentPending = (app.paymentStatus && app.paymentStatus.includes('Pending')) ||
-                           (app.currentStatus && app.currentStatus.includes('Payment Pending'));
+      (app.currentStatus && app.currentStatus.includes('Payment Pending'));
     var isAlreadyPaid = (app.paymentStatus && app.paymentStatus.includes('Paid')) ||
-                        (app.paymentStatus && app.paymentStatus.includes('Completed')) ||
-                        (app.currentStatus && app.currentStatus.includes('Payment Successful')) ||
-                        (app.currentStatus && app.currentStatus.includes('Marking Order Issued'));
+      (app.paymentStatus && app.paymentStatus.includes('Completed')) ||
+      (app.currentStatus && app.currentStatus.includes('Payment Successful')) ||
+      (app.currentStatus && app.currentStatus.includes('Marking Order Issued'));
     if (!isPaymentPending || isAlreadyPaid) return false;
 
     // 3. Does currently logged in user match the original application creator?
@@ -4855,7 +6083,7 @@ window.MarkingOrderData = (function () {
         var day = String(d.getDate()).padStart(2, '0');
         return y + '-' + m + '-' + day;
       }
-    } catch(e) {}
+    } catch (e) { }
     return dateStr;
   }
 
@@ -4896,7 +6124,7 @@ window.MarkingOrderData = (function () {
       district: district || 'Gangtok',
       revenueBlock: block || 'Ranka GPU',
       forestRange: range || 'Ranipool Range',
-      khatiyanParchaNo: 'KP-2024-' + (block ? block.substring(0,3).toUpperCase() : 'RNK') + '-0' + Math.floor(100 + Math.random() * 900),
+      khatiyanParchaNo: 'KP-2024-' + (block ? block.substring(0, 3).toUpperCase() : 'RNK') + '-0' + Math.floor(100 + Math.random() * 900),
       recordedOwner: isSimulatedMismatch ? 'Dorjee Tshering Lepcha (Mismatch Record)' : 'Citizen Demo User (Primary)',
       fatherSpouseName: isSimulatedMismatch ? 'Late Sonam Lepcha' : 'Guardian Demo Record A',
       totalAreaAcres: '1.45 Acres (Dry Cultivation)',
@@ -4952,19 +6180,19 @@ window.MarkingOrderData = (function () {
 
       html +=
         '<div class="card border border-' + roleColor + '-subtle shadow-xs bg-white rounded-2 overflow-hidden">' +
-          '<div class="card-header bg-' + roleColor + '-subtle py-1.5 px-3 d-flex justify-content-between align-items-center flex-wrap gap-2">' +
-            '<div class="small fw-bold text-dark"><i class="bi bi-person-check-fill text-' + roleColor + ' me-1"></i>' + c.roleTitle + ' Checklist Verification</div>' +
-            '<span class="badge bg-white text-dark border small">' + c.submissionDate + '</span>' +
-          '</div>' +
-          '<div class="card-body p-2.5 small">' +
-            '<div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom text-muted" style="font-size:0.75rem;">' +
-              '<span>Verifying Officer: <strong class="text-dark">' + c.officerName + '</strong> (' + c.role + ')</span>' +
-              (c.hasDiscrepancy ? '<span class="badge bg-danger text-white">Discrepancy Reported</span>' : '<span class="badge bg-success text-white">Fully Verified</span>') +
-            '</div>' +
-            '<div class="mb-2"><strong class="text-secondary d-block mb-1" style="font-size:0.75rem;">Completed Verification Points (' + (c.selectedItems || []).length + '):</strong><ul class="list-unstyled mb-0 ps-1" style="font-size:0.78rem;">' + itemsHtml + '</ul></div>' +
-            (c.additionalRemarks ? '<div class="p-1.5 bg-light rounded border mb-1.5"><span class="text-muted fw-semibold d-block" style="font-size:0.72rem;">Additional Remarks:</span><div class="text-dark">' + c.additionalRemarks + '</div></div>' : '') +
-            (c.discrepancyRemarks ? '<div class="p-1.5 bg-danger-subtle rounded border border-danger-subtle"><span class="text-danger fw-semibold d-block" style="font-size:0.72rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Discrepancy Remarks:</span><div class="text-danger-emphasis">' + c.discrepancyRemarks + '</div></div>' : '') +
-          '</div>' +
+        '<div class="card-header bg-' + roleColor + '-subtle py-1.5 px-3 d-flex justify-content-between align-items-center flex-wrap gap-2">' +
+        '<div class="small fw-bold text-dark"><i class="bi bi-person-check-fill text-' + roleColor + ' me-1"></i>' + c.roleTitle + ' Checklist Verification</div>' +
+        '<span class="badge bg-white text-dark border small">' + c.submissionDate + '</span>' +
+        '</div>' +
+        '<div class="card-body p-2.5 small">' +
+        '<div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom text-muted" style="font-size:0.75rem;">' +
+        '<span>Verifying Officer: <strong class="text-dark">' + c.officerName + '</strong> (' + c.role + ')</span>' +
+        (c.hasDiscrepancy ? '<span class="badge bg-danger text-white">Discrepancy Reported</span>' : '<span class="badge bg-success text-white">Fully Verified</span>') +
+        '</div>' +
+        '<div class="mb-2"><strong class="text-secondary d-block mb-1" style="font-size:0.75rem;">Completed Verification Points (' + (c.selectedItems || []).length + '):</strong><ul class="list-unstyled mb-0 ps-1" style="font-size:0.78rem;">' + itemsHtml + '</ul></div>' +
+        (c.additionalRemarks ? '<div class="p-1.5 bg-light rounded border mb-1.5"><span class="text-muted fw-semibold d-block" style="font-size:0.72rem;">Additional Remarks:</span><div class="text-dark">' + c.additionalRemarks + '</div></div>' : '') +
+        (c.discrepancyRemarks ? '<div class="p-1.5 bg-danger-subtle rounded border border-danger-subtle"><span class="text-danger fw-semibold d-block" style="font-size:0.72rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Discrepancy Remarks:</span><div class="text-danger-emphasis">' + c.discrepancyRemarks + '</div></div>' : '') +
+        '</div>' +
         '</div>';
     });
     html += '</div>';
@@ -4988,13 +6216,13 @@ window.MarkingOrderData = (function () {
 
     return '<div class="p-2.5 rounded border small ' + (v.outcome === 'Mismatch Found' ? 'bg-danger-subtle border-danger-subtle' : (v.outcome === 'Verified / Matched' ? 'bg-success-subtle border-success-subtle' : 'bg-light border-secondary-subtle')) + '">' +
       '<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">' +
-        '<span class="fw-bold text-dark"><i class="bi bi-bank2 text-success me-1"></i> Land Parcha Third-Party Revenue API Outcome:</span>' +
-        '<span class="badge ' + badgeClass + '"><i class="bi ' + icon + ' me-1"></i>' + v.outcome + '</span>' +
+      '<span class="fw-bold text-dark"><i class="bi bi-bank2 text-success me-1"></i> Land Parcha Third-Party Revenue API Outcome:</span>' +
+      '<span class="badge ' + badgeClass + '"><i class="bi ' + icon + ' me-1"></i>' + v.outcome + '</span>' +
       '</div>' +
       '<div class="text-secondary small mb-1">Verified on <strong>' + v.verifiedDate + '</strong> by <strong>' + v.officerName + '</strong> (' + v.officerRole + ') via Sikkim Land Revenue Gateway.</div>' +
       (v.discrepancyCategory ? '<div class="text-danger small mb-1"><strong>Discrepancy Category:</strong> ' + v.discrepancyCategory + '</div>' : '') +
       (v.remarks ? '<div class="p-1.5 bg-white rounded border small mt-1 text-dark"><strong>Officer Remarks:</strong> ' + v.remarks + '</div>' : '') +
-    '</div>';
+      '</div>';
   }
 
   /**
@@ -5003,7 +6231,7 @@ window.MarkingOrderData = (function () {
   function canDownloadCertificate(app) {
     if (!app) return false;
     var isPaid = (app.paymentStatus && (app.paymentStatus.includes('Paid') || app.paymentStatus.includes('Completed'))) ||
-                 (app.currentStatus && (app.currentStatus.includes('Marking Order Issued') || app.currentStatus.includes('Payment Completed')));
+      (app.currentStatus && (app.currentStatus.includes('Marking Order Issued') || app.currentStatus.includes('Payment Completed')));
     if (!isPaid) return false;
     if (!app.isTransitPermitRequired) return true;
     return app.transitPermitStatus === 'Approved/Issued' || app.transitPermitStatus === 'Transit Permit Issued';
@@ -5016,7 +6244,7 @@ window.MarkingOrderData = (function () {
     var curApp = getApplicationByNo(appNo);
     if (!curApp) return null;
 
-    var tpNo = 'TP/FED/' + (curApp.range ? curApp.range.substring(0,3).toUpperCase() : 'GTK') + '/' + new Date().getFullYear() + '/' + Math.floor(100 + Math.random() * 900);
+    var tpNo = 'TP/FED/' + (curApp.range ? curApp.range.substring(0, 3).toUpperCase() : 'GTK') + '/' + new Date().getFullYear() + '/' + Math.floor(100 + Math.random() * 900);
     var todayStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
     var historyItem = {
@@ -5057,60 +6285,60 @@ window.MarkingOrderData = (function () {
 
     modalEl.innerHTML =
       '<div class="modal-dialog modal-dialog-centered">' +
-        '<div class="modal-content border-0 shadow-lg">' +
-          '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
-            '<div class="d-flex align-items-center gap-2">' +
-              '<i class="bi bi-truck fs-4 text-warning"></i>' +
-              '<div>' +
-                '<h5 class="modal-title fw-bold mb-0">Issue Official Transit Permit</h5>' +
-                '<div class="small text-white-50">Forest &amp; Environment Department &bull; Movement Clearance</div>' +
-              '</div>' +
-            '</div>' +
-            '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
-          '</div>' +
-          '<div class="modal-body p-3 bg-light">' +
-            '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
-              '<div class="d-flex justify-content-between align-items-center mb-1">' +
-                '<span class="text-muted small">Application Number:</span>' +
-                '<strong class="font-monospace text-primary">' + app.appNo + '</strong>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center mb-1">' +
-                '<span class="text-muted small">Applicant Name:</span>' +
-                '<strong class="text-dark">' + app.applicantName + '</strong>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center mb-1">' +
-                '<span class="text-muted small">Approved Trees:</span>' +
-                '<strong class="text-dark">' + (app.trees ? app.trees.length : 0) + ' Trees (' + app.purpose + ')</strong>' +
-              '</div>' +
-              '<div class="d-flex justify-content-between align-items-center">' +
-                '<span class="text-muted small">Fee Payment:</span>' +
-                '<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle-fill me-1"></i>\u20B950 Paid (Confirmed)</span>' +
-              '</div>' +
-            '</div>' +
+      '<div class="modal-content border-0 shadow-lg">' +
+      '<div class="modal-header text-white py-3" style="background: linear-gradient(135deg, #114b3f 0%, #0d382f 100%);">' +
+      '<div class="d-flex align-items-center gap-2">' +
+      '<i class="bi bi-truck fs-4 text-warning"></i>' +
+      '<div>' +
+      '<h5 class="modal-title fw-bold mb-0">Issue Official Transit Permit</h5>' +
+      '<div class="small text-white-50">Forest &amp; Environment Department &bull; Movement Clearance</div>' +
+      '</div>' +
+      '</div>' +
+      '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
+      '</div>' +
+      '<div class="modal-body p-3 bg-light">' +
+      '<div class="card border-0 shadow-xs p-3 bg-white mb-3">' +
+      '<div class="d-flex justify-content-between align-items-center mb-1">' +
+      '<span class="text-muted small">Application Number:</span>' +
+      '<strong class="font-monospace text-primary">' + app.appNo + '</strong>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center mb-1">' +
+      '<span class="text-muted small">Applicant Name:</span>' +
+      '<strong class="text-dark">' + app.applicantName + '</strong>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center mb-1">' +
+      '<span class="text-muted small">Approved Trees:</span>' +
+      '<strong class="text-dark">' + (app.trees ? app.trees.length : 0) + ' Trees (' + app.purpose + ')</strong>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center">' +
+      '<span class="text-muted small">Fee Payment:</span>' +
+      '<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle-fill me-1"></i>\u20B950 Paid (Confirmed)</span>' +
+      '</div>' +
+      '</div>' +
 
-            '<div class="mb-3">' +
-              '<label class="form-label small fw-bold text-dark mb-1">Authorized Movement Route / Destination <span class="text-danger">*</span></label>' +
-              '<input type="text" class="form-control form-control-sm" id="tpRouteInput" value="' + (app.revenueBlock || app.range) + ' to Nearest Registered Sawmill via NH-10" placeholder="e.g. Ranka GPU to Ranipool Sawmill via NH-10">' +
-              '<div class="text-muted" style="font-size:0.75rem;">Specify the highway transit corridor and designated timber destination.</div>' +
-            '</div>' +
+      '<div class="mb-3">' +
+      '<label class="form-label small fw-bold text-dark mb-1">Authorized Movement Route / Destination <span class="text-danger">*</span></label>' +
+      '<input type="text" class="form-control form-control-sm" id="tpRouteInput" value="' + (app.revenueBlock || app.range) + ' to Nearest Registered Sawmill via NH-10" placeholder="e.g. Ranka GPU to Ranipool Sawmill via NH-10">' +
+      '<div class="text-muted" style="font-size:0.75rem;">Specify the highway transit corridor and designated timber destination.</div>' +
+      '</div>' +
 
-            '<div class="mb-3">' +
-              '<label class="form-label small fw-bold text-dark mb-1">Authorizing Officer Remarks <span class="text-danger">*</span></label>' +
-              '<textarea class="form-control form-control-sm" id="tpOfficerRemarks" rows="2" placeholder="Remarks regarding vehicle inspection, hammer marking verification, and transit validity.">Transit Permit granted for timber transport. All logs must carry statutory hammer mark prior to transit.</textarea>' +
-            '</div>' +
+      '<div class="mb-3">' +
+      '<label class="form-label small fw-bold text-dark mb-1">Authorizing Officer Remarks <span class="text-danger">*</span></label>' +
+      '<textarea class="form-control form-control-sm" id="tpOfficerRemarks" rows="2" placeholder="Remarks regarding vehicle inspection, hammer marking verification, and transit validity.">Transit Permit granted for timber transport. All logs must carry statutory hammer mark prior to transit.</textarea>' +
+      '</div>' +
 
-            '<div class="alert alert-success border-0 py-2 px-3 small mb-0 d-flex align-items-center gap-2">' +
-              '<i class="bi bi-shield-check text-success fs-4"></i>' +
-              '<div><strong>Issuance Effect:</strong> Issuing this Transit Permit will assign an official TP number and immediately unlock the <strong>Download Certificate</strong> action for both citizen and departmental officers.</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="modal-footer bg-white d-flex justify-content-between">' +
-            '<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>' +
-            '<button type="button" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-bold" id="btnConfirmIssueTP">' +
-              '<i class="bi bi-truck me-1"></i> Confirm &amp; Issue Transit Permit' +
-            '</button>' +
-          '</div>' +
-        '</div>' +
+      '<div class="alert alert-success border-0 py-2 px-3 small mb-0 d-flex align-items-center gap-2">' +
+      '<i class="bi bi-shield-check text-success fs-4"></i>' +
+      '<div><strong>Issuance Effect:</strong> Issuing this Transit Permit will assign an official TP number and immediately unlock the <strong>Download Certificate</strong> action for both citizen and departmental officers.</div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="modal-footer bg-white d-flex justify-content-between">' +
+      '<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>' +
+      '<button type="button" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-bold" id="btnConfirmIssueTP">' +
+      '<i class="bi bi-truck me-1"></i> Confirm &amp; Issue Transit Permit' +
+      '</button>' +
+      '</div>' +
+      '</div>' +
       '</div>';
 
     var bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -5118,7 +6346,7 @@ window.MarkingOrderData = (function () {
 
     var btnConfirm = document.getElementById('btnConfirmIssueTP');
     if (btnConfirm) {
-      btnConfirm.onclick = function() {
+      btnConfirm.onclick = function () {
         btnConfirm.disabled = true;
         btnConfirm.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Issuing...';
 
@@ -5126,7 +6354,7 @@ window.MarkingOrderData = (function () {
         var remarks = document.getElementById('tpOfficerRemarks').value.trim();
         var activeUser = getActiveUser();
 
-        setTimeout(function() {
+        setTimeout(function () {
           var patch = issueTransitPermit(appNo, activeUser.name, activeUser.role, remarks, route);
           bsModal.hide();
           alert('Transit Permit Issued Successfully!\n\nTransit Permit Number: ' + patch.transitPermitNo + '\nValidity: 15 Days\n\nOfficial Certificate Download is now unlocked for all authorized users.');
@@ -5147,6 +6375,301 @@ window.MarkingOrderData = (function () {
       window.open('certificate.html?appNo=' + encodeURIComponent(appNo) + '&role=' + encodeURIComponent(role || 'citizen'), '_blank');
     }
   }
+
+  /**
+   * Task 6: Mount Tree Details with 4 Filters (Division, Range, Date Range, Species)
+   * while respecting role boundaries.
+   * @param {string} containerId - Target DOM element ID
+   * @param {Object} options - { role: 'ro'|'bo'|'acf'|'dfo'|'admin', officer: Object }
+   */
+  function mountTreeDetailsWithFilters(containerId, options) {
+    options = options || {};
+    var container = document.getElementById(containerId);
+    if (!container) return;
+
+    var role = (options.role || 'ro').toLowerCase();
+    var officer = options.officer || getActiveUser() || {};
+
+    // Determine role-based division & range constraints
+    var lockedDivision = (role === 'ro' || role === 'bo') ? (officer.division || 'Gangtok') : '';
+    var lockedRange = (role === 'ro' || role === 'bo') ? (officer.range || 'Ranipool Range') : '';
+
+    // Get all applications
+    var allApps = getAllApplications();
+
+    // Helper: Parse date string to Date object
+    function parseAppDate(dateStr) {
+      if (!dateStr) return null;
+      var d = new Date(dateStr);
+      if (!isNaN(d.getTime())) return d;
+      var parts = dateStr.split(/[\s-]+/);
+      if (parts.length === 3) {
+        var months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+        var m = months[parts[1].toLowerCase().substring(0, 3)];
+        if (m !== undefined) {
+          return new Date(parseInt(parts[2], 10), m, parseInt(parts[0], 10));
+        }
+      }
+      return null;
+    }
+
+    // Flatten applications to tree items based on base role scope
+    function getScopedTrees() {
+      var scopedApps = allApps;
+      if (role === 'ro') {
+        scopedApps = allApps.filter(function (a) {
+          var rMatch = !lockedRange || (a.range && a.range.indexOf(lockedRange) !== -1);
+          var dMatch = !lockedDivision || (a.division && a.division.indexOf(lockedDivision) !== -1);
+          return rMatch || dMatch;
+        });
+      } else if (role === 'bo') {
+        scopedApps = allApps.filter(function (a) {
+          return (a.assignedBoId && a.assignedBoId === officer.id) ||
+            (!a.assignedBoId && a.range && a.range.indexOf(lockedRange) !== -1);
+        });
+      } else if (role === 'acf' || role === 'dfo') {
+        var divTarget = officer.division || 'Gangtok';
+        scopedApps = allApps.filter(function (a) {
+          return a.division && a.division.indexOf(divTarget) !== -1;
+        });
+      }
+
+      var items = [];
+      scopedApps.forEach(function (app) {
+        if (app.trees && app.trees.length > 0) {
+          app.trees.forEach(function (t, idx) {
+            items.push({
+              appNo: app.appNo,
+              markingOrderNo: app.markingOrderNo,
+              applicantName: app.applicantName,
+              division: app.division || 'Gangtok',
+              range: app.range || 'Ranipool Range',
+              purpose: app.purpose || 'Timber',
+              submittedDate: app.submittedDate,
+              approvalDate: app.approvalDate,
+              markingOrderIssueDate: app.markingOrderIssueDate,
+              treeIndex: idx + 1,
+              treeNo: t.treeNo || (idx + 1),
+              species: t.species || t.verifiedSpecies || 'Tree',
+              gbhFeet: t.gbhFeet || (t.girthInches ? (t.girthInches / 12).toFixed(2) + ' ft' : '3.00 ft'),
+              plotNo: t.plotNo || app.khasraNo || '101',
+              boMatchStatus: t.boMatchStatus || (t.boVerified ? 'Matched on Site' : 'Pending Verification'),
+              boVerified: t.boVerified || false
+            });
+          });
+        }
+      });
+      return items;
+    }
+
+    // Render filter interface HTML
+    container.innerHTML =
+      '<div class="card border border-light-subtle shadow-xs mb-3 bg-light-subtle">' +
+      '<div class="card-body p-3">' +
+      '<div class="d-flex align-items-center justify-content-between mb-2">' +
+      '<span class="small fw-bold text-dark"><i class="bi bi-funnel text-success me-1"></i> Filter Tree Records</span>' +
+      ((role === 'ro' || role === 'bo') ? ('<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small"><i class="bi bi-lock-fill me-1"></i> Scope: ' + (officer.range || 'Ranipool Range') + '</span>') : '') +
+      '</div>' +
+      '<div class="row g-2 align-items-end">' +
+      '<div class="col-12 col-sm-6 col-md-3">' +
+      '<label class="form-label small fw-semibold text-secondary mb-1">Division</label>' +
+      '<select class="form-select form-select-sm" id="' + containerId + '_div"' + (lockedDivision ? ' disabled' : '') + '>' +
+      (lockedDivision ? ('<option value="' + lockedDivision + '">' + lockedDivision + '</option>') :
+        ('<option value="">All Divisions</option>' +
+          '<option value="Gangtok"' + ((officer.division === 'Gangtok' || !officer.division) ? ' selected' : '') + '>Gangtok</option>' +
+          '<option value="Mangan"' + (officer.division === 'Mangan' ? ' selected' : '') + '>Mangan</option>' +
+          '<option value="Namchi"' + (officer.division === 'Namchi' ? ' selected' : '') + '>Namchi</option>' +
+          '<option value="Gyalshing"' + (officer.division === 'Gyalshing' ? ' selected' : '') + '>Gyalshing</option>' +
+          '<option value="Pakyong"' + (officer.division === 'Pakyong' ? ' selected' : '') + '>Pakyong</option>' +
+          '<option value="Soreng"' + (officer.division === 'Soreng' ? ' selected' : '') + '>Soreng</option>')
+      ) +
+      '</select>' +
+      '</div>' +
+      '<div class="col-12 col-sm-6 col-md-3">' +
+      '<label class="form-label small fw-semibold text-secondary mb-1">Forest Range</label>' +
+      '<select class="form-select form-select-sm" id="' + containerId + '_range"' + (lockedRange ? ' disabled' : '') + '>' +
+      '<!-- Dynamic -->' +
+      '</select>' +
+      '</div>' +
+      '<div class="col-6 col-md-2">' +
+      '<label class="form-label small fw-semibold text-secondary mb-1">From Date</label>' +
+      '<input type="date" class="form-control form-control-sm" id="' + containerId + '_from">' +
+      '</div>' +
+      '<div class="col-6 col-md-2">' +
+      '<label class="form-label small fw-semibold text-secondary mb-1">To Date</label>' +
+      '<input type="date" class="form-control form-control-sm" id="' + containerId + '_to">' +
+      '</div>' +
+      '<div class="col-12 col-md-2">' +
+      '<label class="form-label small fw-semibold text-secondary mb-1">Tree Species</label>' +
+      '<select class="form-select form-select-sm" id="' + containerId + '_species">' +
+      '<option value="">All Species</option>' +
+      '<option value="Utis">Utis (Alnus)</option>' +
+      '<option value="Chilaune">Chilaune (Schima)</option>' +
+      '<option value="Katus">Katus (Castanopsis)</option>' +
+      '<option value="Pipli">Pipli</option>' +
+      '<option value="Dhupi">Dhupi (Cryptomeria)</option>' +
+      '<option value="Tooni">Tooni</option>' +
+      '<option value="Panisaj">Panisaj</option>' +
+      '<option value="Sauer">Sauer</option>' +
+      '</select>' +
+      '</div>' +
+      '<div class="col-12 d-flex justify-content-end gap-2 mt-2 pt-1 border-top border-light-subtle">' +
+      '<button type="button" class="btn btn-sm btn-outline-secondary" id="' + containerId + '_clearBtn">' +
+      '<i class="bi bi-arrow-counterclockwise me-1"></i> Clear Filters' +
+      '</button>' +
+      '<button type="button" class="btn btn-sm btn-gov-primary fw-semibold" id="' + containerId + '_applyBtn">' +
+      '<i class="bi bi-funnel-fill me-1"></i> Apply Filters' +
+      '</button>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="d-flex justify-content-between align-items-center mb-2 px-1">' +
+      '<span class="small text-muted" id="' + containerId + '_summary"></span>' +
+      '</div>' +
+      '<div class="table-responsive" id="' + containerId + '_table"></div>';
+
+    var divSelect = document.getElementById(containerId + '_div');
+    var rangeSelect = document.getElementById(containerId + '_range');
+    var fromInput = document.getElementById(containerId + '_from');
+    var toInput = document.getElementById(containerId + '_to');
+    var speciesSelect = document.getElementById(containerId + '_species');
+    var clearBtn = document.getElementById(containerId + '_clearBtn');
+    var applyBtn = document.getElementById(containerId + '_applyBtn');
+    var summaryEl = document.getElementById(containerId + '_summary');
+    var tableEl = document.getElementById(containerId + '_table');
+
+    function updateRangeOptions() {
+      if (lockedRange) {
+        rangeSelect.innerHTML = '<option value="' + lockedRange + '">' + lockedRange + '</option>';
+        return;
+      }
+      var selectedDiv = divSelect ? divSelect.value : '';
+      var ranges = [];
+      if (!selectedDiv) {
+        ranges = rangesMaster;
+      } else {
+        ranges = rangesMaster.filter(function (r) {
+          return r.division.toLowerCase() === selectedDiv.toLowerCase() ||
+            selectedDiv.toLowerCase().indexOf(r.division.toLowerCase()) !== -1;
+        });
+      }
+      var opts = '<option value="">All Ranges</option>';
+      ranges.forEach(function (r) {
+        opts += '<option value="' + r.name + '">' + r.name + '</option>';
+      });
+      rangeSelect.innerHTML = opts;
+    }
+
+    if (divSelect && !lockedDivision) {
+      divSelect.addEventListener('change', updateRangeOptions);
+    }
+    updateRangeOptions();
+
+    function applyFilter() {
+      var allScoped = getScopedTrees();
+      var fDiv = divSelect ? divSelect.value.toLowerCase() : '';
+      var fRange = rangeSelect ? rangeSelect.value.toLowerCase() : '';
+      var fFrom = fromInput ? fromInput.value : '';
+      var fTo = toInput ? toInput.value : '';
+      var fSpecies = speciesSelect ? speciesSelect.value.toLowerCase() : '';
+
+      var fromDate = fFrom ? new Date(fFrom + 'T00:00:00') : null;
+      var toDate = fTo ? new Date(fTo + 'T23:59:59') : null;
+
+      var filtered = allScoped.filter(function (item) {
+        if (fDiv && item.division.toLowerCase().indexOf(fDiv) === -1) return false;
+        if (fRange && item.range.toLowerCase().indexOf(fRange) === -1) return false;
+        if (fSpecies && item.species.toLowerCase().indexOf(fSpecies) === -1) return false;
+        if (fromDate || toDate) {
+          var itemDate = parseAppDate(item.markingOrderIssueDate || item.submittedDate);
+          if (itemDate) {
+            if (fromDate && itemDate < fromDate) return false;
+            if (toDate && itemDate > toDate) return false;
+          }
+        }
+        return true;
+      });
+
+      var filterActive = Boolean(fSpecies || fFrom || fTo || (!lockedRange && fRange) || (!lockedDivision && fDiv));
+      var uniqueAppCount = (new Set(filtered.map(function (x) { return x.appNo; }))).size;
+      summaryEl.innerHTML = 'Showing <strong>' + filtered.length + '</strong> tree record' + (filtered.length === 1 ? '' : 's') +
+        ' across <strong>' + uniqueAppCount + '</strong> application' + (uniqueAppCount === 1 ? '' : 's') +
+        (filterActive ? ' <span class="badge bg-success-subtle text-success border border-success-subtle ms-1"><i class="bi bi-check-circle me-1"></i>Filtered</span>' : '');
+
+      if (filtered.length === 0) {
+        tableEl.innerHTML = '<div class="p-4 text-center text-muted small bg-white rounded border"><i class="bi bi-info-circle me-1"></i> No tree records match the selected filter criteria. Try clearing or broadening the filter options.</div>';
+        return;
+      }
+
+      var rows = '';
+      filtered.forEach(function (t) {
+        var moCol = t.markingOrderNo ?
+          ('<strong class="font-monospace text-success">' + t.markingOrderNo + '</strong>') :
+          ('<span class="text-muted small">&ndash;</span>');
+
+        var matchBadge = '';
+        if (t.boMatchStatus === 'Matched on Site') {
+          matchBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check2 me-1"></i>Matched on Site</span>';
+        } else if (t.boMatchStatus === 'Discrepancy Noted') {
+          matchBadge = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-exclamation-triangle me-1"></i>Discrepancy Noted</span>';
+        } else {
+          matchBadge = '<span class="badge bg-light text-secondary border">' + t.boMatchStatus + '</span>';
+        }
+
+        var purposeBadge = t.purpose === 'Firewood' ?
+          '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">Firewood</span>' :
+          '<span class="badge bg-primary-subtle text-primary border border-primary-subtle">Timber</span>';
+
+        rows += '<tr>' +
+          '<td class="font-monospace fw-bold">' +
+          '<a href="javascript:void(0)" onclick="MarkingOrderData.openApplicationDetailModal(\'' + t.appNo + '\')" class="text-decoration-none" title="View application details">' + t.appNo + '</a>' +
+          '</td>' +
+          '<td class="text-nowrap">' + moCol + '</td>' +
+          '<td>' + t.applicantName + '</td>' +
+          '<td>' + t.range + '<br><small class="text-muted">' + t.division + '</small></td>' +
+          '<td>' + purposeBadge + '</td>' +
+          '<td><span class="fw-semibold">Tree #' + t.treeNo + '</span> &bull; ' + t.species + '</td>' +
+          '<td class="font-monospace">' + t.plotNo + '</td>' +
+          '<td>' + t.gbhFeet + '</td>' +
+          '<td>' + matchBadge + '</td>' +
+          '</tr>';
+      });
+
+      tableEl.innerHTML = '<table class="table table-sm table-bordered align-middle small mb-0 bg-white">' +
+        '<thead class="table-light"><tr>' +
+        '<th>Application No.</th>' +
+        '<th>Marking Order No.</th>' +
+        '<th>Applicant Name</th>' +
+        '<th>Range / Division</th>' +
+        '<th>Purpose</th>' +
+        '<th>Tree Species &amp; No.</th>' +
+        '<th>Plot / Khasra</th>' +
+        '<th>GBH (Feet)</th>' +
+        '<th>Field Verification Status</th>' +
+        '</tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+        '</table>';
+    }
+
+    if (applyBtn) {
+      applyBtn.addEventListener('click', applyFilter);
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        if (!lockedDivision && divSelect) divSelect.value = (officer.division || '');
+        updateRangeOptions();
+        if (fromInput) fromInput.value = '';
+        if (toInput) toInput.value = '';
+        if (speciesSelect) speciesSelect.value = '';
+        applyFilter();
+      });
+    }
+
+    applyFilter();
+  }
+
   return {
     statutoryLimits: statutoryLimits,
     evaluateAuthority: evaluateAuthority,
@@ -5204,7 +6727,8 @@ window.MarkingOrderData = (function () {
     canDownloadCertificate: canDownloadCertificate,
     issueTransitPermit: issueTransitPermit,
     openIssueTransitPermitModal: openIssueTransitPermitModal,
-    downloadMarkingOrderCertificate: downloadMarkingOrderCertificate
+    downloadMarkingOrderCertificate: downloadMarkingOrderCertificate,
+    mountTreeDetailsWithFilters: mountTreeDetailsWithFilters
   };
 
   // Global window aliases for seamless inline onclick access
@@ -5212,4 +6736,5 @@ window.MarkingOrderData = (function () {
   window.openApplicationTrackingModal = openApplicationTrackingModal;
   window.downloadMarkingOrderCertificate = downloadMarkingOrderCertificate;
   window.openPaymentModal = openPaymentModal;
+  window.mountTreeDetailsWithFilters = mountTreeDetailsWithFilters;
 })();
