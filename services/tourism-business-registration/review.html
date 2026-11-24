@@ -781,10 +781,10 @@
                 Registration Grade <span class="text-danger">*</span>:
               </label>
               <select class="form-select form-select-sm" id="dtoSelectGrade" onchange="updateDtoPaymentFeeDisplay(this.value)">
-                <option value="Grade A">Grade A &bull; ₹20,000 / 3 Years (Statewide / Large Scale)</option>
-                <option value="Grade B" selected>Grade B &bull; ₹7,000 / 3 Years (Standard Commercial Agency)</option>
-                <option value="Grade C">Grade C &bull; ₹5,000 / 3 Years (Mid-Size Regional Operator)</option>
-                <option value="Grade D">Grade D &bull; ₹1,500 / 3 Years (Local / Micro Enterprise)</option>
+                <option value="Grade A">Grade A &bull; ₹20,000 / 1 Year (Statewide / Large Scale)</option>
+                <option value="Grade B" selected>Grade B &bull; ₹7,000 / 1 Year (Standard Commercial Agency)</option>
+                <option value="Grade C">Grade C &bull; ₹5,000 / 1 Year (Mid-Size Regional Operator)</option>
+                <option value="Grade D">Grade D &bull; ₹1,500 / 1 Year (Local / Micro Enterprise)</option>
               </select>
               <div class="form-text text-muted small">Select the assessed operational grade determining statutory fee under Sikkim Tourist Trade Rules.</div>
             </div>
@@ -847,8 +847,16 @@
               <span class="text-muted">Service / Category:</span>
               <strong class="text-dark" id="modalCitizenPayCatDisplay">-</strong>
             </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="text-muted">Head of Account:</span>
+              <span class="font-monospace small text-dark">0070-02-105-01 (Statutory Registration)</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="text-muted">Statutory Validity:</span>
+              <span class="fw-semibold text-dark small">1 Year</span>
+            </div>
             <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
-              <span class="fw-bold text-dark">Amount Payable:</span>
+              <span class="fw-bold text-dark">Statutory Fee Payable:</span>
               <span class="fs-5 fw-bold text-success" id="modalCitizenPayAmountDisplay">₹7,000</span>
             </div>
           </div>
@@ -1015,11 +1023,11 @@
           </p>
           <div class="p-3 bg-success-subtle rounded border border-success-subtle mb-3">
             <div class="fw-bold text-success mb-1"><i class="bi bi-award-fill me-1"></i> Form 3: Certificate of Registration</div>
-            <div class="small text-muted">A 3-Year statutory registration certificate will be generated with QR code verification and made available to the citizen.</div>
+            <div class="small text-muted">A 1-Year statutory registration certificate will be generated with QR code verification and made available to the citizen.</div>
           </div>
           <div class="mb-3">
             <label for="dtoSanctionRemarksInput" class="form-label fw-semibold text-dark">Sanction Order Remarks (Optional):</label>
-            <textarea class="form-control" id="dtoSanctionRemarksInput" rows="3" placeholder="Statutory requirements satisfied. Approved for 3-Year registration certificate."></textarea>
+            <textarea class="form-control" id="dtoSanctionRemarksInput" rows="3" placeholder="Statutory requirements satisfied. Approved for 1-Year registration certificate."></textarea>
           </div>
         </div>
         <div class="modal-footer bg-light py-2">
@@ -1162,6 +1170,9 @@
         </div>
         <div class="modal-footer bg-white py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <a href="#" id="btnReviewOpenCertPage" target="_blank" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Open Full Page
+          </a>
           <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i> Print Official Certificate
           </button>
@@ -2291,6 +2302,20 @@
         modal.show();
       };
 
+      window.executeToReviewIaReportSubmit = function () {
+        const remarks = document.getElementById('toEndorsementRemarksInput')
+          ? document.getElementById('toEndorsementRemarksInput').value.trim()
+          : '';
+        const res = WorkflowEngine.toForwardIaReportToDto(currentApp.refNo, remarks);
+        const modalEl = document.getElementById('modalToReviewIaReport');
+        if (modalEl) {
+          const inst = bootstrap.Modal.getInstance(modalEl);
+          if (inst) inst.hide();
+        }
+        showAlert(res.message, 'success');
+        loadAndRenderReviewScreen();
+      };
+
       window.openToReinspectModalFromReview = function () {
         const reviewModalEl = document.getElementById('modalToReviewIaReport');
         if (reviewModalEl) {
@@ -2470,17 +2495,33 @@
         const selectedMethodEl = document.querySelector('input[name="payMethodRadio"]:checked');
         const method = selectedMethodEl ? selectedMethodEl.value : 'Online Payment (Sikkim State Portal - SBI e-Pay)';
 
-        const res = WorkflowEngine.processCitizenPayment(currentApp.refNo, {
-          method: method,
-          amount: currentApp.registrationFee || 7000
-        });
+        const payBtn = document.querySelector('#modalCitizenPayment .btn-success');
+        if (payBtn) {
+          payBtn.disabled = true;
+          payBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing...';
+        }
 
-        bootstrap.Modal.getInstance(document.getElementById('modalCitizenPayment')).hide();
-        showAlert(res.message, 'success');
-        loadAndRenderReviewScreen();
         setTimeout(function () {
-          viewPaymentReceipt(currentApp.refNo);
-        }, 400);
+          const res = WorkflowEngine.processCitizenPayment(currentApp.refNo, {
+            method: method,
+            amount: currentApp.registrationFee || 7000
+          });
+
+          const modalEl = document.getElementById('modalCitizenPayment');
+          const modalInst = bootstrap.Modal.getInstance(modalEl);
+          if (modalInst) modalInst.hide();
+
+          if (payBtn) {
+            payBtn.disabled = false;
+            payBtn.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Pay Now (<span id="modalCitizenPayBtnAmt">₹' + (currentApp.registrationFee || 7000).toLocaleString('en-IN') + '</span>)';
+          }
+
+          showAlert(res.message, 'success');
+          loadAndRenderReviewScreen();
+          setTimeout(function () {
+            viewPaymentReceipt(currentApp.refNo);
+          }, 400);
+        }, 600);
       };
 
       window.executeCitizenPaymentFail = function () {
@@ -2596,6 +2637,8 @@
       window.viewCertificate = function () {
         const certHtml = DocumentService.getCertificateHtml(currentApp.refNo);
         document.getElementById('certViewerBody').innerHTML = certHtml;
+        const pageBtn = document.getElementById('btnReviewOpenCertPage');
+        if (pageBtn) pageBtn.href = `certificate.html?arn=${encodeURIComponent(currentApp.refNo)}&role=review`;
         const modal = new bootstrap.Modal(document.getElementById('modalCertViewer'));
         modal.show();
       };

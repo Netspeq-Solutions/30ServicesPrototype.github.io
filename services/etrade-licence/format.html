@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Prescribed formats for the e-Trade Licence application, Urban Development Department, Government of Sikkim.">
+  <title>Prescribed Format | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body { background: #f3f4f6; font-family: 'Noto Sans', sans-serif; overflow-x: hidden; }
+    .tl-format { max-width: 800px; margin: 1.5rem auto; background: #fff; padding: 2.5rem; border: 1px solid #d1d5db; border-radius: 10px; font-family: 'Noto Serif', serif; font-size: 0.95rem; line-height: 1.7; }
+    .tl-format h1 { font-size: 1.15rem; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 0.25rem; }
+    .tl-format .sub { text-align: center; font-size: 0.85rem; color: #4b5563; margin-bottom: 1.5rem; }
+    .tl-blank { display: inline-block; min-width: 180px; border-bottom: 1px dotted #111; }
+    .tl-blank.wide { min-width: 320px; }
+    .tl-indent { text-indent: 2rem; text-align: justify; }
+    .tl-sign { margin-top: 3rem; display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .tl-toolbar { max-width: 800px; margin: 1rem auto 0; display: flex; gap: 0.5rem; flex-wrap: wrap; padding: 0 16px; }
+    @media (max-width: 575.98px) { .tl-format { margin: 1rem 16px; padding: 1.25rem; } .tl-blank, .tl-blank.wide { min-width: 120px; } }
+    @media print { body { background: #fff; } .tl-toolbar { display: none; } .tl-format { border: 0; margin: 0; padding: 0; } }
+  </style>
+</head>
+<body>
+  <div class="tl-toolbar">
+    <button type="button" class="btn btn-sm btn-primary" onclick="window.print()"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print / Save as PDF</button>
+    <a class="btn btn-sm btn-outline-secondary" href="javascript:window.close()">Close</a>
+    <span class="small text-muted align-self-center">Fill, sign and upload the scanned copy in the Documents step.</span>
+  </div>
+  <main id="formatRoot" class="tl-format"></main>
+  <script>
+    (function () {
+      'use strict';
+      var f = new URLSearchParams(location.search).get('f');
+      var B = '<span class="tl-blank"></span>', W = '<span class="tl-blank wide"></span>';
+      function head(form, rule, title, note) {
+        return '<div class="text-center small fw-semibold">' + form + '</div><div class="text-center small mb-3">(' + rule + ')</div>' +
+          '<h1>' + title + '</h1>' + (note ? '<div class="sub">' + note + '</div>' : '<div class="mb-4"></div>');
+      }
+      // Official formats as provided by the department (Sikkim Trade License and Miscellaneous Provision Rules, 2011).
+      var FORMATS = {
+        recommendation: head('FORM VI', 'See rule 7(3)(d) and rule 8(2)(c)', 'Recommendation of Gram Panchayat / Councillor') +
+          '<p class="tl-indent">We, the Panchayat members of the ' + W + ' G.P.U do hereby certify that Smt/Shri ' + W + ' s/o, d/o, w/o ' + W + ' is the bonafide SSC/COI holder and bonafide resident of our area.</p>' +
+          '<p class="tl-indent">We also certify that on verification we found that Smt/Shri ' + W + ' s/o, d/o, w/o ' + W + ' is not employed in any Government Organisation and hence can operate the business in his own house or from the rented or leased out premises of Smt/Shri ' + W +
+            ' s/o, d/o, w/o ' + W + ' being the owner of the house running his/her business of ' + W + ' (to indicate the name of the trade) at ' + W + '.</p>' +
+          '<p class="tl-indent">We also certify that the premises on which the proposed business is intended to be run does not fall within road reserve and there is no encroachment of the forest land or Government land thereon and in the event of licence being granted to him/her he/she shall run the business herself/himself and shall not sublet the licence to any person/persons.</p>' +
+          '<p class="tl-indent">We, the Panchayat member hereby recommend for the issuance of trade licence in favour of Smt/Shri ' + W + ' by the Department.</p>' +
+          '<div class="tl-sign"><div>Dated: ' + B + '</div><div class="text-center">Seal &amp; Signature of<br>Panchayat Members (at least 3 members) / Councillor</div></div>',
+        undertaking: head('FORM VIII', 'See rule 7(2)(h) and 7(3)(e)', 'Undertaking for Trade Licence', 'For individuals &ndash; not required for a registered company') +
+          '<p class="tl-indent">I, ' + W + ' s/o, d/o, w/o ' + W + ' resident of ' + W + ' having applied for the grant of a Trade Licence for the purpose of running a ' + W + ' from the premises of ' + W + ' located at ' + W +
+            ' do hereby undertake that I shall run/operate the aforesaid business myself and that I shall not sublet the license issued to me by the Urban Development Department, Government of Sikkim to any person/persons whatsoever and shall employ local resident of the State of Sikkim as the worker/staff in my business establishment as provided under rule 5(7) of the Sikkim Trade License and Miscellaneous Provision Rules, 2011 as amended up to date.</p>' +
+          '<p class="tl-indent">Further, if the aforesaid licence is found to be sublet the issuing authority shall have the right to cancel the license as per law. I have this undertaking on this the ' + B + ' day of ' + B + ' with my free will and consent.</p>' +
+          '<div class="tl-sign"><div></div><div>Signature: ' + B + '<br>Name: ' + B + '<br>Address: ' + B + '</div></div>' +
+          '<p class="mt-4 mb-1"><em>Witnesses: (Signature with full name &amp; address)</em></p><p>1. ' + W + '<br><br>2. ' + W + '</p>',
+        houseOwnerNoc: head('FORM NO. X', 'See rule 7(2)(a)', 'To Whom It May Concern', 'No objection certificate of the house owner') +
+          '<p class="tl-indent">I, Mr/Mrs/Miss ' + W + ' s/o, w/o, d/o ' + W + ' Resident of ' + W + ' Police Station ' + B + ' District ' + B +
+            ' have no objection if the Urban Development Department issue trade licence for operating the trade of ' + W + ' by Mr/Mrs/Miss ' + W + ' s/o, d/o, w/o ' + W + ' resident ' + W + ' Police Station ' + B + ' District ' + B + ' in my House/Premises located at ' + W + '.</p>' +
+          '<div class="tl-sign"><div></div><div class="text-center"><div style="height:2.5rem;"></div>Signature of House Owner<br>Dated: ' + B + '</div></div>' +
+          '<p class="mt-4 mb-1"><em>Signature of Witnesses (with name &amp; address)</em></p><p>1. ' + W + '<br><br>2. ' + W + '</p>'
+      };
+      var root = document.getElementById('formatRoot');
+      root.innerHTML = FORMATS[f] || '<p class="mb-0">Format not found. Open it again from the Documents step of the application.</p>';
+      var t = { undertaking: 'Undertaking (Form VIII)', recommendation: 'Recommendation of Gram Panchayat / Councillor (Form VI)', houseOwnerNoc: 'House Owner NOC (Form X)' }[f];
+      if (t) document.title = t + ' | e-Trade Licence | Government of Sikkim';
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Online Payment | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Online Payment</li>
+    </ol></nav>
+    <div id="payRoot" class="mx-auto" style="max-width: 760px;"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('citizen');
+      if (!session) return;
+      App.shell({ type: 'citizen', active: 'pay' });
+
+      var root = document.getElementById('payRoot');
+      var intentNo = App.qs('intent');
+      var intent = D.intents.filter(function (i) { return i.intentNo === intentNo; })[0] || null;
+      function paymentForIntent() { return D.payments.filter(function (p) { return p.intentNo === intentNo; })[0] || null; }
+      var payment = paymentForIntent();
+      if (!intent && payment) intent = { intentNo: intentNo, grId: payment.grId, amount: payment.amount, status: payment.status === 'Pending' ? 'Pending' : payment.status };
+      if (!intent) { root.innerHTML = '<div class="alert alert-warning">Payment request not found. <a href="dashboard.html">Back to dashboard</a></div>'; return; }
+      var site = App.site(intent.grId);
+
+      function txnRef() { return 'TXN' + D.demoToday.replace(/-/g, '').slice(2) + String(Math.floor(Math.random() * 9000) + 1000); }
+
+      // Gateway callback: the amount must match the frozen intent before anything is recorded.
+      function callback(result, method) {
+        var p = paymentForIntent();
+        if (result === 'Success') {
+          var cbAmount = intent.amount;
+          if (cbAmount !== intent.amount) { App.toast('Callback amount does not match the payment request – not recorded.', 'danger'); return; }
+          if (!p) { p = { intentNo: intentNo, grId: intent.grId, mode: 'Online', bank: 'Payment gateway (pending Q8)', amount: intent.amount, recordedBy: 'Citizen' }; D.payments.unshift(p); }
+          p.receiptNo = App.newReceiptNo();
+          p.ref = p.ref || txnRef();
+          p.method = method || p.method || 'UPI';
+          p.paidOn = D.demoToday;
+          p.status = 'Success';
+          intent.status = 'Paid';
+          App.closeChallans(intent.grId, 'Paid online · receipt ' + p.receiptNo);
+          App.saveSiteForCitizen(session.mobile, intent.grId);
+          var msg = 'Receipt ' + p.receiptNo + ' · ' + inr(p.amount) + ' for ' + intent.grId + '.';
+          var mobiles = App.siteMobiles(site);
+          if (mobiles.indexOf(session.mobile) === -1) mobiles.push(session.mobile);
+          mobiles.forEach(function (m) { App.notify(m, 'Payment received', msg, intent.grId); });
+          App.audit({ grId: intent.grId, entity: 'Payment', action: 'Online payment successful · ' + p.receiptNo + ' · ' + inr(p.amount) + ' · ' + p.ref });
+        } else if (result === 'Pending') {
+          if (!p) { p = { receiptNo: null, intentNo: intentNo, grId: intent.grId, mode: 'Online', bank: 'Payment gateway (pending Q8)', amount: intent.amount, recordedBy: 'Citizen' }; D.payments.unshift(p); }
+          p.ref = txnRef(); p.method = method; p.paidOn = D.demoToday; p.status = 'Pending';
+          intent.status = 'Pending';
+          App.notify(session.mobile, 'Payment under verification', inr(p.amount) + ' for ' + intent.grId + ' is awaiting confirmation from the payment gateway. Please do not pay again.', intent.grId);
+          App.audit({ grId: intent.grId, entity: 'Payment', action: 'Online payment pending at gateway · ' + intentNo + ' · locked for 30 minutes' });
+        } else {
+          if (p) { p.status = 'Failed'; }
+          else D.payments.unshift({ receiptNo: null, intentNo: intentNo, grId: intent.grId, mode: 'Online', ref: txnRef(), method: method, bank: 'Payment gateway (pending Q8)', amount: intent.amount, paidOn: D.demoToday, recordedBy: 'Citizen', status: 'Failed' });
+          intent.status = 'Failed';
+          App.audit({ grId: intent.grId, entity: 'Payment', action: 'Online payment failed · ' + intentNo });
+        }
+        App.save();
+        render();
+      }
+
+      function summary() {
+        return '<div class="bg-light rounded-3 p-3 mb-3 small"><div class="d-flex justify-content-between"><span>Pay to</span><strong>Urban Development Department, Govt. of Sikkim</strong></div>' +
+          '<div class="d-flex justify-content-between"><span>GR ID</span><span class="gr-gr-id">' + esc(intent.grId) + '</span></div>' +
+          '<div class="d-flex justify-content-between"><span>Allottee</span><span>' + esc(App.ownersText(site)) + '</span></div>' +
+          '<div class="d-flex justify-content-between"><span>Payment request</span><span class="font-monospace">' + esc(intentNo) + '</span></div>' +
+          '<div class="d-flex justify-content-between border-top pt-2 mt-2"><span class="fw-bold">Amount</span><span class="fw-bold fs-5">' + inr(intent.amount) + '</span></div></div>';
+      }
+
+      function render() {
+        var p = paymentForIntent();
+        var status = p ? p.status : intent.status;
+        if (status === 'Success') {
+          root.innerHTML = '<div class="card border-success border-2 shadow-sm"><div class="card-body p-4 text-center">' +
+            '<span class="gr-icon-circle bg-success-subtle text-success mb-3"><i class="bi bi-check-lg" aria-hidden="true"></i></span>' +
+            '<h1 class="h4 fw-bold text-success">Payment Successful</h1><p class="text-muted">' + inr(p.amount) + ' has been credited to ' + esc(p.grId) + '.</p>' +
+            '<dl class="gr-meta-grid text-start mx-auto mb-3" style="max-width:420px;"><div><dt>Receipt No.</dt><dd class="font-monospace">' + esc(p.receiptNo) + '</dd></div><div><dt>Transaction ref.</dt><dd class="font-monospace">' + esc(p.ref) + '</dd></div>' +
+            '<div><dt>Paid on</dt><dd>' + App.fmtDate(p.paidOn) + '</dd></div><div><dt>Paid up to</dt><dd>FY ' + esc(App.dues(site).paidUpToFy) + '</dd></div></dl>' +
+            '<p class="small text-muted"><i class="bi bi-chat-dots me-1" aria-hidden="true"></i>Receipt sent by SMS and email (simulated). This site is saved under My Ground Rent Accounts.</p>' +
+            '<div class="d-flex justify-content-center flex-wrap gap-2"><a class="btn btn-sm btn-success" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '"><i class="bi bi-download me-1" aria-hidden="true"></i>View &amp; Download Receipt</a>' +
+            '<a class="btn btn-sm btn-outline-secondary" href="dashboard.html">Back to Dashboard</a></div></div></div>';
+          return;
+        }
+        if (status === 'Pending') {
+          root.innerHTML = '<div class="card border-info border-2 shadow-sm"><div class="card-body p-4">' +
+            '<div class="text-center"><span class="gr-icon-circle bg-info-subtle text-info-emphasis mb-3"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span>' +
+            '<h1 class="h4 fw-bold">Payment under verification</h1><p class="text-muted mb-3">The gateway has not confirmed this payment yet. The bill is locked for 30 minutes to stop a double payment. A reconciliation job checks the gateway every 15 minutes.</p></div>' + summary() +
+            '<p class="small mb-3"><i class="bi bi-arrow-right-circle me-1 text-primary" aria-hidden="true"></i><strong>What happens next:</strong> No action is required from you. If the payment succeeds you get a receipt; if it fails, any money debited is returned by your bank.</p>' +
+            '<div class="border rounded-3 p-3 bg-light"><div class="small fw-bold mb-2"><i class="bi bi-flask me-1" aria-hidden="true"></i>Prototype: run the reconciliation job now</div><div class="d-flex flex-wrap gap-2">' +
+            '<button type="button" class="btn btn-sm btn-success" data-reconcile="Success">Gateway confirms success</button><button type="button" class="btn btn-sm btn-outline-danger" data-reconcile="Failed">Gateway reports failure</button></div></div>' +
+            '</div></div>';
+          root.querySelectorAll('[data-reconcile]').forEach(function (b) { b.addEventListener('click', function () { callback(b.getAttribute('data-reconcile')); }); });
+          return;
+        }
+        if (status === 'Failed') {
+          root.innerHTML = '<div class="card border-danger border-2 shadow-sm"><div class="card-body p-4 text-center">' +
+            '<span class="gr-icon-circle bg-danger-subtle text-danger mb-3"><i class="bi bi-x-lg" aria-hidden="true"></i></span>' +
+            '<h1 class="h4 fw-bold text-danger">Payment Failed</h1><p class="text-muted">The payment of ' + inr(intent.amount) + ' did not go through. No amount has been recorded against ' + esc(intent.grId) + '.</p>' +
+            '<div class="d-flex justify-content-center flex-wrap gap-2"><a class="btn btn-sm btn-primary" href="bill.html?gr=' + encodeURIComponent(intent.grId) + '">Try Again</a><a class="btn btn-sm btn-outline-secondary" href="dashboard.html">Back to Dashboard</a></div></div></div>';
+          return;
+        }
+        // Gateway screen (mock)
+        root.innerHTML = '<div class="card border-0 shadow-sm"><div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">' +
+          '<span class="fw-bold"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>Payment Gateway</span><span class="badge bg-warning text-dark">SIMULATED &ndash; gateway pending Q8</span></div>' +
+          '<div class="card-body p-4">' + summary() +
+          '<fieldset class="mb-3"><legend class="form-label small fw-semibold">Choose a payment method</legend>' +
+          ['UPI', 'Debit / Credit Card', 'Net Banking'].map(function (m, i) {
+            return '<div class="form-check"><input class="form-check-input" type="radio" name="method" id="m' + i + '" value="' + m + '"' + (i === 0 ? ' checked' : '') + '><label class="form-check-label" for="m' + i + '">' + m + '</label></div>';
+          }).join('') + '</fieldset>' +
+          '<div class="alert alert-light border small"><i class="bi bi-flask me-1" aria-hidden="true"></i>Prototype: no money moves. Choose the result the gateway should return.</div>' +
+          '<div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-sm btn-success" data-result="Success"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>Pay ' + inr(intent.amount) + ' (success)</button>' +
+          '<button type="button" class="btn btn-sm btn-outline-warning" data-result="Pending">Simulate pending</button>' +
+          '<button type="button" class="btn btn-sm btn-outline-danger" data-result="Failed">Simulate failure</button>' +
+          '<a class="btn btn-sm btn-outline-secondary" href="bill.html?gr=' + encodeURIComponent(intent.grId) + '">Cancel</a></div></div></div>';
+        root.querySelectorAll('[data-result]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var m = root.querySelector('input[name="method"]:checked');
+            callback(b.getAttribute('data-result'), m ? m.value : 'UPI');
+          });
+        });
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>

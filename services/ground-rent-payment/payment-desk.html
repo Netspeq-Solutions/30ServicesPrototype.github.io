@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Approve Bank Payments | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <h1 class="h4 fw-bold mb-1">Approve Bank Payments</h1>
+    <p class="text-muted small mb-3">The citizen generates a challan, pays at the bank and uploads the Bank Receipt. Open a payment to see the allottee's details and the uploaded BR, check the original BR, then approve it.</p>
+
+    <div class="card border-0 shadow-xs mb-3">
+      <div class="card-body">
+        <label for="fFind" class="form-label small fw-semibold mb-1">Find by challan no., GR ID or allottee name</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+          <input id="fFind" type="search" class="form-control" placeholder="e.g. GRC-2026-000322 or GR-GMC-W03-00048">
+        </div>
+      </div>
+    </div>
+
+    <div id="doneBox"></div>
+    <div class="card border-0 shadow-xs">
+      <div class="card-header bg-white"><h2 class="h6 fw-bold mb-0" id="listTitle">Waiting for approval</h2><div class="small text-muted">Oldest first.</div></div>
+      <div class="gov-table-desktop table-responsive">
+        <table class="table gov-table-compact table-hover mb-0 align-middle"><caption class="visually-hidden">Bank payments waiting for approval</caption>
+          <thead><tr><th scope="col" style="width:16%">Challan No.</th><th scope="col" style="width:24%">GR ID &amp; Allottee</th><th scope="col" style="width:18%">Bank Receipt</th>
+            <th scope="col" class="text-end" style="width:12%">Amount</th><th scope="col" style="width:14%">Waiting</th><th scope="col" class="text-end" style="width:16%">Action</th></tr></thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+      <div class="gov-cards-mobile p-3" id="tCards"></div>
+      <div class="card-footer bg-white small text-muted" id="waitNote"></div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-payments.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, P = window.GRPay, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'payments');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'verify' });
+      var $ = function (id) { return document.getElementById(id); };
+      if (App.qs('challan')) $('fFind').value = App.qs('challan');
+      // Back from the review page after a decision.
+      var done = App.qs('done'), dc = done ? P.challan(done) : null;
+      if (dc && dc.status === 'Verified') $('doneBox').innerHTML = '<div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-2"><div><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Approved. Receipt <strong class="font-monospace">' + esc(dc.receiptNo) + '</strong> &bull; ' + esc(dc.grId) + '</div><a class="btn btn-sm btn-success" href="receipt.html?no=' + encodeURIComponent(dc.receiptNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Receipt</a></div>';
+      else if (dc && dc.status === 'Generated') $('doneBox').innerHTML = '<div class="alert alert-warning"><i class="bi bi-arrow-return-left me-1" aria-hidden="true"></i>Challan ' + esc(dc.challanNo) + ' returned to the citizen: ' + esc(dc.returnReason || '') + '.</div>';
+
+      function waitPill(n) { return n >= 7 ? App.pill('overdue', n + ' days') : (n >= 3 ? App.pill('due', n + ' days') : App.pill('pending', n ? n + (n === 1 ? ' day' : ' days') : 'Today')); }
+
+      function render() {
+        var t = App.norm($('fFind').value), tc = t.replace(/\s/g, '');
+        var list = P.waiting(session).filter(function (c) {
+          if (!t) return true;
+          var s = App.site(c.grId);
+          return App.norm(c.challanNo).indexOf(tc) !== -1 || App.norm(c.grId).indexOf(tc) !== -1 || s.owners.some(function (o) { return App.norm(o.name).indexOf(t) !== -1; });
+        }).sort(function (a, b) { return P.daysWaiting(b) - P.daysWaiting(a); });
+        $('listTitle').textContent = 'Waiting for approval (' + list.length + ')';
+        var rows = list.map(function (c) {
+          var k = P.check(c), days = P.daysWaiting(c);
+          var flag = '<div class="small text-' + (k.tone === 'success' ? 'success' : k.tone === 'danger' ? 'danger' : 'warning-emphasis') + '"><i class="bi ' + (k.tone === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle') + ' me-1" aria-hidden="true"></i>' + esc(k.note) + '</div>';
+          var btn = '<a class="btn btn-sm btn-primary" href="payment-review.html?challan=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-eye me-1" aria-hidden="true"></i>Review &amp; Approve</a>';
+          return {
+            row: '<tr><td class="font-monospace fw-bold small"><a href="payment-review.html?challan=' + encodeURIComponent(c.challanNo) + '">' + esc(c.challanNo) + '</a><div class="text-muted fw-normal">' + App.fmtDate(c.generatedOn) + '</div></td>' +
+              '<td><div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(App.ownersText(k.site)) + '</div></td>' +
+              '<td class="small"><div class="font-monospace">' + esc(c.brNo) + '</div><div class="text-muted">' + App.fmtDate(c.brDate) + '</div></td>' +
+              '<td class="text-end"><div class="fw-bold">' + inr(k.paid) + '</div><div class="small text-muted">challan ' + inr(c.amount) + '</div></td>' +
+              '<td>' + waitPill(days) + '<div class="small text-muted">since ' + App.fmtDate(c.brUploadedOn) + '</div></td>' +
+              '<td class="text-end text-nowrap"><div class="d-inline-flex align-items-center gap-1 text-nowrap">' + btn + '</div>' + (k.tone !== 'success' ? '<div class="text-end mt-1 text-wrap" style="max-width:220px;margin-left:auto;">' + flag + '</div>' : '') + '</td></tr>',
+            card: '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2 mb-1"><span class="font-monospace fw-bold small">' + esc(c.challanNo) + '</span>' + waitPill(days) + '</div>' +
+              '<div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted">' + esc(App.ownersText(k.site)) + '</div>' +
+              '<div class="small mt-1">BR <span class="font-monospace">' + esc(c.brNo) + '</span> &bull; ' + App.fmtDate(c.brDate) + ' &bull; <strong>' + inr(k.paid) + '</strong></div>' + (k.tone !== 'success' ? flag : '') +
+              '<div class="d-flex justify-content-end mt-2">' + btn + '</div></div>'
+          };
+        });
+        var empty = t ? 'No uploaded Bank Receipt matches "' + esc($('fFind').value) + '".' : 'Nothing to approve. Uploaded Bank Receipts appear here.';
+        $('tBody').innerHTML = rows.map(function (r) { return r.row; }).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">' + empty + '</td></tr>';
+        $('tCards').innerHTML = rows.map(function (r) { return r.card; }).join('') || '<p class="text-center text-muted small mb-0">' + empty + '</p>';
+        var issued = D.challans.filter(function (c) { var s = App.site(c.grId); return s && App.inScope(s, session) && c.status === 'Generated' && c.validTill >= D.demoToday; }).length;
+        $('waitNote').innerHTML = '<i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + (issued ? issued + ' more challan' + (issued === 1 ? ' is' : 's are') + ' issued but the citizen has not uploaded the Bank Receipt yet.' : 'All issued challans have a Bank Receipt uploaded.');
+      }
+
+      $('fFind').addEventListener('input', render);
+      render();
+    })();
+  </script>
+</body>
+</html>

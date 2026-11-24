@@ -11,7 +11,7 @@
 
   const STORAGE_KEY = 'adv_workflow_applications_v6';
   const SEED_VERSION_KEY = 'adv_workflow_version_v6';
-  const CURRENT_SEED_VERSION = 'v6.0_stage06_reports';
+  const CURRENT_SEED_VERSION = 'v6.2_full_lifecycle';
 
   // 4 Primary Statuses
   const STATUSES = {
@@ -482,7 +482,7 @@
       currentRole: 'ta-hq',
       assignedIO: null, // Strictly NO IO in Guide Registration!
       payment: {
-        amount: 1500,
+        amount: 500,
         activated: false,
         paid: false
       },
@@ -525,7 +525,7 @@
       stage: STAGES.GR_HQ_AWAITING_ASST_DIR,
       currentRole: 'asst-dir-hq',
       assignedIO: null,
-      payment: { amount: 1500, activated: false, paid: false },
+      payment: { amount: 500, activated: false, paid: false },
       documents: [
         { name: 'voter_id_tashi.pdf', type: 'Identity Proof', size: '920 KB', verified: true },
         { name: 'coi_tashi.pdf', type: 'COI Proof', size: '1.0 MB', verified: true }
@@ -557,12 +557,12 @@
       district: 'Gangtok',
       submittedDate: '02 Nov 2026',
       lastUpdated: '13 Nov 2026',
-      status: STATUSES.PAYMENT_PENDING,
+      status: STATUSES.UNDER_REVIEW,
       stage: STAGES.GR_HQ_PAYMENT_SUBMITTED,
       currentRole: 'dto-hq',
       assignedIO: null,
       payment: {
-        amount: 1500,
+        amount: 500,
         activated: true,
         activatedBy: 'Pema Dorjee Sherpa (DTO HQ)',
         activatedDate: '10 Nov 2026, 04:00 PM',
@@ -587,8 +587,8 @@
         foreignLang: 'None'
       },
       history: [
-        { action: 'Statutory Fee Activated (₹1,500)', role: 'DTO – Headquarters', officer: 'Pema Dorjee Sherpa', timestamp: '10 Nov 2026, 04:00 PM', remarks: 'Payment activated.' },
-        { action: 'Payment Submitted by Citizen', role: 'Citizen Applicant', officer: 'Kinzang Lepcha', timestamp: '11 Nov 2026, 11:45 AM', remarks: '₹1,500 simulated payment submitted with Ref TXN-SK-GR-441098.' }
+        { action: 'Statutory Fee Activated (₹500)', role: 'DTO – Headquarters', officer: 'Pema Dorjee Sherpa', timestamp: '10 Nov 2026, 04:00 PM', remarks: 'Payment activated.' },
+        { action: 'Payment Submitted by Citizen', role: 'Citizen Applicant', officer: 'Kinzang Lepcha', timestamp: '11 Nov 2026, 11:45 AM', remarks: '₹500 simulated payment submitted with Ref TXN-SK-GR-441098.' }
       ]
     },
 
@@ -614,7 +614,7 @@
       place: 'Gangtok',
       assignedIO: null,
       payment: {
-        amount: 1500,
+        amount: 500,
         activated: true,
         activatedBy: 'Pema Dorjee Sherpa (DTO HQ)',
         activatedDate: '01 Sep 2023',
@@ -666,7 +666,7 @@
       assignedIO: null,
       returnRemarks: 'The uploaded Medical Fitness Certificate is missing the signature of the Government District Hospital Chief Medical Officer (CMO). Please upload a signed certificate along with updated First-Aid card.',
       returnedBy: 'Karma Dawa Sherpa (Technical Assistant, Namchi)',
-      payment: { amount: 1500, activated: false, paid: false },
+      payment: { amount: 500, activated: false, paid: false },
       documents: [
         { name: 'voter_id_karma_tshering.pdf', type: 'Identity Proof', size: '940 KB', verified: true },
         { name: 'coi_karma_tshering.pdf', type: 'COI Proof', size: '1.2 MB', verified: true },
@@ -704,7 +704,7 @@
       stage: STAGES.GR_DIST_AWAITING_DTO,
       currentRole: 'dist-dto',
       assignedIO: null,
-      payment: { amount: 1500, activated: false, paid: false },
+      payment: { amount: 500, activated: false, paid: false },
       documents: [
         { name: 'voter_id_dorjee.pdf', type: 'Identity Proof', size: '890 KB', verified: true },
         { name: 'coi_mangan_dorjee.pdf', type: 'COI Proof', size: '1.2 MB', verified: true }
@@ -741,7 +741,7 @@
       currentRole: 'dto-hq',
       assignedIO: null,
       payment: {
-        amount: 1500,
+        amount: 500,
         activated: true,
         activatedBy: 'Sonam Gyatso Lepcha (District DTO Gyalshing)',
         activatedDate: '09 Nov 2026, 02:00 PM',
@@ -767,7 +767,7 @@
         foreignLang: 'Basic German'
       },
       history: [
-        { action: 'Payment Activated by District DTO', role: 'District DTO (Gyalshing)', officer: 'Sonam Gyatso Lepcha', timestamp: '09 Nov 2026, 02:00 PM', remarks: '₹1,500 activated.' },
+        { action: 'Payment Activated by District DTO', role: 'District DTO (Gyalshing)', officer: 'Sonam Gyatso Lepcha', timestamp: '09 Nov 2026, 02:00 PM', remarks: '₹500 activated.' },
         { action: 'Applicant Payment Submitted', role: 'Citizen Applicant', officer: 'Lakpa Subba', timestamp: '10 Nov 2026, 09:30 AM', remarks: 'Paid Ref TXN-SK-GR-771239.' },
         { action: 'Forwarded to HQ Asst. Dir.', role: 'District DTO (Gyalshing)', officer: 'Sonam Gyatso Lepcha', timestamp: '11 Nov 2026, 11:00 AM', remarks: 'Forwarded to HQ for final accreditation.' },
         { action: 'HQ Asst. Dir. Review Endorsed', role: 'Assistant Director (HQ)', officer: 'Karma Lhamu Bhutia', timestamp: '12 Nov 2026, 03:30 PM', remarks: 'Endorsed and forwarded to HQ DTO for Digital ID Card & Logbook issuance.' }
@@ -787,7 +787,7 @@
       stage: STAGES.GR_DIST_AWAITING_TA,
       currentRole: 'dist-ta',
       assignedIO: null,
-      payment: { amount: 1500, activated: false, paid: false },
+      payment: { amount: 500, activated: false, paid: false },
       documents: [
         { name: 'voter_id_chungda.pdf', type: 'Identity Proof', size: '890 KB', verified: true }
       ],
@@ -834,7 +834,7 @@
       logbookStatus: 'Manually Issued & Recorded in District Register',
       validTill: '31 Oct 2029',
       payment: {
-        amount: 1500,
+        amount: 500,
         activated: true,
         paid: true,
         transactionRef: 'TXN-SK-GR-110099',
@@ -875,7 +875,7 @@
       stage: STAGES.GR_DIST_AWAITING_TA,
       currentRole: 'dist-ta',
       payment: {
-        amount: 1500,
+        amount: 500,
         activated: false,
         paid: false
       },
@@ -936,7 +936,7 @@
       lastUpdated: '09 Nov 2026',
       status: STATUSES.PAYMENT_PENDING,
       stage: STAGES.ATO_PAYMENT_ACTIVATED,
-      currentRole: 'dto-hq',
+      currentRole: 'citizen',
       assignedIO: 'Tashi Wangdi Lepcha',
       inspectionReport: {
         inspectionDate: '06 Nov 2026',
@@ -984,26 +984,107 @@
       }
     },
 
-    // Get all applications
+    // Get all applications (auto-merging any locally submitted drafts or external filings)
     getAllApplications: function () {
       this.init();
+      let apps = [];
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        apps = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
       } catch (e) {
-        return SEED_APPLICATIONS;
+        apps = [...SEED_APPLICATIONS];
       }
+
+      // Check if there are newly submitted applications from apply.html not yet merged
+      try {
+        const submitted = JSON.parse(localStorage.getItem('adv_submitted_applications') || '[]');
+        if (Array.isArray(submitted) && submitted.length > 0) {
+          let updated = false;
+          submitted.forEach(sub => {
+            const subArn = sub.id || sub.arn;
+            if (subArn && !apps.some(a => a.arn === subArn)) {
+              const isGuide = (sub.type === 'guide-registration' || (subArn && subArn.includes('GR')));
+              const dist = sub.district || 'Gangtok';
+              const created = {
+                arn: subArn,
+                type: isGuide ? 'guide-registration' : 'adventure-tour-operator',
+                typeName: isGuide ? 'Guide Registration' : 'Adventure Tour Operator',
+                applicantName: sub.applicant || sub.applicantName || 'Citizen Applicant',
+                enterpriseName: sub.enterpriseName || (isGuide ? (sub.applicant + ' (Guide)') : (sub.applicant + ' Expeditions')),
+                district: dist,
+                submittedDate: sub.submittedDate || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+                lastUpdated: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+                status: STATUSES.UNDER_REVIEW,
+                stage: isGuide ? ((dist || '').toLowerCase() === 'gangtok' ? STAGES.GR_HQ_AWAITING_TA : STAGES.GR_DIST_AWAITING_TA) : STAGES.ATO_AWAITING_TA,
+                currentRole: isGuide ? ((dist || '').toLowerCase() === 'gangtok' ? 'ta-hq' : 'dist-ta') : 'ta-hq',
+                assignedIO: null,
+                inspectionReport: null,
+                payment: {
+                  amount: isGuide ? 500 : 1500,
+                  activated: false,
+                  activatedBy: null,
+                  activatedDate: null,
+                  paid: false,
+                  transactionRef: null,
+                  paidDate: null
+                },
+                documents: sub.documents || [
+                  { name: isGuide ? 'identity_proof_applicant.pdf' : 'agency_reg_certificate.pdf', type: isGuide ? 'Identity Proof' : 'Agency Registration', size: '1.2 MB', verified: true },
+                  { name: isGuide ? 'coi_certificate_applicant.pdf' : 'coi_certificate_director.pdf', type: 'COI / Domicile Certificate', size: '1.4 MB', verified: true }
+                ],
+                details: sub.details || {},
+                history: [
+                  {
+                    action: 'Application Submitted Online',
+                    role: 'Citizen Applicant',
+                    officer: sub.applicant || 'Citizen Applicant',
+                    timestamp: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                    remarks: `Initial online filing submitted via Sikkim Single-Window Citizen Portal (${dist} District).`
+                  }
+                ]
+              };
+              apps.unshift(created);
+              updated = true;
+            }
+          });
+          if (updated) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+          }
+        }
+      } catch (e) {}
+
+      return apps;
     },
 
-    // Get specific application by ARN
+    // Get specific application by ARN (with alias mapping & case-insensitivity)
     getApplicationByArn: function (arn) {
+      if (!arn) return null;
+      const cleanArn = String(arn).trim();
       const all = this.getAllApplications();
-      return all.find(a => a.arn === arn) || null;
+
+      // Direct match
+      let match = all.find(a => a.arn.toLowerCase() === cleanArn.toLowerCase());
+      if (match) return match;
+
+      // Handle common demo scenario aliases
+      const aliasMap = {
+        'ATO-2026-004': 'SK-ATO-2026-0078',
+        'ATO-2026-005': 'SK-ATO-2026-0009',
+        'ATO-2026-006': 'SK-ATO-2026-0063',
+        'GR-2026-016': 'SK-GR-2026-0099'
+      };
+      if (aliasMap[cleanArn]) {
+        match = all.find(a => a.arn === aliasMap[cleanArn]);
+        if (match) return match;
+      }
+
+      return null;
     },
 
     // Save/Update application
     saveApplication: function (app) {
+      if (!app || !app.arn) return null;
       const all = this.getAllApplications();
-      const idx = all.findIndex(a => a.arn === app.arn);
+      const idx = all.findIndex(a => a.arn.toLowerCase() === app.arn.toLowerCase());
       if (idx !== -1) {
         all[idx] = app;
       } else {
@@ -1017,6 +1098,7 @@
     resetDatabase: function () {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_APPLICATIONS));
       localStorage.setItem(SEED_VERSION_KEY, CURRENT_SEED_VERSION);
+      localStorage.removeItem('adv_submitted_applications');
       return SEED_APPLICATIONS;
     },
 
@@ -1026,7 +1108,7 @@
       const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
       const timestamp = now.toLocaleDateString('en-GB', options);
 
-      if (!app.history) app.history = [];
+      if (!Array.isArray(app.history)) app.history = [];
       app.history.unshift({
         action: action,
         role: role,
@@ -1035,6 +1117,181 @@
         remarks: remarks || ''
       });
       app.lastUpdated = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    },
+
+    // ------------------------------------------------------------------------
+    // WORKFLOW CREATION & RESUBMISSION
+    // ------------------------------------------------------------------------
+
+    // Action: Create New Application (Citizen submission)
+    createApplication: function (appData) {
+      this.init();
+      const now = new Date();
+      const nowStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const nowTimeStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      const type = appData.type || (appData.category === 'guide-registration' ? 'guide-registration' : 'adventure-tour-operator');
+      const isGuide = (type === 'guide-registration');
+      const catCode = isGuide ? 'GR' : 'ATO';
+      const randomDigits = Math.floor(1000 + Math.random() * 9000);
+      const arn = appData.arn || `SK-${catCode}-2026-${randomDigits}`;
+      const district = appData.district || 'Gangtok';
+
+      let stage = STAGES.ATO_AWAITING_TA;
+      let currentRole = 'ta-hq';
+
+      if (isGuide) {
+        if ((district || '').toLowerCase() === 'gangtok') {
+          stage = STAGES.GR_HQ_AWAITING_TA;
+          currentRole = 'ta-hq';
+        } else {
+          stage = STAGES.GR_DIST_AWAITING_TA;
+          currentRole = 'dist-ta';
+        }
+      } else {
+        stage = STAGES.ATO_AWAITING_TA;
+        currentRole = 'ta-hq';
+      }
+
+      const statutoryFee = isGuide ? 500 : 1500;
+
+      const newApp = {
+        arn: arn,
+        type: type,
+        typeName: isGuide ? 'Guide Registration' : 'Adventure Tour Operator',
+        applicantName: appData.applicantName || 'Citizen Applicant',
+        enterpriseName: appData.enterpriseName || (isGuide ? (appData.applicantName + ' (Guide)') : (appData.applicantName + ' Expeditions')),
+        district: district,
+        submittedDate: nowStr,
+        lastUpdated: nowStr,
+        status: STATUSES.UNDER_REVIEW,
+        stage: stage,
+        currentRole: currentRole,
+        assignedIO: null,
+        inspectionReport: null,
+        payment: {
+          amount: statutoryFee,
+          activated: false,
+          activatedBy: null,
+          activatedDate: null,
+          paid: false,
+          transactionRef: null,
+          paidDate: null
+        },
+        documents: appData.documents || [
+          { name: isGuide ? 'identity_proof_applicant.pdf' : 'agency_reg_certificate.pdf', type: isGuide ? 'Identity Proof' : 'Agency Registration', size: '1.2 MB', verified: true },
+          { name: isGuide ? 'coi_certificate_applicant.pdf' : 'coi_certificate_director.pdf', type: 'COI / Domicile Certificate', size: '1.4 MB', verified: true },
+          { name: isGuide ? 'hmi_advance_cert.pdf' : 'lead_mountaineering_cert.pdf', type: isGuide ? 'Guide Training Certificate' : 'Lead Instructor Credentials', size: '2.1 MB', verified: true }
+        ],
+        details: appData.details || {},
+        history: [
+          {
+            action: 'Application Submitted Online',
+            role: 'Citizen Applicant',
+            officer: appData.applicantName || 'Citizen Applicant',
+            timestamp: nowTimeStr,
+            remarks: `Initial online application submitted for ${isGuide ? 'Guide Registration' : 'Adventure Tour Operator'} (${district} District).`
+          }
+        ]
+      };
+
+      this.saveApplication(newApp);
+
+      // Keep adv_submitted_applications in sync
+      try {
+        let existing = JSON.parse(localStorage.getItem('adv_submitted_applications') || '[]');
+        existing.unshift({
+          id: arn,
+          arn: arn,
+          type: type,
+          applicant: newApp.applicantName,
+          district: district,
+          submittedDate: nowStr,
+          status: 'UNDER_REVIEW',
+          stage: stage
+        });
+        localStorage.setItem('adv_submitted_applications', JSON.stringify(existing));
+      } catch (e) {}
+
+      return newApp;
+    },
+
+    // Action: Citizen Resubmit after clarification / correction
+    citizenResubmit: function (arn, updatedData, citizenRemarks) {
+      const app = this.getApplicationByArn(arn);
+      if (!app) return false;
+
+      const now = new Date();
+      const nowStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+      app.lastUpdated = nowStr;
+      app.status = STATUSES.UNDER_REVIEW;
+
+      if (updatedData && updatedData.details) {
+        app.details = Object.assign({}, app.details || {}, updatedData.details);
+      }
+      if (updatedData && updatedData.documents && Array.isArray(updatedData.documents)) {
+        app.documents = updatedData.documents;
+      }
+
+      // Route back to the returning authority
+      const returnedByStr = (app.returnedBy || '').toLowerCase();
+      if (app.type === 'adventure-tour-operator') {
+        if (returnedByStr.includes('dto')) {
+          app.currentRole = 'dto-hq';
+          app.stage = STAGES.ATO_AWAITING_DTO;
+        } else if (returnedByStr.includes('asst')) {
+          app.currentRole = 'asst-dir-hq';
+          app.stage = STAGES.ATO_AWAITING_ASST_DIR;
+        } else {
+          app.currentRole = 'ta-hq';
+          app.stage = STAGES.ATO_AWAITING_TA;
+        }
+      } else {
+        // Guide Registration
+        if (app.district === 'Gangtok') {
+          if (returnedByStr.includes('dto')) {
+            app.currentRole = 'dto-hq';
+            app.stage = STAGES.GR_HQ_AWAITING_DTO;
+          } else if (returnedByStr.includes('asst')) {
+            app.currentRole = 'asst-dir-hq';
+            app.stage = STAGES.GR_HQ_AWAITING_ASST_DIR;
+          } else {
+            app.currentRole = 'ta-hq';
+            app.stage = STAGES.GR_HQ_AWAITING_TA;
+          }
+        } else {
+          // Other District Guide
+          if (returnedByStr.includes('hq dto') || returnedByStr.includes('dto – headquarters')) {
+            app.currentRole = 'dto-hq';
+            app.stage = STAGES.GR_DIST_AWAITING_HQ_DTO;
+          } else if (returnedByStr.includes('asst')) {
+            app.currentRole = 'asst-dir-hq';
+            app.stage = STAGES.GR_DIST_AWAITING_HQ_ASST_DIR;
+          } else if (returnedByStr.includes('dto')) {
+            app.currentRole = 'dist-dto';
+            app.stage = STAGES.GR_DIST_AWAITING_DTO;
+          } else {
+            app.currentRole = 'dist-ta';
+            app.stage = STAGES.GR_DIST_AWAITING_TA;
+          }
+        }
+      }
+
+      const remarksText = citizenRemarks || 'Applicant submitted requested clarifications and updated documentation.';
+      this._addHistory(
+        app,
+        'Clarification & Corrections Resubmitted',
+        'Citizen Applicant',
+        app.applicantName || 'Citizen Applicant',
+        remarksText
+      );
+
+      // Clear returned status flags
+      app.returnRemarks = null;
+
+      this.saveApplication(app);
+      return app;
     },
 
     // ------------------------------------------------------------------------
@@ -1060,7 +1317,7 @@
         'Assigned to Inspecting Officer (IO)',
         'TA – Headquarters',
         officerName || 'Tashi Namgyal Bhutia (TA)',
-        `Assigned to ${app.assignedIO.name}. Instructions: ${instructions}`
+        `Assigned to ${app.assignedIO.name}. Instructions: ${instructions || 'Physical safety gear and equipment inspection.'}`
       );
 
       this.saveApplication(app);
@@ -1068,27 +1325,79 @@
     },
 
     // Action 2: Submit Inspection Report (IO -> TA HQ) [ATO Only]
-    submitInspectionReport: function (arn, summary, remarks, isCompliant, officerName) {
+    submitInspectionReport: function (arn, reportDataOrSummary, remarks, isCompliant, officerName) {
       const app = this.getApplicationByArn(arn);
       if (!app || app.type !== 'adventure-tour-operator') return false;
 
       const nowStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+      let docName = 'OnSite_Gear_Safety_Inspection_Report.pdf';
+      let docSize = '2.4 MB';
+      let reportRemarks = '';
+      let compliant = (isCompliant !== false);
+      let statusStr = compliant ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged';
+      let summaryText = compliant 
+        ? 'On-site physical inspection of adventure equipment, safety gear, and operational standards completed. Compliant with safety standards.'
+        : 'On-site physical inspection revealed safety gear deficiencies requiring remediation.';
+      let officer = officerName;
+      let checklist = null;
+
+      if (reportDataOrSummary && typeof reportDataOrSummary === 'object') {
+        docName = reportDataOrSummary.docName || docName;
+        docSize = reportDataOrSummary.docSize || docSize;
+        reportRemarks = reportDataOrSummary.remarks || remarks || '';
+        if (reportDataOrSummary.isCompliant !== undefined) {
+          compliant = Boolean(reportDataOrSummary.isCompliant);
+        }
+        statusStr = reportDataOrSummary.status || (compliant ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged');
+        summaryText = reportDataOrSummary.summary || summaryText;
+        officer = reportDataOrSummary.officer || officerName;
+        checklist = reportDataOrSummary.checklist || null;
+      } else {
+        summaryText = reportDataOrSummary || summaryText;
+        reportRemarks = remarks || '';
+        compliant = (isCompliant !== false);
+        statusStr = compliant ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged';
+      }
+
       app.inspectionReport = {
         submittedDate: nowStr,
-        status: isCompliant ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged',
-        summary: summary || 'Equipment verified on site.',
-        remarks: remarks || ''
+        status: statusStr,
+        isCompliant: compliant,
+        docName: docName,
+        docSize: docSize,
+        summary: summaryText,
+        remarks: reportRemarks || (compliant ? 'Physical inspection verified compliant with safety standards.' : 'Safety deficiencies flagged during inspection.'),
+        officer: officer || (app.assignedIO && app.assignedIO.name ? app.assignedIO.name : 'Tashi Wangdi Lepcha (IO)'),
+        checklist: checklist
       };
+
+      // Add or update document in application's Documents & Clearances
+      if (!Array.isArray(app.documents)) app.documents = [];
+      const existingDocIdx = app.documents.findIndex(d => (d.type && d.type.includes('Inspection')) || (d.name && d.name.toLowerCase().includes('inspection')));
+      const docEntry = {
+        name: docName,
+        type: 'On-Site Physical Inspection Report (IO Signed)',
+        size: docSize,
+        uploadedDate: nowStr,
+        status: compliant ? 'Verified' : 'Deficiencies Flagged'
+      };
+      if (existingDocIdx >= 0) {
+        app.documents[existingDocIdx] = docEntry;
+      } else {
+        app.documents.push(docEntry);
+      }
+
       app.currentRole = 'ta-hq';
       app.stage = STAGES.ATO_REPORT_SUBMITTED;
       app.status = STATUSES.UNDER_REVIEW;
 
       this._addHistory(
         app,
-        'Inspection Report Submitted to TA',
+        `Inspection Report Submitted (${compliant ? 'Compliant' : 'Safety Deficiencies Flagged'})`,
         'Inspecting Officer (IO)',
-        officerName || 'Tashi Wangdi Lepcha (IO)',
-        `Findings: ${app.inspectionReport.status}. ${remarks}`
+        app.inspectionReport.officer,
+        `Physical report attached: ${docName}. Outcome: ${statusStr}. ${reportRemarks ? 'Remarks: ' + reportRemarks : ''}`
       );
 
       this.saveApplication(app);
@@ -1156,9 +1465,13 @@
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
 
-      app.payment = app.payment || { amount: 1500, paid: false };
-      app.payment.amount = 1500;
+      const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
+      const fee = isGuide ? 500 : 1500;
+
+      app.payment = app.payment || {};
+      app.payment.amount = fee;
       app.payment.activated = true;
+      app.payment.paid = false;
       app.payment.activatedBy = officerName || 'District Tourism Officer';
       app.payment.activatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -1175,10 +1488,10 @@
 
       this._addHistory(
         app,
-        'Statutory Fee Activated (₹1,500)',
+        `Statutory Fee Activated (₹${fee.toLocaleString('en-IN')})`,
         officerRole || 'DTO Desk',
         officerName || 'District Tourism Officer',
-        'Application fee of ₹1,500 activated. Notification dispatched to citizen.'
+        `Application fee of ₹${fee.toLocaleString('en-IN')} activated. Notification dispatched to citizen.`
       );
 
       this.saveApplication(app);
@@ -1186,14 +1499,24 @@
     },
 
     // Action 6: Submit Citizen Payment (Citizen -> DTO)
-    submitCitizenPayment: function (arn, transactionRef, applicantName) {
+    submitCitizenPayment: function (arn, transactionRef, applicantName, paymentMode) {
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
 
-      const nowStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      if (app.payment && app.payment.paid) {
+        return app; // Prevent duplicate payment
+      }
+
+      const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
+      const fee = (app.payment && app.payment.amount) ? app.payment.amount : (isGuide ? 500 : 1500);
+
+      const nowStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      app.payment = app.payment || {};
+      app.payment.amount = fee;
       app.payment.paid = true;
       app.payment.transactionRef = transactionRef || `TXN-SK-ADV-${Math.floor(100000 + Math.random() * 900000)}`;
       app.payment.paidDate = nowStr;
+      app.payment.mode = paymentMode || 'UPI / Bharat QR';
 
       app.status = STATUSES.UNDER_REVIEW;
 
@@ -1210,10 +1533,10 @@
 
       this._addHistory(
         app,
-        'Statutory Fee Paid (₹1,500)',
+        `Statutory Fee Paid (₹${fee.toLocaleString('en-IN')})`,
         'Citizen Applicant',
         applicantName || app.applicantName,
-        `Demonstration payment submitted. Ref: ${app.payment.transactionRef}. Returning to DTO.`
+        `Demonstration payment submitted via ${app.payment.mode}. Ref: ${app.payment.transactionRef}. Returning to DTO.`
       );
 
       this.saveApplication(app);
@@ -1272,7 +1595,7 @@
       if (!app) return false;
 
       const randomDigits = Math.floor(1000 + Math.random() * 9000);
-      const isGuide = (app.type === 'guide-registration');
+      const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
       const certNo = isGuide 
         ? `RC-SK-GR-2026-${randomDigits}` 
         : `RC-SK-ATO-2026-${randomDigits}`;

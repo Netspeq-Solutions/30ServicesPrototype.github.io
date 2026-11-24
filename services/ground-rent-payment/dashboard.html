@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Citizen dashboard - Online Ground Rent Payment System, Urban Development Department, Government of Sikkim.">
+  <title>My Ground Rent Accounts | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+
+  <main id="main-content">
+
+    <!-- ================= VIEW: DASHBOARD (C2) ================= -->
+    <section id="view-dashboard" class="gr-view" aria-labelledby="welcomeHeading">
+      <div class="card border-0 shadow-xs p-3 p-md-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+              <h1 id="welcomeHeading" class="h4 fw-bold mb-0 text-dark">Welcome, <span id="welcomeName">Citizen</span></h1>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="scenarioBadge"></span>
+            </div>
+            <p class="text-muted small mb-0">Find your ground rent account, check the year-wise dues and pay online or through a Bank Receipt.</p>
+          </div>
+          <a href="search.html" class="btn btn-sm btn-gov-primary fw-semibold"><i class="bi bi-search me-1" aria-hidden="true"></i>Pay Ground Rent</a>
+        </div>
+      </div>
+
+      <div id="actionArea"></div>
+
+      <h2 class="h5 fw-bold mb-0">My Ground Rent Accounts</h2>
+      <p class="small text-muted mb-3">Sites linked to your mobile number or paid by you before.</p>
+      <div class="row g-3 mb-4" id="accountCards"></div>
+
+      <div class="card border-0 shadow-xs mb-4">
+        <div class="card-body d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div class="d-flex align-items-start gap-3">
+            <span class="gr-icon-circle bg-primary-subtle text-primary"><i class="bi bi-search" aria-hidden="true"></i></span>
+            <div>
+              <h3 class="h6 fw-bold mb-1">Pay for another site</h3>
+              <p class="small text-muted mb-0">Search by plot no., allottee's name, father's / husband's name or GR ID. Anyone may pay for any site; the money goes to that site's account.</p>
+            </div>
+          </div>
+          <a href="search.html" class="btn btn-sm btn-outline-primary">Search Account <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-xl-7">
+          <div class="card border-0 shadow-xs h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <h3 class="h6 fw-bold mb-0">Recent Payments</h3>
+              <a href="#payments" class="small" data-view="payments">View all</a>
+            </div>
+            <div class="card-body" id="recentPayments"></div>
+          </div>
+        </div>
+        <div class="col-xl-5">
+          <div class="card border-0 shadow-xs h-100">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <h3 class="h6 fw-bold mb-0">Recent Notifications</h3>
+              <a href="#notifications" class="small" data-view="notifications">View all</a>
+            </div>
+            <ul class="list-group list-group-flush" id="recentNotifs"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: ACCOUNTS ================= -->
+    <section id="view-accounts" class="gr-view d-none" aria-labelledby="accountsHeading">
+      <h1 id="accountsHeading" class="h4 fw-bold mb-1">My Ground Rent Accounts</h1>
+      <p class="text-muted small mb-3">Each site has a permanent Ground Rent ID (GR ID). It never changes, even on transfer.</p>
+      <div class="row g-3" id="accountCardsFull"></div>
+    </section>
+
+    <!-- ================= VIEW: PAYMENTS (C6) ================= -->
+    <section id="view-payments" class="gr-view d-none" aria-labelledby="paymentsHeading">
+      <h1 id="paymentsHeading" class="h4 fw-bold mb-1">Payment History &amp; Receipts</h1>
+      <p class="text-muted small mb-3">Payments made on your linked sites, online or through a Bank Receipt, and offline challans you generated.</p>
+      <div class="card border-0 shadow-xs mb-4">
+        <div class="card-body border-bottom">
+          <div class="row g-2">
+            <div class="col-md-5">
+              <label for="paySearch" class="form-label small fw-semibold mb-1">Search</label>
+              <input type="search" id="paySearch" class="form-control form-control-sm" placeholder="Receipt no., GR ID or BR no.">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="payMode" class="form-label small fw-semibold mb-1">Mode</label>
+              <select id="payMode" class="form-select form-select-sm"><option value="">All modes</option><option>Online</option><option>Offline</option></select>
+            </div>
+            <div class="col-6 col-md-4">
+              <label for="payStatus" class="form-label small fw-semibold mb-1">Status</label>
+              <select id="payStatus" class="form-select form-select-sm"><option value="">All statuses</option><option>Success</option><option>Pending</option><option>Failed</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="gov-table-desktop table-responsive">
+          <table class="table gov-table-compact table-hover mb-0">
+            <caption class="visually-hidden">Payment history</caption>
+            <thead><tr>
+              <th scope="col" style="width:18%">Receipt / Ref.</th><th scope="col" style="width:20%">GR ID</th>
+              <th scope="col" style="width:18%">Paid On &amp; Mode</th><th scope="col" class="text-end" style="width:14%">Amount</th>
+              <th scope="col" style="width:14%">Status</th><th scope="col" class="text-end" style="width:16%">Action</th>
+            </tr></thead>
+            <tbody id="payTableBody"></tbody>
+          </table>
+        </div>
+        <div class="gov-cards-mobile p-3" id="payCards"></div>
+      </div>
+      <h2 class="h6 fw-bold">Offline challans</h2>
+      <div class="card border-0 shadow-xs"><ul class="list-group list-group-flush" id="challanList"></ul></div>
+    </section>
+
+    <!-- ================= VIEW: NOTIFICATIONS ================= -->
+    <section id="view-notifications" class="gr-view d-none" aria-labelledby="notifHeading">
+      <h1 id="notifHeading" class="h4 fw-bold mb-1">Notifications</h1>
+      <p class="text-muted small mb-3">Prototype messages. In production these are also sent by SMS and email.</p>
+      <div class="card border-0 shadow-xs"><ul class="list-group list-group-flush" id="notifList"></ul></div>
+    </section>
+
+    <!-- ================= VIEW: SUPPORT ================= -->
+    <section id="view-support" class="gr-view d-none" aria-labelledby="supportHeading">
+      <h1 id="supportHeading" class="h4 fw-bold mb-3">Help and Support</h1>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card border-0 shadow-xs h-100"><div class="card-body">
+            <h2 class="h6 fw-bold"><i class="bi bi-question-circle me-1 text-primary" aria-hidden="true"></i>Common questions</h2>
+            <ul class="small text-secondary ps-3 mb-0">
+              <li class="mb-2">Rent for each financial year is due by <strong>31 March</strong>. A year paid late attracts a 5% surcharge.</li>
+              <li class="mb-2">Advance payment for future years is not accepted.</li>
+              <li class="mb-2">An offline challan is valid for 15 days and never past 31 March. After paying at the bank, upload the Bank Receipt from <strong>Upload Bank Receipt</strong> in the menu.</li>
+              <li>Arrears before your ULB went live are a certified opening balance from the paper register.</li>
+            </ul>
+            <a href="index.html#faq-section" class="btn btn-sm btn-outline-primary mt-3">Read all FAQs</a>
+          </div></div>
+        </div>
+        <div class="col-md-6">
+          <div class="card border-0 shadow-xs h-100"><div class="card-body">
+            <h2 class="h6 fw-bold"><i class="bi bi-building me-1 text-primary" aria-hidden="true"></i>Contact your ULB office</h2>
+            <p class="small text-secondary mb-2">For opening balance questions and offline Bank Receipt verification.</p>
+            <p class="small text-muted mb-0"><i class="bi bi-telephone me-1" aria-hidden="true"></i>Phone and email pending departmental confirmation.</p>
+            <a href="index.html#help-contacts" class="btn btn-sm btn-outline-primary mt-3">View helpdesks</a>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: PROFILE ================= -->
+    <section id="view-profile" class="gr-view d-none" aria-labelledby="profileHeading">
+      <h1 id="profileHeading" class="h4 fw-bold mb-3">My Profile</h1>
+      <div class="card border-0 shadow-xs" style="max-width: 640px;">
+        <div class="card-body">
+          <dl class="gr-meta-grid mb-3" id="profileDetails"></dl>
+          <div class="alert alert-light border small mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Profile details come from Sikkim GO and are edited there. (Simulated in this prototype.)</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('citizen');
+      if (!session) return;
+      App.shell({ type: 'citizen', active: 'dashboard' });
+
+      var c = App.currentCitizen(session);
+      var sites = App.citizenSites(c);
+      var siteIds = sites.map(function (s) { return s.grId; });
+
+      function accountState(s, d) {
+        var ch = App.challanFor(s.grId);
+        if (d.blocked) return { kind: 'pending', text: 'Bill unavailable', cls: '' };
+        if (d.pendingPayment) return { kind: 'pending', text: 'Under verification', cls: 'is-due' };
+        if (ch) return { kind: 'pending', text: ch.status === 'Generated' ? 'Challan issued' : 'BR awaiting verification', cls: 'is-due' };
+        if (d.totalPayable === 0) return { kind: 'paid', text: 'Paid up to FY ' + d.paidUpToFy, cls: 'is-clear' };
+        if (d.hasOverdue) return { kind: 'overdue', text: 'Arrears pending', cls: 'is-overdue' };
+        return { kind: 'due', text: 'FY ' + d.currentFy + ' due', cls: 'is-due' };
+      }
+
+      function accountCard(s) {
+        var d = App.dues(s);
+        var st = accountState(s, d);
+        var ch = App.challanFor(s.grId);
+        var w = App.ward(s.ulb, s.ward);
+        var bill = 'bill.html?gr=' + encodeURIComponent(s.grId);
+        var actions = '';
+        if (d.pendingPayment || (ch && ch.status === 'BR Recorded')) {
+          actions = '<button type="button" class="btn btn-sm btn-primary" disabled title="A payment is being verified"><i class="bi bi-lock me-1" aria-hidden="true"></i>Pay</button>';
+        } else if (d.totalPayable > 0 && !d.blocked) {
+          actions = '<a class="btn btn-sm btn-primary" href="' + bill + '"><i class="bi bi-credit-card me-1" aria-hidden="true"></i>Pay ' + inr(d.totalPayable) + '</a>';
+        }
+        actions += '<a class="btn btn-sm btn-outline-primary" href="' + bill + '">View Bill</a>';
+        if (ch && ch.status === 'Generated') actions += '<a class="btn btn-sm btn-warning" href="upload-br.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Bank Receipt</a><a class="btn btn-sm btn-outline-secondary" href="challan.html?no=' + encodeURIComponent(ch.challanNo) + '">Print Challan</a>';
+        return '<div class="col-md-6 col-xxl-4"><article class="gr-account-card ' + st.cls + '" aria-label="Account ' + esc(s.grId) + '">' +
+          '<div class="p-3 border-bottom d-flex justify-content-between align-items-start flex-wrap gap-2">' +
+            '<div class="min-w-0"><div class="gr-gr-id">' + esc(s.grId) + '</div>' +
+            '<div class="small fw-semibold text-dark text-truncate">' + esc(App.ownersText(s)) + '</div>' +
+            '<div class="small text-muted text-truncate">' + esc(s.locality) + (w ? ' &bull; ' + esc(w.name) : '') + '</div></div>' + App.pill(st.kind, st.text) +
+          '</div>' +
+          '<div class="p-3 flex-grow-1">' +
+            '<div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">' +
+              '<div><div class="small text-muted">Amount due</div><div class="gr-amount">' + (d.blocked ? '—' : inr(d.totalPayable)) + '</div></div>' +
+              '<div class="text-end small text-muted">Due date<br><strong class="text-dark">' + App.fmtDate(d.currentDueDate) + '</strong></div>' +
+            '</div>' +
+            '<dl class="gr-meta-grid mb-0">' +
+              '<div><dt>Total area</dt><dd>' + App.sqft(d.currentArea) + '</dd></div>' +
+              '<div><dt>Annual rent</dt><dd>' + inr(d.annualRent) + '</dd></div>' +
+              '<div><dt>Paid up to</dt><dd>FY ' + esc(d.paidUpToFy || '—') + '</dd></div>' +
+              '<div><dt>Opening balance</dt><dd>' + inr(d.opening ? d.opening.balance : 0) + '</dd></div>' +
+            '</dl>' +
+          '</div>' +
+          '<div class="p-3 border-top d-flex flex-wrap gap-2">' + actions + '</div>' +
+        '</article></div>';
+      }
+
+      function alertCard(tone, icon, tag, grId, title, body, next, button) {
+        return '<div class="card border-' + tone + ' border-2 shadow-xs mb-3"><div class="card-body p-3 p-md-4">' +
+          '<div class="d-flex align-items-start justify-content-between flex-wrap gap-3"><div class="d-flex align-items-start gap-3">' +
+          '<span class="gr-icon-circle bg-' + tone + '-subtle text-' + tone + '-emphasis"><i class="bi ' + icon + '" aria-hidden="true"></i></span>' +
+          '<div><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><span class="badge bg-' + tone + (tone === 'warning' || tone === 'info' ? ' text-dark' : '') + ' fw-bold">' + tag + '</span><span class="gr-gr-id small">' + esc(grId) + '</span></div>' +
+          '<h3 class="h6 fw-bold mb-1 text-dark">' + title + '</h3><p class="small text-secondary mb-1">' + body + '</p>' +
+          '<p class="small mb-0"><i class="bi bi-arrow-right-circle me-1 text-primary" aria-hidden="true"></i><strong>What happens next:</strong> ' + next + '</p></div>' +
+          '</div>' + (button ? '<div>' + button + '</div>' : '') + '</div></div></div>';
+      }
+
+      function actionCards() {
+        var html = '';
+        sites.forEach(function (s) {
+          var d = App.dues(s);
+          var ch = App.challanFor(s.grId);
+          if (d.pendingPayment) {
+            var p = d.pendingPayment;
+            html += alertCard('info', 'bi-hourglass-split', 'PAYMENT UNDER VERIFICATION', s.grId,
+              'Your online payment of ' + inr(p.amount) + ' is awaiting confirmation from the payment gateway',
+              'Started ' + App.fmtDate(p.paidOn) + ' &bull; Ref. ' + esc(p.ref) + '. The bill is locked to stop a double payment. The status updates after the gateway confirms (checked every 15 minutes).',
+              'No action is required from you at this stage. Please do not pay again.',
+              '<a class="btn btn-sm btn-outline-primary" href="pay-online.html?intent=' + encodeURIComponent(p.intentNo) + '"><i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>Check Status</a>');
+          } else if (ch && ch.status === 'Generated') {
+            html += alertCard('warning', 'bi-bank', 'PAY AT THE BANK', s.grId,
+              'Pay challan ' + esc(ch.challanNo) + ' for ' + inr(ch.amount) + ' before ' + App.fmtDate(ch.validTill),
+              'Pay the exact amount at the Department\'s designated bank, then upload a scan or photo of the Bank Receipt. Bring the original BR to the ULB counter; staff approve it and issue your receipt.',
+              'If the challan expires, generate a new one from the bill.',
+              '<div class="d-flex flex-wrap gap-2"><a class="btn btn-sm btn-warning" href="upload-br.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Bank Receipt</a>' +
+              '<a class="btn btn-sm btn-outline-secondary" href="challan.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Challan</a></div>');
+          } else if (ch && ch.status === 'BR Recorded') {
+            html += alertCard('info', 'bi-hourglass-split', 'BANK RECEIPT BEING VERIFIED', s.grId,
+              'Bank Receipt ' + esc(ch.brNo) + ' is awaiting approval', 'Bring the original Bank Receipt to the ULB counter. Staff will approve it and issue your receipt.',
+              'No other action is required.', ch.brScan ? '<div class="small">' + App.fileLink(ch.brScan, s.grId, 'View uploaded BR') + '</div>' : '');
+          } else if (!d.blocked && d.hasOverdue && d.totalPayable > 0) {
+            html += alertCard('danger', 'bi-exclamation-triangle-fill', 'ARREARS PENDING', s.grId,
+              inr(d.totalPayable) + ' is outstanding on this site',
+              'This includes a certified opening balance of ' + inr(d.opening.balance) + ' for years before go-live (paid up to FY ' + esc(d.paidUpToFy) + ').',
+              'Pay before 31 March to avoid surcharge on the current year.',
+              '<a class="btn btn-sm btn-danger" href="bill.html?gr=' + encodeURIComponent(s.grId) + '"><i class="bi bi-credit-card me-1" aria-hidden="true"></i>Pay Now</a>');
+          }
+        });
+        return html;
+      }
+
+      var payments = D.payments.filter(function (p) { return siteIds.indexOf(p.grId) !== -1; })
+        .sort(function (a, b) { return a.paidOn < b.paidOn ? 1 : (a.paidOn > b.paidOn ? -1 : 0); });
+      function payAction(p) {
+        if (p.status === 'Success') return '<a class="btn btn-sm btn-outline-primary" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '"><i class="bi bi-download" aria-hidden="true"></i>Receipt</a>';
+        if (p.status === 'Pending') return '<a class="btn btn-sm btn-outline-secondary" href="pay-online.html?intent=' + encodeURIComponent(p.intentNo) + '">Check Status</a>';
+        return '<span class="small text-muted">—</span>';
+      }
+      function renderPayments() {
+        var q = document.getElementById('paySearch').value.trim().toLowerCase();
+        var mode = document.getElementById('payMode').value;
+        var status = document.getElementById('payStatus').value;
+        var rows = payments.filter(function (p) {
+          var hay = [p.receiptNo, p.intentNo, p.grId, p.ref].join(' ').toLowerCase();
+          return (!q || hay.indexOf(q) !== -1) && (!mode || p.mode === mode) && (!status || p.status === status);
+        });
+        var body = document.getElementById('payTableBody'), cards = document.getElementById('payCards');
+        if (!rows.length) {
+          var empty = payments.length ? 'No payments match the search.' : 'No payments yet. Payments you make will appear here with a downloadable receipt.';
+          body.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">' + empty + '</td></tr>';
+          cards.innerHTML = '<p class="text-center text-muted small mb-0">' + empty + '</p>';
+          return;
+        }
+        body.innerHTML = rows.map(function (p) {
+          return '<tr><td class="font-monospace fw-bold small">' + esc(p.receiptNo || p.intentNo) + '</td><td class="gr-gr-id small">' + esc(p.grId) + '</td>' +
+            '<td>' + App.fmtDate(p.paidOn) + '<div class="small text-muted">' + esc(p.mode) + (p.mode === 'Offline' ? ' &bull; BR ' + esc(p.ref) : '') + '</div></td>' +
+            '<td class="text-end fw-bold">' + inr(p.amount) + '</td><td>' + App.paymentPill(p) + '</td><td class="text-end text-nowrap">' + payAction(p) + '</td></tr>';
+        }).join('');
+        cards.innerHTML = rows.map(function (p) {
+          return '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2 mb-1"><span class="font-monospace fw-bold small">' + esc(p.receiptNo || p.intentNo) + '</span>' + App.paymentPill(p) + '</div>' +
+            '<div class="gr-gr-id small">' + esc(p.grId) + '</div><div class="small text-muted mb-2">' + App.fmtDate(p.paidOn) + ' &bull; ' + esc(p.mode) + '</div>' +
+            '<div class="d-flex justify-content-between align-items-center"><strong>' + inr(p.amount) + '</strong>' + payAction(p) + '</div></div>';
+        }).join('');
+      }
+
+      function notifItem(n) {
+        return '<li class="list-group-item gr-notif-item' + (n.unread ? ' is-unread' : '') + '"><div class="d-flex justify-content-between gap-2"><span class="fw-semibold small text-dark">' +
+          (n.unread ? '<span class="visually-hidden">Unread: </span>' : '') + esc(n.title) + '</span><span class="small text-muted text-nowrap">' + App.fmtDate(n.date) + '</span></div>' +
+          '<div class="small text-secondary">' + esc(n.body) + '</div></li>';
+      }
+
+      // ---------- Render ----------
+      document.getElementById('welcomeName').textContent = c.name;
+      document.getElementById('scenarioBadge').textContent = c.label;
+      document.getElementById('actionArea').innerHTML = actionCards();
+      var cardsHtml = sites.length ? sites.map(accountCard).join('') :
+        '<div class="col-12"><div class="card border-0 shadow-xs"><div class="card-body text-center py-5">' +
+        '<span class="gr-icon-circle bg-primary-subtle text-primary mb-3"><i class="bi bi-house-add" aria-hidden="true"></i></span>' +
+        '<h3 class="h6 fw-bold">You haven\'t linked any ground rent account yet</h3>' +
+        '<p class="small text-muted mx-auto mb-3" style="max-width:520px;">Search for your site by plot no., allottee\'s name or father\'s / husband\'s name. After your first payment the site is saved here for one-tap payment next year.</p>' +
+        '<a class="btn btn-sm btn-gov-primary" href="search.html"><i class="bi bi-search me-1" aria-hidden="true"></i>Find My Account</a></div></div></div>';
+      document.getElementById('accountCards').innerHTML = cardsHtml;
+      document.getElementById('accountCardsFull').innerHTML = cardsHtml;
+
+      var recent = payments.slice(0, 3);
+      document.getElementById('recentPayments').innerHTML = recent.length ? '<ul class="list-unstyled mb-0">' + recent.map(function (p) {
+        return '<li class="d-flex justify-content-between align-items-center gap-2 py-2 border-bottom"><div class="min-w-0"><div class="small fw-semibold">' + inr(p.amount) + ' &bull; ' + esc(p.mode) + '</div>' +
+          '<div class="small text-muted text-truncate">' + esc(p.grId) + ' &bull; ' + App.fmtDate(p.paidOn) + '</div></div><div class="text-nowrap">' + App.paymentPill(p) + '</div></li>';
+      }).join('') + '</ul>' : '<p class="small text-muted mb-0">No payments yet.</p>';
+
+      document.getElementById('recentNotifs').innerHTML = c.notifications.slice(0, 3).map(notifItem).join('') || '<li class="list-group-item small text-muted">No notifications.</li>';
+      document.getElementById('notifList').innerHTML = c.notifications.map(notifItem).join('') || '<li class="list-group-item small text-muted">No notifications.</li>';
+
+      var challans = D.challans.filter(function (ch) { return siteIds.indexOf(ch.grId) !== -1; });
+      document.getElementById('challanList').innerHTML = challans.length ? challans.map(function (ch) {
+        return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2"><div><span class="font-monospace fw-bold small">' + esc(ch.challanNo) + '</span> ' + App.challanPill(ch) +
+          '<div class="small text-muted">' + esc(ch.grId) + ' &bull; ' + inr(ch.amount) + ' &bull; valid till ' + App.fmtDate(ch.validTill) + '</div></div>' +
+          '<div class="d-flex flex-wrap gap-2">' + (ch.status === 'Generated' && ch.validTill >= D.demoToday ? '<a class="btn btn-sm btn-warning" href="upload-br.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload BR</a>' : '') +
+          (ch.brScan ? App.fileLink(ch.brScan, ch.grId, 'View BR').replace('class="gr-file-link"', 'class="btn btn-sm btn-outline-secondary"') : '') +
+          '<a class="btn btn-sm btn-outline-primary" href="challan.html?no=' + encodeURIComponent(ch.challanNo) + '">Print Challan</a></div></li>';
+      }).join('') : '<li class="list-group-item small text-muted">No offline challans.</li>';
+
+      document.getElementById('profileDetails').innerHTML =
+        '<div><dt>Name</dt><dd>' + esc(c.name) + '</dd></div><div><dt>Mobile</dt><dd>' + esc(App.maskMobile(c.mobile)) + '</dd></div>' +
+        '<div><dt>Email</dt><dd>' + esc(c.email || '—') + '</dd></div><div><dt>Linked sites</dt><dd>' + sites.length + '</dd></div>';
+
+      ['paySearch', 'payMode', 'payStatus'].forEach(function (id) {
+        var el = document.getElementById(id);
+        el.addEventListener('input', renderPayments);
+        el.addEventListener('change', renderPayments);
+      });
+      renderPayments();
+
+      // Opening notifications marks them as read.
+      App.initViews(function (view) {
+        if (view === 'notifications' && c.notifications.some(function (n) { return n.unread; })) {
+          c.notifications.forEach(function (n) { n.unread = false; });
+          App.save();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

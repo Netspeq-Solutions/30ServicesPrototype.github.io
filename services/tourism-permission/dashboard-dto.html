@@ -301,7 +301,11 @@
               Review received Tourism Permission requests, verify local clearances, forward to Headquarters or grant direct approval (Adventure / Local), process HQ returns, and issue final approved letters.
             </p>
           </div>
-          <div class="d-flex gap-2">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="badge bg-light text-secondary border px-3 py-1.5 small d-none d-sm-inline-flex align-items-center" id="dtoHeaderDateBadge" title="Official Date">
+              <i class="bi bi-calendar3 me-1 text-primary"></i>
+              <span id="dtoDeskCurrentDate">19 Nov 2026</span>
+            </div>
             <a href="reports.html?role=dto&district=Gangtok" id="btnHeaderReports" class="btn btn-outline-success btn-sm">
               <i class="bi bi-file-earmark-bar-graph me-1"></i> Reports
             </a>
@@ -697,6 +701,31 @@
         }
       }
 
+      // Safe and robust date formatter for application dates
+      function formatAppDate(app) {
+        if (!app) return { date: 'Recent', time: '' };
+        const raw = app.submissionDate || app.submittedDate || app.createdDate || app.appliedDate || app.date || (app.history && app.history[0] ? app.history[0].date : null);
+        if (!raw || raw === 'undefined' || raw === 'null') return { date: 'Recent', time: '' };
+
+        const str = String(raw).trim();
+        // Check for comma separation like "02 Nov 2026, 09:30 AM" or "19/11/2026, 14:30:00"
+        if (str.includes(',')) {
+          const parts = str.split(',');
+          return { date: parts[0].trim(), time: parts.slice(1).join(',').trim() };
+        }
+        // If ISO string like 2026-11-02T09:30:00
+        if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+          const d = new Date(str);
+          if (!isNaN(d.getTime())) {
+            return {
+              date: d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+              time: d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+            };
+          }
+        }
+        return { date: str, time: '' };
+      }
+
       // Render Queue Table
       function renderTable() {
         let items = getActiveTabApplications();
@@ -753,23 +782,50 @@
           let mobileActionClass = 'btn-outline-primary';
 
           if (app.currentStage === WorkflowEngine.STAGES.STAGE_2) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Verify</a>`;
-            mobileActionLabel = 'Verify Application';
-            mobileActionClass = 'btn-primary';
+            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.category);
+            actionBtnHtml = isHqFlow
+              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-send-check me-1"></i> Verify &amp; Forward</a>`
+              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Review &amp; Approve</a>`;
+            mobileActionLabel = isHqFlow ? 'Verify & Forward' : 'Review & Approve';
+            mobileActionClass = isHqFlow ? 'btn-primary' : 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_7) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Reverify</a>`;
+            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.category);
+            actionBtnHtml = isHqFlow
+              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Reverify &amp; Forward</a>`
+              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Reverify &amp; Approve</a>`;
             mobileActionLabel = 'Reverify Application';
-            mobileActionClass = 'btn-primary';
+            mobileActionClass = isHqFlow ? 'btn-primary' : 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_5) {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-danger py-1 px-3 fw-bold shadow-xs"><i class="bi bi-exclamation-triangle me-1"></i> Action Return</a>`;
             mobileActionLabel = 'Process HQ Return';
             mobileActionClass = 'btn-danger';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-award me-1"></i> Approve</a>`;
-            mobileActionLabel = 'Issue Final Approval';
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                <a href="approval-sheet.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" title="View HQ Approval Sheet">
+                  <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                </a>
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs">
+                  <i class="bi bi-patch-check me-1"></i> Final Approval
+                </a>
+              </div>`;
+            mobileActionLabel = 'Final Approval & Issue Letter';
             mobileActionClass = 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_12) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Letter</a>`;
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                ${app.approvalSheet ? `
+                  <a href="approval-sheet.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" title="View HQ Approval Sheet">
+                    <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                  </a>
+                ` : ''}
+                <a href="permission-letter.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold" title="View Permission Letter">
+                  <i class="bi bi-file-earmark-check me-1"></i> Letter
+                </a>
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-secondary py-1 px-2" title="Review Dossier">
+                  <i class="bi bi-folder2-open"></i>
+                </a>
+              </div>`;
             mobileActionLabel = 'View Permission Letter';
             mobileActionClass = 'btn-outline-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_13) {
@@ -785,6 +841,8 @@
             mobileActionLabel = 'View Details';
             mobileActionClass = 'btn-outline-primary';
           }
+
+          const appDate = formatAppDate(app);
 
           // 1. Desktop Row
           const tr = document.createElement('tr');
@@ -804,11 +862,13 @@
               ${liaisonBadge}
             </td>
             <td>
-              <span class="text-dark small">${app.submissionDate}</span>
+              <span class="text-dark small fw-semibold">${appDate.date}</span>
+              ${appDate.time ? `<div class="text-muted" style="font-size: 0.72rem;"><i class="bi bi-clock me-1"></i>${appDate.time}</div>` : ''}
             </td>
             <td>
               <span class="${statusBadgeClass}">${app.status}</span>
               <div class="text-muted small text-truncate" style="font-size: 0.75rem; max-width: 160px;" title="${app.currentStage}">${app.currentStage}</div>
+              ${app.approvalSheet ? `<div class="mt-0.5"><span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5" style="font-size: 0.7rem;"><i class="bi bi-file-earmark-check me-1"></i>HQ Sheet Attached</span></div>` : ''}
             </td>
             <td class="text-end text-nowrap">
               ${actionBtnHtml}
@@ -831,7 +891,7 @@
               <div class="small text-muted mb-2 text-truncate">${app.activityTitle}</div>
               <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
                 <span><i class="bi bi-tag me-1"></i>${categoryDisplay} ${liaisonBadge}</span>
-                <span><i class="bi bi-calendar-event me-1"></i>${app.submissionDate}</span>
+                <span><i class="bi bi-calendar-event me-1"></i>${appDate.date}${appDate.time ? ' &bull; ' + appDate.time : ''}</span>
               </div>
               <div class="d-flex justify-content-end mt-2">
                 <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm ${mobileActionClass} px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1">
@@ -921,6 +981,11 @@
       }
 
       // Initial Execution
+      const dateDisplayEl = document.getElementById('dtoDeskCurrentDate');
+      if (dateDisplayEl) {
+        dateDisplayEl.textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+      }
+
       updateDistrictContext();
       updateMetrics();
       updateCardHeader();

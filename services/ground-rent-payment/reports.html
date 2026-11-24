@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Reports | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+  <style>.gr-rep-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; } .gr-rep-tabs .nav-link { white-space: nowrap; min-height: 44px; }</style>
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+      <div><h1 class="h4 fw-bold mb-1">Reports</h1><p class="text-muted small mb-0" id="repSub"></p></div>
+      <div class="d-flex flex-wrap gap-2 gr-no-print">
+        <button type="button" class="btn btn-sm btn-outline-success" id="btnExcel"><i class="bi bi-file-earmark-excel me-1" aria-hidden="true"></i>Export to Excel</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="window.print()"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print</button>
+      </div>
+    </div>
+    <ul class="nav nav-tabs gr-rep-tabs mb-3 gr-no-print" role="tablist" id="repTabs"></ul>
+    <div class="card border-0 shadow-xs mb-3 gr-no-print"><div class="card-body row g-2" id="repFilters"></div></div>
+    <div id="repTitle" class="d-none d-print-block mb-2"></div>
+    <div id="repPane"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, T = window.GRDues, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      var statewide = App.can('reportsAll');
+      var scope = App.staffScope(session);
+      var startTab = (location.hash || '').slice(1);
+      App.shell({ type: 'staff', active: startTab === 'audit' ? 'audit' : 'reports' });
+      var $ = function (id) { return document.getElementById(id); };
+      $('repSub').textContent = statewide ? 'All ULBs with state totals. Use the ULB filter to look at one ULB.' : 'Collection, arrears and audit reports.';
+
+      var TABS = [['collection', 'Collection Report'], ['defaulters', 'Defaulters Report'], ['audit', 'Audit Log']];
+      if (statewide) TABS.unshift(['state', 'State Dashboard']);
+      var tab = TABS.some(function (t) { return t[0] === startTab; }) ? startTab : TABS[0][0];
+      var curFy = T.fyOfDate(D.demoToday);
+      var F = { district: '', ulb: scope || '', from: '2026-04-01', to: D.demoToday, mode: '', group: 'month', fy: T.fyLabel(curFy), years: 1, amount: 0, user: '', gr: '', action: '' };
+      // Financial years with data: from the earliest go-live year to the current year.
+      function fyList() {
+        var first = curFy;
+        D.config.ulbs.forEach(function (u) { if (u.goLiveFy) first = Math.min(first, T.parseFy(u.goLiveFy)); });
+        var out = [];
+        for (var y = curFy; y >= first; y--) out.push(y);
+        return out;
+      }
+      var exportRows = [];
+
+      function sites() { return D.sites.filter(function (s) { return (!F.district || App.ulb(s.ulb).district === F.district) && (!F.ulb || s.ulb === F.ulb) && App.inScope(s, session); }); }
+      function siteIds() { return sites().map(function (s) { return s.grId; }); }
+      function card(title, body, sub) { return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (sub ? '<div class="small text-muted">' + sub + '</div>' : '') + '</div>' + body + '</div>'; }
+      function table(head, rows, caption, foot) {
+        return '<div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">' + caption + '</caption><thead><tr>' + head.map(function (h) { return '<th scope="col"' + (h.end ? ' class="text-end"' : '') + '>' + (h.t || h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          (rows || '<tr><td colspan="' + head.length + '" class="text-center text-muted py-3">No records for these filters.</td></tr>') + '</tbody>' + (foot || '') + '</table></div>';
+      }
+      function kpi(value, label, sub) { return '<div class="col-6 col-xl-3"><div class="gov-kpi-card" style="cursor:default;"><div class="gov-kpi-count" style="font-size:1.5rem;">' + value + '</div><p class="gov-kpi-label">' + label + '</p><div class="small text-muted">' + (sub || '') + '</div></div></div>'; }
+
+      // ---------- Filters ----------
+      function sel(id, label, opts, val, col) { return '<div class="' + (col || 'col-6 col-md-3') + '"><label for="' + id + '" class="form-label small fw-semibold mb-1">' + label + '</label><select id="' + id + '" class="form-select form-select-sm">' + opts.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (String(o[0]) === String(val) ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></div>'; }
+      function inp(id, label, type, val, col, extra) { return '<div class="' + (col || 'col-6 col-md-3') + '"><label for="' + id + '" class="form-label small fw-semibold mb-1">' + label + '</label><input id="' + id + '" type="' + type + '" class="form-control form-control-sm" value="' + esc(val) + '"' + (extra || '') + '></div>'; }
+      function filtersHtml() {
+        var h = '';
+        // District → ULB (cascading)
+        if (statewide) h += sel('fDist', 'District', [['', 'All districts']].concat(D.config.districts.map(function (d) { return [d, d]; })), F.district) +
+          sel('fUlb', 'ULB', [['', 'All ULBs']].concat(D.config.ulbs.filter(function (u) { return !F.district || u.district === F.district; }).map(function (u) { return [u.code, u.name]; })), F.ulb);
+        if (tab === 'collection') {
+          h += sel('fGroup', 'Report', [['month', 'Monthly'], ['quarter', 'Quarterly'], ['year', 'Yearly']], F.group);
+          if (F.group !== 'year') h += sel('fFy', 'Financial year', fyList().map(function (y) { return [T.fyLabel(y), 'FY ' + T.fyLabel(y)]; }), F.fy);
+          h += sel('fMode', 'Payment mode', [['', 'All modes'], ['Online', 'Online'], ['Offline', 'Bank (challan + BR)']], F.mode);
+        } else if (tab === 'defaulters') {
+          h += inp('fYears', 'Arrears of at least (years)', 'number', F.years, null, ' min="0"') + inp('fAmount', 'or outstanding over (₹)', 'number', F.amount, null, ' min="0"');
+        } else if (tab === 'audit') {
+          var users = []; D.auditLog.forEach(function (a) { if (users.indexOf(a.user) === -1) users.push(a.user); });
+          h += sel('fUser', 'User', [['', 'All users']].concat(users.map(function (u) { return [u, u]; })), F.user) + inp('fGr', 'Account (GR ID)', 'search', F.gr) + inp('fAction', 'Action contains', 'search', F.action) +
+            inp('fFrom', 'From', 'date', F.from) + inp('fTo', 'To', 'date', F.to);
+        }
+        $('repFilters').innerHTML = h || '<div class="col-12 small text-muted">No filters for this report.</div>';
+        $('repFilters').querySelectorAll('input,select').forEach(function (el) {
+          el.addEventListener('change', function () {
+            var map = { fDist: 'district', fUlb: 'ulb', fFrom: 'from', fTo: 'to', fMode: 'mode', fGroup: 'group', fFy: 'fy', fYears: 'years', fAmount: 'amount', fUser: 'user', fGr: 'gr', fAction: 'action' };
+            F[map[el.id]] = el.type === 'number' ? +el.value || 0 : el.value;
+            if (el.id === 'fDist') F.ulb = '';
+            if (el.id === 'fGroup' || el.id === 'fDist') filtersHtml();
+            renderPane();
+          });
+        });
+      }
+
+      // ---------- Reports ----------
+      var MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+      // Periods of the chosen report, each with its date range (financial year April–March).
+      function periods() {
+        if (F.group === 'year') return fyList().slice().reverse().map(function (y) { return { label: 'FY ' + T.fyLabel(y), from: y + '-04-01', to: (y + 1) + '-03-31' }; });
+        var fy = T.parseFy(F.fy);
+        if (F.group === 'quarter') return [0, 1, 2, 3].map(function (q) {
+          return { label: 'Q' + (q + 1) + ' (' + MONTHS[q * 3] + '–' + MONTHS[q * 3 + 2] + ')', from: T.iso(new Date(fy, 3 + q * 3, 1)), to: T.iso(new Date(fy, 6 + q * 3, 0)) };
+        });
+        return MONTHS.map(function (m, i) {
+          var a = new Date(fy, 3 + i, 1);
+          return { label: m + ' ' + a.getFullYear(), from: T.iso(a), to: T.iso(new Date(fy, 4 + i, 0)) };
+        });
+      }
+      function repCollection() {
+        var ids = siteIds(), ps = periods();
+        var from = ps[0].from, to = ps[ps.length - 1].to;
+        var pays = D.payments.filter(function (p) { return ids.indexOf(p.grId) !== -1 && p.status === 'Success' && p.paidOn >= from && p.paidOn <= to && (!F.mode || p.mode === F.mode); })
+          .sort(function (a, b) { return a.paidOn < b.paidOn ? -1 : 1; });
+        var tot = { n: 0, on: 0, off: 0 };
+        var rows = ps.map(function (pd) {
+          var r = { label: pd.label, n: 0, on: 0, off: 0, future: pd.from > D.demoToday };
+          pays.forEach(function (p) { if (p.paidOn >= pd.from && p.paidOn <= pd.to) { r.n++; r[p.mode === 'Online' ? 'on' : 'off'] += p.amount; } });
+          tot.n += r.n; tot.on += r.on; tot.off += r.off;
+          return r;
+        });
+        var title = (F.group === 'year' ? 'Yearly' : F.group === 'quarter' ? 'Quarterly' : 'Monthly') + ' collection' + (F.group === 'year' ? '' : ', FY ' + F.fy);
+        var modeLabel = F.mode === 'Online' ? 'Online only' : F.mode === 'Offline' ? 'Bank only' : 'All modes';
+        exportRows = [[title + ' – ' + modeLabel], ['Period', 'Receipts', 'Online (Rs)', 'Bank (Rs)', 'Total (Rs)']]
+          .concat(rows.map(function (r) { return [r.label, r.n, r.on, r.off, r.on + r.off]; }))
+          .concat([['Total', tot.n, tot.on, tot.off, tot.on + tot.off], [], ['Receipt No.', 'Date', 'GR ID', 'Allottee', 'Mode', 'Reference', 'Amount (Rs)']])
+          .concat(pays.map(function (p) { return [p.receiptNo, p.paidOn, p.grId, App.ownersText(App.site(p.grId)), p.mode === 'Online' ? 'Online' : 'Bank', p.ref, p.amount]; }));
+        var dash = '—';
+        var gRows = rows.map(function (r) {
+          return '<tr' + (r.future ? ' class="text-muted"' : '') + '><td>' + esc(r.label) + '</td><td class="text-end">' + (r.future ? dash : r.n) + '</td><td class="text-end">' + (r.future ? dash : inr(r.on)) + '</td><td class="text-end">' + (r.future ? dash : inr(r.off)) + '</td><td class="text-end fw-bold">' + (r.future ? dash : inr(r.on + r.off)) + '</td></tr>';
+        }).join('');
+        var rRows = pays.slice().reverse().map(function (p) { var s = App.site(p.grId); return '<tr><td class="font-monospace small"><a href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '">' + esc(p.receiptNo) + '</a></td><td class="small">' + App.fmtDate(p.paidOn) + '</td><td class="gr-gr-id small">' + esc(p.grId) + '</td><td class="small text-truncate" style="max-width:200px;">' + esc(App.ownersText(s)) + '</td><td class="small">' + (p.mode === 'Online' ? 'Online' : 'Bank') + '</td><td class="text-end fw-bold">' + inr(p.amount) + '</td></tr>'; }).join('');
+        return '<div class="row g-3 mb-3">' + kpi(inr(tot.on + tot.off), 'Total collected', tot.n + ' receipts') + kpi(inr(tot.on), 'Online', '') + kpi(inr(tot.off), 'Bank (challan + BR)', '') + '</div>' +
+          card(esc(title), table(['Period', { t: 'Receipts', end: true }, { t: 'Online', end: true }, { t: 'Bank', end: true }, { t: 'Total', end: true }], gRows, title,
+            '<tfoot><tr class="table-light"><th scope="row">Total</th><td class="text-end">' + tot.n + '</td><td class="text-end">' + inr(tot.on) + '</td><td class="text-end">' + inr(tot.off) + '</td><td class="text-end fw-bold">' + inr(tot.on + tot.off) + '</td></tr></tfoot>'), esc(modeLabel)) +
+          card('Receipts in this report', table(['Receipt', 'Date', 'GR ID', 'Allottee', 'Mode', { t: 'Amount', end: true }], rRows, 'Receipts'));
+      }
+
+      function repDefaulters() {
+        var cur = T.fyOfDate(D.demoToday);
+        var list = sites().filter(function (s) { return s.status === 'Active'; }).map(function (s) {
+          var d = App.dues(s);
+          var yrs = d.paidUpToFy ? cur - T.parseFy(d.paidUpToFy) - 1 : 0;
+          return { s: s, d: d, yrs: Math.max(0, yrs) };
+        }).filter(function (x) { return !x.d.blocked && x.d.hasOverdue && x.yrs >= F.years && x.d.totalPayable > F.amount; })
+          .sort(function (a, b) { return b.d.totalPayable - a.d.totalPayable; });
+        exportRows = [['GR ID', 'Allottee', 'Mobile', 'Locality', 'Paid up to', 'Years in arrears', 'Outstanding']].concat(list.map(function (x) { return [x.s.grId, App.ownersText(x.s), (App.siteMobiles(x.s)[0] || ''), x.s.locality, x.d.paidUpToFy, x.yrs, x.d.totalPayable]; }));
+        var rows = list.map(function (x) {
+          var m = App.siteMobiles(x.s)[0];
+          return '<tr><td class="gr-gr-id small"><a href="ledger.html?gr=' + encodeURIComponent(x.s.grId) + '">' + esc(x.s.grId) + '</a></td><td><div class="small fw-semibold">' + esc(App.ownersText(x.s)) + '</div><div class="small text-muted">' + (m ? esc(m) : '<span class="text-muted">No mobile</span>') + '</div></td>' +
+            '<td class="small">' + esc(x.s.locality) + '</td><td class="small">FY ' + esc(x.d.paidUpToFy) + '<div class="text-muted">' + x.yrs + ' yr(s) in arrears</div></td><td class="text-end fw-bold">' + inr(x.d.totalPayable) + '</td></tr>';
+        }).join('');
+        return '<div class="row g-3 mb-3">' + kpi(list.length, 'Defaulters', 'Arrears of ' + F.years + ' year(s) or more') + kpi(inr(list.reduce(function (a, x) { return a + x.d.totalPayable; }, 0)), 'Total outstanding', '') + '</div>' +
+          card('Defaulters', table(['GR ID', 'Allottee &amp; Mobile', 'Locality', 'Paid up to', { t: 'Outstanding', end: true }], rows, 'Defaulters'));
+      }
+
+      function repAudit() {
+        var ids = siteIds();
+        var list = D.auditLog.filter(function (a) {
+          if (a.grId && ids.indexOf(a.grId) === -1) return false;
+          if (!a.grId && !statewide && session.role !== 'deptAdmin' && session.role !== 'supervisor') return false;
+          if (F.user && a.user !== F.user) return false;
+          if (F.gr && (!a.grId || a.grId.toLowerCase().indexOf(F.gr.toLowerCase()) === -1)) return false;
+          if (F.action && a.action.toLowerCase().indexOf(F.action.toLowerCase()) === -1) return false;
+          var day = a.at.slice(0, 10);
+          return day >= F.from && day <= F.to;
+        });
+        exportRows = [['Time', 'User', 'Role', 'Account', 'Action', 'Reason', 'File', 'IP']].concat(list.map(function (a) { return [a.at, a.user, a.role, a.grId || '', a.action, a.reason || '', a.file || '', a.ip || '']; }));
+        var rows = list.map(function (a) {
+          return '<tr><td class="small text-nowrap">' + esc(a.at) + '</td><td class="small">' + esc(a.user) + '<div class="text-muted">' + esc(a.role) + '</div></td><td class="small">' + (a.grId ? '<a class="gr-gr-id" href="ledger.html?gr=' + encodeURIComponent(a.grId) + '">' + esc(a.grId) + '</a>' : '<span class="text-muted">System</span>') + '</td>' +
+            '<td class="small">' + esc(a.action) + '</td><td class="small">' + esc(a.reason || '—') + (a.file ? '<div>' + App.fileLink(a.file, a.grId || null) + '</div>' : '') + '</td><td class="small text-muted">' + esc(a.ip || '—') + '</td></tr>';
+        }).join('');
+        return card('Audit log (' + list.length + ' entries)', table(['Time', 'User &amp; Role', 'Account', 'Action', 'Reason &amp; File', 'IP'], rows, 'Audit log'), 'Append-only: no role can edit or delete entries.');
+      }
+
+      function repState() {
+        var rows = D.config.ulbs.filter(function (u) { return (!F.district || u.district === F.district) && (!F.ulb || u.code === F.ulb); }).map(function (u) {
+          var list = D.sites.filter(function (s) { return s.ulb === u.code && s.status === 'Active'; });
+          var out = 0, def = 0, coll = 0;
+          list.forEach(function (s) { var d = App.dues(s); if (!d.blocked) { out += d.totalPayable; if (d.hasOverdue) def++; } });
+          var ids = list.map(function (s) { return s.grId; });
+          coll = D.payments.filter(function (p) { return ids.indexOf(p.grId) !== -1 && p.status === 'Success' && T.fyOfDate(p.paidOn) === T.fyOfDate(D.demoToday); }).reduce(function (a, p) { return a + p.amount; }, 0);
+          return { u: u, n: list.length, out: out, def: def, coll: coll };
+        });
+        var tot = rows.reduce(function (a, r) { a.n += r.n; a.out += r.out; a.def += r.def; a.coll += r.coll; return a; }, { n: 0, out: 0, def: 0, coll: 0 });
+        exportRows = [['ULB', 'Category', 'Status', 'Accounts', 'Collected FY', 'Outstanding', 'Defaulters']].concat(rows.map(function (r) { return [r.u.name, r.u.category, r.u.migrationStatus, r.n, r.coll, r.out, r.def]; }));
+        var maxOut = Math.max.apply(null, rows.map(function (r) { return r.out; }).concat([1]));
+        var html = rows.map(function (r) {
+          var p = r.u.migrationStatus === 'Live' ? App.pill('paid', 'Live') : r.u.migrationStatus === 'Data received' ? App.pill('pending', 'Data received') : App.pill('closed', 'Not started');
+          return '<tr><td><div class="small fw-semibold">' + esc(r.u.name) + '</div><div class="small text-muted">' + esc(r.u.category) + '</div></td><td>' + p + '</td><td class="text-end">' + r.n + '</td><td class="text-end">' + inr(r.coll) + '</td>' +
+            '<td class="text-end">' + inr(r.out) + '<div class="progress mt-1" style="height:4px;" role="img" aria-label="Share of state outstanding"><div class="progress-bar" style="width:' + Math.round(r.out / maxOut * 100) + '%"></div></div></td><td class="text-end">' + r.def + '</td></tr>';
+        }).join('');
+        return '<div class="row g-3 mb-3">' + kpi(D.config.ulbs.filter(function (u) { return u.active; }).length + ' / ' + D.config.ulbs.length, 'ULBs live', '') + kpi(tot.n, 'Active accounts', 'State total') + kpi(inr(tot.coll), 'Collected FY ' + T.fyLabel(T.fyOfDate(D.demoToday)), 'State total') + kpi(inr(tot.out), 'Outstanding', tot.def + ' defaulters') + '</div>' +
+          card('ULB-wise comparison', table(['ULB', 'Status', { t: 'Accounts', end: true }, { t: 'Collected FY', end: true }, { t: 'Outstanding', end: true }, { t: 'Defaulters', end: true }], html, 'ULB comparison',
+            '<tfoot><tr class="table-light"><th scope="row" colspan="2">State total</th><td class="text-end">' + tot.n + '</td><td class="text-end">' + inr(tot.coll) + '</td><td class="text-end fw-bold">' + inr(tot.out) + '</td><td class="text-end">' + tot.def + '</td></tr></tfoot>'));
+      }
+
+      function renderPane() {
+        var title = TABS.filter(function (t) { return t[0] === tab; })[0][1];
+        $('repTitle').innerHTML = '<h2 class="h5 fw-bold mb-0">' + esc(title) + '</h2><div class="small">' + esc(F.ulb ? App.ulb(F.ulb).name : F.district ? F.district + ' district' : 'All ULBs') + ' &bull; generated ' + App.fmtDate(D.demoToday) + '</div>';
+        $('repPane').innerHTML = { state: repState, collection: repCollection, defaulters: repDefaulters, audit: repAudit }[tab]();
+      }
+      function render() {
+        $('repTabs').innerHTML = TABS.map(function (t) { return '<li class="nav-item" role="presentation"><button type="button" class="nav-link' + (t[0] === tab ? ' active' : '') + '" role="tab" aria-selected="' + (t[0] === tab) + '" data-tab="' + t[0] + '">' + esc(t[1]) + '</button></li>'; }).join('');
+        document.querySelectorAll('[data-tab]').forEach(function (b) { b.addEventListener('click', function () { tab = b.getAttribute('data-tab'); history.replaceState(null, '', '#' + tab); render(); }); });
+        filtersHtml();
+        renderPane();
+      }
+      $('btnExcel').addEventListener('click', function () { App.downloadCsv('GroundRent_' + tab + '_' + (F.ulb || 'ALL') + '_' + D.demoToday + '.csv', exportRows); });
+      render();
+    })();
+  </script>
+</body>
+</html>

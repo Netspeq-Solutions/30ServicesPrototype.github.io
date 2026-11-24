@@ -211,13 +211,23 @@
       <nav class="nav flex-column gap-1 mb-3">
         <a href="#queue-sanction" class="officer-nav-link active" id="navTab-sanction" onclick="switchQueueTab('sanction', event)">
           <i class="bi bi-inbox-fill text-primary"></i>
-          <span>Pending Verification</span>
+          <span>Pending Fee Activation</span>
           <span class="badge bg-primary text-white ms-auto fw-bold" id="dtoBadgeSanction">0</span>
         </a>
+        <a href="#queue-payment-pending" class="officer-nav-link" id="navTab-paymentPending" onclick="switchQueueTab('paymentPending', event)">
+          <i class="bi bi-hourglass-split text-warning"></i>
+          <span>Payment Pending (Citizen)</span>
+          <span class="badge bg-warning text-dark ms-auto fw-bold" id="dtoBadgePaymentPending">0</span>
+        </a>
+        <a href="#queue-payment-received" class="officer-nav-link" id="navTab-paymentReceived" onclick="switchQueueTab('paymentReceived', event)">
+          <i class="bi bi-patch-check-fill text-success"></i>
+          <span>Payment Received (Sanction)</span>
+          <span class="badge bg-success text-white ms-auto fw-bold" id="dtoBadgePaymentReceived">0</span>
+        </a>
         <a href="#queue-ia-reports" class="officer-nav-link" id="navTab-iaReports" onclick="switchQueueTab('iaReports', event)">
-          <i class="bi bi-patch-check-fill text-warning"></i>
+          <i class="bi bi-file-earmark-check text-info"></i>
           <span>IA Reports Received</span>
-          <span class="badge bg-warning text-dark ms-auto fw-bold" id="dtoBadgeIaReports">0</span>
+          <span class="badge bg-info text-white ms-auto fw-bold" id="dtoBadgeIaReports">0</span>
         </a>
         <a href="#queue-returned-citizen" class="officer-nav-link" id="navTab-returnedCitizen" onclick="switchQueueTab('returnedCitizen', event)">
           <i class="bi bi-reply-fill text-danger"></i>
@@ -279,7 +289,7 @@
               <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">All Workflow States Active</span>
             </div>
             <p class="text-muted small mb-0">
-              Review verified applications forwarded from Level 0 TO and on-site physical inspection reports from Level 1 IA, grant statutory approval, issue Form 3 Registration Certificates with 3-year validity, or return for clarification.
+              Review verified applications forwarded from Level 0 TO and on-site physical inspection reports from Level 1 IA, grant statutory approval, issue Form 3 Registration Certificates with 1-year validity, or return for clarification.
             </p>
           </div>
           <div class="d-flex gap-2">
@@ -329,7 +339,7 @@
 
         <!-- 3. Approved Registrations -->
         <div class="col-sm-6 col-lg-3">
-          <div class="officer-stat-card" id="kpiCard-approved" onclick="switchQueueTab('approved')" title="Statutory 3-Year registration certificates issued">
+          <div class="officer-stat-card" id="kpiCard-approved" onclick="switchQueueTab('approved')" title="Statutory 1-Year registration certificates issued">
             <div class="d-flex justify-content-between align-items-start">
               <div>
                 <span class="officer-stat-number text-success" id="statDtoApproved">0</span>
@@ -552,7 +562,557 @@
             const role = (a.assignedRole || '').toUpperCase();
             const stage = (a.currentStage || '').toUpperCase();
             const st = (a.status || '').toLowerCase();
-            return (role === 'DTO' || stage.includes('DTO')) && (st.includes('verif') || st.includes('submit') || st.includes('pend'));
+            return (role === 'DTO' || stage.includes('DTO')) && !a.paymentActivated && !st.includes('approv') && !st.includes('reject');
+          });
+        } else if (currentTab === 'paymentPending') {
+          apps = apps.filter(a => (a.paymentStatus === 'Payment Pending' || a.status === 'Payment Pending' || (a.paymentActivated && a.paymentStatus !== 'Paid')));
+        } else if (currentTab === 'paymentReceived') {
+          apps = apps.filter(a => (a.paymentStatus === 'Paid' && (a.status || '').toLowerCase() !== 'approved'));
+        } else if (currentTab === 'iaReports') {
+          apps = apps.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer' && (!!a.inspectionDocName || !!a.inspectionFindings));
+        } else if (currentTab === 'returnedCitizen') {
+          apps = apps.filter(a => (a.status || '').toLowerCase().includes('return'));
+        } else if (currentTab === 'approved') {
+          apps = apps.filter(a => (a.status || '').toLowerCase().includes('approv'));
+        }
+
+        return apps;
+      }
+
+      function updateMetrics() {
+        let scoped = WorkflowEngine.getAllApplications();
+        if (currentDistrict && currentDistrict.toUpperCase() !== 'ALL') {
+          scoped = scoped.filter(a => (a.district || '').toLowerCase() === currentDistrict.toLowerCase());
+        }
+
+        const pendingSanction = scoped.filter(a => {
+          const role = (a.assignedRole || '').toUpperCase();
+          const stage = (a.currentStage || '').toUpperCase();
+          const st = (a.status || '').toLowerCase();
+          return (role === 'DTO' || stage.includes('DTO')) && !a.paymentActivated && !st.includes('approv') && !st.includes('reject');
+        }).length;
+
+        const paymentPending = scoped.filter(a => (a.paymentStatus === 'Payment Pending' || a.status === 'Payment Pending' || (a.paymentActivated && a.paymentStatus !== 'Paid'))).length;
+        const paymentReceived = scoped.filter(a => (a.paymentStatus === 'Paid' && (a.status || '').toLowerCase() !== 'approved')).length;
+        const iaReports = scoped.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer' && (!!a.inspectionDocName || !!a.inspectionFindings)).length;
+        const approved = scoped.filter(a => (a.status || '').toLowerCase().includes('approv')).length;
+        const returned = scoped.filter(a => (a.status || '').toLowerCase().includes('return')).length;
+        const rejected = scoped.filter(a => (a.status || '').toLowerCase().includes('reject')).length;
+        const total = scoped.length;
+
+        const elPending = document.getElementById('statDtoPending');
+        if (elPending) elPending.textContent = pendingSanction;
+        const elPayPend = document.getElementById('statDtoPaymentPending');
+        if (elPayPend) elPayPend.textContent = paymentPending;
+        const elPayRec = document.getElementById('statDtoPaymentReceived');
+        if (elPayRec) elPayRec.textContent = paymentReceived;
+        const elIa = document.getElementById('statDtoIaReports');
+        if (elIa) elIa.textContent = iaReports;
+        const elApp = document.getElementById('statDtoApproved');
+        if (elApp) elApp.textContent = approved;
+        const elTot = document.getElementById('statDtoTotal');
+        if (elTot) elTot.textContent = total;
+
+        const bSanc = document.getElementById('dtoBadgeSanction');
+        if (bSanc) bSanc.textContent = pendingSanction;
+        const bPayPend = document.getElementById('dtoBadgePaymentPending');
+        if (bPayPend) bPayPend.textContent = paymentPending;
+        const bPayRec = document.getElementById('dtoBadgePaymentReceived');
+        if (bPayRec) bPayRec.textContent = paymentReceived;
+        const bIa = document.getElementById('dtoBadgeIaReports');
+        if (bIa) bIa.textContent = iaReports;
+        const bRet = document.getElementById('dtoBadgeReturnedCitizen');
+        if (bRet) bRet.textContent = returned;
+        const bApp = document.getElementById('dtoBadgeApproved');
+        if (bApp) bApp.textContent = approved;
+        const bAll = document.getElementById('dtoBadgeAll');
+        if (bAll) bAll.textContent = total;
+
+        const elFromTo = document.getElementById('statDtoFromTo');
+        if (elFromTo) elFromTo.textContent = pendingSanction;
+        const elRetCit = document.getElementById('statDtoReturnedCitizen');
+        if (elRetCit) elRetCit.textContent = returned;
+        const elRej = document.getElementById('statDtoRejected');
+        if (elRej) elRej.textContent = rejected;
+      }
+
+      function updateCardHeader() {
+        const titleEl = document.getElementById('queueCardTitle');
+        const subEl = document.getElementById('queueCardSubtitle');
+        const circleLabel = (currentDistrict === 'ALL') ? 'All Circles' : currentDistrict + ' Circle';
+
+        const tabTitles = {
+          sanction: { title: 'Pending Fee Activation Queue', sub: 'Applications verified by TO or inspected by IA awaiting DTO statutory fee activation.' },
+          paymentPending: { title: 'Payment Pending (With Citizen) Queue', sub: 'Applications where statutory registration fee has been activated and sent to citizen for online payment.' },
+          paymentReceived: { title: 'Payment Received &bull; Ready for Final Sanction', sub: 'Applications with confirmed online statutory fee deposit returned to DTO for final review and Form 3 issuance.' },
+          iaReports: { title: 'IA Inspection Reports Ready Queue', sub: 'Tour Operator, Travel Agent & Dealer applications with completed physical premise reports recommended for sanction.' },
+          returnedCitizen: { title: 'Returned to Citizen Queue', sub: 'Applications currently with citizens for document re-upload or clarification.' },
+          approved: { title: 'Approved Registrations Repository', sub: 'Sanctioned registrations with generated Form 3 statutory certificates.' },
+          all: { title: 'All District Submissions Register', sub: 'Complete register of all applications in ' + circleLabel + '.' }
+        };
+
+        const activeInfo = tabTitles[currentTab] || tabTitles.all;
+        if (titleEl) titleEl.innerHTML = `<i class="bi bi-list-check me-1 text-primary"></i> ${activeInfo.title} (${circleLabel})`;
+        if (subEl) subEl.textContent = activeInfo.sub;
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById('dtoQueueTableBody');
+        const mobileContainer = document.getElementById('dtoQueueCardsMobile');
+        tbody.innerHTML = '';
+        mobileContainer.innerHTML = '';
+
+        const apps = getFilteredApplications();
+
+        if (apps.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications found in this queue.</td></tr>`;
+          mobileContainer.innerHTML = `<div class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications found in this queue.</div>`;
+          return;
+        }
+
+        apps.forEach(app => {
+          let statusBadgeClass = 'badge bg-primary text-white';
+          let statusText = app.status;
+
+          // Action button linking to review.html
+          let actionBtnHtml = '';
+          let mobileActionLabel = 'View Application';
+
+          if (app.status === 'Approved' || (app.status || '').toLowerCase().includes('approv')) {
+            statusBadgeClass = 'badge bg-success text-white';
+            statusText = 'Approved';
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Review</a>
+                <a href="certificate.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-success py-1 px-2.5 fw-bold shadow-xs"><i class="bi bi-printer me-1"></i> Form 3</a>
+              </div>
+            `;
+            mobileActionLabel = 'View Certificate';
+          } else if (app.paymentStatus === 'Paid') {
+            statusBadgeClass = 'badge bg-success-subtle text-success border border-success-subtle';
+            statusText = 'Payment Received';
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-award me-1"></i> Final Sanction &amp; Approve</a>`;
+            mobileActionLabel = 'Final Sanction';
+          } else if (app.paymentStatus === 'Payment Pending' || app.status === 'Payment Pending') {
+            statusBadgeClass = 'badge bg-warning-subtle text-dark border border-warning-subtle';
+            statusText = 'Payment Pending';
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-clock-history me-1"></i> Awaiting Fee</a>`;
+            mobileActionLabel = 'Awaiting Fee';
+          } else if (app.status === 'Returned for Clarification' || (app.status || '').toLowerCase().includes('return')) {
+            statusBadgeClass = 'badge bg-warning text-dark';
+            statusText = 'Returned';
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-secondary py-1 px-3 fw-semibold"><i class="bi bi-eye me-1"></i> View</a>`;
+            mobileActionLabel = 'View Application';
+          } else if (app.status === 'Rejected') {
+            statusBadgeClass = 'badge bg-danger text-white';
+            statusText = 'Rejected';
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-secondary py-1 px-3 fw-semibold"><i class="bi bi-eye me-1"></i> View</a>`;
+            mobileActionLabel = 'View Application';
+          } else {
+            statusBadgeClass = 'badge bg-info text-white';
+            statusText = 'Under Verification';
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-credit-card-2-front me-1"></i> Verify &amp; Activate Fee</a>`;
+            mobileActionLabel = 'Verify & Activate Fee';
+          }
+
+          // Fee and Grade info
+          const feeVal = app.amountPaid || app.registrationFee || app.applicableFee;
+          const gradeText = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? ` (${app.registrationGrade})` : '';
+          const feeBadgeHtml = feeVal ? `<span class="badge bg-light text-dark border ms-1 font-monospace" style="font-size: 0.7rem;">₹${feeVal.toLocaleString('en-IN')}${gradeText}</span>` : '';
+
+          // Route Badge Logic
+          let routeBadgeHtml = '';
+          if (app.category === 'outdoor-photographer') {
+            routeBadgeHtml = `<div class="mt-1"><span class="badge bg-info-subtle text-info border border-info-subtle" style="font-size: 0.68rem;"><i class="bi bi-lightning-charge me-1"></i>Direct Route (Exempt)</span>${feeBadgeHtml}</div>`;
+          } else if (app.inspectionDocName || app.inspectionFindings) {
+            routeBadgeHtml = `<div class="mt-1"><span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.68rem;"><i class="bi bi-shield-check me-1"></i>IA Inspected &amp; TO Endorsed</span>${feeBadgeHtml}</div>`;
+          } else {
+            routeBadgeHtml = `<div class="mt-1"><span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 0.68rem;"><i class="bi bi-clock-history me-1"></i>IA Inspection Mandatory</span>${feeBadgeHtml}</div>`;
+          }
+
+          // Desktop Row
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
+              <strong class="font-monospace text-primary">${app.refNo}</strong>
+              <div class="small text-muted" style="font-size: 0.75rem;">Submitted: ${app.submittedDate ? app.submittedDate.split(',')[0] : '03 Nov 2026'}</div>
+            </td>
+            <td>
+              <div class="fw-bold text-dark">${app.applicantName}</div>
+              <div class="small text-secondary" style="font-size: 0.78rem;">${app.businessName || app.categoryName}</div>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark border">${app.categoryName || app.category}</span>
+              ${routeBadgeHtml}
+            </td>
+            <td>
+              <div class="small text-muted">${app.currentStage || 'Awaiting Review'}</div>
+              <div class="small text-secondary" style="font-size: 0.74rem;">Assigned: <strong>${app.assignedRole || 'DTO'}</strong></div>
+            </td>
+            <td>
+              <span class="${statusBadgeClass}">${statusText}</span>
+            </td>
+            <td class="text-end">
+              ${actionBtnHtml}
+            </td>
+          `;
+          tbody.appendChild(tr);
+
+          // Mobile Card
+          const card = document.createElement('div');
+          card.className = 'officer-mobile-app-card';
+          card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="font-monospace fw-bold text-primary">${app.refNo}</span>
+              <span class="${statusBadgeClass}">${statusText}</span>
+            </div>
+            <div class="fw-bold text-dark mb-1">${app.applicantName}</div>
+            <div class="small text-muted mb-2">${app.businessName || app.categoryName}</div>
+            <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-3">
+              <span>${app.categoryName || app.category}</span>
+              <span>${app.submittedDate ? app.submittedDate.split(',')[0] : 'Recent'}</span>
+            </div>
+            <div class="d-grid">
+              ${actionBtnHtml.replace('btn-sm', 'btn-sm w-100')}
+            </div>
+          `;
+          mobileContainer.appendChild(card);
+        });
+      }
+
+      window.switchQueueTab = function (tab, e) {
+        if (e) e.preventDefault();
+        currentTab = tab;
+
+        document.querySelectorAll('.officer-nav-link').forEach(l => l.classList.remove('active'));
+        const navId = (tab === 'iaReports') ? 'navTab-iaReports' : ((tab === 'returnedCitizen') ? 'navTab-returnedCitizen' : ('navTab-' + tab));
+        const navEl = document.getElementById(navId);
+        if (navEl) navEl.classList.add('active');
+
+        document.querySelectorAll('.officer-stat-card').forEach(c => c.classList.remove('active-kpi'));
+        const activeKpi = document.getElementById('kpiCard-' + tab);
+        if (activeKpi) activeKpi.classList.add('active-kpi');
+
+        updateCardHeader();
+        renderTable();
+      };
+
+      document.getElementById('dtoSearchInput').addEventListener('input', renderTable);
+      document.getElementById('dtoCategoryFilter').addEventListener('change', renderTable);
+
+      window.resetPrototypeData = function () {
+        if (confirm('Reset prototype applications back to default seed state across all 6 circles?')) {
+          WorkflowEngine.resetToSeedData();
+          populateQuickArnSelect();
+          updateMetrics();
+          renderTable();
+          alert('Demo data restored to initial seed state.');
+        }
+      };
+
+      const contrastBtn = document.getElementById('btn-contrast-toggle');
+      if (contrastBtn) {
+        contrastBtn.addEventListener('click', function () {
+          document.body.classList.toggle('high-contrast');
+        });
+      }
+
+      // Initial Synchronous Execution
+      updateDistrictContext();
+      populateQuickArnSelect();
+      updateMetrics();
+      updateCardHeader();
+      renderTable();
+
+      // Additional safety listener
+      window.addEventListener('load', function () {
+        updateDistrictContext();
+        populateQuickArnSelect();
+        updateMetrics();
+        updateCardHeader();
+        renderTable();
+      });
+
+    })();
+  </script>
+</body>
+</html><!-- 1. Pending Fee Activation -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card active-kpi" id="kpiCard-sanction" onclick="switchQueueTab('sanction')" title="Applications awaiting DTO fee activation">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="officer-stat-number text-primary" id="statDtoPending">0</span>
+                <h4 class="h6 fw-bold text-primary mb-0 mt-1">Pending Fee Activation</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-primary-subtle text-primary">
+                <i class="bi bi-inbox-fill"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Awaiting preliminary review</div>
+          </div>
+        </div>
+
+        <!-- 2. Payment Pending (With Citizen) -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" id="kpiCard-paymentPending" onclick="switchQueueTab('paymentPending')" title="Statutory fees activated, awaiting citizen deposit">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="officer-stat-number text-warning" id="statDtoPaymentPending">0</span>
+                <h4 class="h6 fw-bold text-warning-emphasis mb-0 mt-1">Payment Pending</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-warning-subtle text-warning">
+                <i class="bi bi-hourglass-split"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">With citizen for fee deposit</div>
+          </div>
+        </div>
+
+        <!-- 3. Payment Received &bull; Ready for Final Sanction -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" id="kpiCard-paymentReceived" onclick="switchQueueTab('paymentReceived')" title="Statutory fee paid online, ready for final DTO approval">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="officer-stat-number text-success" id="statDtoPaymentReceived">0</span>
+                <h4 class="h6 fw-bold text-success mb-0 mt-1">Payment Received</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-success-subtle text-success">
+                <i class="bi bi-patch-check-fill"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Ready for final sanction &amp; Form 3</div>
+          </div>
+        </div>
+
+        <!-- 4. Approved &bull; Certificates Issued -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="officer-stat-card" id="kpiCard-approved" onclick="switchQueueTab('approved')" title="Statutory 1-Year registration certificates issued">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="officer-stat-number text-success" id="statDtoApproved">0</span>
+                <h4 class="h6 fw-bold text-success mb-0 mt-1">Approved &bull; Issued</h4>
+              </div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-success-subtle text-success">
+                <i class="bi bi-award-fill"></i>
+              </div>
+            </div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Form 3 certificates generated</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Metric Bar -->
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 px-3 py-2 bg-white rounded-3 border mb-3 small text-muted">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <span><i class="bi bi-send-check text-primary me-1"></i> Forwarded by TO: <strong class="text-dark" id="statDtoFromTo">0</strong></span>
+          <span class="text-secondary">&bull;</span>
+          <span><i class="bi bi-reply-fill text-danger me-1"></i> With Citizen: <strong class="text-dark" id="statDtoReturnedCitizen">0</strong></span>
+          <span class="text-secondary">&bull;</span>
+          <span><i class="bi bi-x-circle text-muted me-1"></i> Rejected: <strong class="text-dark" id="statDtoRejected">0</strong></span>
+        </div>
+        <div>
+          <span class="badge bg-light text-secondary border">DTO Approval Desk</span>
+        </div>
+      </div>
+
+      <!-- Applications Queue Card -->
+      <div class="card border-0 shadow-sm bg-white mb-3">
+        <div class="card-header bg-white py-3 border-bottom">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <h2 class="h6 fw-bold mb-0 text-dark" id="queueCardTitle">
+                <i class="bi bi-list-check me-1 text-primary"></i> Pending Verification Queue (Gangtok Circle)
+              </h2>
+              <span class="text-muted small" id="queueCardSubtitle">Select an application to grant statutory approval, issue Form 3 registration certificate, or return for clarification.</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <div class="input-group input-group-sm" style="max-width: 240px;">
+                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="dtoSearchInput" class="form-control form-control-sm border-start-0" placeholder="Search ID or Applicant...">
+              </div>
+              <select id="dtoCategoryFilter" class="form-select form-select-sm" style="max-width: 260px;">
+                <option value="ALL">All Categories</option>
+                <option value="ta-to">Travel Agent / Tour Operator (TA/TO)</option>
+                <option value="dealer">Equipment Dealer</option>
+                <option value="outdoor-photographer">Outdoor Photographer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <!-- Desktop Table View -->
+          <div class="table-responsive d-none d-md-block">
+            <table class="gov-table-compact table-hover align-middle mb-0" id="dtoQueueTable">
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 20%;">Application ID</th>
+                  <th scope="col" style="width: 24%;">Applicant &amp; Business</th>
+                  <th scope="col" style="width: 16%;">Category</th>
+                  <th scope="col" style="width: 14%;">Submitted</th>
+                  <th scope="col" style="width: 14%;">Status &amp; Stage</th>
+                  <th scope="col" class="text-end" style="width: 12%;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dtoQueueTableBody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards View -->
+          <div class="gov-cards-mobile d-block d-md-none p-3" id="dtoQueueCardsMobile">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Mandatory GIGW 3.0 Footer -->
+  <footer class="gov-footer py-2.5 border-top bg-white text-muted small" role="contentinfo">
+    <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>&copy; 2026 Government of Sikkim. Tourism &amp; Civil Aviation Department.</div>
+      <div class="d-flex align-items-center gap-3">
+        <span>GIGW 3.0 / WCAG 2.1 Level AA</span>
+        <span>&bull;</span>
+        <a href="role-select.html" class="text-decoration-none text-muted">Role Gateway</a>
+        <span>&bull;</span>
+        <a href="index.html" class="text-decoration-none text-muted">Portal Home</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../../common/js/common.js"></script>
+  <script src="citizen-data.js?v=20261112_09"></script>
+  <script src="workflow-engine.js?v=20261112_09"></script>
+  <script src="document-service.js?v=20261112_06"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Ensure WorkflowEngine is initialized with guaranteed self-healing
+      if (window.WorkflowEngine && typeof window.WorkflowEngine.init === 'function') {
+        window.WorkflowEngine.init();
+        if (window.WorkflowEngine.getAllApplications().length === 0) {
+          window.WorkflowEngine.resetToSeedData();
+        }
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentDistrict = urlParams.get('district') || 'Gangtok';
+      let currentTab = 'sanction'; // 'sanction', 'iaReports', 'returnedCitizen', 'approved', 'all'
+
+      const districtSelect = document.getElementById('districtFilterSelect');
+      if (districtSelect) districtSelect.value = currentDistrict;
+
+      window.changeDistrictQueue = function (dist) {
+        currentDistrict = dist;
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('district', currentDistrict);
+        window.history.replaceState({}, '', newUrl);
+
+        updateDistrictContext();
+        updateMetrics();
+        updateCardHeader();
+        renderTable();
+      };
+
+      window.jumpToReview = function (arn) {
+        if (!arn) return;
+        window.location.href = `review.html?arn=${encodeURIComponent(arn)}&role=dto`;
+      };
+
+      function updateDistrictContext() {
+        const info = WorkflowEngine.DISTRICT_OFFICES[currentDistrict] || WorkflowEngine.DISTRICT_OFFICES['Gangtok'];
+        const districtName = (currentDistrict === 'ALL') ? 'Statewide' : currentDistrict;
+
+        document.getElementById('dtoDeskHeading').textContent = `District Tourism Officer Approval Desk • ${districtName} Circle`;
+        document.getElementById('dtoHeaderOfficeTitle').textContent = (currentDistrict === 'ALL')
+          ? 'District Tourism Officer Directorate, All Circles'
+          : `District Tourism Office, ${currentDistrict} Circle`;
+        document.getElementById('dtoOfficerName').textContent = info.dtoName;
+        document.getElementById('dtoOfficerDesignation').textContent = info.dtoDesignation || 'District Tourism Officer (Level 2)';
+
+        document.getElementById('sidebarDistrictName').textContent = districtName;
+        document.getElementById('sidebarOfficeTitle').innerHTML = `<i class="bi bi-geo-alt-fill text-primary me-1"></i> ${districtName} DTO Office`;
+        document.getElementById('sidebarOfficeAddress').textContent = info.office || 'Paryatan Bhawan, Tadong, Gangtok – 737102';
+        document.getElementById('sidebarOfficePhone').textContent = `Phone: ${info.phone || '03592-209090'}`;
+      }
+
+      function populateQuickArnSelect() {
+        const select = document.getElementById('quickArnJumpSelect');
+        if (!select) return;
+        select.innerHTML = '<option value="">-- Jump to Specific Application --</option>';
+        const allApps = WorkflowEngine.getAllApplications();
+        allApps.forEach(a => {
+          const opt = document.createElement('option');
+          opt.value = a.refNo;
+          opt.textContent = `[${a.categoryCode || a.category}] ${a.refNo} • ${a.applicantName}`;
+          select.appendChild(opt);
+        });
+      }
+
+      function getFilteredApplications() {
+        let apps = WorkflowEngine.getAllApplications();
+
+        // District filter (case-insensitive)
+        if (currentDistrict && currentDistrict.toUpperCase() !== 'ALL') {
+          apps = apps.filter(a => (a.district || '').toLowerCase() === currentDistrict.toLowerCase());
+        }
+
+        // Category filter (safe against empty or all)
+        const catFilterEl = document.getElementById('dtoCategoryFilter');
+        const catFilter = catFilterEl ? (catFilterEl.value || '').trim() : '';
+        if (catFilter && catFilter.toUpperCase() !== 'ALL') {
+          if (catFilter === 'ta-to') {
+            apps = apps.filter(a => ['ta-to', 'tour-operator', 'travel-agent'].includes((a.category || '').toLowerCase()));
+          } else {
+            apps = apps.filter(a => (a.category || '').toLowerCase() === catFilter.toLowerCase());
+          }
+        }
+
+        // Search text (safe against null)
+        const searchInput = document.getElementById('dtoSearchInput');
+        const searchTxt = searchInput ? (searchInput.value || '').trim().toLowerCase() : '';
+        if (searchTxt) {
+          apps = apps.filter(a => 
+            (a.refNo && a.refNo.toLowerCase().includes(searchTxt)) ||
+            (a.applicantName && a.applicantName.toLowerCase().includes(searchTxt)) ||
+            (a.businessName && a.businessName.toLowerCase().includes(searchTxt))
+          );
+        }
+
+        // Queue Tab filter
+        if (currentTab === 'sanction') {
+          apps = apps.filter(a => {
+            const role = (a.assignedRole || '').toUpperCase();
+            const stage = (a.currentStage || '').toUpperCase();
+            const st = (a.status || '').toLowerCase();
+            const isApproved = st.includes('approv');
+            const isRejected = st.includes('reject');
+            const isReturned = st.includes('return');
+            const isPaid = a.paymentStatus === 'Paid';
+            const isPaymentPending = (a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending';
+            return (role === 'DTO' || stage.includes('DTO')) && !isApproved && !isRejected && !isReturned && !isPaid && !isPaymentPending;
+          });
+        } else if (currentTab === 'paymentPending') {
+          apps = apps.filter(a => {
+            const isPaid = a.paymentStatus === 'Paid';
+            const isApproved = (a.status || '').toLowerCase().includes('approv');
+            const isRejected = (a.status || '').toLowerCase().includes('reject');
+            return ((a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending') && !isApproved && !isRejected;
+          });
+        } else if (currentTab === 'paymentReceived') {
+          apps = apps.filter(a => {
+            const isPaid = a.paymentStatus === 'Paid';
+            const isApproved = (a.status || '').toLowerCase().includes('approv');
+            const isRejected = (a.status || '').toLowerCase().includes('reject');
+            return isPaid && !isApproved && !isRejected;
           });
         } else if (currentTab === 'iaReports') {
           apps = apps.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer' && (!!a.inspectionDocName || !!a.inspectionFindings));
@@ -575,8 +1135,28 @@
           const role = (a.assignedRole || '').toUpperCase();
           const stage = (a.currentStage || '').toUpperCase();
           const st = (a.status || '').toLowerCase();
-          return (role === 'DTO' || stage.includes('DTO')) && (st.includes('verif') || st.includes('submit') || st.includes('pend'));
+          const isApproved = st.includes('approv');
+          const isRejected = st.includes('reject');
+          const isReturned = st.includes('return');
+          const isPaid = a.paymentStatus === 'Paid';
+          const isPaymentPending = (a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending';
+          return (role === 'DTO' || stage.includes('DTO')) && !isApproved && !isRejected && !isReturned && !isPaid && !isPaymentPending;
         }).length;
+
+        const paymentPending = scoped.filter(a => {
+          const isPaid = a.paymentStatus === 'Paid';
+          const isApproved = (a.status || '').toLowerCase().includes('approv');
+          const isRejected = (a.status || '').toLowerCase().includes('reject');
+          return ((a.paymentActivated && !isPaid) || a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending') && !isApproved && !isRejected;
+        }).length;
+
+        const paymentReceived = scoped.filter(a => {
+          const isPaid = a.paymentStatus === 'Paid';
+          const isApproved = (a.status || '').toLowerCase().includes('approv');
+          const isRejected = (a.status || '').toLowerCase().includes('reject');
+          return isPaid && !isApproved && !isRejected;
+        }).length;
+
         const iaReports = scoped.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer' && (!!a.inspectionDocName || !!a.inspectionFindings)).length;
         const approved = scoped.filter(a => (a.status || '').toLowerCase().includes('approv')).length;
         const returned = scoped.filter(a => (a.status || '').toLowerCase().includes('return')).length;
@@ -584,11 +1164,23 @@
         const total = scoped.length;
 
         document.getElementById('statDtoPending').textContent = pendingSanction;
+        if (document.getElementById('statDtoPaymentPending')) {
+          document.getElementById('statDtoPaymentPending').textContent = paymentPending;
+        }
+        if (document.getElementById('statDtoPaymentReceived')) {
+          document.getElementById('statDtoPaymentReceived').textContent = paymentReceived;
+        }
         document.getElementById('statDtoIaReports').textContent = iaReports;
         document.getElementById('statDtoApproved').textContent = approved;
         document.getElementById('statDtoTotal').textContent = total;
 
         document.getElementById('dtoBadgeSanction').textContent = pendingSanction;
+        if (document.getElementById('dtoBadgePaymentPending')) {
+          document.getElementById('dtoBadgePaymentPending').textContent = paymentPending;
+        }
+        if (document.getElementById('dtoBadgePaymentReceived')) {
+          document.getElementById('dtoBadgePaymentReceived').textContent = paymentReceived;
+        }
         document.getElementById('dtoBadgeIaReports').textContent = iaReports;
         document.getElementById('dtoBadgeReturnedCitizen').textContent = returned;
         document.getElementById('dtoBadgeApproved').textContent = approved;
@@ -605,7 +1197,9 @@
         const circleLabel = (currentDistrict === 'ALL') ? 'All Circles' : currentDistrict + ' Circle';
 
         const tabTitles = {
-          sanction: { title: 'Pending Verification Queue', sub: 'Applications verified by TO or inspected by IA awaiting final DTO statutory approval.' },
+          sanction: { title: 'Pending Fee Activation Queue', sub: 'Applications verified by TO or inspected by IA awaiting DTO statutory fee activation.' },
+          paymentPending: { title: 'Payment Pending Queue (With Citizen)', sub: 'Applications with activated statutory registration fee awaiting citizen online payment deposit.' },
+          paymentReceived: { title: 'Payment Received Queue (Ready for Final Sanction)', sub: 'Statutory registration fee verified paid online. Ready for Level 2 DTO final approval and Form 3 certificate issuance.' },
           iaReports: { title: 'IA Inspection Reports Ready Queue', sub: 'Tour Operator, Travel Agent & Dealer applications with completed physical premise reports recommended for sanction.' },
           returnedCitizen: { title: 'Returned to Citizen Queue', sub: 'Applications currently with citizens for document re-upload or clarification.' },
           approved: { title: 'Approved Registrations Repository', sub: 'Sanctioned registrations with generated Form 3 statutory certificates.' },
@@ -643,12 +1237,34 @@
           let mobileActionLabel = 'Verify & Sanction';
 
           if (app.status === 'Approved') {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Certificate</a>`;
+            actionBtnHtml = `
+              <div class="d-inline-flex gap-1.5 align-items-center">
+                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Review</a>
+                <a href="certificate.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-success py-1 px-2.5 fw-bold shadow-xs"><i class="bi bi-printer me-1"></i> Form 3</a>
+              </div>
+            `;
             mobileActionLabel = 'View Certificate';
-          } else if (app.currentStage === 'Level 2: Pending DTO Sanction' || (app.assignedRole === 'DTO' && app.inspectionFindings)) {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-award me-1"></i> Approve</a>`;
-            mobileActionLabel = 'Sanction & Issue';
-          } else if (app.assignedRole !== 'DTO') {
+            statusBadgeClass = 'badge bg-success text-white';
+          } else if (app.paymentStatus === 'Paid') {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check-fill me-1"></i> Final Sanction</a>`;
+            mobileActionLabel = 'Grant Sanction';
+            statusBadgeClass = 'badge bg-success text-white';
+          } else if (app.paymentStatus === 'Payment Pending' || (app.paymentActivated && app.paymentStatus !== 'Paid')) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-hourglass-split me-1"></i> Fee Pending</a>`;
+            mobileActionLabel = 'Awaiting Fee';
+            statusBadgeClass = 'badge bg-warning text-dark';
+          } else if (app.status === 'Returned for Clarification') {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Check</a>`;
+            mobileActionLabel = 'Check Status';
+            statusBadgeClass = 'badge bg-warning text-dark';
+          } else if (app.status === 'Rejected') {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-danger py-1 px-3 fw-semibold"><i class="bi bi-x-circle me-1"></i> Details</a>`;
+            mobileActionLabel = 'View Rejected';
+            statusBadgeClass = 'badge bg-danger text-white';
+          } else if (!app.paymentActivated) {
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-credit-card-2-front me-1"></i> Activate Fee</a>`;
+            mobileActionLabel = 'Activate Fee';
+          } else {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-primary py-1 px-3 fw-semibold"><i class="bi bi-eye me-1"></i> View</a>`;
             mobileActionLabel = 'View Application';
           }

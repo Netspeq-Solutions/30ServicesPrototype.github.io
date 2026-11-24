@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Document types master – e-Trade Licence, Urban Development Department, Government of Sikkim.">
+  <title>Document Types Master | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0">Document Types Master</h1><span id="modePill"></span></div>
+        <p class="text-muted small mb-0">Every document an applicant can be asked for. Set who it is asked of (all individuals, all companies, renewal, change, answers in the form) and map it to items and sub-items. Applicants see only active documents.</p></div>
+      <div class="d-flex flex-wrap gap-2" id="pageActions"></div>
+    </div>
+    <div class="card border-0 shadow-xs mb-3"><div class="card-body row g-3 align-items-end">
+      <div class="col-md-5"><label for="fSearch" class="form-label small fw-semibold">Search documents</label><input id="fSearch" type="search" class="form-control form-control-sm" placeholder="e.g. NOC, FSSAI, parcha"></div>
+      <div class="col-md-4"><label for="fUse" class="form-label small fw-semibold">Asked of</label><select id="fUse" class="form-select form-select-sm">
+        <option value="">All documents</option><option value="IND">Every individual applicant</option><option value="COMP">Every registered company</option><option value="items">Mapped to items / sub-items</option>
+        <option value="renewal">Renewal</option><option value="change">Change request</option><option value="when">Answers in the form</option><option value="none">Not used anywhere</option></select></div>
+      <div class="col-md-3"><div class="form-check mb-1"><input class="form-check-input" type="checkbox" id="fInactive"><label class="form-check-label small" for="fInactive">Show inactive</label></div></div>
+    </div></div>
+    <div id="docsRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'docs' });
+      var $ = function (id) { return document.getElementById(id); };
+      var u = App.me(session);
+      var canEdit = u.role === 'admin'; // the Department Admin maintains the masters
+      D.config.docHistory = D.config.docHistory || [];
+      var REQ = { M: 'Mandatory', O: 'Optional' };
+      var CHANGE = { name: 'Change of name', premises: 'Change of premises', address: 'Change of address' };
+      $('modePill').innerHTML = canEdit ? App.pill('Active', 'You can edit the master') : App.pill('Superseded', 'View only');
+      if (canEdit) $('pageActions').innerHTML = '<button type="button" class="btn btn-sm btn-primary" id="btnAdd"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Document Type</button>';
+
+      function chip(text, req) { return '<span class="badge ' + (req === 'O' ? 'bg-light text-secondary' : 'bg-primary-subtle text-primary-emphasis') + ' border me-1 mb-1 text-wrap text-start">' + esc(text) + (req === 'O' ? ' &middot; optional' : '') + '</span>'; }
+      function askedOf(d) {
+        var out = '';
+        Object.keys(F.TYPES).forEach(function (t) { if ((d.base || {})[t]) out += chip('Every ' + F.TYPES[t].short.toLowerCase(), d.base[t]); });
+        if (d.renewal) out += chip('Renewal', d.renewal);
+        Object.keys(CHANGE).forEach(function (k) { if ((d.change || {})[k]) out += chip(CHANGE[k], d.change[k]); });
+        Object.keys(F.WHEN).forEach(function (k) { if ((d.when || {})[k]) out += chip('When: ' + F.WHEN[k].label, d.when[k]); });
+        return out;
+      }
+      function mapText(maps) {
+        if (!maps.length) return '<span class="text-muted">&mdash;</span>';
+        var names = maps.slice(0, 3).map(function (m) { return esc(m.sub ? m.cat.name + ' › ' + m.sub.name : m.cat.name) + (m.req === 'O' ? ' <span class="text-muted">(optional)</span>' : ''); });
+        return names.join('<br>') + (maps.length > 3 ? '<br><span class="text-muted">+' + (maps.length - 3) + ' more</span>' : '');
+      }
+      function used(d, maps) { return (d.base && (d.base.IND || d.base.COMP)) || d.renewal || Object.keys(d.change || {}).some(function (k) { return d.change[k]; }) || Object.keys(d.when || {}).some(function (k) { return d.when[k]; }) || maps.length; }
+      function btn(act, key, icon, label, cls) { return '<button type="button" class="btn btn-sm ' + (cls || 'btn-outline-primary') + '" data-act="' + act + '" data-key="' + esc(key) + '"><i class="bi ' + icon + ' me-1" aria-hidden="true"></i>' + label + '</button>'; }
+
+      function render() {
+        var q = $('fSearch').value.trim().toLowerCase(), use = $('fUse').value, showInactive = $('fInactive').checked;
+        var rows = F.docTypes(true).filter(function (d) {
+          if (!showInactive && d.active === false) return false;
+          if (q && d.name.toLowerCase().indexOf(q) === -1) return false;
+          var maps = F.docMappings(d.key);
+          if (use === 'IND' || use === 'COMP') return !!(d.base || {})[use];
+          if (use === 'items') return maps.length > 0;
+          if (use === 'renewal') return !!d.renewal;
+          if (use === 'change') return Object.keys(d.change || {}).some(function (k) { return d.change[k]; });
+          if (use === 'when') return Object.keys(d.when || {}).some(function (k) { return d.when[k]; });
+          if (use === 'none') return !used(d, maps);
+          return true;
+        }).map(function (d) {
+          var maps = F.docMappings(d.key), asked = askedOf(d) || '<span class="text-muted">&mdash;</span>';
+          var fmt = d.format && F.FORMATS[d.format] ? '<a href="format.html?f=' + esc(d.format) + '" target="_blank" rel="noopener"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>' + esc(F.FORMATS[d.format]) + '</a>' : '<span class="text-muted">&mdash;</span>';
+          var acts = canEdit ? btn('edit', d.key, 'bi-pencil', 'Edit') + btn('map', d.key, 'bi-diagram-3', 'Map to Items') + btn('toggle', d.key, d.active === false ? 'bi-arrow-counterclockwise' : 'bi-slash-circle', d.active === false ? 'Activate' : 'Deactivate', d.active === false ? 'btn-outline-success' : 'btn-outline-secondary') : '';
+          var status = d.active === false ? App.pill('Superseded', 'Inactive') : (used(d, maps) ? '' : '<span class="badge bg-warning-subtle text-warning-emphasis border">Not used</span>');
+          return {
+            row: '<tr' + (d.active === false ? ' class="table-light"' : '') + '><td><div class="small fw-semibold">' + esc(d.name) + '</div><div class="small text-muted font-monospace">' + esc(d.key) + '</div>' + status + '</td><td class="small">' + asked + '</td>' +
+              '<td class="small">' + mapText(maps) + '</td><td class="small">' + fmt + '</td><td class="text-end"><div class="d-inline-flex flex-wrap gap-1 justify-content-end">' + acts + '</div></td></tr>',
+            card: App.mobileCard('<span class="small fw-semibold">' + esc(d.name) + '</span>', status, '<div class="small mb-1">' + asked + '</div><div class="small"><span class="text-muted">Items:</span> ' + mapText(maps) + '</div><div class="small mt-1">' + fmt + '</div>', '<div class="d-flex flex-wrap gap-1">' + acts + '</div>')
+          };
+        });
+        var hist = D.config.docHistory.slice().reverse().map(function (h) {
+          return '<li class="list-group-item small"><div class="d-flex justify-content-between flex-wrap gap-2"><span class="fw-semibold">' + esc(h.action) + '</span><span class="text-muted">' + App.fmtDate(h.on) + '</span></div><div class="text-muted">' + esc(h.by) + (h.remarks ? ' &bull; ' + esc(h.remarks) : '') + '</div></li>';
+        }).join('');
+        $('docsRoot').innerHTML = App.tableCard('t-docs', 'Document types', rows.length + ' shown. Mandatory wins when a document is asked for more than one reason.',
+            [{ t: 'Document', w: '26%' }, { t: 'Asked of', w: '24%' }, { t: 'Mapped to items / sub-items', w: '22%' }, { t: 'Format', w: '12%' }, { t: canEdit ? 'Action' : '', end: true, w: '16%' }],
+            rows.map(function (r) { return r.row; }).join(''), rows.map(function (r) { return r.card; }).join(''), 'No document types match.') +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Change history</h2><div class="small text-muted">Additions, edits, mappings, deactivations and activations with the order reference.</div></div>' +
+            (hist ? '<ul class="list-group list-group-flush">' + hist + '</ul>' : '<div class="card-body small text-muted">No changes yet.</div>') + '</div>';
+        $('docsRoot').querySelectorAll('[data-act]').forEach(function (b) { b.addEventListener('click', function () { act(b.getAttribute('data-act'), F.docType(b.getAttribute('data-key'))); }); });
+      }
+
+      // ---------- Edit ----------
+      function record(action, remarks) {
+        D.config.docHistory.push({ on: D.demoToday, by: u.name + ' (' + u.designation + ')', action: action, remarks: remarks });
+        App.audit({ appId: null, action: 'Document types master · ' + action, remarks: remarks });
+        App.save();
+      }
+      function remarksField() { return '<label for="mRemarks" class="form-label fw-semibold mt-3">Order / remarks <span class="text-danger" aria-hidden="true">*</span></label><input id="mRemarks" class="form-control form-control-sm" placeholder="e.g. UDD notification no. and date">'; }
+      function readRemarks(el) { var r = el.querySelector('#mRemarks'); return App.fieldError(r, r.value.trim().length < 5 ? 'Enter the order reference or remarks.' : '') ? r.value.trim() : null; }
+      function reqSelect(id, label, val) {
+        return '<div class="col-sm-6 col-lg-4"><label for="' + id + '" class="form-label small fw-semibold">' + esc(label) + '</label><select id="' + id + '" class="form-select form-select-sm"><option value="">Not asked</option>' +
+          Object.keys(REQ).map(function (k) { return '<option value="' + k + '"' + (val === k ? ' selected' : '') + '>' + REQ[k] + '</option>'; }).join('') + '</select></div>';
+      }
+      function act(what, d) {
+        if (what === 'toggle') {
+          var off = d.active !== false;
+          App.modal({ title: (off ? 'Deactivate' : 'Activate') + ' document type', ok: off ? 'Deactivate' : 'Activate', okClass: off ? 'btn-secondary' : 'btn-success',
+            body: '<p><strong>' + esc(d.name) + '</strong></p><p>' + (off ? 'It will no longer be asked for in new applications. Documents already uploaded are kept. Its settings and item mappings are kept so it can be activated again.' : 'It will be asked for again as set up.') + '</p>' + remarksField(),
+            onOk: function (el) {
+              var r = readRemarks(el); if (r === null) return false;
+              d.active = !off;
+              record((off ? 'Deactivated · ' : 'Activated · ') + d.name, r);
+              App.toast('Document type ' + (off ? 'deactivated.' : 'activated.'));
+              render();
+            } });
+          return;
+        }
+        if (what === 'map') return mapModal(d);
+        var isNew = !d;
+        d = d || { base: {}, change: {}, when: {}, renewal: '', format: '' };
+        App.modal({ title: isNew ? 'Add document type' : 'Edit document type', ok: 'Save', size: 'lg',
+          body: '<label for="mName" class="form-label fw-semibold">Document name <span class="text-danger" aria-hidden="true">*</span></label><input id="mName" class="form-control form-control-sm" value="' + esc(d.name || '') + '">' +
+            '<h3 class="h6 fw-semibold mt-3 mb-2">Asked of every applicant</h3><div class="row g-2">' + Object.keys(F.TYPES).map(function (t) { return reqSelect('mBase' + t, F.TYPES[t].label, (d.base || {})[t]); }).join('') + '</div>' +
+            '<h3 class="h6 fw-semibold mt-3 mb-2">Renewal and change requests</h3><div class="row g-2">' + reqSelect('mRenewal', 'Renewal', d.renewal) + Object.keys(CHANGE).map(function (k) { return reqSelect('mChange_' + k, CHANGE[k], (d.change || {})[k]); }).join('') + '</div>' +
+            '<h3 class="h6 fw-semibold mt-3 mb-2">Asked when the applicant answers</h3><div class="row g-2">' + Object.keys(F.WHEN).map(function (k) { return reqSelect('mWhen_' + k, F.WHEN[k].label, (d.when || {})[k]); }).join('') + '</div>' +
+            '<div class="row g-2 mt-1"><div class="col-sm-6"><label for="mFormat" class="form-label small fw-semibold">Prescribed format to download</label><select id="mFormat" class="form-select form-select-sm"><option value="">None</option>' +
+              Object.keys(F.FORMATS).map(function (k) { return '<option value="' + k + '"' + (d.format === k ? ' selected' : '') + '>' + esc(F.FORMATS[k]) + '</option>'; }).join('') + '</select></div></div>' +
+            '<p class="text-muted mt-2 mb-0">To ask for it only for certain items or sub-items, save and use <strong>Map to Items</strong>.</p>' + remarksField(),
+          onOk: function (el) {
+            var n = el.querySelector('#mName'), name = n.value.trim();
+            var dup = F.docTypes(true).some(function (x) { return x !== d && x.name.toLowerCase() === name.toLowerCase(); });
+            if (!App.fieldError(n, name.length < 3 ? 'Enter the document name.' : (dup ? 'This document already exists.' : ''))) return false;
+            var r = readRemarks(el); if (r === null) return false;
+            var next = { name: name, base: {}, change: {}, when: {}, renewal: el.querySelector('#mRenewal').value, format: el.querySelector('#mFormat').value };
+            Object.keys(F.TYPES).forEach(function (t) { var v = el.querySelector('#mBase' + t).value; if (v) next.base[t] = v; });
+            Object.keys(CHANGE).forEach(function (k) { var v = el.querySelector('#mChange_' + k).value; if (v) next.change[k] = v; });
+            Object.keys(F.WHEN).forEach(function (k) { var v = el.querySelector('#mWhen_' + k).value; if (v) next.when[k] = v; });
+            if (isNew) {
+              var key = 'DOC-' + String(F.docTypes(true).length + 1).padStart(3, '0');
+              D.config.docTypes.push(Object.assign({ key: key, active: true }, next));
+              record('Added · ' + name, r);
+            } else {
+              var was = d.name;
+              if (JSON.stringify([d.name, d.base, d.change, d.when, d.renewal || '', d.format || '']) === JSON.stringify([next.name, next.base, next.change, next.when, next.renewal, next.format])) { App.fieldError(n, 'No change made.'); return false; }
+              Object.assign(d, next);
+              record('Edited · ' + (was !== name ? was + ' → ' : '') + name, r);
+            }
+            App.toast('Document type saved.');
+            render();
+          } });
+      }
+
+      // Tick the items and sub-items that need this document; each mandatory or optional.
+      function mapModal(d) {
+        var row = function (id, label, m, cls) {
+          return '<li class="list-group-item py-1 d-flex align-items-center gap-2 ' + (cls || '') + '" data-map-row="' + esc(label.toLowerCase()) + '"><input class="form-check-input mt-0" type="checkbox" id="mp_' + id + '" value="' + esc(id) + '"' + (m ? ' checked' : '') + ' data-map>' +
+            '<label class="form-check-label flex-grow-1 small" for="mp_' + id + '">' + esc(label) + '</label><select class="form-select form-select-sm w-auto" id="mr_' + id + '" aria-label="Mandatory or optional – ' + esc(label) + '"' + (m ? '' : ' disabled') + '>' +
+            '<option value="M"' + (!m || m.req !== 'O' ? ' selected' : '') + '>Mandatory</option><option value="O"' + (m && m.req === 'O' ? ' selected' : '') + '>Optional</option></select></li>';
+        };
+        function find(list, key) { return (list || []).filter(function (x) { return x.key === key; })[0]; }
+        var body = Object.keys(F.TYPES).map(function (t) {
+          var base = (d.base || {})[t];
+          return '<h3 class="h6 fw-semibold mt-3 mb-1">' + esc(F.TYPES[t].label) + (base ? ' <span class="text-muted fw-normal small">&ndash; already asked of every ' + esc(F.TYPES[t].short.toLowerCase()) + ' (' + REQ[base].toLowerCase() + ')</span>' : '') + '</h3><ul class="list-group">' +
+            F.categoriesOf(t, true).map(function (c) {
+              return row(c.code, c.name + (c.active === false ? ' (inactive)' : ''), find(c.docs, d.key), 'fw-semibold') +
+                (c.items || []).map(function (s) { return row(s.code, c.name + ' › ' + s.name + (s.active === false ? ' (inactive)' : ''), find(s.docs, d.key), 'ps-5'); }).join('');
+            }).join('') + '</ul>';
+        }).join('');
+        App.modal({ title: 'Map to items – ' + esc(d.name), ok: 'Save Mapping', size: 'lg',
+          body: '<p class="mb-2">Tick an item to ask for this document for all its sub-items, or tick only the sub-items that need it.</p>' +
+            '<input type="search" class="form-control form-control-sm" id="mMapFilter" placeholder="Filter items and sub-items" aria-label="Filter items and sub-items">' +
+            '<div class="small text-muted mt-1" id="mMapCount"></div><div style="max-height:46vh;overflow:auto;">' + body + '</div>' + remarksField(),
+          onShow: function (el) {
+            function count() { el.querySelector('#mMapCount').textContent = el.querySelectorAll('[data-map]:checked').length + ' selected'; }
+            el.querySelector('#mMapFilter').addEventListener('input', function () { var q = this.value.trim().toLowerCase(); el.querySelectorAll('[data-map-row]').forEach(function (r) { r.classList.toggle('d-none', !!q && r.getAttribute('data-map-row').indexOf(q) === -1); }); });
+            el.querySelectorAll('[data-map]').forEach(function (c) { c.addEventListener('change', function () { el.querySelector('#mr_' + CSS.escape(c.value)).disabled = !c.checked; count(); }); });
+            count();
+          },
+          onOk: function (el) {
+            var r = readRemarks(el); if (r === null) return false;
+            var before = F.docMappings(d.key).length, after = 0;
+            D.config.categories.forEach(function (c) {
+              [c].concat(c.items || []).forEach(function (x) {
+                var box = el.querySelector('#mp_' + CSS.escape(x.code));
+                x.docs = (x.docs || []).filter(function (m) { return m.key !== d.key; });
+                if (box && box.checked) { x.docs.push({ key: d.key, req: el.querySelector('#mr_' + CSS.escape(x.code)).value }); after++; }
+              });
+            });
+            record('Mapping updated · ' + d.name + ' · ' + before + ' → ' + after + ' item(s) / sub-item(s)', r);
+            App.toast('Mapping saved: ' + after + ' item(s) / sub-item(s).');
+            render();
+          } });
+      }
+
+      if (canEdit) $('btnAdd').addEventListener('click', function () { act('edit', null); });
+      ['fSearch', 'fUse', 'fInactive'].forEach(function (id) { $(id).addEventListener(id === 'fSearch' ? 'input' : 'change', render); });
+      render();
+    })();
+  </script>
+</body>
+</html>

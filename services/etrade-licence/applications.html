@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Applications | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div>
+        <h1 class="h4 fw-bold mb-1" id="pageTitle">Applications</h1>
+        <p class="text-muted small mb-0" id="pageSubtitle"></p>
+      </div>
+      <div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-sm btn-outline-primary" id="btnCsv"><i class="bi bi-download me-1" aria-hidden="true"></i>Download CSV</button></div>
+    </div>
+    <form class="card border-0 shadow-xs mb-3" id="filters" role="search" aria-label="Filter applications"><div class="card-body"><div class="row g-2 align-items-end">
+      <div class="col-md-4"><label for="fq" class="form-label small fw-semibold">Search</label><input id="fq" class="form-control form-control-sm" placeholder="Application ID, business or licence no."></div>
+      <div class="col-6 col-md-3"><label for="fStatus" class="form-label small fw-semibold">Status</label><select id="fStatus" class="form-select form-select-sm"></select></div>
+      <div class="col-6 col-md-2"><label for="fKind" class="form-label small fw-semibold">Type</label><select id="fKind" class="form-select form-select-sm"><option value="">All types</option><option>New</option><option>Renewal</option><option>Change</option></select></div>
+      <div class="col-md-3"><label for="fCat" class="form-label small fw-semibold">Item</label><select id="fCat" class="form-select form-select-sm"></select></div>
+    </div></div></form>
+    <div id="listRoot"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
+  <script src="tl-view.js?v=20261123"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, V = window.TLView, D = App.data, esc = App.esc, ST = F.ST;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      var view = App.qs('view') || 'all';
+      if (['mine', 'br', 'all'].indexOf(view) === -1) view = 'all';
+      App.shell({ type: 'staff', active: view });
+      var $ = function (id) { return document.getElementById(id); };
+      var me = session.userId, u = App.me(session);
+
+      var TITLES = { mine: ['My Work Queue', 'Applications pending with ' + App.ROLE_TITLES[u.role] + '. Oldest first.'], br: ['BR Verification', 'Bank Receipts uploaded by applicants. Verify the BR and originals to generate the licence.'], all: ['All Applications', u.role === 'bo' ? 'Applications forwarded to you, at any stage.' : 'All applications of the ' + App.circle(u.circle).name + ', at any stage.'] };
+      $('pageTitle').textContent = TITLES[view][0];
+      $('pageSubtitle').textContent = TITLES[view][1];
+
+      $('fStatus').innerHTML = '<option value="">All statuses</option>' + Object.keys(ST).filter(function (k) { return k !== 'DRAFT'; }).map(function (k) { return '<option>' + esc(ST[k]) + '</option>'; }).join('');
+      $('fCat').innerHTML = '<option value="">All items</option>' + Object.keys(F.TYPES).map(function (t) { return '<optgroup label="' + esc(F.TYPES[t].label) + '">' + F.categoriesOf(t).map(function (c) { return '<option value="' + c.code + '">' + esc(c.name) + '</option>'; }).join('') + '</optgroup>'; }).join('');
+      if (App.qs('status')) $('fStatus').value = App.qs('status');
+
+      function base() {
+        return D.applications.filter(function (a) {
+          if (!F.visibleTo(a, me)) return false;
+          if (view === 'mine') return F.canAct(a, me) && a.status !== ST.BR_UPLOADED;
+          if (view === 'br') return F.canAct(a, me) && a.status === ST.BR_UPLOADED;
+          return true;
+        });
+      }
+      var current = [];
+      function render() {
+        var q = $('fq').value.trim().toLowerCase(), st = $('fStatus').value, k = $('fKind').value, c = $('fCat').value;
+        current = base().filter(function (a) {
+          if (st && a.status !== st) return false;
+          if (k && a.kind !== k) return false;
+          if (c && a.category !== c) return false;
+          if (q && (a.appId + ' ' + App.appName(a) + ' ' + (a.licenceNo || '')).toLowerCase().indexOf(q) === -1) return false;
+          return true;
+        }).sort(function (a, b) { return view === 'all' ? ((b.updatedOn || '') < (a.updatedOn || '') ? -1 : 1) : ((a.updatedOn || '') < (b.updatedOn || '') ? -1 : 1); });
+        $('listRoot').innerHTML = V.queueTable('t-list', TITLES[view][0], current.length + ' application' + (current.length === 1 ? '' : 's'), current, view === 'all' ? 'No applications match the filters.' : 'Nothing pending with ' + App.ROLE_TITLES[u.role] + '.');
+      }
+      ['fq', 'fStatus', 'fKind', 'fCat'].forEach(function (id) { $(id).addEventListener(id === 'fq' ? 'input' : 'change', render); });
+      $('filters').addEventListener('submit', function (e) { e.preventDefault(); });
+      $('btnCsv').addEventListener('click', function () {
+        App.downloadCsv('etrade-applications-' + view + '.csv', [['Application ID', 'Type', 'Business', 'Item', 'Sub-item / purpose', 'Licence No.', 'First submitted', 'Last action', 'Status', 'Pending with']].concat(current.map(function (a) {
+          return [a.appId, a.kind, App.appName(a), App.category(a.category).name, a.orgType, a.licenceNo || '', a.firstSubmittedOn, a.updatedOn, a.status, F.pendingWith(a).label];
+        })));
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

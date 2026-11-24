@@ -94,6 +94,26 @@
       max-height: 42px !important;
       font-size: 1.25rem !important;
     }
+  
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #ackSlipPrintable, #ackSlipPrintable * {
+        visibility: visible !important;
+      }
+      #ackSlipPrintable {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 24px !important;
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+      }
+    }
   </style>
 </head>
 <body data-theme="alpine-blue" class="d-flex flex-column min-vh-100">
@@ -116,12 +136,13 @@
           <span class="fw-semibold text-white">Scenario Switcher:</span>
           <label for="scenarioSelector" class="visually-hidden">Select Citizen Scenario</label>
           <select id="scenarioSelector" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 340px; font-size: 0.825rem;">
-            <option value="scenarioA">Scenario A: First-Time Citizen (0 Applications)</option>
+            <option value="scenarioA" selected>Scenario A: First-Time Citizen (0 Applications)</option>
             <option value="scenarioB">Scenario B: Citizen with Draft Applications (1 Draft)</option>
-            <option value="scenarioC" selected>Scenario C: Citizen with Submitted Applications (Multiple Active)</option>
+            <option value="scenarioC">Scenario C: Citizen with Submitted Applications (Multiple Active)</option>
             <option value="scenarioD">Scenario D: Citizen with Returned Application (Needs Clarification)</option>
             <option value="scenarioE">Scenario E: Citizen with Approved Application (Certificate Issued)</option>
-            <option value="scenarioF">Scenario F: Citizen with Rejected Application (Restricted Zone)</option>
+            <option value="scenarioPayment">Scenario F: Statutory Fee Due (Payment Activated – ₹7,000)</option>
+            <option value="scenarioF">Scenario G: Citizen with Rejected Application (Restricted Zone)</option>
           </select>
           <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
             <i class="bi bi-people-fill me-1"></i> Switch Role
@@ -293,23 +314,116 @@
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="scenarioBadgeDisplay">Scenario C</span>
               </div>
               <p class="text-muted small mb-0" id="scenarioDescriptionDisplay">
-                Apply for tourism-related permissions in Sikkim and track the progress of your applications from one place.
+                Apply for Travel Agent, Tour Operator, Equipment Dealer, or Outdoor Photographer registration in Sikkim and manage your applications from one place.
               </p>
             </div>
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs">
+                <i class="bi bi-file-earmark-text me-1"></i> Read Instructions
+              </a>
               <a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs">
                 <i class="bi bi-plus-lg me-1"></i> Apply for New Registration
-              </a>
-              <a href="role-select.html" class="btn btn-outline-danger btn-sm px-3 py-1.5" title="Switch Role or Exit">
-                <i class="bi bi-people-fill me-1"></i> Switch Role
               </a>
             </div>
           </div>
         </div>
 
         <!-- ==============================================================
+             ACTION-ORIENTED CITIZEN CARDS & EMPTY STATE
+             ============================================================== -->
+
+        <!-- ==============================================================
              ACTION-ORIENTED CITIZEN CARDS (Priority Order)
              ============================================================== -->
+
+        <!-- Top Live Feedback Alert Container -->
+        <div id="citizenAlertContainer" class="mb-3"></div>
+
+        <!-- PRIORITY 0: STATUTORY REGISTRATION FEE PAYMENT DUE CARD (Matching Adventure Tour Operator Service) -->
+        <div id="paymentDueBanner" class="action-card action-priority mb-4 d-none border-warning shadow-xs rounded-3 p-4" style="background: #fffbeb; border-left: 5px solid #d97706 !important;">
+          <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-start gap-3">
+              <div class="bg-warning text-dark p-2 rounded-2 fs-4 flex-shrink-0" style="width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="bi bi-credit-card-2-front-fill"></i>
+              </div>
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                  <span class="badge bg-warning text-dark fw-bold">Payment Due &bull; Action Required</span>
+                  <span class="text-muted small">Application ID: <strong class="font-monospace text-dark" id="paymentDueRef">SK-TBR-2026-TO-00107</strong></span>
+                  <span class="badge bg-light text-secondary border small" id="paymentDueCat">Travel Agent / Tour Operator (TA/TO)</span>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold" id="paymentDueGradeBadge">Grade B</span>
+                </div>
+                <h4 class="h6 fw-bold text-dark mb-1" id="paymentDueTitle"><span id="paymentDueEnterprise">Sikkim Panoramic Expeditions</span> &bull; Statutory Fee: <span class="text-success font-monospace" id="paymentDueAmountHeading">₹7,000</span></h4>
+                <p class="small text-secondary mb-2" id="paymentDueNotice">
+                  District Tourism Officer (DTO) has approved your preliminary documents and physical inspection clearances. The statutory registration fee is now activated. Please complete online fee deposit via <strong>Sikkim State Portal &bull; SBI e-Pay</strong> to proceed to final registration approval.
+                </p>
+                <div class="small text-muted d-flex align-items-center gap-3 flex-wrap">
+                  <span><i class="bi bi-person-badge me-1 text-primary"></i>Fee Activated by: <strong id="paymentDueOfficerDisplay">Pema Dorjee Sherpa (DTO)</strong> on <span id="paymentDueActivatedDateDisplay">Today</span></span>
+                  <span><i class="bi bi-calendar-check me-1 text-success"></i>Statutory Validity: <strong>1 Year</strong></span>
+                  <span><i class="bi bi-clock me-1 text-danger"></i>Due within: <strong>15 Days</strong></span>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column align-items-sm-end justify-content-center">
+              <button type="button" class="btn btn-success px-4 py-2.5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm" id="btnPayNowBanner" onclick="openCitizenPaymentModal(window.activePaymentDueRef || 'SK-TBR-2026-TO-00107')">
+                <i class="bi bi-credit-card"></i>
+                <span id="btnPayNowBannerLabel">Pay Now (₹7,000)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Fee Verification / Quick-Switcher Pills -->
+          <div class="mt-3 pt-3 border-top border-warning-subtle d-flex align-items-center gap-2 flex-wrap" id="paymentCategorySelectorPills">
+            <span class="small fw-bold text-dark me-1"><i class="bi bi-list-check me-1 text-primary"></i>Verify / Select Pending Category:</span>
+            <button type="button" class="btn btn-xs btn-outline-dark fw-semibold rounded-pill py-0.5 px-2.5 pay-cat-pill" id="pill-SK-TBR-2026-TO-00105" onclick="selectPaymentApplication('SK-TBR-2026-TO-00105')">TA/TO Grade A (₹20,000)</button>
+            <button type="button" class="btn btn-xs btn-warning fw-bold rounded-pill py-0.5 px-2.5 pay-cat-pill active" id="pill-SK-TBR-2026-TO-00107" onclick="selectPaymentApplication('SK-TBR-2026-TO-00107')">TA/TO Grade B (₹7,000)</button>
+            <button type="button" class="btn btn-xs btn-outline-dark fw-semibold rounded-pill py-0.5 px-2.5 pay-cat-pill" id="pill-SK-TBR-2026-TO-00109" onclick="selectPaymentApplication('SK-TBR-2026-TO-00109')">TA/TO Grade C (₹5,000)</button>
+            <button type="button" class="btn btn-xs btn-outline-dark fw-semibold rounded-pill py-0.5 px-2.5 pay-cat-pill" id="pill-SK-TBR-2026-TO-00111" onclick="selectPaymentApplication('SK-TBR-2026-TO-00111')">TA/TO Grade D (₹1,500)</button>
+            <button type="button" class="btn btn-xs btn-outline-dark fw-semibold rounded-pill py-0.5 px-2.5 pay-cat-pill" id="pill-SK-TBR-2026-DLR-00204" onclick="selectPaymentApplication('SK-TBR-2026-DLR-00204')">Equipment Dealer (₹2,000)</button>
+            <button type="button" class="btn btn-xs btn-outline-dark fw-semibold rounded-pill py-0.5 px-2.5 pay-cat-pill" id="pill-SK-TBR-2026-PHT-00302" onclick="selectPaymentApplication('SK-TBR-2026-PHT-00302')">Photographer (₹1,500)</button>
+          </div>
+        </div>
+
+        <!-- PRIORITY 0.5: PAYMENT COMPLETED &bull; AWAITING FINAL DTO SANCTION CARD -->
+        <div id="paymentReceivedBanner" class="card border-info border-2 shadow-xs mb-4 d-none bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle bg-info-subtle text-info-emphasis" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px; border-radius: 50%; aspect-ratio: 1/1; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                  <i class="bi bi-hourglass-split"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-info text-white fw-bold px-2 py-1"><i class="bi bi-patch-check-fill me-1"></i>PAYMENT RECEIVED</span>
+                    <span class="fw-bold font-monospace text-dark" id="paymentReceivedRef">SK-TBR-2026-TO-00107</span>
+                    <span class="badge bg-light text-dark border" id="paymentReceivedCat">Travel Agent / Tour Operator (TA/TO)</span>
+                  </div>
+                  <h3 class="h5 fw-bold text-dark mb-2">Statutory Fee Deposited &bull; Returned to DTO for Final Sanction</h3>
+                  <p class="text-muted small mb-2">
+                    Your statutory registration fee payment has been successfully verified online (Txn ID: <strong class="font-monospace text-primary" id="paymentReceivedTxnDisplay">-</strong>). The application has been returned directly to the District Tourism Officer for final review and issuance of Form 3 Certificate.
+                  </p>
+                  <div class="small text-muted">
+                    <span>Payment Receipt: <strong class="font-monospace text-dark" id="paymentReceivedRcptDisplay">-</strong></span> &bull; 
+                    <span>Amount Paid: <strong class="text-success font-monospace" id="paymentReceivedAmtDisplay">₹7,000</strong></span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column align-items-sm-end gap-2">
+                <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="showPaymentAcknowledgement(window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107')">
+                  <i class="bi bi-file-earmark-check"></i>
+                  <span>View Acknowledgement Slip</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="viewPaymentReceipt(window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107')">
+                  <i class="bi bi-receipt"></i>
+                  <span>View Payment Receipt</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="openTrackingFor(window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107')">
+                  <i class="bi bi-geo-alt me-1"></i> Track Application
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- PRIORITY 1: ACTION REQUIRED CARD (Scenario D: Returned Application) -->
         <div id="actionRequiredBanner" class="card border-danger border-2 shadow-xs mb-4 d-none bg-white">
@@ -322,16 +436,16 @@
                 <div>
                   <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                     <span class="badge bg-danger text-white fw-bold px-2 py-1">ACTION REQUIRED</span>
-                    <span class="fw-bold font-monospace text-dark" id="actionRequiredRef">SK-TP-2026-APP-00329</span>
-                    <span class="badge bg-light text-dark border" id="actionRequiredCat">Events &amp; Fairs</span>
+                    <span class="fw-bold font-monospace text-dark" id="actionRequiredRef">SK-TBR-2026-TA-00203</span>
+                    <span class="badge bg-light text-dark border" id="actionRequiredCat">Travel Agent / Tour Operator (TA/TO)</span>
                   </div>
                   <h3 class="h5 fw-bold text-danger mb-2" id="actionRequiredTitle">Department Clarification &amp; Document Resubmission Required</h3>
                   <div class="p-3 bg-light rounded-2 border small text-dark mb-2" id="actionRequiredRemarks">
                     <!-- Remarks populated dynamically -->
                   </div>
                   <div class="small text-muted d-flex align-items-center gap-3 flex-wrap">
-                    <span><i class="bi bi-calendar-event me-1"></i> Returned On: <strong id="actionRequiredDate">02 Nov 2026</strong></span>
-                    <span><i class="bi bi-clock-history me-1 text-danger"></i> Deadline: <strong class="text-danger" id="actionRequiredDeadline">09 Nov 2026</strong></span>
+                    <span><i class="bi bi-calendar-event me-1"></i> Returned On: <strong id="actionRequiredDate">30 Oct 2026</strong></span>
+                    <span><i class="bi bi-clock-history me-1 text-danger"></i> Deadline: <strong class="text-danger" id="actionRequiredDeadline">06 Nov 2026</strong></span>
                   </div>
                 </div>
               </div>
@@ -345,18 +459,18 @@
           </div>
         </div>
 
-                <!-- PRIORITY 2: APPROVED APPLICATION & ISSUED PERMISSION SHOWCASE CARD -->
+        <!-- PRIORITY 2: APPROVED APPLICATION & ISSUED PERMISSION SHOWCASE CARD -->
         <div id="approvedApplicationCard" class="card border-success border-2 shadow-sm mb-4 d-none bg-white overflow-hidden">
           <div class="card-header bg-success-subtle bg-opacity-40 py-2.5 px-4 d-flex justify-content-between align-items-center border-bottom border-success-subtle flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-success text-white fw-bold px-2.5 py-1">
-                <i class="bi bi-patch-check-fill me-1"></i> STATUTORY PERMISSION ISSUED
+                <i class="bi bi-patch-check-fill me-1"></i> STATUTORY REGISTRATION CERTIFICATE ISSUED
               </span>
               <span class="small text-muted fw-semibold d-none d-sm-inline">Tourism &amp; Civil Aviation Department &bull; Government of Sikkim</span>
             </div>
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-white text-success border border-success-subtle small font-monospace fw-bold px-2 py-1 shadow-xs" id="approvedCertRefBadge">
-                SK-TOUR-2026-TRE-00215
+                SK-TR-CERT-2026-DLR-0019
               </span>
             </div>
           </div>
@@ -368,39 +482,97 @@
                 </div>
                 <div>
                   <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                    <span class="badge bg-light text-dark border fw-semibold" id="approvedAppCat">Trekking</span>
-                    <span class="small text-muted">Application ID: <strong class="font-monospace text-primary" id="approvedAppRef">SK-TP-2026-APP-00215</strong></span>
-                    <span class="small text-muted">&bull; Sanction Ref: <strong class="text-success font-monospace" id="approvedCertRef">SK-TOUR-2026-TRE-00215</strong></span>
+                    <span class="badge bg-light text-dark border fw-semibold" id="approvedAppCat">Dealer Registration</span>
+                    <span class="small text-muted">Application ID: <strong class="font-monospace text-primary" id="approvedAppRef">SK-TBR-2026-DLR-00305</strong></span>
+                    <span class="small text-muted">&bull; Certificate No: <strong class="text-success font-monospace" id="approvedCertRef">SK-TR-CERT-2026-DLR-0019</strong></span>
                   </div>
-                  <h3 class="h5 fw-bold text-dark mb-1" id="approvedAppTitle">Green Lake Reconnaissance Trek (4 Pax)</h3>
+                  <h3 class="h5 fw-bold text-dark mb-1" id="approvedAppTitle">Mountain Essentials Trading</h3>
                   <div class="small text-muted mb-2">
-                    Sanctioning Authority: <strong class="text-dark" id="approvedAppOfficer">District Tourism Officer (DTO, Gangtok Circle)</strong> &bull;
-                    Sanction Date: <strong class="text-dark" id="approvedAppDate">28 Oct 2026</strong>
+                    Sanctioning Authority: <strong class="text-dark" id="approvedAppOfficer">District Tourism Officer (DTO, Gyalshing Circle)</strong> &bull;
+                    Sanction Date: <strong class="text-dark" id="approvedAppDate">25 Oct 2026</strong>
                   </div>
                   <div class="d-flex align-items-center gap-3 small text-muted flex-wrap">
-                    <span><i class="bi bi-shield-fill-check text-success me-1"></i> Digitally Signed &amp; Approved</span>
+                    <span><i class="bi bi-shield-fill-check text-success me-1"></i> Form 3 Digitally Signed &amp; Approved</span>
                     <span><i class="bi bi-qr-code text-primary me-1"></i> Tamper-proof QR Verification Active</span>
-                    <span><i class="bi bi-file-earmark-pdf text-danger me-1"></i> Print-Ready A4 Document</span>
+                    <span><i class="bi bi-file-earmark-pdf text-danger me-1"></i> Print-Ready Form 3 Certificate (1-Year Validity)</span>
                   </div>
                 </div>
               </div>
 
               <!-- Instant Direct Actions -->
               <div class="d-flex flex-column align-items-start align-items-sm-end gap-2 ms-auto">
-                <button type="button" class="btn btn-success px-3.5 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-2" id="btnDownloadApprovedCert" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                <button type="button" class="btn btn-success px-3.5 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-2" id="btnDownloadApprovedCert" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')">
                   <i class="bi bi-file-earmark-arrow-down-fill fs-6"></i>
                   <span>Download Registration Certificate</span>
                 </button>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                  <button type="button" class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewApprovedModal" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                  <a href="certificate.html?arn=SK-TBR-2026-DLR-00305" target="_blank" class="btn btn-sm btn-outline-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnOpenCertPage" title="Open Official Form 3 Printable Certificate Page">
+                    <i class="bi bi-printer"></i>
+                    <span>Print Form 3</span>
+                  </a>
+                  <button type="button" class="btn btn-sm btn-outline-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewApprovedModal" onclick="previewCertificate(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')">
                     <i class="bi bi-eye"></i>
                     <span>View Online</span>
                   </button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewDossier" onclick="openDepartmentDocuments(window.activeApprovedArn || 'SK-TP-2026-APP-00215')" title="View All Department Documents &amp; HQ Concurrence">
+                  <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnViewDossier" onclick="openDepartmentDocuments(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')" title="View All Department Documents &amp; Sanction Records">
                     <i class="bi bi-folder-check"></i>
                     <span>Department Documents</span>
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRIORITY 2.2: REJECTED APPLICATION SHOWCASE CARD (Scenario G / Rejection) -->
+        <div id="rejectedApplicationCard" class="card border-danger border-2 shadow-sm mb-4 d-none bg-white overflow-hidden">
+          <div class="card-header bg-danger-subtle bg-opacity-40 py-2.5 px-4 d-flex justify-content-between align-items-center border-bottom border-danger-subtle flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-danger text-white fw-bold px-2.5 py-1">
+                <i class="bi bi-x-circle-fill me-1"></i> APPLICATION REJECTED
+              </span>
+              <span class="small text-muted fw-semibold d-none d-sm-inline">Tourism &amp; Civil Aviation Department &bull; Government of Sikkim</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-white text-danger border border-danger-subtle small font-monospace fw-bold px-2 py-1 shadow-xs" id="rejectedAppRefBadge">
+                SK-TBR-2026-TO-00199
+              </span>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-4">
+              <div class="d-flex align-items-start gap-3">
+                <div class="gov-icon-circle bg-danger text-white shadow-xs flex-shrink-0" style="width: 58px; height: 58px; min-width: 58px; min-height: 58px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem;">
+                  <i class="bi bi-x-octagon-fill"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-light text-dark border fw-semibold" id="rejectedAppCat">Travel Agent / Tour Operator (TA/TO)</span>
+                    <span class="small text-muted">Application ID: <strong class="font-monospace text-danger" id="rejectedAppRef">SK-TBR-2026-TO-00199</strong></span>
+                  </div>
+                  <h3 class="h5 fw-bold text-dark mb-1" id="rejectedAppTitle">Kanchenjunga Vista Travels</h3>
+                  <div class="small text-muted mb-2">
+                    Reviewing Authority: <strong class="text-dark" id="rejectedAppOfficer">Pema Dorjee Sherpa (District Tourism Officer, Level 2)</strong> &bull;
+                    Decision Date: <strong class="text-dark" id="rejectedAppDate">20 Oct 2026, 04:30 PM</strong>
+                  </div>
+                  <div class="p-3 bg-danger-subtle rounded-2 border border-danger small text-danger-emphasis mb-2" id="rejectedAppRemarks">
+                    <strong>Reason for Rejection:</strong> Commercial premise lease deed is expired and unnotarized. Premises inspection revealed carpet area of 120 sq.ft, which is below the mandatory 250 sq.ft threshold under Rule 4(2) of Sikkim Registration of Tourist Trade Rules. Registration withheld.
+                  </div>
+                  <div class="small text-muted d-flex align-items-center gap-3 flex-wrap">
+                    <span><i class="bi bi-lock-fill text-secondary me-1"></i> File Officially Closed</span>
+                    <span><i class="bi bi-info-circle text-primary me-1"></i> You may review requirements and submit a fresh application with valid documentation</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column align-items-start align-items-sm-end gap-2 ms-auto">
+                <a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+                  <i class="bi bi-plus-circle"></i>
+                  <span>Submit Fresh Application</span>
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" onclick="openTrackingForActive()">
+                  <i class="bi bi-clock-history"></i>
+                  <span>View Audit Trail</span>
+                </button>
               </div>
             </div>
           </div>
@@ -417,23 +589,23 @@
                 <div>
                   <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                     <span class="badge bg-primary text-white fw-bold px-2 py-1">APPLICATION UNDER PROCESS</span>
-                    <span class="fw-bold font-monospace text-dark" id="ongoingAppRef">SK-TP-2026-APP-00481</span>
-                    <span class="badge bg-light text-dark border" id="ongoingAppCat">Trekking</span>
+                    <span class="fw-bold font-monospace text-dark" id="ongoingAppRef">SK-TBR-2026-DLR-00303</span>
+                    <span class="badge bg-light text-dark border" id="ongoingAppCat">Dealer Registration</span>
                   </div>
-                  <h3 class="h5 fw-bold text-dark mb-2" id="ongoingAppTitle">Singalila Ridge Scenic Eco-Trek (8 Indian Trekkers)</h3>
+                  <h3 class="h5 fw-bold text-dark mb-2" id="ongoingAppTitle">Kanchenjunga Gear &amp; Trekking Store</h3>
                   
                   <div class="row g-2 mb-3 small">
                     <div class="col-sm-6 col-md-4">
                       <span class="text-muted d-block">Current Processing Stage:</span>
-                      <strong class="text-primary fs-6" id="ongoingAppStage"><i class="bi bi-check-circle-fill text-success me-1"></i> Stage 2: DTO Verification</strong>
+                      <strong class="text-primary fs-6" id="ongoingAppStage"><i class="bi bi-hourglass-split text-primary me-1"></i> Stage 3: Level 1 IA Physical Inspection</strong>
                     </div>
                     <div class="col-sm-6 col-md-4">
                       <span class="text-muted d-block">Current Status:</span>
-                      <strong class="text-dark" id="ongoingAppStatus">Pending with District DTO (Gyalshing)</strong>
+                      <strong class="text-dark" id="ongoingAppStatus">Pending with Inspecting Authority (IA, Gangtok)</strong>
                     </div>
                     <div class="col-sm-6 col-md-4">
                       <span class="text-muted d-block">Last Updated:</span>
-                      <span class="text-muted" id="ongoingAppUpdated">03 Nov 2026, 11:15 AM</span>
+                      <span class="text-muted" id="ongoingAppUpdated">26 Oct 2026, 11:30 AM</span>
                     </div>
                   </div>
 
@@ -441,7 +613,7 @@
                   <div class="p-3 bg-light rounded-2 border small text-dark d-flex align-items-start gap-2">
                     <i class="bi bi-info-circle-fill text-primary mt-1 flex-shrink-0"></i>
                     <div>
-                      <strong>Next Expected Action:</strong> <span id="ongoingAppNextAction">Await departmental verification and forwarding to Headquarters.</span>
+                      <strong>Next Expected Action:</strong> <span id="ongoingAppNextAction">Await on-site physical premises verification and IA inspection report submission.</span>
                       <div class="text-muted mt-1"><i class="bi bi-shield-check text-success me-1"></i> <em>No action is required from you at this stage.</em></div>
                     </div>
                   </div>
@@ -468,13 +640,13 @@
                 <div>
                   <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                     <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="draftCardBadge">DRAFT IN PROGRESS</span>
-                    <span class="fw-bold font-monospace text-dark" id="draftAppRef">SK-TP-2026-DFT-0012</span>
-                    <span class="badge bg-light text-dark border" id="draftAppCat">Trekking</span>
-                    <span class="badge bg-primary-subtle text-primary border" id="draftAppFee">₹100 Fee</span>
+                    <span class="fw-bold font-monospace text-dark" id="draftAppRef">DRAFT-SK-TBR-2026-089</span>
+                    <span class="badge bg-light text-dark border" id="draftAppCat">Travel Agent / Tour Operator (TA/TO)</span>
+                    <span class="badge bg-primary-subtle text-primary border" id="draftAppFee">Draft (Incomplete)</span>
                   </div>
-                  <h3 class="h5 fw-bold text-dark mb-1" id="draftAppTitle">Dzongri – Goecha La High Altitude Trek</h3>
+                  <h3 class="h5 fw-bold text-dark mb-1" id="draftAppTitle">Himalayan Escapes &amp; Trails</h3>
                   <div class="small text-muted mb-2">
-                    <i class="bi bi-clock-history me-1"></i> Last Saved: <span id="draftAppUpdated" class="text-dark fw-semibold">03 Nov 2026, 04:30 PM</span>
+                    <i class="bi bi-clock-history me-1"></i> Last Saved: <span id="draftAppUpdated" class="text-dark fw-semibold">04 Nov 2026, 04:30 PM</span>
                   </div>
                   <p class="small text-muted mb-0" id="draftCardNotice">
                     <i class="bi bi-info-circle-fill text-primary me-1"></i> You have an unsaved application in progress. You can resume at the step you left off.
@@ -482,7 +654,7 @@
                 </div>
               </div>
               <div class="d-flex flex-wrap gap-2 align-items-center">
-                <a href="apply.html" class="btn btn-sm btn-warning text-dark px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnContinueDraft">
+                <a href="apply.html?draftId=DRAFT-SK-TBR-2026-089" class="btn btn-sm btn-warning text-dark px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnContinueDraft">
                   <i class="bi bi-pencil-square"></i>
                   <span id="btnContinueDraftLabel">Continue Application</span>
                 </a>
@@ -531,9 +703,13 @@
               Before starting your application, review the instructions and document requirements.
             </p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
-              <a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+              <a href="instructions.html" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
                 <i class="bi bi-book-half"></i>
                 <span>Read Application Instructions</span>
+              </a>
+              <a href="instructions.html" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+                <i class="bi bi-plus-lg"></i>
+                <span>Apply for New Registration</span>
               </a>
             </div>
           </div>
@@ -557,20 +733,20 @@
                 <div>
                   <div class="d-flex align-items-center gap-2 flex-wrap mb-0.5">
                     <span class="badge bg-success text-white fw-bold"><i class="bi bi-patch-check-fill me-1"></i>Approved Registration Ready</span>
-                    <strong class="font-monospace text-dark small" id="tableBannerCertNo">SK-TOUR-2026-TRE-00215</strong>
-                    <span class="text-muted small">&bull; Ref: <span class="font-monospace text-primary fw-semibold" id="tableBannerArn">SK-TP-2026-APP-00215</span></span>
+                    <strong class="font-monospace text-dark small" id="tableBannerCertNo">SK-TR-CERT-2026-DLR-0019</strong>
+                    <span class="text-muted small">&bull; Ref: <span class="font-monospace text-primary fw-semibold" id="tableBannerArn">SK-TBR-2026-DLR-00305</span></span>
                   </div>
                   <div class="small text-muted" id="tableBannerDesc">
-                    Green Lake Reconnaissance Trek (4 Pax) &bull; Sanctioned by District Tourism Officer
+                    Mountain Essentials Trading &bull; Sanctioned by District Tourism Officer (Gyalshing Circle)
                   </div>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')">
                   <i class="bi bi-file-earmark-arrow-down-fill"></i>
                   <span>Download Certificate</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')">
                   <i class="bi bi-eye"></i>
                   <span>View</span>
                 </button>
@@ -586,7 +762,7 @@
                   <tr>
                     <th style="width: 18%;">Application ID</th>
                     <th style="width: 14%;">Category</th>
-                    <th style="width: 28%;">Activity Details</th>
+                    <th style="width: 28%;">Enterprise / Business Details</th>
                     <th style="width: 14%;">Submitted Date</th>
                     <th style="width: 10%;">Status</th>
                     <th class="text-end" style="width: 16%; min-width: 195px;">Action</th>
@@ -605,9 +781,9 @@
           </div>
         </div>
 
-        <!-- Notifications Preview -->
-        <div class="card border-0 shadow-sm">
-          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <!-- Recent Portal Notifications -->
+        <div class="card border-0 shadow-sm mb-4" id="recentNotificationsCard">
+          <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
             <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-bell me-1 text-warning"></i> Recent Portal Notifications</h3>
             <button type="button" class="btn btn-sm btn-link text-decoration-none fw-semibold p-0" onclick="switchView('notifications')">
               View All &rarr;
@@ -618,6 +794,107 @@
               <!-- Populated dynamically via JS -->
             </div>
           </div>
+        </div>
+
+      </section>
+
+      
+      <!-- ==============================================================
+           VIEW: STANDARDIZED PAYMENT SUCCESS & ACKNOWLEDGEMENT
+           (Standardized with Tourism Permission Reference Design)
+           ============================================================== -->
+      <section id="section-acknowledgement" class="workspace-section d-none">
+        <div class="text-center py-3 mb-4">
+          <div class="gov-icon-circle gov-icon-circle-lg bg-success text-white mx-auto mb-3 shadow-sm d-flex align-items-center justify-content-center">
+            <i class="bi bi-check-lg" style="font-size: 2.5rem;"></i>
+          </div>
+          <h2 class="h3 fw-bold text-dark mb-2">Application Submitted Successfully!</h2>
+          <p class="text-muted mx-auto mb-0" style="max-width: 640px;">
+            Your statutory registration fee payment has been completed successfully. Please keep the Application Reference Number (ARN) for future tracking and official reference.
+          </p>
+        </div>
+
+        <!-- Official Acknowledgement Slip Box -->
+        <div class="card border p-4 rounded-3 mb-4 bg-white shadow-xs" id="ackSlipPrintable">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 border-bottom pb-3 mb-3">
+            <div class="d-flex align-items-center gap-3">
+              <img src="../../common/assets/images/sikkim-government-logo-dark.png" onerror="this.src='../../common/images/sikkim-logo.png'" alt="Sikkim Emblem" style="height: 48px; width: auto;">
+              <div>
+                <span class="small text-uppercase fw-bold text-muted d-block" style="letter-spacing: 0.5px;">Government of Sikkim</span>
+                <div class="fw-bold text-dark">Tourism &amp; Civil Aviation Department</div>
+                <span class="small text-muted" id="ackSlipServiceTitle">Statutory Registration Fee &amp; Application Acknowledgement Slip</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                <i class="bi bi-check-circle-fill me-1"></i> PAYMENT SUCCESSFUL
+              </span>
+              <div class="small text-muted mt-1" id="ackDateDisplay">-</div>
+            </div>
+          </div>
+
+          <!-- Application Reference Callout -->
+          <div class="p-3 bg-light rounded-3 mb-4 text-center border">
+            <span class="text-muted small d-block">Official Application Reference Number (ARN):</span>
+            <span class="fs-4 fw-bold font-monospace text-primary d-inline-block mt-1" id="ackArnDisplay">-</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2 py-0 px-2" onclick="copyArnToClipboard()" title="Copy ARN">
+              <i class="bi bi-copy"></i> Copy
+            </button>
+          </div>
+
+          <!-- Slip Field Grid -->
+          <div class="row g-3 small" id="ackDetailsGrid">
+            <div class="col-md-6">
+              <span class="text-muted d-block">Applicant / Enterprise Name:</span>
+              <strong class="text-dark" id="ackNameDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Registration Category:</span>
+              <strong class="text-dark" id="ackCatDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Designated District Tourism Office:</span>
+              <strong class="text-dark" id="ackDistrictDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Head of Account:</span>
+              <span class="font-monospace text-dark">0070-02-105-01 (Statutory Registration)</span>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Statutory Validity:</span>
+              <strong class="text-dark" id="ackValidityDisplay">1 Year</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Statutory Registration Fee Paid:</span>
+              <strong class="text-success" id="ackFeeAmountDisplay">-</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Payment Status:</span>
+              <strong class="text-success" id="ackPaymentDisplay">Paid</strong>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted d-block">Payment Mode &amp; Gateway:</span>
+              <span class="text-dark fw-semibold" id="ackGatewayDisplay">Online Payment &bull; SBI e-Pay Single Window</span>
+            </div>
+          </div>
+
+          <div class="alert alert-light border small mt-4 mb-0" id="ackNextStepsAlert">
+            <i class="bi bi-info-circle text-primary me-1"></i>
+            <strong>What Happens Next:</strong> <span id="ackNextStepsText">Payment completed; application forwarded to the District Tourism Officer (DTO) for final statutory review and certificate issuance. You can track live updates on your dashboard.</span>
+          </div>
+        </div>
+
+        <!-- Acknowledgement Actions -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Print Slip
+          </button>
+          <button type="button" class="btn btn-gov-primary px-4 py-2 fw-semibold" onclick="returnToCitizenDashboard()" id="ackBtnDashboard">
+            <i class="bi bi-speedometer2 me-1"></i> Go to Citizen Dashboard
+          </button>
+          <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold" onclick="trackFromAck()" id="ackBtnTrack">
+            <i class="bi bi-geo-alt me-1"></i> Track Application
+          </button>
         </div>
       </section>
 
@@ -686,20 +963,20 @@
                 <div>
                   <div class="d-flex align-items-center gap-2 flex-wrap mb-0.5">
                     <span class="badge bg-success text-white fw-bold"><i class="bi bi-patch-check-fill me-1"></i>Approved Registration Ready</span>
-                    <strong class="font-monospace text-dark small" id="fullTableBannerCertNo">SK-TOUR-2026-TRE-00215</strong>
-                    <span class="text-muted small">&bull; Ref: <span class="font-monospace text-primary fw-semibold" id="fullTableBannerArn">SK-TP-2026-APP-00215</span></span>
+                    <strong class="font-monospace text-dark small" id="fullTableBannerCertNo">SK-TR-CERT-2026-DLR-0019</strong>
+                    <span class="text-muted small">&bull; Ref: <span class="font-monospace text-primary fw-semibold" id="fullTableBannerArn">SK-TBR-2026-DLR-00305</span></span>
                   </div>
                   <div class="small text-muted" id="fullTableBannerDesc">
-                    Green Lake Reconnaissance Trek (4 Pax) &bull; Sanctioned by District Tourism Officer
+                    Mountain Essentials Trading &bull; Sanctioned by District Tourism Officer (Gyalshing Circle)
                   </div>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-2 flex-wrap">
-                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnFullTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5" id="btnFullTableBannerDownload" onclick="downloadCertificateDirect(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')">
                   <i class="bi bi-file-earmark-arrow-down-fill"></i>
                   <span>Download Certificate</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnFullTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TP-2026-APP-00215')">
+                <button type="button" class="btn btn-sm btn-outline-success px-2.5 py-1.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1" id="btnFullTableBannerView" onclick="previewCertificate(window.activeApprovedArn || 'SK-TBR-2026-DLR-00305')">
                   <i class="bi bi-eye"></i>
                   <span>View</span>
                 </button>
@@ -714,7 +991,7 @@
                   <tr>
                     <th style="width: 16%;">Application ID</th>
                     <th style="width: 13%;">Category</th>
-                    <th style="width: 26%;">Activity &amp; Jurisdiction</th>
+                    <th style="width: 26%;">Enterprise &amp; Jurisdiction</th>
                     <th style="width: 13%;">Submitted</th>
                     <th style="width: 10%;">Status</th>
                     <th style="width: 6%;">Fee</th>
@@ -752,7 +1029,7 @@
             <div class="row justify-content-center">
               <div class="col-md-7">
                 <div class="input-group">
-                  <input type="text" class="form-control font-monospace" id="trackingArnInput" placeholder="e.g. SK-TP-2026-APP-XXXXX">
+                  <input type="text" class="form-control font-monospace" id="trackingArnInput" placeholder="e.g. SK-TBR-2026-TO-00107">
                   <button type="button" class="btn btn-gov-primary px-4" id="trackSearchBtn">
                     <i class="bi bi-search me-1"></i> Track
                   </button>
@@ -771,8 +1048,8 @@
           <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
               <span class="small text-muted d-block">Tracking Application</span>
-              <span class="fs-5 fw-bold font-monospace text-primary" id="trackCardRef">SK-TP-2026-APP-00481</span>
-              <span class="badge bg-light text-dark border ms-2" id="trackCardCat">Trekking</span>
+              <span class="fs-5 fw-bold font-monospace text-primary" id="trackCardRef">SK-TBR-2026-DLR-00303</span>
+              <span class="badge bg-light text-dark border ms-2" id="trackCardCat">Dealer Registration</span>
             </div>
             <div id="trackCardStatusBadge">
               <span class="gov-badge gov-badge-review fs-6 px-3 py-2"><i class="bi bi-hourglass-split"></i> Under Review</span>
@@ -784,22 +1061,22 @@
             <div class="bg-light p-3 rounded-3 mb-4 small">
               <div class="row g-2">
                 <div class="col-md-4">
-                  <span class="text-muted d-block">Activity Outline:</span>
-                  <strong class="text-dark" id="trackActivityDesc">Singalila Ridge Scenic Trek (8 Pax)</strong>
+                  <span class="text-muted d-block">Enterprise / Business Name:</span>
+                  <strong class="text-dark" id="trackActivityDesc">Kanchenjunga Gear &amp; Trekking Store</strong>
                 </div>
                 <div class="col-md-4">
                   <span class="text-muted d-block">District Administration:</span>
-                  <strong class="text-dark" id="trackDistrict">Gyalshing District Tourism Office</strong>
+                  <strong class="text-dark" id="trackDistrict">Gangtok District Tourism Office</strong>
                 </div>
                 <div class="col-md-4">
                   <span class="text-muted d-block">Handling Officer / Authority:</span>
-                  <strong class="text-dark" id="trackOfficer">Dealing Assistant, DTO Office</strong>
+                  <strong class="text-dark" id="trackOfficer">Inspecting Authority (Level 1)</strong>
                 </div>
               </div>
             </div>
 
-            <!-- 7-Stage Visual Progress Timeline -->
-            <h4 class="h6 fw-bold mb-3"><i class="bi bi-diagram-3 me-1 text-primary"></i> 7-Stage Departmental Workflow Progression</h4>
+            <!-- Departmental Workflow Timeline -->
+            <h4 class="h6 fw-bold mb-3"><i class="bi bi-diagram-3 me-1 text-primary"></i> Departmental Workflow Progression</h4>
             
             <div class="gov-timeline" id="workflowTimelineContainer">
               <!-- Dynamically populated 7 stages via JS -->
@@ -851,7 +1128,7 @@
             </div>
             <div>
               <h2 class="h5 fw-bold text-dark mb-0">Statutory Registration Guidelines &amp; Fee Matrix</h2>
-              <p class="text-muted small mb-0">Requirements under the Sikkim Registration of Tourist Trade Rules &bull; Valid for 3 Calendar Years</p>
+              <p class="text-muted small mb-0">Requirements under the Sikkim Registration of Tourist Trade Rules &bull; Valid for 1 Calendar Year</p>
             </div>
           </div>
 
@@ -860,7 +1137,7 @@
               <div class="p-3 rounded border bg-light h-100">
                 <span class="badge bg-primary-subtle text-primary mb-2">Category 1 &bull; TA/TO</span>
                 <h3 class="h6 fw-bold text-dark mb-1">Travel Agent / Tour Operator</h3>
-                <div class="fw-bold text-primary mb-2">&#8377;1,500 – &#8377;20,000 / 3 Years</div>
+                <div class="fw-bold text-primary mb-2">&#8377;1,500 – &#8377;20,000 / 1 Year</div>
                 <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
                   <li>Valid Municipal Trade License &amp; Commercial premises</li>
                   <li>Grade A (&#8377;20k), B (&#8377;7k), C (&#8377;5k), D (&#8377;1.5k)</li>
@@ -873,7 +1150,7 @@
               <div class="p-3 rounded border bg-light h-100">
                 <span class="badge bg-warning-subtle text-warning-emphasis mb-2">Category 2 &bull; DLR</span>
                 <h3 class="h6 fw-bold text-dark mb-1">Equipment Dealer</h3>
-                <div class="fw-bold text-warning-emphasis mb-2">&#8377;2,000 / 3 Years</div>
+                <div class="fw-bold text-warning-emphasis mb-2">&#8377;2,000 / 1 Year</div>
                 <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
                   <li>Physical commercial premises &ge; 200 sq.ft</li>
                   <li>Certified equipment inventory &amp; storage</li>
@@ -886,7 +1163,7 @@
               <div class="p-3 rounded border bg-light h-100">
                 <span class="badge bg-success-subtle text-success mb-2">Category 3 &bull; PHO</span>
                 <h3 class="h6 fw-bold text-dark mb-1">Outdoor Photographer</h3>
-                <div class="fw-bold text-success mb-2">&#8377;1,500 / 3 Years</div>
+                <div class="fw-bold text-success mb-2">&#8377;1,500 / 1 Year</div>
                 <ul class="text-muted small ps-3 mb-0" style="font-size: 0.775rem;">
                   <li>Class X pass certificate &amp; ID Proof</li>
                   <li>Portfolio of Sikkim outdoor work &amp; camera serial</li>
@@ -1095,19 +1372,19 @@
               Rectify &amp; Resubmit Application
             </h5>
           </div>
-          <span class="badge bg-white text-danger fw-bold ms-auto me-3 font-monospace" id="resubmitArnDisplay">SK-TP-2026-APP-00329</span>
+          <span class="badge bg-white text-danger fw-bold ms-auto me-3 font-monospace" id="resubmitArnDisplay">SK-TBR-2026-TA-00203</span>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form onsubmit="handleCitizenResubmit(event)">
           <div class="modal-body p-4">
-            <input type="hidden" id="resubmitArn" value="SK-TP-2026-APP-00329">
+            <input type="hidden" id="resubmitArn" value="SK-TBR-2026-TA-00203">
             
             <div class="alert alert-warning border-0 small d-flex align-items-start gap-2 mb-3">
               <i class="bi bi-exclamation-triangle-fill text-warning fs-5 flex-shrink-0 mt-1"></i>
               <div>
                 <strong>Department Objection / Clarification Required:</strong>
                 <p class="mb-0 mt-1" id="resubmitOfficerRemarks">
-                  Fire Safety NOC and certified crowd management layout for the proposed marathon venue are missing. Please attach the Fire NOC and resubmit.
+                  Affidavit from Oath Commissioner is missing notary stamp on page 2. Kindly upload attested copy.
                 </p>
               </div>
             </div>
@@ -1251,11 +1528,266 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body small">
-          Are you sure you want to discard draft application <strong class="font-monospace text-danger" id="deleteDraftRef">SK-TP-2026-DFT-0012</strong>? This action cannot be undone.
+          Are you sure you want to discard draft application <strong class="font-monospace text-danger" id="deleteDraftRef">DRAFT-SK-TBR-2026-089</strong>? This action cannot be undone.
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-danger btn-sm" onclick="executeDeleteDraft()">Delete Draft</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==============================================================
+       STAGE 05: CITIZEN PAYMENT & RECEIPT & CERTIFICATE MODALS
+       ============================================================== -->
+
+  <!-- 1. Simulated Payment Gateway Modal (Matching Adventure Tour Operator Service) -->
+  <div class="modal fade" id="citizenPaymentModal" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow border-0">
+        <div class="modal-header text-white" style="background: var(--gov-primary, #18334F);">
+          <h5 class="modal-title fw-bold" id="payModalLabel">
+            <i class="bi bi-credit-card-2-front me-2"></i>Pay Statutory Application Fee
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- VIEW 1: Payment Gateway Mode Selection & Fee Details -->
+        <div id="payModalEntryView">
+          <div class="modal-body p-4 bg-light">
+            <div class="card p-3 border rounded-3 bg-white mb-3 shadow-xs">
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Application Reference (ARN):</span>
+                <strong class="font-monospace text-primary" id="payModalArn">SK-TBR-2026-TO-00107</strong>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Applicant / Enterprise:</span>
+                <span class="fw-semibold text-dark small" id="payModalApplicant">Sikkim Panoramic Expeditions</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Category &amp; Jurisdiction:</span>
+                <span class="badge bg-primary-subtle text-primary border small" id="payModalCategory">Travel Agent / Tour Operator (TA/TO) &bull; Grade B</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Head of Account:</span>
+                <span class="font-monospace small text-dark">0070-02-105-01 (Statutory Registration)</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Statutory Validity:</span>
+                <span class="fw-semibold text-dark small">1 Year</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center pt-1">
+                <span class="fw-bold text-dark">Statutory Fee Payable:</span>
+                <span class="fw-bold text-success fs-5" id="payModalFeeDisplay">₹7,000</span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Select Payment Mode (Simulated Gateway):</label>
+              <div class="row g-2 mb-2">
+                <div class="col-6">
+                  <div class="border rounded p-2 bg-white d-flex align-items-center gap-2 cursor-pointer shadow-xs" onclick="document.getElementById('payModeUPI').checked=true; updatePayModeView('upi');">
+                    <input type="radio" name="payGatewayMode" id="payModeUPI" checked class="form-check-input ms-1" onchange="updatePayModeView('upi')">
+                    <label for="payModeUPI" class="small mb-0 cursor-pointer fw-semibold text-dark">
+                      <i class="bi bi-qr-code text-primary me-1"></i>UPI / Bharat QR
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="border rounded p-2 bg-white d-flex align-items-center gap-2 cursor-pointer shadow-xs" onclick="document.getElementById('payModeNet').checked=true; updatePayModeView('net');">
+                    <input type="radio" name="payGatewayMode" id="payModeNet" class="form-check-input ms-1" onchange="updatePayModeView('net')">
+                    <label for="payModeNet" class="small mb-0 cursor-pointer fw-semibold text-dark">
+                      <i class="bi bi-bank text-primary me-1"></i>NetBanking / Card
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- UPI Payment Details Panel -->
+              <div id="payModeUPIPanel" class="p-3 bg-white border rounded-3 mb-2 shadow-xs">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="bg-light p-2 border rounded text-center" style="width: 72px; height: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <i class="bi bi-qr-code text-dark fs-1"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mb-1"><i class="bi bi-check-circle-fill me-1"></i>NPCI Unified Payments Gateway</span>
+                    <div class="small fw-semibold text-dark">Scan QR via Google Pay, PhonePe, Paytm or BHIM</div>
+                    <div class="text-muted" style="font-size: 0.72rem;">Instant statutory fee deposit and e-Challan generation</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- NetBanking / Card Payment Details Panel -->
+              <div id="payModeNetPanel" class="p-3 bg-white border rounded-3 mb-2 shadow-xs d-none">
+                <div class="mb-2">
+                  <label class="form-label text-muted small mb-1 fw-semibold">Select Bank / Gateway Portal:</label>
+                  <select class="form-select form-select-sm" id="payBankSelect">
+                    <option selected>State Bank of India (SBI e-Pay Single Window)</option>
+                    <option>HDFC Bank Corporate NetBanking</option>
+                    <option>ICICI Bank Payment Gateway</option>
+                    <option>Axis Bank Internet Banking</option>
+                    <option>Debit / Credit Card (RuPay / Visa / MasterCard)</option>
+                  </select>
+                </div>
+                <div class="text-muted" style="font-size: 0.72rem;">
+                  <i class="bi bi-shield-lock-fill text-success me-1"></i>256-bit encrypted treasury interbank debit
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-warning py-2 px-3 small mb-0 border-0">
+              <i class="bi bi-info-circle-fill text-warning me-1"></i>
+              Non-refundable statutory registration fee as per Sikkim Registration of Tourist Trade Rules. Payment receipt will be recorded immediately.
+            </div>
+          </div>
+          <div class="modal-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-sm btn-success px-4 py-2 fw-semibold shadow-xs" id="confirmPaymentBtn" onclick="executeCitizenFeePayment()">
+              <i class="bi bi-shield-check me-1"></i> Confirm &amp; Pay <span id="confirmPayBtnAmt">₹7,000</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW 2: Payment Success Confirmation View (Shown upon Confirm & Pay) -->
+        <div id="payModalSuccessView" class="d-none">
+          <div class="modal-body p-4 text-center bg-white">
+            <div class="mb-3">
+              <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle shadow-sm" style="width: 72px; height: 72px;">
+                <i class="bi bi-check-lg" style="font-size: 2.5rem;"></i>
+              </div>
+            </div>
+            <h4 class="h5 fw-bold text-success mb-1">Payment Received Successfully!</h4>
+            <p class="text-secondary small mb-3">Statutory registration fee deposited via Sikkim State Treasury Portal (SBI e-Pay Single Window).</p>
+
+            <div class="card p-3 border rounded-3 bg-light text-start mb-3 shadow-xs">
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Application Reference (ARN):</span>
+                <strong class="font-monospace text-primary" id="paySuccessArn">SK-TBR-2026-TO-00107</strong>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Applicant / Enterprise:</span>
+                <span class="fw-semibold text-dark small" id="paySuccessApplicant">Sikkim Panoramic Expeditions</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Category &amp; Grade:</span>
+                <span class="badge bg-primary-subtle text-primary border small" id="paySuccessCategory">TA/TO &bull; Grade B</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Transaction Reference (Txn ID):</span>
+                <span class="font-monospace fw-bold text-dark small" id="paySuccessTxnId">TXN-ONLINE-984210</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Official e-Challan Receipt No:</span>
+                <span class="font-monospace fw-bold text-success small" id="paySuccessRcptNo">RCPT-SK-TCD-2026-00107</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Statutory Validity:</span>
+                <span class="fw-semibold text-dark small">1 Year</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center pt-1">
+                <span class="fw-bold text-dark">Total Statutory Fee Paid:</span>
+                <span class="fw-bold text-success fs-5" id="paySuccessAmount">₹7,000</span>
+              </div>
+            </div>
+
+            <div class="alert alert-info py-2 px-3 small text-start mb-0 border-0 d-flex align-items-start gap-2">
+              <i class="bi bi-info-circle-fill text-info flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong>Next Step:</strong> Fee payment has been recorded under Head of Account <code>0070-02-105-01</code>. Your application has returned directly to the <strong>District Tourism Officer (DTO)</strong> for final verification and issuance of your Registration Certificate.
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" id="btnPaySuccessViewAck" onclick="showPaymentAcknowledgementFromModal()">
+              <i class="bi bi-file-earmark-check me-1"></i> View Official Acknowledgement Slip
+            </button>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPaySuccessViewReceipt" onclick="viewPaymentReceiptFromSuccess()">
+                <i class="bi bi-receipt me-1"></i> e-Challan Receipt
+              </button>
+              <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-semibold shadow-xs" onclick="closePayModalAndGoToDashboard()">
+                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Official Payment Receipt / e-Challan Modal (Stage 05) -->
+  <div class="modal fade" id="modalPaymentReceipt" tabindex="-1" aria-labelledby="modalReceiptLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-light py-2 border-bottom">
+          <h5 class="modal-title fs-6 fw-bold text-dark" id="modalReceiptLabel">
+            <i class="bi bi-receipt text-primary me-2"></i> Statutory Registration Fee Payment Receipt
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="printableReceiptArea">
+          <!-- Filled dynamically via DocumentService.getReceiptHtml -->
+        </div>
+        <div class="modal-footer bg-light py-2 justify-content-between">
+          <div class="text-muted small">
+            <i class="bi bi-info-circle me-1"></i> Computer generated e-Challan receipt &bull; Government of Sikkim
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold shadow-xs" onclick="printReceiptModal()">
+              <i class="bi bi-printer me-1"></i> Print Receipt
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Form 3 Registration Certificate Viewer Modal (Stage 05) -->
+  <div class="modal fade" id="modalCertViewer" tabindex="-1" aria-labelledby="modalCertLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-light py-2 border-bottom">
+          <h5 class="modal-title fs-6 fw-bold text-dark" id="modalCertLabel">
+            <i class="bi bi-award text-success me-2"></i> Official Form 3 &bull; Statutory Certificate of Registration
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="printableCertArea">
+          <!-- Filled dynamically via DocumentService.getCertificateHtml -->
+        </div>
+        <div class="modal-footer bg-light py-2 justify-content-between">
+          <div class="text-muted small">
+            <i class="bi bi-check-circle-fill text-success me-1"></i> Verified by District Tourism Officer (DTO) &bull; Valid for 1 Year
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-success px-3 py-1.5 fw-semibold shadow-xs" onclick="printCertModal()">
+              <i class="bi bi-printer me-1"></i> Print Certificate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Application Tracking Lifecycle Modal -->
+  <div class="modal fade" id="modalTrackApp" tabindex="-1" aria-labelledby="modalTrackLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-light py-2 border-bottom">
+          <h5 class="modal-title fs-6 fw-bold text-dark" id="modalTrackLabel">
+            <i class="bi bi-geo-alt text-primary me-2"></i> Application Processing Lifecycle &bull; <span id="trackModalArn" class="font-monospace text-primary">-</span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="trackModalBody">
+          <!-- Filled dynamically -->
+        </div>
+        <div class="modal-footer bg-light py-2">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -1296,7 +1828,7 @@
 
 
       // Active state
-      let activeScenarioKey = 'scenarioC';
+      let activeScenarioKey = 'scenarioA';
 
       // Check URL query param for scenario override
       const urlParams = new URLSearchParams(window.location.search);
@@ -1359,7 +1891,13 @@
         const storedSubmissions = getStoredSubmissions();
         const existingRefs = new Set(scenario.applications.map(a => a.refNo));
         const extraSubmitted = storedSubmissions.filter(s => !existingRefs.has(s.refNo));
-        const apps = [...extraSubmitted, ...scenario.applications];
+        let apps = (scenarioKey === 'scenarioA') ? [] : [...extraSubmitted, ...scenario.applications];
+        if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          apps = apps.map(a => {
+            const live = WorkflowEngine.getApplication(a.refNo);
+            return live ? Object.assign({}, a, live) : a;
+          });
+        }
         const notifs = scenario.notifications;
 
         // Header / Profile details
@@ -1384,15 +1922,79 @@
         const navNotifEl = document.getElementById('navNotifCount');
         if (navNotifEl) navNotifEl.textContent = notifs.filter(n => !n.read).length;
 
-        // Priority 1: Action Required Card (Scenario D)
+        // Priority 0: Statutory Registration Fee Payment Due Banner (Stage 05)
+        const paymentDueBanner = document.getElementById('paymentDueBanner');
+        const paymentDueApp = apps.find(a => (a.status === 'Payment Pending' || a.paymentStatus === 'Payment Pending' || (a.paymentActivated && a.paymentStatus !== 'Paid')));
+        if (paymentDueBanner) {
+          if (paymentDueApp && scenarioKey !== 'scenarioA') {
+            paymentDueBanner.classList.remove('d-none');
+            window.activePaymentDueRef = paymentDueApp.refNo;
+            const refEl = document.getElementById('paymentDueRef');
+            if (refEl) refEl.textContent = paymentDueApp.refNo;
+            const catEl = document.getElementById('paymentDueCat');
+            if (catEl) catEl.textContent = paymentDueApp.categoryName || paymentDueApp.category;
+            const gradeEl = document.getElementById('paymentDueGradeBadge');
+            if (gradeEl) {
+              if (paymentDueApp.registrationGrade && paymentDueApp.registrationGrade !== 'Not Applicable') {
+                gradeEl.classList.remove('d-none');
+                gradeEl.textContent = paymentDueApp.registrationGrade;
+              } else {
+                gradeEl.classList.add('d-none');
+              }
+            }
+            const feeVal = paymentDueApp.registrationFee || paymentDueApp.applicableFee || 7000;
+            const amtEl = document.getElementById('paymentDueAmountDisplay');
+            if (amtEl) amtEl.textContent = '₹' + feeVal.toLocaleString('en-IN');
+            const amtHead = document.getElementById('paymentDueAmountHeading');
+            if (amtHead) amtHead.textContent = '₹' + feeVal.toLocaleString('en-IN');
+            const entEl = document.getElementById('paymentDueEnterprise');
+            if (entEl) entEl.textContent = paymentDueApp.businessName || paymentDueApp.applicantName;
+            const btnLbl = document.getElementById('btnPayNowBannerLabel');
+            if (btnLbl) btnLbl.textContent = 'Pay Now (₹' + feeVal.toLocaleString('en-IN') + ')';
+            const offEl = document.getElementById('paymentDueOfficeDisplay');
+            if (offEl) offEl.textContent = (paymentDueApp.district || 'Gangtok') + ' Circle Desk';
+            const offUserEl = document.getElementById('paymentDueOfficerDisplay');
+            if (offUserEl) offUserEl.textContent = paymentDueApp.paymentActivatedBy ? paymentDueApp.paymentActivatedBy.split('(')[0].trim() : 'Pema Dorjee Sherpa (DTO)';
+            const actDateEl = document.getElementById('paymentDueActivatedDateDisplay');
+            if (actDateEl) actDateEl.textContent = paymentDueApp.paymentActivatedDate || 'Today';
+          } else {
+            paymentDueBanner.classList.add('d-none');
+            window.activePaymentDueRef = null;
+          }
+        }
+
+        // Priority 0.5: Payment Received & Awaiting DTO Final Sanction Banner
+        const paymentReceivedBanner = document.getElementById('paymentReceivedBanner');
+        const paymentReceivedApp = apps.find(a => (a.paymentStatus === 'Paid' && a.status !== 'APPROVED' && a.status !== 'Approved'));
+        if (paymentReceivedBanner) {
+          if (paymentReceivedApp && scenarioKey !== 'scenarioA') {
+            paymentReceivedBanner.classList.remove('d-none');
+            window.activePaymentReceivedRef = paymentReceivedApp.refNo;
+            const refEl = document.getElementById('paymentReceivedRef');
+            if (refEl) refEl.textContent = paymentReceivedApp.refNo;
+            const catEl = document.getElementById('paymentReceivedCat');
+            if (catEl) catEl.textContent = paymentReceivedApp.categoryName || paymentReceivedApp.category;
+            const txnEl = document.getElementById('paymentReceivedTxnDisplay');
+            if (txnEl) txnEl.textContent = paymentReceivedApp.paymentTxnId || 'TXN-SK-TBR-2026-889102';
+            const rcptEl = document.getElementById('paymentReceivedRcptDisplay');
+            if (rcptEl) rcptEl.textContent = paymentReceivedApp.paymentReceiptNo || 'RCPT-SK-TCD-2026-44102';
+            const amtEl = document.getElementById('paymentReceivedAmtDisplay');
+            if (amtEl) amtEl.textContent = '₹' + (paymentReceivedApp.amountPaid || paymentReceivedApp.registrationFee || 7000).toLocaleString('en-IN');
+          } else {
+            paymentReceivedBanner.classList.add('d-none');
+            window.activePaymentReceivedRef = null;
+          }
+        }
+
+        // Priority 1: Action Required Card (Scenario D: Returned)
         const actionBanner = document.getElementById('actionRequiredBanner');
-        if (scenario.actionRequired) {
+        if (scenario.actionRequired && scenario.actionRequired.type !== 'PAYMENT_PENDING') {
           actionBanner.classList.remove('d-none');
           document.getElementById('actionRequiredRef').textContent = scenario.actionRequired.refNo;
           document.getElementById('actionRequiredCat').textContent = scenario.actionRequired.category || 'Events & Fairs';
           document.getElementById('actionRequiredTitle').textContent = `Action Required: Clarification for ${scenario.actionRequired.refNo}`;
           document.getElementById('actionRequiredRemarks').textContent = scenario.actionRequired.remarks;
-          document.getElementById('actionRequiredDate').textContent = scenario.actionRequired.returnedDate;
+          document.getElementById('actionRequiredDate').textContent = scenario.actionRequired.returnedDate || 'Recent';
           document.getElementById('actionRequiredDeadline').textContent = scenario.actionRequired.deadline || '7 Days to respond';
         } else {
           actionBanner.classList.add('d-none');
@@ -1443,30 +2045,33 @@
 
         // Priority 2: Ongoing Application Under Process Card
         const ongoingCard = document.getElementById('ongoingApplicationCard');
-        const ongoingApp = apps.find(a => a.status === 'UNDER_REVIEW' || a.status === 'SUBMITTED');
-        if (ongoingApp && scenarioKey !== 'scenarioA') {
-          ongoingCard.classList.remove('d-none');
-          document.getElementById('ongoingAppRef').textContent = ongoingApp.refNo;
-          document.getElementById('ongoingAppCat').textContent = ongoingApp.categoryName || ongoingApp.category;
-          document.getElementById('ongoingAppTitle').textContent = ongoingApp.activityTitle;
-          document.getElementById('ongoingAppStage').innerHTML = `<i class="bi bi-hourglass-split text-primary me-1"></i> Stage ${ongoingApp.currentStage || 2}: ${ongoingApp.statusLabel || 'Under Process'}`;
-          document.getElementById('ongoingAppStatus').textContent = `${ongoingApp.statusLabel} (${ongoingApp.district || 'District DTO'})`;
-          document.getElementById('ongoingAppUpdated').textContent = ongoingApp.lastUpdated || ongoingApp.submissionDate;
-          window.activeOngoingRef = ongoingApp.refNo;
-        } else {
-          ongoingCard.classList.add('d-none');
-          window.activeOngoingRef = null;
+        const ongoingApp = apps.find(a => a.status === 'UNDER_REVIEW' || a.status === 'SUBMITTED' || a.status === 'In Progress');
+        if (ongoingCard) {
+          if (ongoingApp && scenarioKey !== 'scenarioA') {
+            ongoingCard.classList.remove('d-none');
+            document.getElementById('ongoingAppRef').textContent = ongoingApp.refNo;
+            document.getElementById('ongoingAppCat').textContent = ongoingApp.categoryName || ongoingApp.category;
+            document.getElementById('ongoingAppTitle').textContent = ongoingApp.businessName || ongoingApp.applicantName || ongoingApp.activityTitle || 'Registration Application';
+            document.getElementById('ongoingAppStage').innerHTML = `<i class="bi bi-hourglass-split text-primary me-1"></i> Stage ${ongoingApp.currentStage || 2}: ${ongoingApp.statusLabel || 'Under Process'}`;
+            document.getElementById('ongoingAppStatus').textContent = `${ongoingApp.statusLabel || 'Under Process'} (${ongoingApp.district || 'District DTO'})`;
+            document.getElementById('ongoingAppUpdated').textContent = ongoingApp.lastUpdated || ongoingApp.submittedDate || 'Recently';
+            window.activeOngoingRef = ongoingApp.refNo;
+          } else {
+            ongoingCard.classList.add('d-none');
+            window.activeOngoingRef = null;
+          }
         }
 
         // Priority 2: Approved Application Card & Table Banners
         const approvedCard = document.getElementById('approvedApplicationCard');
-        const approvedApp = apps.find(a => a.status === 'APPROVED');
+        const approvedApp = apps.find(a => a.status === 'APPROVED' || a.status === 'Approved');
         const tableBanner = document.getElementById('tableApprovedCertBanner');
         const fullTableBanner = document.getElementById('fullTableApprovedCertBanner');
 
         if (approvedApp && scenarioKey !== 'scenarioA') {
-          const certNum = approvedApp.certRef || approvedApp.permissionNumber || `SK-TOUR-2026-TRE-${approvedApp.refNo.split('-').pop()}`;
+          const certNum = approvedApp.certificateNo || approvedApp.certRef || `SK-TR-CERT-2026-${(approvedApp.categoryCode || 'TO')}-${approvedApp.refNo.split('-').pop()}`;
           const distName = approvedApp.district || 'Gangtok';
+          const busTitle = approvedApp.businessName || approvedApp.applicantName || approvedApp.activityTitle || 'Tourism Business Enterprise';
 
           if (approvedCard) {
             approvedCard.classList.remove('d-none');
@@ -1475,15 +2080,17 @@
             const catEl = document.getElementById('approvedAppCat');
             if (catEl) catEl.textContent = approvedApp.categoryName || approvedApp.category;
             const titleEl = document.getElementById('approvedAppTitle');
-            if (titleEl) titleEl.textContent = approvedApp.activityTitle;
+            if (titleEl) titleEl.textContent = busTitle;
             const dateEl = document.getElementById('approvedAppDate');
-            if (dateEl) dateEl.textContent = approvedApp.lastUpdated || approvedApp.submissionDate;
+            if (dateEl) dateEl.textContent = approvedApp.lastUpdated || approvedApp.submittedDate || '25 Oct 2026';
             const certEl = document.getElementById('approvedCertRef');
             if (certEl) certEl.textContent = certNum;
             const badgeEl = document.getElementById('approvedCertRefBadge');
             if (badgeEl) badgeEl.textContent = certNum;
             const officerEl = document.getElementById('approvedAppOfficer');
             if (officerEl) officerEl.textContent = `District Tourism Officer (DTO, ${distName} Circle)`;
+            const printBtn = document.getElementById('btnOpenCertPage');
+            if (printBtn) printBtn.href = `certificate.html?arn=${encodeURIComponent(approvedApp.refNo)}`;
           }
 
           // Near-Table Quick-Access Banner (Recent Table)
@@ -1494,7 +2101,7 @@
             const tbArn = document.getElementById('tableBannerArn');
             if (tbArn) tbArn.textContent = approvedApp.refNo;
             const tbDesc = document.getElementById('tableBannerDesc');
-            if (tbDesc) tbDesc.textContent = `${approvedApp.activityTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
+            if (tbDesc) tbDesc.textContent = `${busTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
           }
 
           // Near-Table Quick-Access Banner (Full Table)
@@ -1505,7 +2112,7 @@
             const fbArn = document.getElementById('fullTableBannerArn');
             if (fbArn) fbArn.textContent = approvedApp.refNo;
             const fbDesc = document.getElementById('fullTableBannerDesc');
-            if (fbDesc) fbDesc.textContent = `${approvedApp.activityTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
+            if (fbDesc) fbDesc.textContent = `${busTitle} • Sanctioned by District Tourism Officer (${distName} Circle)`;
           }
 
           window.activeApprovedCert = certNum;
@@ -1516,6 +2123,33 @@
           if (fullTableBanner) fullTableBanner.classList.add('d-none');
           window.activeApprovedCert = null;
           window.activeApprovedArn = null;
+        }
+
+        // Priority 2.2: Rejected Application Card (Scenario G / Rejection)
+        const rejectedCard = document.getElementById('rejectedApplicationCard');
+        const rejectedApp = apps.find(a => a.status === 'REJECTED' || a.status === 'Rejected');
+        if (rejectedCard) {
+          if (rejectedApp && scenarioKey !== 'scenarioA') {
+            rejectedCard.classList.remove('d-none');
+            const rRef = document.getElementById('rejectedAppRef');
+            if (rRef) rRef.textContent = rejectedApp.refNo;
+            const rBadge = document.getElementById('rejectedAppRefBadge');
+            if (rBadge) rBadge.textContent = rejectedApp.refNo;
+            const rCat = document.getElementById('rejectedAppCat');
+            if (rCat) rCat.textContent = rejectedApp.categoryName || rejectedApp.category;
+            const rTitle = document.getElementById('rejectedAppTitle');
+            if (rTitle) rTitle.textContent = rejectedApp.businessName || rejectedApp.applicantName || 'Registration Application';
+            const rOfficer = document.getElementById('rejectedAppOfficer');
+            if (rOfficer) rOfficer.textContent = rejectedApp.rejectedBy || `District Tourism Officer (DTO, ${rejectedApp.district || 'Gangtok'} Circle)`;
+            const rDate = document.getElementById('rejectedAppDate');
+            if (rDate) rDate.textContent = rejectedApp.rejectedDate || rejectedApp.lastUpdated || 'Recent';
+            const rRemarks = document.getElementById('rejectedAppRemarks');
+            if (rRemarks) rRemarks.innerHTML = `<strong>Reason for Rejection:</strong> ${rejectedApp.rejectionGrounds || rejectedApp.remarks || 'Statutory criteria under Sikkim Registration of Tourist Trade Rules not satisfied.'}`;
+            window.activeRejectedArn = rejectedApp.refNo;
+          } else {
+            rejectedCard.classList.add('d-none');
+            window.activeRejectedArn = null;
+          }
         }
 
         // Priority 5: Empty State Banner vs Primary Apply Card & Recent Card
@@ -1585,10 +2219,10 @@
             <td><span class="fw-bold font-monospace text-primary">${app.refNo}</span></td>
             <td><span class="badge bg-light text-dark border">${app.categoryName || app.category}</span></td>
             <td>
-              <span class="small text-dark fw-semibold text-truncate d-block" style="max-width: 260px;">${app.activityTitle}</span>
+              <span class="small text-dark fw-semibold text-truncate d-block" style="max-width: 260px;">${app.activityTitle || app.businessName || app.applicantName || 'Tourism Registration'}</span>
               ${permitBadgeHtml}
             </td>
-            <td><span class="small text-muted">${app.submissionDate || app.createdDate}</span></td>
+            <td><span class="small text-muted">${app.submissionDate || app.submittedDate || app.createdDate || 'Today'}</span></td>
             <td>${renderStatusBadge(app)}</td>
             <td class="text-end text-nowrap">${renderActionButtons(app)}</td>
           `;
@@ -1602,11 +2236,11 @@
                 <span class="fw-bold font-monospace text-primary">${app.refNo}</span>
                 ${renderStatusBadge(app)}
               </div>
-              <div class="small fw-semibold text-dark mb-1">${app.activityTitle}</div>
+              <div class="small fw-semibold text-dark mb-1">${app.activityTitle || app.businessName || app.applicantName || 'Tourism Registration'}</div>
               ${isApproved ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
               <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
                 <span><i class="bi bi-tag me-1"></i>${app.categoryName || app.category}</span>
-                <span><i class="bi bi-calendar-event me-1"></i>${app.submissionDate || app.createdDate}</span>
+                <span><i class="bi bi-calendar-event me-1"></i>${app.submissionDate || app.submittedDate || app.createdDate || 'Today'}</span>
               </div>
               <div class="text-end">
                 ${renderActionButtons(app)}
@@ -1649,11 +2283,11 @@
             <td><span class="fw-bold font-monospace text-primary">${app.refNo}</span></td>
             <td><span class="badge bg-light text-dark border">${app.categoryName || app.category}</span></td>
             <td>
-              <div class="small fw-semibold text-dark text-truncate" style="max-width: 250px;">${app.activityTitle}</div>
+              <div class="small fw-semibold text-dark text-truncate" style="max-width: 250px;">${app.activityTitle || app.businessName || app.applicantName || 'Tourism Registration'}</div>
               <div class="small text-muted" style="font-size: 0.75rem;"><i class="bi bi-geo-alt me-1"></i>${app.district || 'District DTO'}</div>
               ${permitBadgeFullHtml}
             </td>
-            <td><span class="small text-muted">${app.submissionDate || app.createdDate}</span></td>
+            <td><span class="small text-muted">${app.submissionDate || app.submittedDate || app.createdDate || 'Today'}</span></td>
             <td>${renderStatusBadge(app)}</td>
             <td><span class="small text-secondary fw-semibold">${app.fee || 'Free'}</span></td>
             <td class="text-end text-nowrap">${renderActionButtons(app)}</td>
@@ -1668,8 +2302,8 @@
                 <span class="fw-bold font-monospace text-primary">${app.refNo}</span>
                 ${renderStatusBadge(app)}
               </div>
-              <div class="small fw-semibold text-dark mb-1">${app.activityTitle}</div>
-              ${isApproved ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
+              <div class="small fw-semibold text-dark mb-1">${app.activityTitle || app.businessName || app.applicantName || 'Tourism Registration'}</div>
+              ${isApprovedFull ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
               <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
                 <span><i class="bi bi-geo-alt me-1"></i>${app.district || 'State'}</span>
                 <span><i class="bi bi-tag me-1"></i>${app.categoryName || app.category}</span>
@@ -1686,13 +2320,17 @@
 
       // Helper: Render Status Badge
       function renderStatusBadge(app) {
-        if (app.status === 'APPROVED') {
+        if (app.status === 'APPROVED' || app.status === 'Approved') {
           return `<span class="gov-badge gov-badge-approved"><i class="bi bi-check-circle"></i> Approved</span>`;
-        } else if (app.status === 'RETURNED') {
+        } else if (app.status === 'Payment Pending' || app.paymentStatus === 'Payment Pending' || app.applicationStatus === 'PAYMENT_PENDING' || (app.paymentActivated && app.paymentStatus !== 'Paid')) {
+          return `<span class="gov-badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-credit-card-2-front"></i> Payment Pending</span>`;
+        } else if (app.paymentStatus === 'Paid' && app.status !== 'APPROVED' && app.status !== 'Approved') {
+          return `<span class="gov-badge bg-info-subtle text-info-emphasis border border-info-subtle"><i class="bi bi-clock-history"></i> Paid – Awaiting Approval</span>`;
+        } else if (app.status === 'RETURNED' || app.status === 'Returned for Clarification') {
           return `<span class="gov-badge gov-badge-returned"><i class="bi bi-exclamation-triangle"></i> Returned</span>`;
         } else if (app.status === 'DRAFT') {
           return `<span class="gov-badge gov-badge-draft"><i class="bi bi-file-earmark-diff"></i> Draft</span>`;
-        } else if (app.status === 'REJECTED') {
+        } else if (app.status === 'REJECTED' || app.status === 'Rejected') {
           return `<span class="gov-badge gov-badge-rejected"><i class="bi bi-x-circle"></i> Rejected</span>`;
         } else {
           return `<span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span>`;
@@ -1702,12 +2340,45 @@
       // Helper: Render Row Action Buttons
       function renderActionButtons(app) {
         let html = '';
-        if (app.status === 'DRAFT') {
-          const isPayPending = app.applicationStatus === 'PAYMENT_PENDING';
-          const resumeUrl = isPayPending ? `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}&step=4` : `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}`;
-          const btnText = isPayPending ? 'Pay & Submit' : 'Continue';
-          const btnClass = isPayPending ? 'btn-warning' : 'btn-primary';
-          const icon = isPayPending ? 'bi-credit-card' : 'bi-pencil-square';
+        const isPayPending = (app.status === 'Payment Pending' || app.paymentStatus === 'Payment Pending' || (app.paymentActivated && app.paymentStatus !== 'Paid'));
+        const isPaidAwaiting = (app.paymentStatus === 'Paid' && app.status !== 'APPROVED' && app.status !== 'Approved');
+
+        if (isPayPending) {
+          html += `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button type="button" class="btn btn-sm btn-gov-primary py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="openCitizenPaymentModal('${app.refNo}')" data-bs-toggle="modal" data-bs-target="#citizenPaymentModal" title="Deposit Statutory Registration Fee Online">
+                <i class="bi bi-wallet2"></i>
+                <span>Pay Now</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="openTrackingFor('${app.refNo}')" title="Track Status">
+                <i class="bi bi-geo-alt"></i>
+                <span>Track</span>
+              </button>
+            </div>
+          `;
+        } else if (isPaidAwaiting) {
+          html += `
+            <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
+              <button type="button" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="showPaymentAcknowledgement('${app.refNo}')" title="View Official Payment Acknowledgement Slip">
+                <i class="bi bi-file-earmark-check"></i>
+                <span>Slip</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="viewPaymentReceipt('${app.refNo}')" title="View Official Payment Receipt">
+                <i class="bi bi-receipt"></i>
+                <span>Receipt</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" onclick="openTrackingFor('${app.refNo}')" title="Track Status">
+                <i class="bi bi-geo-alt"></i>
+                <span>Track</span>
+              </button>
+            </div>
+          `;
+        } else if (app.status === 'DRAFT') {
+          const isDraftPayPending = app.applicationStatus === 'PAYMENT_PENDING';
+          const resumeUrl = isDraftPayPending ? `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}&step=4` : `apply.html?draftId=${encodeURIComponent(app.draftId || app.refNo)}`;
+          const btnText = isDraftPayPending ? 'Pay & Submit' : 'Continue';
+          const btnClass = isDraftPayPending ? 'btn-warning' : 'btn-primary';
+          const icon = isDraftPayPending ? 'bi-credit-card' : 'bi-pencil-square';
           html += `
             <a href="${resumeUrl}" class="btn btn-sm ${btnClass} py-1 px-2 me-1" title="${btnText} Application">
               <i class="bi ${icon}"></i> ${btnText}
@@ -1716,26 +2387,30 @@
               <i class="bi bi-trash"></i>
             </button>
           `;
-        } else if (app.status === 'APPROVED') {
+        } else if (app.status === 'APPROVED' || app.status === 'Approved') {
           html += `
             <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
-              <button type="button" class="btn btn-sm btn-success py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Download Official Official Certificate" onclick="downloadCertificateDirect('${app.refNo}')">
-                <i class="bi bi-file-earmark-arrow-down-fill"></i>
+              <button type="button" class="btn btn-sm btn-success py-1 px-2.5 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Download Official Certificate Form 3" onclick="viewCertificate('${app.refNo}')">
+                <i class="bi bi-file-earmark-check"></i>
                 <span>Certificate</span>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Track Application Lifecycle" onclick="openTrackingFor('${app.refNo}')">
+              <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="View Official Payment Receipt" onclick="viewPaymentReceipt('${app.refNo}')">
+                <i class="bi bi-receipt"></i>
+                <span>Receipt</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1 text-nowrap" title="Track Application Lifecycle" onclick="openTrackingFor('${app.refNo}')">
                 <i class="bi bi-geo-alt"></i>
                 <span>Track</span>
               </button>
             </div>
           `;
-        } else if (app.status === 'RETURNED') {
+        } else if (app.status === 'RETURNED' || app.status === 'Returned for Clarification') {
           html += `
             <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
               <button class="btn btn-sm btn-danger py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Rectify & Resubmit" onclick="openResubmitModal()">
                 <i class="bi bi-arrow-repeat"></i> Respond
               </button>
-              <button class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Track Status" onclick="openTrackingFor('${app.refNo}')">
+              <button class="btn btn-sm btn-outline-secondary py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Track Status" onclick="openTrackingFor('${app.refNo}')">
                 <i class="bi bi-geo-alt"></i> Track
               </button>
             </div>
@@ -1789,14 +2464,23 @@
         });
       }
 
-      // 6. 7-Stage Workflow Tracking Renderer
+      // 6. Workflow Tracking Renderer
       function renderTrackingView(refNo) {
-        const scenario = TourismBusinessData.scenarios[activeScenarioKey];
-        const storedSubmissions = getStoredSubmissions();
-        const app = scenario.applications.find(a => a.refNo === refNo) ||
-                    storedSubmissions.find(s => s.refNo === refNo) ||
-                    scenario.applications[0] ||
-                    storedSubmissions[0];
+        let app = null;
+        if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(refNo);
+        }
+        if (!app && typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(refNo);
+        }
+        if (!app) {
+          const scenario = TourismBusinessData.scenarios[activeScenarioKey];
+          const storedSubmissions = getStoredSubmissions();
+          app = (scenario && scenario.applications.find(a => a.refNo === refNo)) ||
+                storedSubmissions.find(s => s.refNo === refNo) ||
+                (scenario && scenario.applications[0]) ||
+                storedSubmissions[0];
+        }
         if (!app) {
           renderEmptyTrackingView();
           return;
@@ -1805,34 +2489,72 @@
         document.getElementById('trackingArnInput').value = app.refNo;
         document.getElementById('trackCardRef').textContent = app.refNo;
         document.getElementById('trackCardCat').textContent = app.categoryName || app.category;
-        document.getElementById('trackActivityDesc').textContent = app.activityTitle;
-        document.getElementById('trackDistrict').textContent = `${app.district || 'State'} District DTO`;
-        document.getElementById('trackOfficer').textContent = app.handlingOfficer || 'Verification Officer';
-        document.getElementById('trackRemarksText').textContent = app.remarks || 'No remarks recorded.';
+        document.getElementById('trackActivityDesc').textContent = app.businessName || app.applicantName || app.activityTitle || 'Tourism Registration';
+        document.getElementById('trackDistrict').textContent = `${app.district || 'Gangtok'} District DTO`;
+        document.getElementById('trackOfficer').textContent = app.handlingOfficer || (app.district ? `${app.district} Tourism Desk` : 'Verification Desk');
+        document.getElementById('trackRemarksText').textContent = app.remarks || app.rejectionGrounds || 'Application under official processing.';
         document.getElementById('trackCardStatusBadge').innerHTML = renderStatusBadge(app);
 
-        // Build 7 Stages
+        // Build category-aware workflow stages
         const container = document.getElementById('workflowTimelineContainer');
         container.innerHTML = '';
 
-        const stages = TourismBusinessData.workflowStages;
-        const currentStageNum = app.currentStage || 1;
+        const isPhotographer = (app.category === 'outdoor-photographer' || app.categoryCode === 'PHO' || (app.categoryName && app.categoryName.includes('Photographer')));
+
+        let stages = [];
+        if (isPhotographer) {
+          stages = [
+            { step: 1, title: 'Application Submitted Online', authority: 'Citizen / Portal', desc: 'Online application submitted with identity proofs and credentials.' },
+            { step: 2, title: 'Level 0: TO Verification', authority: 'Tourism Officer (Level 0)', desc: 'Verification of credentials, photo portfolio, and local association endorsement.' },
+            { step: 3, title: 'Level 2: DTO Scrutiny & Fee Activation', authority: 'District Tourism Officer (Level 2)', desc: 'Direct review by DTO (Exempt from Physical Inspection). Statutory fee activation.' },
+            { step: 4, title: 'Statutory Fee Online Deposit', authority: 'Citizen / SBI e-Pay', desc: 'Online deposit of ₹1,500 statutory registration fee.' },
+            { step: 5, title: 'Level 2: DTO Final Sanction & Form 3 Issuance', authority: 'District Tourism Officer (Level 2)', desc: 'Official authorization and Form 3 Certificate generation.' }
+          ];
+        } else {
+          stages = [
+            { step: 1, title: 'Application Submitted Online', authority: 'Citizen / Portal', desc: 'Application form, trade license, premises ownership/lease, and credentials submitted.' },
+            { step: 2, title: 'Level 0: TO Verification & IA Assignment', authority: 'Tourism Officer (Level 0)', desc: 'Scrutiny of documents and assignment of Inspecting Authority for field inspection.' },
+            { step: 3, title: 'Level 1: IA Physical Premises Inspection', authority: 'Inspecting Authority (Level 1)', desc: 'Physical on-site inspection of commercial premises and report submission.' },
+            { step: 4, title: 'Level 0: TO Review & Concurrence', authority: 'Tourism Officer (Level 0)', desc: 'Endorsement of inspection findings and forwarding to DTO.' },
+            { step: 5, title: 'Level 2: DTO Scrutiny & Fee Activation', authority: 'District Tourism Officer (Level 2)', desc: 'Scrutiny of IA report & endorsements. Selection and activation of statutory fee.' },
+            { step: 6, title: 'Statutory Fee Online Deposit', authority: 'Citizen / SBI e-Pay', desc: 'Online fee payment by applicant via Sikkim State Portal.' },
+            { step: 7, title: 'Level 2: DTO Final Sanction & Form 3 Issuance', authority: 'District Tourism Officer (Level 2)', desc: 'Final digital approval and Form 3 Registration Certificate generation.' }
+          ];
+        }
+
+        // Determine current stage index
+        const totalSteps = stages.length;
+        let currentStep = app.currentStage || 1;
+        if (app.status === 'APPROVED' || app.status === 'Approved') {
+          currentStep = totalSteps;
+        } else if (app.status === 'Payment Pending' || app.paymentStatus === 'Payment Pending' || (app.paymentActivated && app.paymentStatus !== 'Paid')) {
+          currentStep = isPhotographer ? 4 : 6;
+        } else if (app.paymentStatus === 'Paid' && app.status !== 'APPROVED') {
+          currentStep = isPhotographer ? 5 : 7;
+        }
 
         stages.forEach(st => {
           const item = document.createElement('div');
           let itemClass = 'gov-timeline-item';
           let statusBadge = '<span class="badge bg-light text-muted border">Pending</span>';
 
-          if (app.status === 'REJECTED' && st.step === 6) {
-            itemClass += ' active border-danger';
-            statusBadge = '<span class="badge bg-danger">Application Rejected</span>';
-          } else if (app.status === 'RETURNED' && st.step === currentStageNum) {
-            itemClass += ' active border-warning';
-            statusBadge = '<span class="badge bg-warning text-dark">Returned for Clarification</span>';
-          } else if (st.step < currentStageNum || (st.step === 7 && app.status === 'APPROVED')) {
+          if (app.status === 'REJECTED' || app.status === 'Rejected') {
+            if (st.step === currentStep || st.step === 2) {
+              itemClass += ' active border-danger';
+              statusBadge = '<span class="badge bg-danger">Application Rejected</span>';
+            }
+          } else if (app.status === 'RETURNED' || app.status === 'Returned for Clarification') {
+            if (st.step === currentStep) {
+              itemClass += ' active border-warning';
+              statusBadge = '<span class="badge bg-warning text-dark">Returned for Clarification</span>';
+            } else if (st.step < currentStep) {
+              itemClass += ' completed';
+              statusBadge = '<span class="badge bg-success"><i class="bi bi-check me-1"></i> Completed</span>';
+            }
+          } else if (st.step < currentStep || (st.step === totalSteps && (app.status === 'APPROVED' || app.status === 'Approved'))) {
             itemClass += ' completed';
             statusBadge = '<span class="badge bg-success"><i class="bi bi-check me-1"></i> Completed</span>';
-          } else if (st.step === currentStageNum) {
+          } else if (st.step === currentStep) {
             itemClass += ' active';
             statusBadge = '<span class="badge bg-primary">In Progress</span>';
           }
@@ -1840,7 +2562,7 @@
           item.className = itemClass;
           item.innerHTML = `
             <div class="gov-timeline-point">
-              ${st.step < currentStageNum || (st.step === 7 && app.status === 'APPROVED') ? '<i class="bi bi-check"></i>' : st.step}
+              ${(st.step < currentStep || (st.step === totalSteps && (app.status === 'APPROVED' || app.status === 'Approved'))) ? '<i class="bi bi-check"></i>' : st.step}
             </div>
             <div class="gov-timeline-content">
               <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-1">
@@ -1854,31 +2576,64 @@
           container.appendChild(item);
         });
 
+        // Add chronological audit history log if available
+        if (Array.isArray(app.history) && app.history.length > 0) {
+          const historyCard = document.createElement('div');
+          historyCard.className = 'mt-4 pt-3 border-top';
+          historyCard.innerHTML = `
+            <h5 class="h6 fw-bold mb-3 text-dark"><i class="bi bi-clock-history me-1 text-primary"></i> Chronological Event &amp; Audit Log</h5>
+            <div class="list-group list-group-flush border rounded-2 bg-white small">
+              ${app.history.map(h => `
+                <div class="list-group-item d-flex justify-content-between align-items-start gap-2 py-2">
+                  <div>
+                    <strong class="text-dark d-block">${h.step || h.action || 'Workflow Action'}</strong>
+                    <span class="text-muted">${h.remarks || ''}</span>
+                    <div class="small text-secondary mt-0.5"><i class="bi bi-person-check me-1"></i>${h.actor || 'Department Officer'}</div>
+                  </div>
+                  <span class="text-muted text-nowrap" style="font-size: 0.75rem;">${h.date || h.timestamp || ''}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+          container.appendChild(historyCard);
+        }
+
         // Update "What Happens Next?" Explanatory Section
-        var nextText = "DTO will verify applicant credentials, trail/venue feasibility, and forward the application to Headquarters.";
+        var nextText = "Tourism Officer (Level 0) is conducting preliminary document verification. You will be notified of inspection scheduling.";
         var nextActionHtml = '<span class="badge bg-secondary-subtle text-secondary border px-2 py-1"><i class="bi bi-info-circle me-1"></i> No action is required from you at this stage.</span>';
 
-        if (app.status === 'RETURNED') {
-          nextText = "Citizen needs to review the department remarks and take the required action (resubmit missing document/clarification).";
-          nextActionHtml = '<button class="btn btn-sm btn-danger px-3 py-1 fw-semibold" onclick="openResubmitModal()"><i class="bi bi-arrow-repeat me-1"></i> Resubmit Clarification (Stage 03)</button>';
-        } else if (app.status === 'APPROVED') {
-          nextText = "Permission document has been approved and issued by the competent District Tourism Officer. Official Official Certificate and Headquarters Approval Sheet are available.";
+        if (app.status === 'RETURNED' || app.status === 'Returned for Clarification') {
+          nextText = "Citizen needs to review the department remarks, upload the rectified document or clarification, and resubmit.";
+          nextActionHtml = `<button class="btn btn-sm btn-danger px-3 py-1 fw-semibold" onclick="openResubmitModal('${app.refNo}')"><i class="bi bi-arrow-repeat me-1"></i> Respond to Clarification</button>`;
+        } else if (app.status === 'Payment Pending' || app.paymentStatus === 'Payment Pending' || (app.paymentActivated && app.paymentStatus !== 'Paid')) {
+          nextText = "District Tourism Officer has verified your application and activated statutory registration fee payment. Please deposit fee to proceed.";
+          nextActionHtml = `<button class="btn btn-sm btn-gov-primary px-3 py-1 fw-semibold" onclick="openCitizenPaymentModal('${app.refNo}')" data-bs-toggle="modal" data-bs-target="#citizenPaymentModal"><i class="bi bi-wallet2 me-1"></i> Pay Statutory Fee Now</button>`;
+        } else if (app.paymentStatus === 'Paid' && app.status !== 'APPROVED') {
+          nextText = "Fee deposited successfully via State Portal. Application is in DTO final approval queue for digital sanction and Form 3 certificate issuance.";
           nextActionHtml = `
             <div class="d-flex gap-2 flex-wrap mt-1">
-              <button class="btn btn-sm btn-success px-3 py-1 fw-semibold" onclick="openDepartmentDocuments('${app.refNo}')">
-                <i class="bi bi-folder-check me-1"></i> View Department Documents
+              <button class="btn btn-sm btn-outline-success px-3 py-1 fw-semibold" onclick="showPaymentAcknowledgement('${app.refNo}')"><i class="bi bi-file-earmark-check me-1"></i> Payment Slip</button>
+              <button class="btn btn-sm btn-outline-primary px-3 py-1 fw-semibold" onclick="viewPaymentReceipt('${app.refNo}')"><i class="bi bi-receipt me-1"></i> e-Challan</button>
+            </div>
+          `;
+        } else if (app.status === 'APPROVED' || app.status === 'Approved') {
+          nextText = "Registration approved by District Tourism Officer. Official Form 3 Registration Certificate with 1-Year validity is issued.";
+          nextActionHtml = `
+            <div class="d-flex gap-2 flex-wrap mt-1">
+              <a href="certificate.html?arn=${encodeURIComponent(app.refNo)}" target="_blank" class="btn btn-sm btn-gov-primary px-3 py-1 fw-semibold">
+                <i class="bi bi-printer me-1"></i> Form 3 Certificate Page
+              </a>
+              <button class="btn btn-sm btn-success px-3 py-1 fw-semibold" onclick="previewCertificate('${app.refNo}')">
+                <i class="bi bi-eye me-1"></i> View Modal
               </button>
-              <button class="btn btn-sm btn-outline-success px-3 py-1 fw-semibold" onclick="previewCertificate('${app.refNo}')">
-                <i class="bi bi-printer me-1"></i> Print Official Certificate
+              <button class="btn btn-sm btn-outline-primary px-3 py-1 fw-semibold" onclick="viewPaymentReceipt('${app.refNo}')">
+                <i class="bi bi-receipt me-1"></i> Payment Receipt
               </button>
             </div>
           `;
-        } else if (app.status === 'REJECTED') {
-          nextText = "Official decision recorded. Security clearance was withheld by concerned authorities under border airspace restrictions.";
+        } else if (app.status === 'REJECTED' || app.status === 'Rejected') {
+          nextText = "Application rejected on statutory grounds under Sikkim Registration of Tourist Trade Rules. Detailed grounds are documented in the rejection notice.";
           nextActionHtml = '<span class="badge bg-danger-subtle text-danger border px-2 py-1"><i class="bi bi-x-circle me-1"></i> Application Closed (Rejected)</span>';
-        } else if (app.currentStage === 4) {
-          nextText = "Headquarters (Gangtok) will review inter-departmental clearances and transmit the clearance back to the District DTO for final issuance.";
-          nextActionHtml = '<span class="badge bg-secondary-subtle text-secondary border px-2 py-1"><i class="bi bi-info-circle me-1"></i> No action is required from you at this stage.</span>';
         }
 
         const whatNextTextEl = document.getElementById('whatHappensNextText');
@@ -1905,7 +2660,7 @@
         } else if (window.activeApprovedCert) {
           openDepartmentDocuments(window.activeApprovedCert);
         } else {
-          openDepartmentDocuments('SK-TP-2026-APP-00215');
+          openDepartmentDocuments('SK-TBR-2026-DLR-00305');
         }
       };
 
@@ -2056,7 +2811,7 @@
       };
 
       function openDepartmentDocuments(arn) {
-        const ref = arn || window.activeApprovedArn || 'SK-TP-2026-APP-00215';
+        const ref = arn || window.activeApprovedArn || 'SK-TBR-2026-DLR-00305';
         const container = document.getElementById('deptDocsModalContent');
         if (container && typeof DocumentService !== 'undefined') {
           DocumentService.renderDepartmentDocumentsCard(container, ref, 'citizen');
@@ -2065,21 +2820,21 @@
         modal.show();
       };
 
-            function downloadCertificateDirect(arn) {
-        const ref = (arn && arn.startsWith('SK-TP')) ? arn : (window.activeApprovedArn || 'SK-TP-2026-APP-00215');
+      function downloadCertificateDirect(arn) {
+        const ref = arn || window.activeApprovedArn || 'SK-TBR-2026-DLR-00305';
         if (typeof DocumentService !== 'undefined') {
-          DocumentService.openPermissionLetter(ref, 'citizen');
+          DocumentService.openDocumentModal('certificate', ref, 'citizen');
         } else {
-          window.open('dashboard.html?arn=' + encodeURIComponent(ref) + '&role=citizen', '_blank');
+          window.open('certificate.html?arn=' + encodeURIComponent(ref), '_blank');
         }
       };
 
       function previewCertificate(certRef) {
-        const arn = (certRef && certRef.startsWith('SK-TP')) ? certRef : (window.activeApprovedArn || 'SK-TP-2026-APP-00215');
+        const arn = certRef || window.activeApprovedArn || 'SK-TBR-2026-DLR-00305';
         if (typeof DocumentService !== 'undefined') {
-          DocumentService.openDocumentModal('permission', arn, 'citizen');
+          DocumentService.openDocumentModal('certificate', arn, 'citizen');
         } else {
-          window.open('dashboard.html?arn=' + encodeURIComponent(arn), '_blank');
+          window.open('certificate.html?arn=' + encodeURIComponent(arn), '_blank');
         }
       };
 
@@ -2130,17 +2885,15 @@
 
       // Stage 04 Citizen Resubmission Handlers
       function openResubmitModal(refNo) {
-        const targetRef = refNo || window.activeReturnedRef || 'SK-TP-2026-APP-00329';
+        const targetRef = refNo || window.activeReturnedRef || 'SK-TBR-2026-TA-00203';
         const workflowApp = (window.WorkflowEngine) ? WorkflowEngine.getApplication(targetRef) : null;
         
         document.getElementById('resubmitArn').value = targetRef;
         document.getElementById('resubmitArnDisplay').textContent = targetRef;
 
-        let remarks = 'Please review the missing statutory clearance or route information and resubmit.';
-        if (workflowApp && workflowApp.dtoRemarks) {
-          remarks = workflowApp.dtoRemarks;
-        } else if (workflowApp && workflowApp.hqRemarks) {
-          remarks = workflowApp.hqRemarks;
+        let remarks = 'Please review the missing statutory document or notary stamp and resubmit.';
+        if (workflowApp && (workflowApp.toRemarks || workflowApp.dtoRemarks || workflowApp.remarks)) {
+          remarks = workflowApp.toRemarks || workflowApp.dtoRemarks || workflowApp.remarks;
         } else {
           const actionRemarksEl = document.getElementById('actionRequiredRemarks');
           if (actionRemarksEl && actionRemarksEl.textContent.trim()) {
@@ -2149,7 +2902,7 @@
         }
 
         document.getElementById('resubmitOfficerRemarks').textContent = remarks;
-        document.getElementById('resubmitCitizenRemarks').value = 'Clarification submitted: Attached the required statutory clearance and rectified application details as instructed.';
+        document.getElementById('resubmitCitizenRemarks').value = 'Clarification submitted: Attached the required attested affidavit and rectified details as instructed.';
         document.getElementById('resubmitFileInput').value = '';
 
         const modal = new bootstrap.Modal(document.getElementById('modalCitizenResubmit'));
@@ -2161,7 +2914,7 @@
         const refNo = document.getElementById('resubmitArn').value;
         const remarks = document.getElementById('resubmitCitizenRemarks').value.trim();
         const fileInput = document.getElementById('resubmitFileInput');
-        const fileName = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : 'Rectified_Clearance_NOC.pdf';
+        const fileName = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : 'Rectified_Affidavit_Notary.pdf';
 
         if (!remarks) {
           alert('Please enter your response remarks.');
@@ -2170,7 +2923,7 @@
 
         const newDoc = {
           id: 'doc_' + Date.now(),
-          name: 'Applicant Resubmitted Document',
+          name: 'Applicant Rectified Document',
           fileName: fileName,
           size: '1.2 MB',
           date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -2188,13 +2941,14 @@
             if (scenario) {
               const target = scenario.applications.find(a => a.refNo === refNo);
               if (target) {
-                target.status = 'IN_PROCESS';
-                target.currentStage = 2; // DTO Reverification
-                target.remarks = 'Corrected application resubmitted. Awaiting DTO reverification.';
+                target.status = 'UNDER_REVIEW';
+                target.statusLabel = 'Level 0: Pending TO Verification';
+                target.currentStage = 2;
+                target.remarks = 'Corrected affidavit resubmitted by citizen. Under review by Tourism Officer.';
               }
             }
 
-            alert('Application ' + refNo + ' has been resubmitted successfully!\n\nCurrent Stage: Awaiting DTO Reverification\nThe concerned District Tourism Officer has received your corrected application.');
+            alert('Application ' + refNo + ' has been resubmitted successfully!\n\nCurrent Stage: Under Review by Department Officer\nThe concerned Tourism Officer has received your updated submission.');
             renderActiveScenario(activeScenarioKey);
           } else {
             alert(res.message);
@@ -2216,9 +2970,721 @@
       window.promptDeleteDraft = promptDeleteDraft;
       window.promptDeleteDraftFromCard = promptDeleteDraftFromCard;
       window.executeDeleteDraft = executeDeleteDraft;
+            window.simulateLogout = simulateLogout;
+      window.openResubmitModal = openResubmitModal;
+      window.handleCitizenResubmit = handleCitizenResubmit;
+
+      // ==============================================================
+      // STAGE 05: CITIZEN PAYMENT, RECEIPT & CERTIFICATE HANDLERS
+      // ==============================================================
+
+      function updatePayModeView(mode) {
+        const upiPanel = document.getElementById('payModeUPIPanel');
+        const netPanel = document.getElementById('payModeNetPanel');
+        if (mode === 'upi') {
+          if (upiPanel) upiPanel.classList.remove('d-none');
+          if (netPanel) netPanel.classList.add('d-none');
+        } else {
+          if (upiPanel) upiPanel.classList.add('d-none');
+          if (netPanel) netPanel.classList.remove('d-none');
+        }
+      }
+
+      function selectPaymentApplication(arn) {
+        window.activePaymentDueRef = arn;
+        let app = null;
+        if (typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(arn);
+        }
+        if (!app && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(arn);
+        }
+        if (!app) return;
+
+        // Update active pill styling
+        document.querySelectorAll('.pay-cat-pill').forEach(p => {
+          if (!p.classList.contains('btn-success')) {
+            p.classList.remove('btn-warning', 'fw-bold', 'active');
+            p.classList.add('btn-outline-dark', 'fw-semibold');
+          }
+        });
+        const activePill = document.getElementById('pill-' + arn);
+        if (activePill && !activePill.classList.contains('btn-success')) {
+          activePill.classList.remove('btn-outline-dark', 'fw-semibold');
+          activePill.classList.add('btn-warning', 'fw-bold', 'active');
+        }
+
+        const isPaid = (app.paymentStatus === 'Paid' || app.status === 'Payment Received' || app.status === 'APPROVED');
+        const dueBanner = document.getElementById('paymentDueBanner');
+        const recBanner = document.getElementById('paymentReceivedBanner');
+
+        if (isPaid) {
+          if (dueBanner) dueBanner.classList.add('d-none');
+          if (recBanner) {
+            recBanner.classList.remove('d-none');
+            const rRef = document.getElementById('paymentReceivedRef');
+            if (rRef) rRef.textContent = app.refNo;
+            const rCat = document.getElementById('paymentReceivedCat');
+            if (rCat) rCat.textContent = app.categoryName || app.category;
+            const rTxn = document.getElementById('paymentReceivedTxnDisplay');
+            if (rTxn) rTxn.textContent = app.paymentTxnId || 'TXN-ONLINE-984210';
+            const rRcpt = document.getElementById('paymentReceivedRcptDisplay');
+            if (rRcpt) rRcpt.textContent = app.paymentReceiptNo || 'RCPT-SK-TCD-2026-' + app.refNo.slice(-5);
+            const rAmt = document.getElementById('paymentReceivedAmtDisplay');
+            if (rAmt) rAmt.textContent = '₹' + (app.amountPaid || app.registrationFee || 7000).toLocaleString('en-IN');
+          }
+          window.activePaymentReceivedRef = app.refNo;
+        } else {
+          if (recBanner) recBanner.classList.add('d-none');
+          if (dueBanner) dueBanner.classList.remove('d-none');
+
+          const refEl = document.getElementById('paymentDueRef');
+          if (refEl) refEl.textContent = app.refNo;
+          const catEl = document.getElementById('paymentDueCat');
+          if (catEl) catEl.textContent = app.categoryName || app.category;
+          const gradeEl = document.getElementById('paymentDueGradeBadge');
+          if (gradeEl) {
+            if (app.registrationGrade && app.registrationGrade !== 'Not Applicable') {
+              gradeEl.classList.remove('d-none');
+              gradeEl.textContent = app.registrationGrade;
+            } else {
+              gradeEl.classList.add('d-none');
+            }
+          }
+          const feeVal = app.registrationFee || app.applicableFee || 7000;
+          const feeFmt = '₹' + feeVal.toLocaleString('en-IN');
+          const amtHead = document.getElementById('paymentDueAmountHeading');
+          if (amtHead) amtHead.textContent = feeFmt;
+          const entEl = document.getElementById('paymentDueEnterprise');
+          if (entEl) entEl.textContent = app.businessName || app.applicantName;
+          const btnLbl = document.getElementById('btnPayNowBannerLabel');
+          if (btnLbl) btnLbl.textContent = 'Pay Now (' + feeFmt + ')';
+          const offUserEl = document.getElementById('paymentDueOfficerDisplay');
+          if (offUserEl) offUserEl.textContent = app.paymentActivatedBy ? app.paymentActivatedBy.split('(')[0].trim() : 'Pema Dorjee Sherpa (DTO)';
+          const actDateEl = document.getElementById('paymentDueActivatedDateDisplay');
+          if (actDateEl) actDateEl.textContent = app.paymentActivatedDate || 'Today';
+        }
+      }
+
+      function openCitizenPaymentModal(refNo) {
+        const targetRef = refNo || window.activePaymentDueRef || 'SK-TBR-2026-TO-00107';
+        let app = null;
+        if (typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(targetRef);
+        }
+        if (!app && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(targetRef);
+        }
+        if (!app) {
+          app = {
+            refNo: targetRef,
+            applicantName: 'Norbu Wangdi Bhutia',
+            businessName: 'Sikkim Panoramic Expeditions',
+            categoryName: 'Travel Agent / Tour Operator (TA/TO)',
+            category: 'ta-to',
+            registrationGrade: 'Grade B',
+            registrationFee: 7000,
+            district: 'Gangtok'
+          };
+        }
+
+        window.currentPayingArn = targetRef;
+        window.currentPaymentApp = app;
+
+        // Reset views: show entry view, hide success view
+        const entryView = document.getElementById('payModalEntryView');
+        const successView = document.getElementById('payModalSuccessView');
+        const modalTitle = document.getElementById('payModalLabel');
+        if (modalTitle) {
+          modalTitle.innerHTML = '<i class="bi bi-credit-card-2-front me-2"></i>Pay Statutory Application Fee';
+        }
+        if (entryView) entryView.classList.remove('d-none');
+        if (successView) successView.classList.add('d-none');
+
+        const arnEl = document.getElementById('payModalArn');
+        if (arnEl) arnEl.textContent = app.refNo;
+        const applicantEl = document.getElementById('payModalApplicant');
+        if (applicantEl) applicantEl.textContent = app.businessName || app.applicantName;
+        const gradeText = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? ' • ' + app.registrationGrade : '';
+        const catEl = document.getElementById('payModalCategory');
+        if (catEl) catEl.textContent = (app.categoryName || app.category) + gradeText + ' (' + (app.district || 'Gangtok') + ')';
+        const feeVal = app.registrationFee || app.applicableFee || 7000;
+        const feeFmt = '₹' + feeVal.toLocaleString('en-IN');
+        const feeDisp = document.getElementById('payModalFeeDisplay');
+        if (feeDisp) feeDisp.textContent = feeFmt;
+        const btnAmt = document.getElementById('confirmPayBtnAmt');
+        if (btnAmt) btnAmt.textContent = feeFmt;
+
+        // Reset mode display
+        const upiRadio = document.getElementById('payModeUPI');
+        if (upiRadio) upiRadio.checked = true;
+        updatePayModeView('upi');
+
+        // Reset confirm button state
+        const btn = document.getElementById('confirmPaymentBtn');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-shield-check me-1"></i> Confirm &amp; Pay <span id="confirmPayBtnAmt">' + feeFmt + '</span>';
+        }
+
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = (typeof bootstrap.Modal.getOrCreateInstance === 'function')
+              ? bootstrap.Modal.getOrCreateInstance(modalEl)
+              : new bootstrap.Modal(modalEl);
+            modal.show();
+          } else {
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+            modalEl.removeAttribute('aria-hidden');
+            let backdrop = document.querySelector('.modal-backdrop');
+            if (!backdrop) {
+              backdrop = document.createElement('div');
+              backdrop.className = 'modal-backdrop fade show';
+              document.body.appendChild(backdrop);
+            }
+          }
+        }
+      }
+
+      
+      // ==============================================================
+      // STANDARDIZED PAYMENT SUCCESS & ACKNOWLEDGEMENT ENGINE
+      // (Standardized with Tourism Permission Reference Design)
+      // ==============================================================
+      function copyArnToClipboard() {
+        const arnEl = document.getElementById('ackArnDisplay');
+        const arn = arnEl ? arnEl.textContent.trim() : '';
+        if (arn && navigator.clipboard) {
+          navigator.clipboard.writeText(arn).then(() => {
+            alert('Application Reference Number (' + arn + ') copied to clipboard!');
+          }).catch(() => {});
+        }
+      }
+
+      function showPaymentAcknowledgement(refNo, paymentData) {
+        const targetRef = refNo || window.currentPayingArn || window.activePaymentDueRef || 'SK-TBR-2026-TO-00107';
+        let app = null;
+        if (typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(targetRef);
+        }
+        if (!app && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(targetRef);
+        }
+        if (!app) {
+          app = (paymentData && paymentData.app) || window.currentPaymentApp || {
+            refNo: targetRef,
+            applicantName: 'Norbu Wangdi Bhutia',
+            businessName: 'Sikkim Panoramic Expeditions',
+            categoryName: 'Travel Agent / Tour Operator (TA/TO)',
+            category: 'ta-to',
+            registrationGrade: 'Grade B',
+            registrationFee: 7000,
+            district: 'Gangtok'
+          };
+        }
+
+        window.activeAckArn = targetRef;
+
+        // Hide payment modal if open
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance(modalEl);
+              if (inst) inst.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
+
+        // Hide all workspace sections and show acknowledgement
+        document.querySelectorAll('.workspace-section').forEach(s => s.classList.add('d-none'));
+        const ackSection = document.getElementById('section-acknowledgement');
+        if (ackSection) {
+          ackSection.classList.remove('d-none');
+        }
+
+        // Current formatted date and time
+        const now = new Date();
+        const dateFormatted = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' +
+          now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        // Populate fields
+        const arnEl = document.getElementById('ackArnDisplay');
+        if (arnEl) arnEl.textContent = targetRef;
+
+        const dateEl = document.getElementById('ackDateDisplay');
+        if (dateEl) dateEl.textContent = (paymentData && paymentData.paymentDate) || app.paymentDate || dateFormatted;
+
+        const nameEl = document.getElementById('ackNameDisplay');
+        if (nameEl) nameEl.textContent = app.businessName || app.applicantName || 'Tourism Enterprise';
+
+        const catEl = document.getElementById('ackCatDisplay');
+        if (catEl) {
+          const gradeTxt = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? ' • ' + app.registrationGrade : '';
+          catEl.textContent = (app.categoryName || app.category || 'Travel Agent / Tour Operator (TA/TO)') + gradeTxt;
+        }
+
+        const distEl = document.getElementById('ackDistrictDisplay');
+        if (distEl) distEl.textContent = (app.district || 'Gangtok') + ' District (Paryatan Bhawan, Tadong)';
+
+        const feeVal = (paymentData && (paymentData.fee || paymentData.amount)) || app.registrationFee || app.applicableFee || app.amountPaid || 7000;
+        const feeEl = document.getElementById('ackFeeAmountDisplay');
+        if (feeEl) feeEl.textContent = '₹' + feeVal.toLocaleString('en-IN');
+
+        const txnId = (paymentData && paymentData.txnId) || app.paymentTxnId || ('TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000));
+        const payEl = document.getElementById('ackPaymentDisplay');
+        if (payEl) {
+          payEl.innerHTML = '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Paid (₹' + feeVal.toLocaleString('en-IN') + ') &bull; Ref: ' + txnId + '</span>';
+        }
+
+        const methodTxt = (paymentData && paymentData.method) || app.paymentMethod || 'Online Payment • SBI e-Pay Single Window';
+        const gwEl = document.getElementById('ackGatewayDisplay');
+        if (gwEl) gwEl.textContent = methodTxt;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showPaymentAcknowledgementFromModal() {
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance(modalEl);
+              if (inst) inst.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
+        showPaymentAcknowledgement(window.currentPayingArn, window.lastPaymentData);
+      }
+
+      function closePayModalAndGoToDashboard() {
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const inst = bootstrap.Modal.getInstance(modalEl);
+              if (inst) inst.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.removeProperty('overflow');
+          document.body.style.removeProperty('padding-right');
+        }
+        returnToCitizenDashboard();
+      }
+
+      function returnToCitizenDashboard() {
+        const ackSection = document.getElementById('section-acknowledgement');
+        if (ackSection) ackSection.classList.add('d-none');
+        const dashSection = document.getElementById('section-dashboard');
+        if (dashSection) dashSection.classList.remove('d-none');
+
+        // Update applications tables
+        const currentKey = activeScenarioKey || window.activeScenarioKey || 'scenarioPayment';
+        if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios && TourismBusinessData.scenarios[currentKey]) {
+          const scData = TourismBusinessData.scenarios[currentKey];
+          renderRecentTable(scData.applications);
+          renderFullApplicationsTable(scData.applications);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function trackFromAck() {
+        const targetRef = window.activeAckArn || window.currentPayingArn || 'SK-TBR-2026-TO-00107';
+        if (typeof openTrackingFor === 'function') {
+          openTrackingFor(targetRef);
+        }
+      }
+
+      window.copyArnToClipboard = copyArnToClipboard;
+      window.showPaymentAcknowledgement = showPaymentAcknowledgement;
+      window.showPaymentAcknowledgementFromModal = showPaymentAcknowledgementFromModal;
+      window.closePayModalAndGoToDashboard = closePayModalAndGoToDashboard;
+      window.returnToCitizenDashboard = returnToCitizenDashboard;
+      window.trackFromAck = trackFromAck;
+
+      function executeCitizenFeePayment(refNo) {
+        const arn = refNo || window.currentPayingArn || window.activePaymentDueRef || 'SK-TBR-2026-TO-00107';
+        let app = null;
+        if (typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(arn);
+        }
+        if (!app && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(arn);
+        }
+        if (!app) {
+          app = window.currentPaymentApp || { refNo: arn, registrationFee: 7000 };
+        }
+        if (!Array.isArray(app.history)) app.history = [];
+        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
+        const fee = app.registrationFee || app.applicableFee || 7000;
+        const selectedMode = document.querySelector('input[name="payGatewayMode"]:checked');
+        const method = selectedMode ? (selectedMode.id === 'payModeUPI' ? 'UPI / Bharat QR' : 'NetBanking / Card') : 'UPI / Bharat QR';
+
+        const btn = document.getElementById('confirmPaymentBtn');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Processing Payment...';
+        }
+
+        setTimeout(function () {
+          const txnId = 'TXN-ONLINE-' + Math.floor(100000 + Math.random() * 900000);
+          const receiptNo = 'RCPT-SK-TCD-2026-' + arn.slice(-5);
+
+          let res = { success: true, txnId: txnId, receiptNo: receiptNo };
+          if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.processCitizenPayment === 'function') {
+            try {
+              const engineRes = WorkflowEngine.processCitizenPayment(arn, {
+                method: method + ' (SBI e-Pay Gateway)',
+                amount: fee,
+                txnId: txnId
+              });
+              if (engineRes && engineRes.success) {
+                res = engineRes;
+              }
+            } catch (err) {
+              console.warn('WorkflowEngine.processCitizenPayment safe bypass:', err);
+            }
+          }
+
+          // Update in-memory scenario data if in scenarioPayment
+          if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios && TourismBusinessData.scenarios.scenarioPayment) {
+            const scApps = TourismBusinessData.scenarios.scenarioPayment.applications;
+            const targetApp = scApps.find(a => a.refNo === arn);
+            if (targetApp) {
+              targetApp.status = 'Payment Received';
+              targetApp.statusLabel = 'Payment Received – Awaiting Final Approval';
+              targetApp.paymentStatus = 'Paid';
+              targetApp.amountPaid = fee;
+              targetApp.paymentTxnId = txnId;
+              targetApp.paymentReceiptNo = res.receiptNo || receiptNo;
+              targetApp.hasPaymentDue = false;
+            }
+          }
+
+          // Store reference for receipt & acknowledgement
+          window.activePaymentReceivedRef = arn;
+          window.currentPayingArn = arn;
+          window.lastPaymentData = {
+            arn: arn,
+            fee: fee,
+            txnId: txnId,
+            receiptNo: res.receiptNo || receiptNo,
+            method: method + ' (SBI e-Pay Gateway)',
+            app: app
+          };
+
+          // Re-enable button
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-shield-check me-1"></i> Confirm &amp; Pay <span id="confirmPayBtnAmt">₹' + fee.toLocaleString('en-IN') + '</span>';
+          }
+
+          // Refresh citizen dashboard state in background
+          refreshDashboardAfterPayment(arn, fee, txnId, res.receiptNo || receiptNo, app);
+
+          // Close payment modal cleanly
+          const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+          if (modalEl) {
+            try {
+              if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                const inst = bootstrap.Modal.getInstance(modalEl);
+                if (inst) inst.hide();
+              }
+            } catch (e) {}
+            modalEl.classList.remove('show');
+            modalEl.style.display = 'none';
+            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+          }
+
+          // Display the standardized Payment Success / Acknowledgement Page
+          showPaymentAcknowledgement(arn, window.lastPaymentData);
+
+        }, 600);
+      }
+
+      function refreshDashboardAfterPayment(arn, fee, txnId, receiptNo, app) {
+        // Top success alert in citizen dashboard
+        const alertHtml = `
+          <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" id="paymentSuccessLiveAlert" style="border-left: 5px solid #16a34a !important;">
+            <div class="d-flex align-items-start gap-3 flex-wrap">
+              <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 40px; height: 40px;">
+                <i class="bi bi-check-lg fs-4"></i>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="alert-heading fw-bold mb-1 fs-6 text-success">
+                  <i class="bi bi-patch-check-fill me-1"></i> Payment Received Successfully!
+                </h5>
+                <div class="small text-dark mb-1">
+                  Statutory registration fee of <strong>₹${fee.toLocaleString('en-IN')}</strong> deposited for application <strong>${arn}</strong> via Sikkim State Treasury Portal (SBI e-Pay Single Window).
+                </div>
+                <div class="small text-muted d-flex flex-wrap gap-3 align-items-center">
+                  <span><i class="bi bi-hash me-0.5"></i>Transaction Ref: <code class="fw-bold text-dark">${txnId}</code></span>
+                  <span><i class="bi bi-receipt me-0.5"></i>e-Challan Receipt: <code class="fw-bold text-dark">${receiptNo}</code></span>
+                  <span><i class="bi bi-calendar-check me-0.5 text-success"></i>Statutory Validity: <strong>1 Year</strong></span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-arrow-return-right me-1"></i>Returned to Level 2 DTO for Final Sanction</span>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline-success fw-semibold shadow-xs" onclick="showPaymentAcknowledgement('${arn}')">
+                  <i class="bi bi-file-earmark-check me-1"></i> Acknowledgement Slip
+                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const alertContainer = document.getElementById('citizenAlertContainer');
+        if (alertContainer) {
+          alertContainer.innerHTML = alertHtml;
+        }
+
+        const currentKey = activeScenarioKey || window.activeScenarioKey || 'scenarioPayment';
+        if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios && TourismBusinessData.scenarios[currentKey]) {
+          const scData = TourismBusinessData.scenarios[currentKey];
+          renderRecentTable(scData.applications);
+          renderFullApplicationsTable(scData.applications);
+
+          // Update pill appearance for paid application
+          const paidPill = document.getElementById('pill-' + arn);
+          if (paidPill) {
+            paidPill.classList.remove('btn-outline-dark', 'btn-warning');
+            paidPill.classList.add('btn-success', 'text-white', 'fw-bold');
+            if (!paidPill.innerHTML.includes('✓')) {
+              paidPill.innerHTML = paidPill.innerHTML.replace(/\)$/, ' &bull; Paid ✓)');
+            }
+          }
+
+          // Hide payment due banner and show payment received banner
+          const pDue = document.getElementById('paymentDueBanner');
+          if (pDue) pDue.classList.add('d-none');
+          const pRec = document.getElementById('paymentReceivedBanner');
+          if (pRec) {
+            pRec.classList.remove('d-none');
+            const rRef = document.getElementById('paymentReceivedRef');
+            if (rRef) rRef.textContent = arn;
+            const rCat = document.getElementById('paymentReceivedCat');
+            if (rCat) rCat.textContent = app ? (app.categoryName || app.category) : 'TA/TO';
+            const rTxn = document.getElementById('paymentReceivedTxnDisplay');
+            if (rTxn) rTxn.textContent = txnId;
+            const rRcpt = document.getElementById('paymentReceivedRcptDisplay');
+            if (rRcpt) rRcpt.textContent = receiptNo;
+            const rAmt = document.getElementById('paymentReceivedAmtDisplay');
+            if (rAmt) rAmt.textContent = '₹' + fee.toLocaleString('en-IN');
+          }
+        }
+      }
+
+      function viewPaymentReceiptFromSuccess() {
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          try {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+              const modal = bootstrap.Modal.getInstance(modalEl);
+              if (modal) modal.hide();
+            }
+          } catch (e) {}
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+        }
+        setTimeout(function () {
+          viewPaymentReceipt(window.currentPayingArn || window.activePaymentReceivedRef || 'SK-TBR-2026-TO-00107');
+        }, 300);
+      }
+
+      function executeCitizenPaymentFail() {
+        const app = window.currentPaymentApp || { refNo: window.activePaymentDueRef || 'SK-TBR-2026-TO-00107' };
+        if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.processCitizenPayment === 'function') {
+          WorkflowEngine.processCitizenPayment(app.refNo, {
+            simulateFail: true,
+            error: 'Transaction declined by bank authorization gateway (Code: E-902 - Insufficient limits / demo failure test).'
+          });
+        }
+
+        const modalEl = document.getElementById('citizenPaymentModal') || document.getElementById('modalCitizenPayment');
+        if (modalEl) {
+          if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modalInst = bootstrap.Modal.getInstance(modalEl);
+            if (modalInst) modalInst.hide();
+          }
+          modalEl.classList.remove('show');
+          modalEl.style.display = 'none';
+          document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+        }
+
+        alert('Payment Simulation Declined: Bank gateway returned transaction failure (Code: E-902). Application status remains "Payment Pending". You may retry payment anytime.');
+        renderActiveScenario(activeScenarioKey);
+      }
+
+      function viewPaymentReceipt(refNo) {
+        const targetRef = refNo || window.activePaymentReceivedRef || window.activePaymentDueRef || 'SK-TBR-2026-TO-00107';
+        const container = document.getElementById('printableReceiptArea');
+        if (container && typeof DocumentService !== 'undefined' && typeof DocumentService.getReceiptHtml === 'function') {
+          container.innerHTML = DocumentService.getReceiptHtml(targetRef);
+        }
+        const modalEl = document.getElementById('modalPaymentReceipt');
+        if (modalEl) {
+          if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+          } else {
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+          }
+        }
+      }
+
+      function viewCertificate(refNo) {
+        const targetRef = refNo || window.activeApprovedRef || 'SK-TBR-2026-DLR-00305';
+        const container = document.getElementById('printableCertArea');
+        if (container && typeof DocumentService !== 'undefined' && typeof DocumentService.getCertificateHtml === 'function') {
+          container.innerHTML = DocumentService.getCertificateHtml(targetRef);
+        }
+        const modalEl = document.getElementById('modalCertViewer');
+        if (modalEl) {
+          if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+          } else {
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+          }
+        }
+      }
+
+      function downloadCertificateDirect(refNo) {
+        viewCertificate(refNo);
+      }
+
+      function openTrackingFor(refNo) {
+        const targetRef = refNo || 'SK-TBR-2026-TO-00107';
+        const arnEl = document.getElementById('trackModalArn');
+        if (arnEl) arnEl.textContent = targetRef;
+
+        let app = null;
+        if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getApplication === 'function') {
+          app = WorkflowEngine.getApplication(targetRef);
+        }
+        if (!app && typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
+          app = TourismBusinessData.getApplication(targetRef);
+        }
+
+        const container = document.getElementById('trackModalBody');
+        if (container) {
+          const history = (app && app.auditHistory && app.auditHistory.length > 0)
+            ? app.auditHistory
+            : ((app && app.history && app.history.length > 0) ? app.history : [
+                { action: 'Application Submitted Online', actorRole: 'Citizen Applicant', timestamp: '04 Nov 2026, 11:30 AM', remarks: 'Form submitted with required COI and premises documents.' },
+                { action: 'Preliminary Verification Completed', actorRole: 'Level 0 TO', timestamp: '05 Nov 2026, 02:15 PM', remarks: 'Documents endorsed. Assigned to Level 1 IA.' },
+                { action: 'Physical Inspection Cleared', actorRole: 'Level 1 IA', timestamp: '07 Nov 2026, 03:45 PM', remarks: 'Commercial premises inspected. Satisfactory report submitted.' },
+                { action: 'Statutory Fee Activated', actorRole: 'Level 2 DTO', timestamp: 'Today, 10:00 AM', remarks: 'Grade B fee of ₹7,000 activated for online deposit.' }
+              ]);
+
+          let timelineHtml = '<div class="timeline ps-2 border-start border-2 border-primary-subtle ms-3">';
+          history.forEach(function (h) {
+            timelineHtml += `
+              <div class="mb-3 position-relative ps-3">
+                <div class="position-absolute bg-primary rounded-circle" style="width: 12px; height: 12px; left: -19px; top: 4px;"></div>
+                <div class="d-flex justify-content-between align-items-center mb-0.5">
+                  <strong class="text-dark small">${h.action || h.step}</strong>
+                  <span class="text-muted" style="font-size: 0.72rem;">${h.timestamp || h.date}</span>
+                </div>
+                <div class="text-primary small fw-semibold" style="font-size: 0.75rem;">${h.actorRole || h.actor}</div>
+                <div class="text-muted small">${h.remarks || ''}</div>
+              </div>
+            `;
+          });
+          timelineHtml += '</div>';
+          container.innerHTML = timelineHtml;
+        }
+
+        const modalEl = document.getElementById('modalTrackApp');
+        if (modalEl) {
+          if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+          } else {
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+          }
+        }
+      }
+
+      function printReceiptModal() {
+        const content = document.getElementById('printableReceiptArea').innerHTML;
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write('<html><head><title>Print Payment Receipt</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"></head><body class="p-4">' + content + '</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(function () { printWindow.print(); printWindow.close(); }, 500);
+      }
+
+      function printCertModal() {
+        const content = document.getElementById('printableCertArea').innerHTML;
+        const printWindow = window.open('', '', 'width=800,height=600');
+        printWindow.document.write('<html><head><title>Print Form 3 Certificate</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"></head><body class="p-4">' + content + '</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(function () { printWindow.print(); printWindow.close(); }, 500);
+      }
+
+      // Expose handlers to global window for HTML onclick attributes & external callers
+      window.activeScenarioKey = activeScenarioKey;
+      window.renderActiveScenario = renderActiveScenario;
+      window.renderTrackingView = renderTrackingView;
+      window.openTrackingForActive = openTrackingForActive;
+      window.downloadCertificateDirect = downloadCertificateDirect;
+      window.openDepartmentDocuments = openDepartmentDocuments;
+      window.previewActiveCertificate = previewActiveCertificate;
+      window.switchView = switchView;
+      window.openTrackingFor = openTrackingFor;
+      window.previewCertificate = previewCertificate;
+      window.promptDeleteDraft = promptDeleteDraft;
+      window.promptDeleteDraftFromCard = promptDeleteDraftFromCard;
+      window.executeDeleteDraft = executeDeleteDraft;
       window.simulateLogout = simulateLogout;
       window.openResubmitModal = openResubmitModal;
       window.handleCitizenResubmit = handleCitizenResubmit;
+      window.openCitizenPaymentModal = openCitizenPaymentModal;
+      window.selectPaymentApplication = selectPaymentApplication;
+      window.showPaymentAcknowledgement = showPaymentAcknowledgement;
+      window.showPaymentAcknowledgementFromModal = showPaymentAcknowledgementFromModal;
+      window.closePayModalAndGoToDashboard = closePayModalAndGoToDashboard;
+      window.returnToCitizenDashboard = returnToCitizenDashboard;
+      window.copyArnToClipboard = copyArnToClipboard;
+      window.executeCitizenFeePayment = executeCitizenFeePayment;
+      window.executeCitizenPaymentSubmit = executeCitizenFeePayment;
+      window.executeCitizenPaymentFail = executeCitizenPaymentFail;
+      window.executeDirectPaymentSimulation = executeCitizenFeePayment;
+      window.updatePayModeView = updatePayModeView;
+      window.viewPaymentReceipt = viewPaymentReceipt;
+      window.viewCertificate = viewCertificate;
+      window.printReceiptModal = printReceiptModal;
+      window.printCertModal = printCertModal;
 
     })();
   </script>

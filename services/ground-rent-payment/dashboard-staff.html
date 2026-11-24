@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Department dashboard - Online Ground Rent Payment System, Urban Development Department, Government of Sikkim.">
+  <title>Department Dashboard | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <div id="deniedBanner"></div>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+      <div>
+        <div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0" id="pageTitle">Dashboard</h1><span id="pageRolePill"></span></div>
+        <p class="text-muted small mb-0" id="pageSubtitle"></p>
+      </div>
+      <div class="d-flex flex-wrap gap-2" id="pageActions"></div>
+    </div>
+    <div class="row g-3 mb-4" id="kpiRow"></div>
+    <div id="roleContent"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-payments.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, P = window.GRPay, D = App.data, esc = App.esc, inr = App.inr, T = window.GRDues;
+      var session = App.requireSession('staff');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'dash' });
+      if (App.qs('denied')) document.getElementById('deniedBanner').innerHTML = '<div class="alert alert-warning small py-2"><i class="bi bi-shield-lock me-1" aria-hidden="true"></i>Your role does not have access to that screen.</div>';
+
+      var role = D.staffRoles[session.role];
+      var scopeUlb = App.staffScope(session) ? App.ulb(session.ulb) : null;
+      var scopedSites = D.sites.filter(function (s) { return App.inScope(s, session); });
+      var siteIds = scopedSites.map(function (s) { return s.grId; });
+      var today = D.demoToday;
+      var curFyStart = T.fyOfDate(today);
+      D.challans.forEach(function (c) { if (c.status === 'Generated' && c.validTill < today) c.status = 'Expired'; });
+      var pendingChallans = D.challans.filter(function (c) { return siteIds.indexOf(c.grId) !== -1 && (c.status === 'Generated' || c.status === 'BR Recorded'); });
+
+      document.getElementById('pageTitle').textContent = role.title + ' Dashboard';
+      if (session.role === 'hq') document.getElementById('pageRolePill').innerHTML = App.pill('info', 'Read-only');
+
+      function scopeStats(sites) {
+        var ids = sites.map(function (s) { return s.grId; });
+        var pays = D.payments.filter(function (p) { return ids.indexOf(p.grId) !== -1 && p.status === 'Success'; });
+        var active = sites.filter(function (s) { return s.status === 'Active'; });
+        var outstanding = 0, demand = 0, defaulters = 0;
+        active.forEach(function (s) {
+          var d = App.dues(s);
+          if (d.blocked) return;
+          outstanding += d.totalPayable; demand += d.annualRent;
+          if (d.hasOverdue) defaulters++;
+        });
+        return { sites: sites.length, active: active.length,
+          collectedFy: pays.filter(function (p) { return T.fyOfDate(p.paidOn) === curFyStart; }).reduce(function (a, p) { return a + p.amount; }, 0),
+          todayPays: pays.filter(function (p) { return p.paidOn === today; }), outstanding: outstanding, demand: demand, defaulters: defaulters };
+      }
+      var stats = scopeStats(scopedSites);
+      var todayTotal = stats.todayPays.reduce(function (a, p) { return a + p.amount; }, 0);
+
+      // KPI cards in order of importance: what this user must act on first, then what is pending with others.
+      // tag: 'Your action' | 'Pending' | 'Overview' shown on the card so the order is clear.
+      function kpi(icon, tone, value, label, sub, target, tag) {
+        var el = target ? 'a href="' + target + '"' : 'div';
+        var tagHtml = tag ? '<span class="gr-kpi-tag gr-kpi-tag-' + (tag === 'Your action' ? 'action' : (tag === 'Pending' ? 'pending' : 'info')) + '">' + tag + '</span>' : '';
+        return '<div class="col-6 col-xl-3"><' + el + ' class="gov-kpi-card text-decoration-none text-reset d-flex' + (tag === 'Your action' && +String(value).replace(/[^\d]/g, '') ? ' active' : '') + '">' +
+          '<div class="d-flex justify-content-between align-items-start gap-2"><div class="gov-kpi-count">' + value + '</div>' +
+          '<span class="gr-icon-circle bg-' + tone + '-subtle text-' + tone + '-emphasis" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + icon + '" aria-hidden="true"></i></span></div>' +
+          '<div>' + tagHtml + '<p class="gov-kpi-label">' + label + '</p><div class="small text-muted">' + sub + '</div></div></' + (target ? 'a' : 'div') + '></div>';
+      }
+      function days(n) { return n + (n === 1 ? ' day' : ' days'); }
+      function ageOf(list, fn) { return list.reduce(function (m, x) { return Math.max(m, fn(x)); }, 0); }
+      function daysSince(iso) { return Math.max(0, Math.round((T.toDate(today) - T.toDate(iso)) / 86400000)); }
+      // "Oldest waiting 10 days" – red from 7 days.
+      function waitSub(list, fn, emptyText) {
+        if (!list.length) return emptyText;
+        var n = ageOf(list, fn);
+        return n ? '<span class="' + (n >= 7 ? 'text-danger fw-semibold' : 'text-warning-emphasis') + '">Oldest waiting ' + days(n) + '</span>' : 'Received today';
+      }
+      function unverified(sites) { return sites.filter(function (s) { return s.status !== 'Closed' && (!s.dataVerified || s.status === 'Draft'); }); }
+      function tableCard(id, title, subtitle, cols, rows, cards, emptyText, footer) {
+        var empty = '<tr><td colspan="' + cols.length + '" class="text-center text-muted py-4">' + emptyText + '</td></tr>';
+        return '<div class="card border-0 shadow-xs mb-4" id="' + id + '"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (subtitle ? '<div class="small text-muted">' + subtitle + '</div>' : '') + '</div>' +
+          '<div class="gov-table-desktop table-responsive"><table class="table gov-table-compact table-hover mb-0"><caption class="visually-hidden">' + title + '</caption><thead><tr>' +
+          cols.map(function (c) { return '<th scope="col"' + (c.end ? ' class="text-end"' : '') + (c.w ? ' style="width:' + c.w + '"' : '') + '>' + c.t + '</th>'; }).join('') +
+          '</tr></thead><tbody>' + (rows || empty) + '</tbody></table></div><div class="gov-cards-mobile p-3">' + (cards || '<p class="text-center text-muted small mb-0">' + emptyText + '</p>') + '</div>' + (footer || '') + '</div>';
+      }
+      function mobileCard(top, pillHtml, lines, action) {
+        return '<div class="gov-mobile-app-card"><div class="d-flex justify-content-between align-items-start gap-2 mb-1">' + top + pillHtml + '</div>' + lines + '<div class="d-flex justify-content-end mt-2">' + action + '</div></div>';
+      }
+      function owner(grId) { var s = App.site(grId); return s ? App.ownersText(s) : ''; }
+      function join(list, key) { return list.map(function (r) { return r[key]; }).join(''); }
+
+      var kpis = '', content = '', actions = '';
+
+      // ================= Supervisor & Dept. Admin (S1) =================
+      if (scopeUlb) {
+        document.getElementById('pageSubtitle').textContent = 'Your work first: bank payments to approve and accounts to verify, then what is waiting on citizens.';
+        actions = '<a class="btn btn-sm btn-primary" href="payment-desk.html"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>Approve Bank Payments</a><a class="btn btn-sm btn-outline-primary" href="accounts.html"><i class="bi bi-search me-1" aria-hidden="true"></i>Account Search</a>';
+        var toApprove = pendingChallans.filter(function (c) { return c.status === 'BR Recorded'; }).sort(function (a, b) { return P.daysWaiting(b) - P.daysWaiting(a); });
+        var awaitingBr = pendingChallans.filter(function (c) { return c.status === 'Generated'; });
+        var toVerify = unverified(scopedSites);
+        var changes = D.config.settings.makerChecker && App.can('approve') ? D.approvals.filter(function (x) { return x.status === 'Submitted' && siteIds.indexOf(x.grId) !== -1; }) : [];
+        var overdue = 0, overdueSum = 0;
+        scopedSites.forEach(function (s) { if (s.status === 'Closed') return; var d = App.dues(s); if (!d.blocked && d.hasOverdue) { overdue++; overdueSum += d.totalPayable; } });
+        // 1–2: your action; 3–4: pending with others / overview.
+        kpis += kpi('bi-patch-check', 'warning', toApprove.length, 'Bank payments to approve', waitSub(toApprove, P.daysWaiting, 'Nothing waiting'), 'payment-desk.html', 'Your action');
+        if (changes.length) kpis += kpi('bi-check2-square', 'primary', changes.length, 'Changes to approve', waitSub(changes, function (x) { return daysSince(x.submittedAt.slice(0, 10)); }, ''), 'approvals.html', 'Your action');
+        else kpis += kpi('bi-clipboard-check', 'primary', toVerify.length, 'Accounts to verify', toVerify.length ? 'Not yet checked against the register' : 'All checked against the register', 'accounts.html?status=unverified', 'Your action');
+        kpis += kpi('bi-hourglass-split', 'info', awaitingBr.length, 'Challans awaiting BR upload', awaitingBr.length ? 'With citizens &bull; oldest issued ' + days(ageOf(awaitingBr, function (c) { return daysSince(c.generatedOn); })) + ' ago' : 'With citizens', 'payment-desk.html', 'Pending');
+        kpis += kpi('bi-exclamation-triangle', 'danger', overdue, 'Accounts in arrears', inr(overdueSum) + ' outstanding', 'accounts.html?status=due', 'Pending');
+
+        var ch = toApprove.map(function (c) {
+          var w = P.daysWaiting(c);
+          var a = '<a class="btn btn-sm btn-primary" href="payment-review.html?challan=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-eye me-1" aria-hidden="true"></i>Review &amp; Approve</a>';
+          var wp = w >= 7 ? App.pill('overdue', days(w)) : (w >= 3 ? App.pill('due', days(w)) : App.pill('pending', w ? days(w) : 'Today'));
+          return { row: '<tr><td class="font-monospace fw-bold small">' + esc(c.challanNo) + '</td><td><div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(owner(c.grId)) + '</div></td><td class="small font-monospace">' + esc(c.brNo) + '<div class="text-muted">' + App.fmtDate(c.brDate) + ' &bull; ' + inr(c.brAmount || c.amount) + '</div></td><td>' + wp + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
+            card: mobileCard('<span class="font-monospace fw-bold small">' + esc(c.challanNo) + '</span>', wp, '<div class="gr-gr-id small">' + esc(c.grId) + '</div><div class="small text-muted">BR ' + esc(c.brNo) + ' &bull; ' + App.fmtDate(c.brDate) + ' &bull; ' + inr(c.brAmount || c.amount) + '</div>', a) };
+        });
+        content += tableCard('q-challans', 'Bank payments to approve', 'Oldest first. Open a payment to see the allottee\'s details and the uploaded BR.',
+          [{ t: 'Challan No.', w: '18%' }, { t: 'GR ID &amp; Allottee', w: '28%' }, { t: 'BR No., Date &amp; Amount', w: '24%' }, { t: 'Waiting', w: '14%' }, { t: 'Action', end: true, w: '16%' }], join(ch, 'row'), join(ch, 'card'), 'Nothing to approve.');
+
+        var td = stats.todayPays.map(function (p) {
+          var a = '<a class="btn btn-sm btn-outline-primary" href="receipt.html?no=' + encodeURIComponent(p.receiptNo) + '">Receipt</a>';
+          return { row: '<tr><td class="font-monospace fw-bold small">' + esc(p.receiptNo) + '</td><td><a class="gr-gr-id small" href="ledger.html?gr=' + encodeURIComponent(p.grId) + '">' + esc(p.grId) + '</a><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(owner(p.grId)) + '</div></td><td>' + (p.mode === 'Offline' ? 'Bank (BR)' : 'Online') + '</td><td class="text-end fw-bold">' + inr(p.amount) + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
+            card: mobileCard('<span class="font-monospace fw-bold small">' + esc(p.receiptNo) + '</span>', '<span class="fw-bold">' + inr(p.amount) + '</span>', '<div class="gr-gr-id small">' + esc(p.grId) + '</div><div class="small text-muted">' + (p.mode === 'Offline' ? 'Bank (BR)' : 'Online') + '</div>', a) };
+        });
+        content += tableCard('q-today', 'Today\'s receipts', App.fmtDate(today) + ' &bull; total ' + inr(todayTotal),
+          [{ t: 'Receipt No.', w: '20%' }, { t: 'GR ID &amp; Allottee', w: '36%' }, { t: 'Mode', w: '14%' }, { t: 'Amount', end: true, w: '14%' }, { t: 'Action', end: true, w: '16%' }], join(td, 'row'), join(td, 'card'), 'No receipts today.');
+      }
+
+      // ================= HQ (statewide, read-only) & System Admin =================
+      if (!scopeUlb) {
+        var live = D.config.ulbs.filter(function (u) { return u.active; });
+        var isAdmin = session.role === 'sysAdmin';
+        document.getElementById('pageSubtitle').textContent = isAdmin ? 'Overview and the rates in force.' : 'Totals and ULB-wise comparison. HQ has read-only access.';
+        actions = isAdmin ? '<a class="btn btn-sm btn-primary" href="config.html#rates"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Rate Revision</a><a class="btn btn-sm btn-outline-primary" href="config.html#ulbs">Manage ULBs</a>'
+          : '<a class="btn btn-sm btn-primary" href="reports.html#state"><i class="bi bi-bar-chart-line me-1" aria-hidden="true"></i>Open Reports</a>';
+        // Statewide: BR payments not yet approved by the ULBs, oldest first.
+        var brWaiting = D.challans.filter(function (c) { var s = App.site(c.grId); return s && s.status !== 'Closed' && c.status === 'BR Recorded'; });
+        var ready = D.config.ulbs.filter(function (u) { return u.migrationStatus === 'Data received'; });
+        var notChecked = unverified(scopedSites);
+        if (isAdmin) {
+          kpis += kpi('bi-rocket-takeoff', 'primary', ready.length, 'ULBs ready to go live', ready.length ? 'Data received: ' + esc(ready.map(function (u) { return u.name.replace(/ Nagar Panchayat| Municipal.*$/, ''); }).join(', ')) : 'No ULB waiting', 'config.html#ulbs', 'Your action');
+          kpis += kpi('bi-patch-check', 'warning', brWaiting.length, 'BR payments pending approval', waitSub(brWaiting, P.daysWaiting, 'Nothing pending at the ULBs'), 'reports.html#state', 'Pending');
+          kpis += kpi('bi-clipboard-check', 'info', notChecked.length, 'Accounts not verified', 'Not yet checked against the register at the ULBs', 'accounts.html?status=unverified', 'Pending');
+          kpis += kpi('bi-currency-rupee', 'success', inr(stats.collectedFy), 'Collected FY ' + T.fyLabel(curFyStart), live.length + ' of ' + D.config.ulbs.length + ' ULBs live &bull; ' + inr(stats.outstanding) + ' outstanding', 'reports.html#collection', 'Overview');
+        } else {
+          // HQ is read-only: no actions of its own, so pending items lead.
+          kpis += kpi('bi-patch-check', 'warning', brWaiting.length, 'BR payments pending approval', waitSub(brWaiting, P.daysWaiting, 'Nothing pending at the ULBs'), 'reports.html#state', 'Pending');
+          kpis += kpi('bi-exclamation-triangle', 'danger', stats.defaulters, 'Accounts in arrears', inr(stats.outstanding) + ' outstanding', 'reports.html#defaulters', 'Pending');
+          kpis += kpi('bi-buildings', 'primary', (D.config.ulbs.length - live.length), 'ULBs not live yet', ready.length + ' with data received', 'reports.html#state', 'Pending');
+          kpis += kpi('bi-currency-rupee', 'success', inr(stats.collectedFy), 'Collected FY ' + T.fyLabel(curFyStart), 'Online and offline', 'reports.html#collection', 'Overview');
+        }
+
+        var ur = D.config.ulbs.map(function (u) {
+          var st = scopeStats(D.sites.filter(function (s) { return s.ulb === u.code; }));
+          var p = u.migrationStatus === 'Live' ? App.pill('paid', 'Live') : (u.migrationStatus === 'Data received' ? App.pill('pending', 'Data received') : App.pill('closed', 'Not started'));
+          var a = u.active ? '<a class="btn btn-sm btn-outline-primary" href="reports.html#state">View Report</a>' : '<span class="small text-muted">Go-live ' + esc(u.goLiveFy || 'not set') + '</span>';
+          return { row: '<tr><td><div class="fw-semibold small">' + esc(u.name) + '</div><div class="small text-muted">' + esc(u.district) + '</div></td><td>' + p + '</td><td class="text-end">' + (u.active ? st.active : '—') + '</td><td class="text-end">' + (u.active ? inr(st.collectedFy) : '—') + '</td><td class="text-end">' + (u.active ? inr(st.outstanding) : '—') + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
+            card: mobileCard('<span class="fw-semibold small">' + esc(u.name) + '</span>', p, '<div class="small text-muted">' + esc(u.district) + (u.active ? ' &bull; ' + st.active + ' accounts &bull; outstanding ' + inr(st.outstanding) : '') + '</div>', a) };
+        });
+        content += tableCard('q-ulbs', 'ULB-wise comparison', 'State totals are the sum of live ULBs. Other ULBs join one at a time after migration.',
+          [{ t: 'ULB', w: '26%' }, { t: 'Status', w: '14%' }, { t: 'Accounts', end: true, w: '12%' }, { t: 'Collected FY', end: true, w: '16%' }, { t: 'Outstanding', end: true, w: '16%' }, { t: 'Action', end: true, w: '16%' }], join(ur, 'row'), join(ur, 'card'), 'No ULBs configured.');
+
+        if (isAdmin) {
+          var cat = {};
+          D.config.rateCategories.forEach(function (c) { cat[c.code] = c.name; });
+          var rr = D.config.rateRules.filter(function (r) { return !r.to; }).map(function (r) {
+            var a = '<a class="btn btn-sm btn-outline-primary" href="config.html#rates">History</a>';
+            var target = r.level === 'Category' ? (cat[r.target] || r.target) : r.target;
+            return { row: '<tr><td class="small">' + esc(r.level) + '</td><td class="small fw-semibold">' + esc(target) + '</td><td class="text-end fw-bold">' + inr(r.rate) + '</td><td>' + App.fmtDate(r.from) + '</td><td class="small">Notif. ' + esc(r.notificationNo) + '</td><td class="text-end text-nowrap">' + a + '</td></tr>',
+              card: mobileCard('<span class="fw-semibold small">' + esc(target) + '</span>', App.pill('paid', 'In force'), '<div class="small text-muted">' + inr(r.rate) + ' per 100 sq ft from ' + App.fmtDate(r.from) + '</div>', a) };
+          });
+          content += tableCard('q-rates', 'Rent rates in force (₹ per 100 sq ft)', 'Effective-dated. A new notification is added as a new row; old rows are never edited.',
+            [{ t: 'Level', w: '12%' }, { t: 'Applies To', w: '28%' }, { t: 'Rate', end: true, w: '12%' }, { t: 'From', w: '16%' }, { t: 'Notification', w: '16%' }, { t: 'Action', end: true, w: '16%' }], join(rr, 'row'), join(rr, 'card'), 'No rates configured.');
+          var sr = D.config.surchargeRules.filter(function (r) { return !r.to; })[0];
+          var s = D.config.settings;
+          content += '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Surcharge &amp; global rules</h2></div><div class="card-body"><dl class="gr-meta-grid mb-0">' +
+            '<div><dt>Surcharge</dt><dd>' + sr.rate + '% from ' + App.fmtDate(sr.from) + '</dd></div><div><dt>Surcharge method</dt><dd>' + (sr.method === 'ONCE_PER_OVERDUE_YEAR' ? 'Once per overdue year' : 'Per completed year of delay') + ' <span class="text-muted fw-normal">(Q2 to confirm)</span></dd></div>' +
+            '<div><dt>Maker–checker approval</dt><dd>' + (s.makerChecker ? 'On' : 'Off') + '</dd></div><div><dt>Advance payment</dt><dd>' + (s.advancePayment ? 'Allowed' : 'Not allowed') + '</dd></div>' +
+            '<div><dt>Partial offline payment</dt><dd>' + (s.partialOfflinePayment ? 'Allowed, oldest dues first' : 'Not allowed') + '</dd></div><div><dt>Offline challan validity</dt><dd>' + s.challanValidityDays + ' days, never past 31 March</dd></div></dl>' +
+            '<a class="btn btn-sm btn-outline-primary mt-3" href="config.html#rules">Edit Global Rules</a></div></div>';
+        }
+      }
+
+      document.getElementById('kpiRow').innerHTML = kpis;
+      document.getElementById('roleContent').innerHTML = content;
+      document.getElementById('pageActions').innerHTML = actions;
+    })();
+  </script>
+</body>
+</html>

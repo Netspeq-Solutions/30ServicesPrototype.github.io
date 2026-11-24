@@ -34,3 +34,6 @@ pnpm-lock.yaml
 dist/
 build/
 .cache/
+
+# Working notes (kept locally, not committed)
+steps/

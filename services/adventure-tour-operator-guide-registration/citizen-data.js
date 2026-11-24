@@ -264,6 +264,56 @@ const AdventureServiceData = {
       ]
     },
 
+    
+    // Scenario H: Guide Registration with Fee Due (₹500 Statutory Fee)
+    scenarioGuidePayment: {
+      id: "scenarioGuidePayment",
+      name: "Scenario H: Guide Statutory Fee Due (₹500)",
+      badge: "Payment Activated",
+      description: "DTO has verified credentials; statutory guide registration fee of ₹500 is activated and awaiting online payment.",
+      citizen: {
+        fullName: "Dorjee Tshering Lepcha",
+        citizenId: "CIT-SK-901112",
+        mobile: "9832112233",
+        email: "dorjee.mangan@gmail.com",
+        district: "Mangan",
+        address: "Ringhim, Mangan – 737116"
+      },
+      stats: { total: 1, underProcess: 0, actionRequired: 1, approved: 0, rejected: 0 },
+      actionRequired: null,
+      paymentRequired: {
+        refNo: "SK-GR-2026-0045",
+        typeId: "guide-registration",
+        typeName: "Guide Registration",
+        enterpriseName: "Dorjee Tshering (North Sikkim Guide)",
+        feeAmount: 500,
+        activatedBy: "District Tourism Officer, Mangan",
+        activatedDate: "13 Nov 2026",
+        dueDate: "27 Nov 2026 (14 Days)",
+        accountHead: "0070-02-105-01 (Tourism Reg. Fees)",
+        remarks: "Guide dossier and credentials verified. Please deposit the statutory registration fee of ₹500 to proceed for final certificate & logbook sanction."
+      },
+      activeApplication: null,
+      approvedApplication: null,
+      applications: [
+        {
+          refNo: "SK-GR-2026-0045",
+          typeId: "guide-registration",
+          typeName: "Guide Registration",
+          categoryCode: "GR",
+          title: "Dorjee Tshering (North Sikkim Guide)",
+          submittedDate: "07 Nov 2026",
+          status: "PAYMENT_ACTIVATED",
+          statusBadge: "bg-warning-subtle text-warning-emphasis border border-warning-subtle",
+          statusLabel: "Fee Payment Due (₹500)",
+          currentStage: "Payment Activated",
+          district: "Mangan"
+        }
+      ],
+      notifications: [
+        { id: "notif-08g", date: "Today", title: "Statutory Fee Activated (₹500)", message: "District DTO has approved your guide dossier and activated statutory registration fee payment of ₹500 for SK-GR-2026-0045.", type: "warning", read: false }
+      ]
+    },
     // Scenario F: Citizen with Fee Payment Due (₹1,500 Statutory Fee)
     scenarioPayment: {
       id: "scenarioPayment",
@@ -527,10 +577,13 @@ function getAdventureCitizenScenario() {
     localStorage.setItem("adv_citizen_scenario", scenarioFromUrl);
     return scenarioFromUrl;
   }
-  return localStorage.getItem("adv_citizen_scenario") || "scenarioB";
+  return localStorage.getItem("adv_citizen_scenario") || "scenarioA";
 }
 
 function setAdventureCitizenScenario(scenKey) {
   localStorage.setItem("adv_citizen_scenario", scenKey);
 }
 
+if (typeof window !== "undefined") {
+  window.AdventureServiceData = AdventureServiceData;
+}

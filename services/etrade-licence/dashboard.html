@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Applicant dashboard - e-Trade Licence, Urban Development Department, Government of Sikkim.">
+  <title>Applicant Dashboard | e-Trade Licence | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="tl-common.css?v=20261123">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <section class="tl-view" id="view-dashboard" aria-labelledby="h-dashboard"></section>
+    <section class="tl-view d-none" id="view-applications" aria-labelledby="h-applications"></section>
+    <section class="tl-view d-none" id="view-licences" aria-labelledby="h-licences"></section>
+    <section class="tl-view d-none" id="view-notifications" aria-labelledby="h-notifications"></section>
+    <section class="tl-view d-none" id="view-support" aria-labelledby="h-support"></section>
+    <section class="tl-view d-none" id="view-profile" aria-labelledby="h-profile"></section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js?v=20261123"></script>
+  <script src="tl-app.js?v=20261123"></script>
+  <script src="tl-flow.js?v=20261123"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.TLApp, F = window.TLFlow, D = App.data, esc = App.esc, inr = App.inr, ST = F.ST;
+      var session = App.requireSession('applicant');
+      if (!session) return;
+      App.shell({ type: 'applicant', active: (location.hash || '#dashboard').slice(1) });
+      var $ = function (id) { return document.getElementById(id); };
+      var biz = App.currentBusiness(session);
+      var apps = App.appsOf(session.scenario).slice().sort(function (a, b) { return (b.updatedOn || '') < (a.updatedOn || '') ? -1 : 1; });
+      var lics = App.licencesOf(session.scenario);
+
+      function heading(id, title, sub, actions) {
+        return '<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4"><div><h1 class="h4 fw-bold mb-1" id="' + id + '">' + title + '</h1>' +
+          (sub ? '<p class="text-muted small mb-0">' + sub + '</p>' : '') + '</div>' + (actions ? '<div class="d-flex flex-wrap gap-2">' + actions + '</div>' : '') + '</div>';
+      }
+      // The one thing the applicant should do next on an application (or '').
+      function nextAction(a, compact) {
+        var cls = compact ? 'btn btn-sm ' : 'btn btn-sm ';
+        if (a.status === ST.DRAFT) return '<a class="' + cls + 'btn-primary" href="apply.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Continue</a>';
+        if (a.status === ST.RETURNED) return '<a class="' + cls + 'btn-warning" href="apply.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Correct &amp; Resubmit</a>';
+        if (a.status === ST.PAYMENT || a.status === ST.BR_INVALID) return '<a class="' + cls + 'btn-primary" href="upload-br.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload BR</a>';
+        if (a.status === ST.ISSUED) return '<a class="' + cls + 'btn-outline-primary" href="licence.html?no=' + encodeURIComponent(a.licenceNo) + '"><i class="bi bi-download me-1" aria-hidden="true"></i>Licence</a>';
+        return '<a class="' + cls + 'btn-outline-primary" href="application.html?app=' + encodeURIComponent(a.appId) + '">Track</a>';
+      }
+      var actionNeeded = apps.filter(function (a) { return [ST.DRAFT, ST.RETURNED, ST.PAYMENT, ST.BR_INVALID].indexOf(a.status) !== -1; });
+      var inProcess = apps.filter(function (a) { return F.isOpen(a) && actionNeeded.indexOf(a) === -1; });
+      var expired = lics.filter(function (l) { return F.licenceState(l) === 'Expired'; });
+      // Renewal due: window open (or expired) and no renewal / change already in process.
+      var dueLics = lics.filter(function (l) { return F.renewalDue(l) && !F.openAppFor(l.licenceNo); });
+
+      // ---------- Dashboard (simple: greeting, what to do next, where to go) ----------
+      var MSG = { 'Draft': ['Finish your draft', 'Complete the form and submit it.'],
+        'Returned to Applicant': ['Correct your application', 'Returned for correction by ' + '{by}' + '.'],
+        'Approved – Payment Pending': ['Pay the fee and upload the Bank Receipt', 'Approved. Pay {fee} at the bank, then upload the receipt.'],
+        'BR Invalid': ['Upload a valid Bank Receipt', 'Your earlier Bank Receipt was not accepted.'] };
+      function btnOf(a) { return { 'Draft': 'Continue', 'Returned to Applicant': 'Correct now', 'Approved – Payment Pending': 'Upload BR', 'BR Invalid': 'Upload BR' }[a.status]; }
+      function hrefOf(a) { return a.status === ST.PAYMENT || a.status === ST.BR_INVALID ? 'upload-br.html?app=' + encodeURIComponent(a.appId) : 'apply.html?app=' + encodeURIComponent(a.appId); }
+      var todoItems = actionNeeded.map(function (a) {
+        var m = MSG[a.status];
+        return { label: 'To do', title: esc(m[0]), pillHtml: App.pill(a.status),
+          meta: '<span class="tl-ref-id">' + esc(a.appId) + '</span> &bull; ' + m[1].replace('{by}', a.correction ? esc(a.correction.by) + ' (' + esc(a.correction.role) + ')' : 'the officer').replace('{fee}', a.fee ? inr(a.fee.total) : 'the fee'),
+          href: hrefOf(a), button: btnOf(a) };
+      });
+      dueLics.forEach(function (l) {
+        var chk = F.renewalCheck(l), isExp = F.licenceState(l) === 'Expired', fine = F.renewalFine(l.validTo, D.demoToday);
+        if (!chk.ok) return;
+        todoItems.push({ label: 'To do', title: 'Renew ' + esc(App.appName(l)), pillHtml: App.pill(isExp ? 'Expired' : 'Approved – Payment Pending', isExp ? 'Expired' : 'Renewal open'),
+          meta: '<span class="tl-ref-id">' + esc(l.licenceNo) + '</span> &bull; ' + (isExp ? 'Expired on ' : 'Valid to ') + App.fmtDate(l.validTo) + (fine.fine ? ' &bull; late surcharge today ' + inr(fine.fine) : ''),
+          href: 'apply.html?type=renewal&amp;licence=' + encodeURIComponent(l.licenceNo), button: 'Renew now' });
+      });
+      var activeLics = lics.filter(function (l) { return F.licenceState(l) === 'Active'; }).length;
+      var unread = biz.notifications.filter(function (n) { return n.unread; }).length;
+      var summary = todoItems.length ? 'You have <strong>' + todoItems.length + ' thing' + (todoItems.length === 1 ? '' : 's') + '</strong> to do.'
+        : (apps.length || lics.length ? 'Nothing needs your attention right now.' : 'Apply for your first e-Trade Licence to get started.');
+      var chips = [];
+      if (inProcess.length) chips.push(['bi-hourglass-split', inProcess.length + ' with the department']);
+      if (lics.length) chips.push(['bi-patch-check', activeLics + ' active licence' + (activeLics === 1 ? '' : 's')]);
+      function viewTile(icon, tone, title, sub, view, count) { return App.dashTile(icon, tone, title, sub, '#' + view, count, ' data-view="' + view + '"'); }
+
+      $('view-dashboard').innerHTML = App.dashHero({ id: 'h-dashboard', eyebrow: 'e-Trade Licence &bull; Urban Development Department', title: App.greeting(biz.authName), summary: summary, chips: chips,
+          action: '<a class="btn btn-sm btn-success" href="apply.html?type=new"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Apply for New Licence</a>' }) +
+        (todoItems.length ? todoItems.map(function (t) { return App.dashNext(t); }).join('') : App.dashNext(null, apps.length || lics.length ? 'We will let you know by SMS and email when something needs your attention.' : 'Start with "Apply for New Licence".')) +
+        App.sectionTitle('Go to') + '<div class="row g-3 mb-4">' +
+          App.dashTile('bi-plus-circle', 'success', 'Apply for New Licence', 'Fill the form and upload documents', 'apply.html?type=new', '') +
+          viewTile('bi-folder2-open', 'primary', 'My Applications', 'Track where each application is', 'applications', apps.length) +
+          viewTile('bi-patch-check', 'info', 'My Licences', 'Download, renew or request a change', 'licences', lics.length) +
+          viewTile('bi-bell', 'warning', 'Notifications', unread ? unread + ' unread message' + (unread === 1 ? '' : 's') : 'Messages about your applications', 'notifications', unread || '') +
+        '</div>' +
+        App.sectionTitle('How it works') +
+        '<ol class="tl-steps-strip"><li>Apply online</li><li>Inspection</li><li>Approval</li><li>Pay fee + garbage fee &amp; upload BR</li><li>Download licence</li></ol>';
+
+      // ---------- My Applications ----------
+      var rows = apps.map(function (a) {
+        var act = nextAction(a, true);
+        var sub = a.kind === 'New' ? esc(App.category(a.category).name) : esc(a.licenceNo || '');
+        return { row: '<tr><td><a class="tl-ref-id small" href="application.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a></td><td>' + App.kindBadge(a) + '<div class="small text-muted text-truncate" style="max-width:220px;">' + sub + '</div></td>' +
+            '<td class="small">' + App.fmtDate(a.submittedOn) + '</td><td>' + App.pill(a.status) + '<div class="small text-muted">' + esc(F.pendingWith(a).label) + '</div></td><td class="text-end text-nowrap"><div class="d-inline-flex align-items-center gap-1 text-nowrap">' + act + '</div></td></tr>',
+          card: App.mobileCard('<a class="tl-ref-id small" href="application.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a>', App.pill(a.status), '<div class="small">' + App.kindBadge(a) + ' <span class="text-muted">' + sub + '</span></div><div class="small text-muted">Submitted ' + App.fmtDate(a.submittedOn) + ' &bull; ' + esc(F.pendingWith(a).label) + '</div>', act) };
+      });
+      $('view-applications').innerHTML = heading('h-applications', 'My Applications', 'New licence, renewal and change requests with their current stage.', '<a class="btn btn-sm btn-success" href="apply.html?type=new"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Apply for New Licence</a>') +
+        App.tableCard('t-apps', 'Applications', apps.length + ' in total',
+          [{ t: 'Application ID', w: '20%' }, { t: 'Type', w: '24%' }, { t: 'Submitted', w: '14%' }, { t: 'Status &amp; Stage', w: '24%' }, { t: 'Action', end: true, w: '18%' }],
+          rows.map(function (r) { return r.row; }).join(''), rows.map(function (r) { return r.card; }).join(''), 'No applications yet.');
+
+      // ---------- My Licences ----------
+      var licCards = lics.map(function (l) {
+        var v = F.currentVersion(l), state = F.licenceState(l);
+        var rc = F.renewalCheck(l), cc = F.changeCheck(l);
+        var open = F.openAppFor(l.licenceNo);
+        var fine = state === 'Expired' ? F.renewalFine(l.validTo, D.demoToday) : null;
+        return '<div class="col-lg-6"><div class="tl-licence-card ' + (state === 'Expired' ? 'is-overdue' : (F.renewalDue(l) ? 'is-due' : 'is-clear')) + ' p-3">' +
+          '<div class="d-flex justify-content-between align-items-start gap-2 mb-2"><div class="min-w-0"><div class="tl-ref-id">' + esc(l.licenceNo) + '</div><div class="fw-bold text-dark">' + esc(v.businessName) + '</div></div>' + App.pill(state) + '</div>' +
+          '<dl class="tl-meta-grid mb-2"><div><dt>Item</dt><dd>' + esc(App.category(l.category).name) + '</dd></div><div><dt>Sub-item / purpose</dt><dd>' + esc(l.orgType) + '</dd></div>' +
+            '<div><dt>Valid up to</dt><dd>' + App.fmtDate(l.validTo) + '</dd></div><div><dt>Version</dt><dd>v' + v.v + (l.versions.length > 1 ? ' <span class="text-muted fw-normal">(' + (l.versions.length - 1) + ' earlier)</span>' : '') + '</dd></div>' +
+            '<div class="tl-span-2"><dt>Premises</dt><dd>' + esc(v.premisesAddress) + ', ' + esc(v.locality) + '</dd></div></dl>' +
+          (open ? '<div class="alert alert-info small py-2 mb-2"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>' + esc(open.kind === 'Renewal' ? 'Renewal' : 'Change request') + ' <a href="application.html?app=' + encodeURIComponent(open.appId) + '">' + esc(open.appId) + '</a> is ' + esc(open.status.toLowerCase()) + '. Your licence stays as it is until it is completed.</div>' : '') +
+          (!fine && rc.ok ? '<div class="alert alert-info small py-2 mb-2"><i class="bi bi-calendar-check me-1" aria-hidden="true"></i>Renewal is open (since ' + App.fmtDate(F.renewalOpensOn(l)) + '). Renew before ' + App.fmtDate(l.validTo) + '; no fine if submitted by ' + App.fmtDate(F.addDays(l.validTo, D.config.renewalFine.graceDays)) + '.</div>' : '') +
+          (fine && rc.ok ? '<div class="alert alert-warning small py-2 mb-2"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Expired on ' + App.fmtDate(l.validTo) + '. Late surcharge if you submit today: <strong>' + inr(fine.fine) + '</strong> (' + fine.lateDays + ' days &times; ₹' + fine.perDay + ').</div>' : '') +
+          '<div class="mt-auto d-flex flex-wrap gap-2 pt-2 border-top">' +
+            '<a class="btn btn-sm btn-outline-primary" href="licence.html?no=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-download me-1" aria-hidden="true"></i>' + (state === 'Expired' ? 'View Licence' : 'Download Licence') + '</a>' +
+            (rc.ok ? '<a class="btn btn-sm btn-primary" href="apply.html?type=renewal&amp;licence=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Renew</a>' : '') +
+            (cc.ok ? '<a class="btn btn-sm btn-outline-secondary" href="apply.html?type=change&amp;licence=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Request Change</a>' : '') +
+          '</div>' +
+          (!rc.ok || !cc.ok ? '<div class="small text-muted mt-2">' + (!rc.ok && !open ? '<div><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Renewal: ' + esc(rc.reason) + '</div>' : '') + (!cc.ok && !open ? '<div><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Change: ' + esc(cc.reason) + '</div>' : '') + '</div>' : '') +
+        '</div></div>';
+      }).join('');
+      $('view-licences').innerHTML = heading('h-licences', 'My Licences', 'Download your licence, renew it every year or request a change of name, premises or address.') +
+        (licCards ? '<div class="row g-3">' + licCards + '</div>' : '<div class="card border-0 shadow-xs"><div class="card-body text-center py-5"><span class="tl-icon-circle bg-primary-subtle text-primary mb-3"><i class="bi bi-patch-check" aria-hidden="true"></i></span><h2 class="h6 fw-bold">No licence yet</h2><p class="small text-muted mb-3">Your licence appears here once it is issued.</p><a class="btn btn-sm btn-success" href="apply.html?type=new">Apply for New Licence</a></div></div>');
+
+      // ---------- Notifications ----------
+      function renderNotifs() {
+        $('view-notifications').innerHTML = heading('h-notifications', 'Notifications', 'Messages sent to your registered mobile and email (simulated).', biz.notifications.some(function (n) { return n.unread; }) ? '<button type="button" class="btn btn-sm btn-outline-primary" id="btnReadAll"><i class="bi bi-check2-all me-1" aria-hidden="true"></i>Mark all as read</button>' : '') +
+          '<div class="card border-0 shadow-xs"><ul class="list-group list-group-flush">' + (biz.notifications.length ? biz.notifications.map(function (n) {
+            return '<li class="list-group-item tl-notif-item' + (n.unread ? ' is-unread' : '') + '"><div class="d-flex justify-content-between gap-2 flex-wrap"><span class="fw-semibold small">' + esc(n.title) + '</span><span class="small text-muted">' + App.fmtDate(n.date) + '</span></div><div class="small text-secondary">' + esc(n.body) + '</div>' +
+              (n.appId ? '<a class="small" href="application.html?app=' + encodeURIComponent(n.appId) + '">Open ' + esc(n.appId) + '</a>' : '') + '</li>';
+          }).join('') : '<li class="list-group-item text-center text-muted small py-4">No notifications.</li>') + '</ul></div>';
+        var b = $('btnReadAll');
+        if (b) b.addEventListener('click', function () { biz.notifications.forEach(function (n) { n.unread = false; }); App.save(); location.reload(); });
+      }
+      renderNotifs();
+
+      // ---------- Support ----------
+      $('view-support').innerHTML = heading('h-support', 'Help and Support', 'Contact the department for help with your application.') +
+        '<div class="row g-3"><div class="col-md-6"><div class="card border-0 shadow-xs h-100"><div class="card-body"><h2 class="h6 fw-bold"><i class="bi bi-building me-1 text-primary" aria-hidden="true"></i>North-East Circle</h2><p class="small text-secondary mb-1">UDD Headquarters, NH-10, Gangtok</p><p class="small text-muted mb-0">Phone and email pending departmental confirmation.</p></div></div></div>' +
+        '<div class="col-md-6"><div class="card border-0 shadow-xs h-100"><div class="card-body"><h2 class="h6 fw-bold"><i class="bi bi-question-circle me-1 text-primary" aria-hidden="true"></i>Common questions</h2><ul class="small text-secondary ps-3 mb-0"><li class="mb-1">Chose the wrong circle? The Inspector will return the application so you can resubmit under the correct circle.</li><li class="mb-1">Paid less than the fee? The BR is marked invalid; pay the balance and upload again.</li><li>Licence is generated only after the BR and original documents are verified.</li></ul></div></div></div></div>';
+
+      // ---------- Profile ----------
+      // Sikkim GO is only the identity provider: it knows the person, not the business.
+      var myBiz = {};
+      apps.forEach(function (x) { myBiz[App.appName(x)] = myBiz[App.appName(x)] || (x.status === 'Draft' ? 'Draft application' : 'Application ' + x.appId); });
+      lics.forEach(function (l) { myBiz[App.appName(l)] = 'Licence ' + l.licenceNo; });
+      var bizNames = Object.keys(myBiz).filter(Boolean);
+      $('view-profile').innerHTML = heading('h-profile', 'My Account', 'Your Sikkim GO login details.') +
+        '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Sikkim GO account</h2></div><div class="card-body"><dl class="tl-dl">' +
+          [['Name', biz.authName], ['Mobile', App.maskMobile(biz.mobile)], ['Email', biz.email]]
+            .map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') +
+        '</dl><p class="small text-muted mt-3 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Sikkim GO only confirms who you are. To change these details, edit your account on Sikkim GO (not connected in this prototype).</p></div></div>' +
+        '<div class="card border-0 shadow-xs"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Businesses on your applications</h2><div class="small text-muted">Business details are entered in the licence application form, not taken from Sikkim GO.</div></div><div class="card-body">' +
+          (bizNames.length ? '<ul class="small mb-0 ps-3">' + bizNames.map(function (n) { return '<li class="mb-1"><strong>' + esc(n) + '</strong> &ndash; ' + esc(myBiz[n]) + '</li>'; }).join('') + '</ul>'
+            : '<p class="small text-muted mb-2">No business yet. It will appear here after you submit your first licence application.</p><a class="btn btn-sm btn-primary" href="apply.html?type=new"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Apply for New Licence</a>') +
+        '</div></div>';
+
+      App.initViews(function (view) {
+        if (view === 'notifications' && biz.notifications.some(function (n) { return n.unread; })) {
+          // Mark as read after they have been shown once.
+          setTimeout(function () { biz.notifications.forEach(function (n) { n.unread = false; }); App.save(); }, 1500);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

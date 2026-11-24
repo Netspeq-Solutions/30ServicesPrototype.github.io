@@ -524,10 +524,9 @@
       // Compute and update HQ 5 KPI metrics
       function updateHqMetrics() {
         const allApps = WorkflowEngine.getAllApplications();
-        // HQ relevant applications are those requiring HQ verification or that have reached HQ stages
+        // HQ relevant applications are strictly Drone and Events requiring HQ approval
         const hqRelevantApps = allApps.filter(app => 
-          app.requiresHqVerification || 
-          [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_5, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10, WorkflowEngine.STAGES.STAGE_11].includes(app.currentStage)
+          WorkflowEngine.isHqApprovalRequired(app.category) && app.requiresHqVerification
         );
 
         const totalReceived = hqRelevantApps.filter(app => 
@@ -579,8 +578,7 @@
       function getActiveTabApplications() {
         const allApps = WorkflowEngine.getAllApplications();
         const hqRelevantApps = allApps.filter(app => 
-          app.requiresHqVerification || 
-          [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_5, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10, WorkflowEngine.STAGES.STAGE_11].includes(app.currentStage)
+          WorkflowEngine.isHqApprovalRequired(app.category) && app.requiresHqVerification
         );
 
         switch (currentHqTab) {
@@ -669,12 +667,12 @@
             mobileActionLabel = 'Record e-Office Concurrence';
             mobileActionClass = 'btn-primary';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_9) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-upload me-1"></i> Sanction</a>`;
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-warning text-dark py-1 px-3 fw-bold shadow-xs"><i class="bi bi-upload me-1"></i> Upload Sheet</a>`;
             mobileActionLabel = 'Upload Approval Sheet';
-            mobileActionClass = 'btn-success';
+            mobileActionClass = 'btn-warning text-dark';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_10) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-send me-1"></i> Transmit</a>`;
-            mobileActionLabel = 'Transmit Back to DTO';
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check me-1"></i> Approve HQ</a>`;
+            mobileActionLabel = 'Approve at HQ Level';
             mobileActionClass = 'btn-success';
           } else {
             hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-secondary py-1 px-3"><i class="bi bi-eye me-1"></i> View</a>`;
@@ -689,10 +687,11 @@
               <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="fw-bold font-monospace text-primary text-decoration-none">
                 ${app.refNo}
               </a>
-              <div class="text-muted small text-truncate" style="max-width: 170px;">${app.flowTitle || app.category}</div>
+              <div class="text-muted small" style="font-size: 0.75rem;"><i class="bi bi-calendar3 me-1"></i>Sub: ${app.submissionDate ? app.submissionDate.split(',')[0] : 'Recent'}</div>
             </td>
             <td>
               <span class="badge bg-light text-dark border"><i class="bi bi-geo-alt me-1 text-primary"></i>${app.district} Circle</span>
+              <div class="text-muted small mt-0.5" style="font-size: 0.75rem;"><i class="bi bi-inbox me-1"></i>Recd: ${app.dateReceivedAtHq || 'Recent'}</div>
             </td>
             <td>
               <div class="fw-semibold text-dark">${app.applicantName}</div>

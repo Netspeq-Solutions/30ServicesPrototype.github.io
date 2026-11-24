@@ -194,8 +194,16 @@
           <option value="Soreng">District TA &bull; Soreng Circle</option>
         </select>
       </div>
-      <div class="text-muted small">
-        <span id="jurisdictionBadgeText"><i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok</span>
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div class="d-flex align-items-center gap-2">
+          <span class="small fw-bold text-dark"><i class="bi bi-box-arrow-in-right text-primary me-1"></i>Jump to File:</span>
+          <select class="form-select form-select-sm w-auto fw-semibold text-dark shadow-xs" id="taJumpArnSelect" onchange="onTaJumpSelect(this.value)" style="max-width: 320px;">
+            <option value="">-- Jump to Specific Application --</option>
+          </select>
+        </div>
+        <div class="text-muted small">
+          <span id="jurisdictionBadgeText"><i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok</span>
+        </div>
       </div>
     </div>
   </section>
@@ -280,6 +288,27 @@
           </div>
           <div class="badge bg-light text-secondary border px-3 py-1.5 small">
             <i class="bi bi-calendar3 me-1"></i>13 November 2026
+          </div>
+        </div>
+
+        <!-- Real-Time New Submission Banner -->
+        <div id="taNewSubmissionBanner" class="alert alert-success border border-success shadow-xs mb-4 d-none" style="background: #f0fdf4;">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-success text-white p-2 rounded-circle fs-5 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+              <div>
+                <strong id="taNewSubTitle" class="text-success-emphasis small d-block">New Citizen Application Received!</strong>
+                <span id="taNewSubDetails" class="text-dark small"></span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <a id="taNewSubReviewBtn" href="#" class="btn btn-sm btn-success py-1.5 px-3 fw-semibold shadow-xs">
+                <i class="bi bi-file-earmark-check me-1"></i> Review Dossier Now
+              </a>
+              <button type="button" class="btn-close btn-sm" onclick="document.getElementById('taNewSubmissionBanner').classList.add('d-none')"></button>
+            </div>
           </div>
         </div>
 
@@ -387,64 +416,119 @@
   <script src="workflow-engine.js"></script>
 
   <script>
-    let activeOfficeContext = 'hq'; // 'hq' or district name
+    let activeOfficeContext = 'hq'; // 'hq', district name, or 'all'
     let activeQueueFilter = 'all';
+
+    function normalizeDistrict(d) {
+      if (!d) return 'hq';
+      const clean = String(d).trim();
+      const lower = clean.toLowerCase();
+      if (lower === 'hq' || lower === 'headquarters') return 'hq';
+      if (lower === 'all' || lower === 'statewide') return 'all';
+      if (lower === 'east' || lower === 'gangtok (hq)') return 'Gangtok';
+      if (lower === 'south') return 'Namchi';
+      if (lower === 'north') return 'Mangan';
+      if (lower === 'west') return 'Gyalshing';
+      for (const key of Object.keys(AdventureWorkflowEngine.DISTRICT_OFFICES)) {
+        if (key.toLowerCase() === lower) return key;
+      }
+      return clean;
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
       const urlParams = new URLSearchParams(window.location.search);
-      const dist = urlParams.get('district');
-      if (dist && dist !== 'hq') {
-        activeOfficeContext = dist;
-        document.getElementById('taContextSelect').value = dist;
+      const rawDist = urlParams.get('district') || urlParams.get('office');
+      if (rawDist) {
+        activeOfficeContext = normalizeDistrict(rawDist);
+        const sel = document.getElementById('taContextSelect');
+        if (sel) {
+          sel.value = activeOfficeContext;
+          if (!sel.value) sel.value = 'hq';
+        }
       }
       renderTaDashboard();
     });
 
-    function onTaContextChange(val) {
-      activeOfficeContext = val;
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'adv_workflow_applications_v6' || e.key === 'adv_submitted_applications' || e.key === 'adv_latest_submitted_arn') {
+        renderTaDashboard();
+      }
+    });
+
+    window.addEventListener('focus', function () {
       renderTaDashboard();
+    });
+
+    function onTaContextChange(val) {
+      activeOfficeContext = normalizeDistrict(val);
+      renderTaDashboard();
+    }
+
+    function onTaJumpSelect(arn) {
+      if (!arn) return;
+      const app = AdventureWorkflowEngine.getApplicationByArn(arn);
+      if (!app) return;
+      const isGuideOtherDist = (app.type === 'guide-registration' && (app.district || '').toLowerCase() !== 'gangtok');
+      const roleKey = isGuideOtherDist ? 'dist-ta' : 'ta-hq';
+      window.location.href = 'review.html?arn=' + encodeURIComponent(app.arn) + '&role=' + encodeURIComponent(roleKey) + '&district=' + encodeURIComponent(app.district || 'Gangtok');
     }
 
     function renderTaDashboard() {
       const allApps = AdventureWorkflowEngine.getAllApplications();
       const isHQ = (activeOfficeContext === 'hq');
+      const isAll = (activeOfficeContext === 'all');
 
       // Update Header & Officer Card
-      if (isHQ) {
+      if (isAll) {
+        document.getElementById('headerRoleBadge').textContent = 'TA – Statewide Scrutiny';
+        document.getElementById('headerOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
+        document.getElementById('headerOfficerDesignation').textContent = 'Technical Assistant (Statewide Central Registry)';
+        document.getElementById('jurisdictionBadgeText').innerHTML = '<i class="bi bi-globe-americas text-primary me-1"></i>Statewide (All Circles &amp; Categories)';
+        document.getElementById('sidebarAvatar').textContent = 'TN';
+        document.getElementById('sidebarOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
+        document.getElementById('sidebarOfficeLabel').textContent = 'Statewide Central Desk';
+        document.getElementById('mainDeskTitle').textContent = 'Statewide Adventure Scrutiny &amp; Document Intake Desk';
+        document.getElementById('mainDeskSubtitle').textContent = 'Central view across all adventure operator dossiers and district guide registrations in Sikkim';
+        const reportsLink = document.getElementById('sidebarReportsLink');
+        if (reportsLink) reportsLink.href = 'reports.html?role=ta-hq&office=hq';
+      } else if (isHQ) {
         document.getElementById('headerRoleBadge').textContent = 'TA – Headquarters';
         document.getElementById('headerOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
         document.getElementById('headerOfficerDesignation').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.designation;
-        document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok (HQ)`;
+        document.getElementById('jurisdictionBadgeText').innerHTML = '<i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok (HQ)';
         document.getElementById('sidebarAvatar').textContent = 'TN';
         document.getElementById('sidebarOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
         document.getElementById('sidebarOfficeLabel').textContent = 'HQ Scrutiny Desk';
-        document.getElementById('mainDeskTitle').textContent = 'Technical Scrutiny & Document Intake Desk (HQ)';
+        document.getElementById('mainDeskTitle').textContent = 'Technical Scrutiny &amp; Document Intake Desk (HQ)';
         document.getElementById('mainDeskSubtitle').textContent = 'Review adventure operator safety dossiers, assign Inspecting Officers, and verify Gangtok guide credentials';
         const reportsLink = document.getElementById('sidebarReportsLink');
         if (reportsLink) reportsLink.href = 'reports.html?role=ta-hq&office=hq';
       } else {
         const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeOfficeContext] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
-        document.getElementById('headerRoleBadge').textContent = `District TA – ${activeOfficeContext}`;
+        document.getElementById('headerRoleBadge').textContent = 'District TA – ' + activeOfficeContext;
         document.getElementById('headerOfficerName').textContent = distInfo.taName;
-        document.getElementById('headerOfficerDesignation').textContent = `Technical Assistant (${activeOfficeContext} Circle)`;
-        document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-geo-alt-fill text-danger me-1"></i>${distInfo.office}`;
+        document.getElementById('headerOfficerDesignation').textContent = 'Technical Assistant (' + activeOfficeContext + ' Circle)';
+        document.getElementById('jurisdictionBadgeText').innerHTML = '<i class="bi bi-geo-alt-fill text-danger me-1"></i>' + distInfo.office;
         document.getElementById('sidebarAvatar').textContent = distInfo.taName.split(' ').map(n => n[0]).join('').slice(0, 2);
         document.getElementById('sidebarOfficerName').textContent = distInfo.taName;
-        document.getElementById('sidebarOfficeLabel').textContent = `TA ${activeOfficeContext} Circle`;
-        document.getElementById('mainDeskTitle').textContent = `District Scrutiny Desk &bull; ${activeOfficeContext} Circle`;
-        document.getElementById('mainDeskSubtitle').textContent = `Initial document verification for Guide Registration applications submitted from ${activeOfficeContext} District`;
+        document.getElementById('sidebarOfficeLabel').textContent = 'TA ' + activeOfficeContext + ' Circle';
+        document.getElementById('mainDeskTitle').textContent = 'District Scrutiny Desk &bull; ' + activeOfficeContext + ' Circle';
+        document.getElementById('mainDeskSubtitle').textContent = 'Initial document verification for Guide Registration applications submitted from ' + activeOfficeContext + ' District';
         const reportsLink = document.getElementById('sidebarReportsLink');
-        if (reportsLink) reportsLink.href = `reports.html?role=dist-ta-${encodeURIComponent(activeOfficeContext)}&district=${encodeURIComponent(activeOfficeContext)}`;
+        if (reportsLink) reportsLink.href = 'reports.html?role=dist-ta-' + encodeURIComponent(activeOfficeContext) + '&district=' + encodeURIComponent(activeOfficeContext);
       }
 
       // Filter Applications relevant to this TA context:
-      // - HQ TA sees: ALL Adventure Tour Operators (since all ATOs route through HQ TA) + Gangtok Guide Registrations
-      // - District TA sees: Guide Registrations for that specific district
+      // - All: sees ALL records statewide
+      // - HQ: sees ALL Adventure Tour Operators + Gangtok Guide Registrations
+      // - District: sees Guide Registrations for that specific district
       let filtered = allApps.filter(app => {
+        if (isAll) return true;
         if (isHQ) {
-          return (app.type === 'adventure-tour-operator') || (app.type === 'guide-registration' && app.district === 'Gangtok');
+          return (app.type === 'adventure-tour-operator') ||
+                 (app.type === 'guide-registration' && (app.district || '').toLowerCase() === 'gangtok');
         } else {
-          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+          return (app.type === 'guide-registration' && (app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 
@@ -459,7 +543,7 @@
           returnedCount++;
         } else if (app.stage.includes('IO') || app.stage.includes('Inspection')) {
           ioCount++;
-        } else if (app.currentRole === (isHQ ? 'ta-hq' : 'dist-ta')) {
+        } else if (isAll ? (app.currentRole === 'ta-hq' || app.currentRole === 'dist-ta') : (app.currentRole === (isHQ ? 'ta-hq' : 'dist-ta'))) {
           awaitingCount++;
         } else {
           passedCount++;
@@ -476,6 +560,39 @@
       document.getElementById('badgeIo').textContent = ioCount;
       document.getElementById('badgeReturned').textContent = returnedCount;
 
+      // Populate Jump to Application Dropdown
+      const jumpSelect = document.getElementById('taJumpArnSelect');
+      if (jumpSelect) {
+        jumpSelect.innerHTML = '<option value="">-- Jump to Specific Application --</option>';
+        filtered.forEach(app => {
+          const opt = document.createElement('option');
+          opt.value = app.arn;
+          opt.textContent = app.arn + ' - ' + (app.enterpriseName || app.applicantName) + ' (' + app.typeName + ' • ' + app.district + ')';
+          jumpSelect.appendChild(opt);
+        });
+      }
+
+      // Check for New Citizen Submission Banner
+      const banner = document.getElementById('taNewSubmissionBanner');
+      const latestArn = localStorage.getItem('adv_latest_submitted_arn');
+      if (banner) {
+        if (latestArn) {
+          const latestApp = allApps.find(a => a.arn.toLowerCase() === latestArn.toLowerCase());
+          if (latestApp) {
+            const isGuideOtherDist = (latestApp.type === 'guide-registration' && (latestApp.district || '').toLowerCase() !== 'gangtok');
+            const targetRole = isGuideOtherDist ? 'dist-ta' : 'ta-hq';
+            document.getElementById('taNewSubTitle').textContent = 'New Citizen Application Submitted: ' + latestApp.arn;
+            document.getElementById('taNewSubDetails').textContent = latestApp.applicantName + ' (' + latestApp.typeName + ' • ' + latestApp.district + ' District) • Stage: ' + latestApp.stage;
+            document.getElementById('taNewSubReviewBtn').href = 'review.html?arn=' + encodeURIComponent(latestApp.arn) + '&role=' + encodeURIComponent(targetRole) + '&district=' + encodeURIComponent(latestApp.district || 'Gangtok');
+            banner.classList.remove('d-none');
+          } else {
+            banner.classList.add('d-none');
+          }
+        } else {
+          banner.classList.add('d-none');
+        }
+      }
+
       renderTableRows(filtered);
     }
 
@@ -487,20 +604,23 @@
     function filterTaTable() {
       const allApps = AdventureWorkflowEngine.getAllApplications();
       const isHQ = (activeOfficeContext === 'hq');
+      const isAll = (activeOfficeContext === 'all');
       const searchQuery = (document.getElementById('taSearchInput').value || '').toLowerCase().trim();
       const catFilter = document.getElementById('taCategoryFilter').value;
 
       let filtered = allApps.filter(app => {
+        if (isAll) return true;
         if (isHQ) {
-          return (app.type === 'adventure-tour-operator') || (app.type === 'guide-registration' && app.district === 'Gangtok');
+          return (app.type === 'adventure-tour-operator') ||
+                 (app.type === 'guide-registration' && (app.district || '').toLowerCase() === 'gangtok');
         } else {
-          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+          return (app.type === 'guide-registration' && (app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 
       // Filter by queue
       if (activeQueueFilter === 'pending') {
-        filtered = filtered.filter(app => app.currentRole === (isHQ ? 'ta-hq' : 'dist-ta') && app.status !== AdventureWorkflowEngine.STATUSES.RETURNED);
+        filtered = filtered.filter(app => (isAll ? (app.currentRole === 'ta-hq' || app.currentRole === 'dist-ta') : (app.currentRole === (isHQ ? 'ta-hq' : 'dist-ta'))) && app.status !== AdventureWorkflowEngine.STATUSES.RETURNED);
       } else if (activeQueueFilter === 'io') {
         filtered = filtered.filter(app => app.stage.includes('IO') || app.stage.includes('Inspection'));
       } else if (activeQueueFilter === 'returned') {
@@ -535,28 +655,30 @@
       const tbody = document.getElementById('taApplicationsTableBody');
       const countBadge = document.getElementById('tableRecordCountBadge');
       tbody.innerHTML = '';
-      countBadge.textContent = `${apps.length} Records`;
+      countBadge.textContent = apps.length + ' Records';
 
       if (apps.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No applications matching this filter.</td></tr>`;
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications matching this filter in active queue.</td></tr>';
         return;
       }
 
-      const isHQ = (activeOfficeContext === 'hq');
-      const activeRoleKey = isHQ ? 'ta-hq' : 'dist-ta';
+      const isHQ = (activeOfficeContext === 'hq' || activeOfficeContext === 'all');
 
       apps.forEach(app => {
         const tr = document.createElement('tr');
         const catBadge = app.type === 'adventure-tour-operator'
-          ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-compass me-1"></i>Adventure Operator</span>`
-          : `<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-person-badge me-1"></i>Guide Registration</span>`;
+          ? '<span class="badge bg-primary-subtle text-primary border border-primary-subtle"><i class="bi bi-compass me-1"></i>Adventure Operator</span>'
+          : '<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-person-badge me-1"></i>Guide Registration</span>';
 
-        let stageBadge = `<span class="badge bg-light text-dark border">${app.stage}</span>`;
+        let stageBadge = '<span class="badge bg-light text-dark border">' + app.stage + '</span>';
         if (app.status === AdventureWorkflowEngine.STATUSES.RETURNED) {
-          stageBadge = `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-arrow-return-left me-1"></i>Returned for Correction</span>`;
+          stageBadge = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-arrow-return-left me-1"></i>Returned for Correction</span>';
         } else if (app.stage.includes('IO') || app.stage.includes('Inspection')) {
-          stageBadge = `<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-shield-check me-1"></i>IO Inspection</span>`;
+          stageBadge = '<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-shield-check me-1"></i>IO Inspection</span>';
         }
+
+        const isGuideOtherDist = (app.type === 'guide-registration' && (app.district || '').toLowerCase() !== 'gangtok');
+        const activeRoleKey = isGuideOtherDist ? 'dist-ta' : 'ta-hq';
 
         tr.innerHTML = `
           <td><strong class="font-monospace text-primary">${app.arn}</strong></td>
@@ -568,7 +690,7 @@
           <td><span class="badge bg-light text-dark border">${app.district}</span></td>
           <td>${stageBadge}</td>
           <td class="text-end text-nowrap">
-            <a href="review.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-primary py-1 px-2.5 btn-action-compact">
+            <a href="review.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&district=${encodeURIComponent(app.district || 'Gangtok')}" class="btn btn-sm btn-primary py-1 px-2.5 btn-action-compact">
               <i class="bi bi-file-earmark-check me-1"></i>Review File
             </a>
           </td>
