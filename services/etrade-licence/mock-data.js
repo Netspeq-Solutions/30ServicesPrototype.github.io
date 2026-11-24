@@ -10,17 +10,17 @@
   'use strict';
 
   var STAFF = {
-    'INS-01': { name: 'Karma Tshering Bhutia', role: 'inspector', designation: 'Inspector', circle: 'NE' },
-    'INS-02': { name: 'Pema Doma Lepcha', role: 'inspector', designation: 'Inspector', circle: 'NE' },
-    'BO-01': { name: 'Ranjit Pradhan', role: 'bo', designation: 'BO', circle: 'NE', note: 'Mainly handles pharmaceutical and manufacturing cases' },
-    'BO-02': { name: 'Sushma Rai', role: 'bo', designation: 'BO', circle: 'NE', note: 'Individual traders, fuel and other company cases' },
-    'JD-01': { name: 'Phurba Tshering Lepcha', role: 'jd', designation: 'Joint Director', circle: 'NE', note: 'Approves and forwards after the BO' },
-    'DIR-01': { name: 'Yangchen Dolkar Bhutia', role: 'jd', designation: 'Director', circle: 'NE', note: 'Approves and forwards after the BO' },
-    'SS-01': { name: 'Tenzing Wangchuk', role: 'ss', designation: 'Special Secretary', circle: 'NE', note: 'North-East circle, Gangtok HQ – may give final approval' },
-    'HOD-CCS': { name: 'Dorjee Namgyal', role: 'hod', designation: 'CCS', circle: 'NE', note: 'Final approval (own account)' },
-    'HOD-IA1': { name: 'Nima Sherpa', role: 'hod', designation: 'Issuing Authority', circle: 'NE', note: 'Final approval (own account)' },
-    'HOD-IA2': { name: 'Bimala Chettri', role: 'hod', designation: 'Issuing Authority', circle: 'NE', note: 'Final approval (own account)' },
-    'ADM-01': { name: 'Sangeeta Subba', role: 'admin', designation: 'Department Admin', circle: 'NE', note: 'Renewal amounts and settings' }
+    'INS-01': { name: 'Inspector 1', role: 'inspector', designation: 'Inspector', circle: 'NE' },
+    'INS-02': { name: 'Inspector 2', role: 'inspector', designation: 'Inspector', circle: 'NE' },
+    'BO-01': { name: 'Bazaar Officer 1', role: 'bo', designation: 'BO', circle: 'NE', note: 'Mainly handles pharmaceutical and manufacturing cases' },
+    'BO-02': { name: 'Bazaar Officer 2', role: 'bo', designation: 'BO', circle: 'NE', note: 'Individual traders, fuel and other company cases' },
+    'JD-01': { name: 'Joint Director 1', role: 'jd', designation: 'Joint Director', circle: 'NE', note: 'Approves and forwards after the BO' },
+    'DIR-01': { name: 'Director 1', role: 'jd', designation: 'Director', circle: 'NE', note: 'Approves and forwards after the BO' },
+    'SS-01': { name: 'Special Secretary 1', role: 'ss', designation: 'Special Secretary', circle: 'NE', note: 'North-East circle, Gangtok HQ – may give final approval' },
+    'HOD-CCS': { name: 'CCS 1', role: 'hod', designation: 'CCS', circle: 'NE', note: 'Final approval (own account)' },
+    'HOD-IA1': { name: 'Issuing Authority 1', role: 'hod', designation: 'Issuing Authority', circle: 'NE', note: 'Final approval (own account)' },
+    'HOD-IA2': { name: 'Issuing Authority 2', role: 'hod', designation: 'Issuing Authority', circle: 'NE', note: 'Final approval (own account)' },
+    'ADM-01': { name: 'Department Admin 1', role: 'admin', designation: 'Department Admin', circle: 'NE', note: 'Renewal amounts and settings' }
   };
 
   // ---------------- Items master (purpose of licence) ----------------
@@ -308,7 +308,7 @@
   var APPLICATIONS = [
     app({ appId: 'TL-NE-2026-000101', businessKey: 'bizB', status: 'Returned to Applicant', firstSubmittedOn: '2026-11-03', submittedOn: '2026-11-03', updatedOn: '2026-11-06',
       returnedBy: { role: 'inspector', userId: null },
-      correction: { by: 'Karma Tshering Bhutia', role: 'Inspector', on: '2026-11-06', remarks: 'The NOC of the house owner is not signed – upload the signed NOC. The PAN entered does not match the PAN card uploaded.', fields: ['pan'], docs: ['houseOwnerNoc'] },
+      correction: { by: 'Inspector 1', role: 'Inspector', on: '2026-11-06', remarks: 'The NOC of the house owner is not signed – upload the signed NOC. The PAN entered does not match the PAN card uploaded.', fields: ['pan'], docs: ['houseOwnerNoc'] },
       history: [['2026-11-03 11:20', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-11-05 10:05', 'INS-01', 'Verification started', '', 'Under Inspection'],
         ['2026-11-06 15:42', 'INS-01', 'Returned to applicant for correction', 'The NOC of the house owner is not signed – upload the signed NOC. The PAN entered does not match the PAN card uploaded.', 'Returned to Applicant']] }),
@@ -316,13 +316,13 @@
     // Approved; the challan is not generated yet. The penalty can still be exempted by the Inspector / BO.
     app({ appId: 'TL-NE-2026-000102', businessKey: 'bizC', status: 'Approved – Payment Pending', firstSubmittedOn: '2026-09-15', submittedOn: '2026-09-15', updatedOn: '2026-10-06', selectedBo: 'BO-02',
       assessment: A102, path: ['ss', 'hod'], approvedBy: approvedBy('HOD-IA1', '2026-10-06'),
-      inspections: [{ id: 'N-102-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-09-18', at: '2026-09-18 16:10', notes: 'Site visited. Office functioning on the 2nd floor; signage displayed. Fire extinguishers in place. Office had started working before the licence – penalty of ₹500 added.', files: ['site_photo_teesta_1.jpg'], originalsCollected: true, edits: [] }],
+      inspections: [{ id: 'N-102-1', by: 'INS-02', byName: 'Inspector 2', role: 'Inspector', visitDate: '2026-09-18', at: '2026-09-18 16:10', notes: 'Site visited. Office functioning on the 2nd floor; signage displayed. Fire extinguishers in place. Office had started working before the licence – penalty of ₹500 added.', files: ['site_photo_teesta_1.jpg'], originalsCollected: true, edits: [] }],
       originalsChecks: [oc('INS-02', '2026-09-18', 'at inspection')],
       fee: fixed(A102, 'Licence', '2026-10-06'),
       history: [['2026-09-15 12:02', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-09-17 10:30', 'INS-02', 'Verification started', '', 'Under Inspection'],
         ['2026-09-18 16:10', 'INS-02', 'Inspection report added · fee assessed ₹10,500 (licence fee ₹9,000 + garbage fee ₹1,000 + penalties ₹500) · originals verified at inspection', 'Site visited on 18 Sep 2026', 'Under Inspection'],
-        ['2026-09-19 11:00', 'INS-02', 'Forwarded to BO (Sushma Rai)', 'Documents and site in order.', 'With BO'],
+        ['2026-09-19 11:00', 'INS-02', 'Forwarded to BO (Bazaar Officer 2)', 'Documents and site in order.', 'With BO'],
         ['2026-09-24 14:15', 'BO-02', 'Forwarded to Special Secretary', 'Recommended for licence.', 'With Special Secretary'],
         ['2026-09-29 12:40', 'SS-01', 'Approved and forwarded to Issuing Authority', 'Verified. Recommended for approval.', 'With Issuing Authority'],
         ['2026-10-06 11:25', 'HOD-IA1', 'Approved (final) – fee ₹10,500 fixed (licence fee ₹9,000 + garbage fee ₹1,000 + penalties ₹500)', 'Approved as recommended.', 'Approved – Payment Pending']] }),
@@ -332,7 +332,7 @@
 
     app({ appId: 'TL-NE-2026-000104', businessKey: 'bizH', status: 'Under Inspection', firstSubmittedOn: '2026-11-10', submittedOn: '2026-11-10', updatedOn: '2026-11-13',
       assessment: assessed(8000, 1500, 'INS-02', '2026-11-13'),
-      inspections: [{ id: 'N-104-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-11-13', at: '2026-11-13 15:30', notes: 'Store visited. Fit-out complete, opening planned for December. Original incorporation certificate, franchise agreement and NOC of the house owner seen and collected for the file.', files: ['store_front_mountainmart.jpg'], originalsCollected: true, edits: [] }],
+      inspections: [{ id: 'N-104-1', by: 'INS-02', byName: 'Inspector 2', role: 'Inspector', visitDate: '2026-11-13', at: '2026-11-13 15:30', notes: 'Store visited. Fit-out complete, opening planned for December. Original incorporation certificate, franchise agreement and NOC of the house owner seen and collected for the file.', files: ['store_front_mountainmart.jpg'], originalsCollected: true, edits: [] }],
       originalsChecks: [oc('INS-02', '2026-11-13', 'at inspection')],
       history: [['2026-11-10 09:55', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-11-12 11:10', 'INS-02', 'Verification started', '', 'Under Inspection'],
@@ -340,22 +340,22 @@
 
     app({ appId: 'TL-NE-2026-000105', businessKey: 'bizI', status: 'With BO', firstSubmittedOn: '2026-11-02', submittedOn: '2026-11-02', updatedOn: '2026-11-10', selectedBo: 'BO-01',
       assessment: assessed(5000, 500, 'INS-01', '2026-11-08'),
-      inspections: [{ id: 'N-105-1', by: 'INS-01', byName: 'Karma Tshering Bhutia', role: 'Inspector', visitDate: '2026-11-08', at: '2026-11-08 14:20', notes: 'Godown at Daragaon Road visited. Storage racks and cold chain refrigerator available. Drug licence displayed. Pharmacist on duty.', files: ['godown_yuksom.jpg', 'drug_licence_display.jpg'], originalsCollected: false, edits: [] }],
+      inspections: [{ id: 'N-105-1', by: 'INS-01', byName: 'Inspector 1', role: 'Inspector', visitDate: '2026-11-08', at: '2026-11-08 14:20', notes: 'Godown at Daragaon Road visited. Storage racks and cold chain refrigerator available. Drug licence displayed. Pharmacist on duty.', files: ['godown_yuksom.jpg', 'drug_licence_display.jpg'], originalsCollected: false, edits: [] }],
       history: [['2026-11-02 13:15', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-11-04 10:00', 'INS-01', 'Verification started', '', 'Under Inspection'],
         ['2026-11-08 14:20', 'INS-01', 'Inspection report added · fee assessed ₹5,500 (licence fee ₹5,000 + garbage fee ₹500)', 'Site visited on 8 Nov 2026', 'Under Inspection'],
-        ['2026-11-10 10:40', 'INS-01', 'Forwarded to BO (Ranjit Pradhan)', 'Pharma case – forwarded to BO handling pharma.', 'With BO']] }),
+        ['2026-11-10 10:40', 'INS-01', 'Forwarded to BO (Bazaar Officer 1)', 'Pharma case – forwarded to BO handling pharma.', 'With BO']] }),
 
     // BO → Joint Director → Special Secretary
     app({ appId: 'TL-NE-2026-000106', businessKey: 'bizJ', status: 'With Special Secretary', firstSubmittedOn: '2026-10-20', submittedOn: '2026-10-20', updatedOn: '2026-11-09', selectedBo: 'BO-02',
       assessment: assessed(10000, 1000, 'INS-01', '2026-10-28'), path: ['jd', 'ss'], sentBy: { role: 'jd', userId: 'JD-01' },
-      inspections: [{ id: 'N-106-1', by: 'INS-01', byName: 'Karma Tshering Bhutia', role: 'Inspector', visitDate: '2026-10-28', at: '2026-10-28 13:00', notes: 'Office at Mangan Bazaar visited. Premises in order. Tower site register maintained.', files: ['mangan_office.jpg'], originalsCollected: false, edits: [] },
-        { id: 'N-106-2', by: 'BO-02', byName: 'Sushma Rai', role: 'BO', visitDate: '2026-11-03', at: '2026-11-03 12:30', notes: 'Re-inspected. Fire exit route now marked as advised.', files: [], originalsCollected: false, edits: [] },
-        { id: 'N-106-3', by: 'JD-01', byName: 'Phurba Tshering Lepcha', role: 'Joint Director', visitDate: null, at: '2026-11-09 11:40', notes: 'Premises are in Mangan district; applied under the North-East circle (HQ) as allowed. File in order.', files: [], originalsCollected: false, edits: [] }],
+      inspections: [{ id: 'N-106-1', by: 'INS-01', byName: 'Inspector 1', role: 'Inspector', visitDate: '2026-10-28', at: '2026-10-28 13:00', notes: 'Office at Mangan Bazaar visited. Premises in order. Tower site register maintained.', files: ['mangan_office.jpg'], originalsCollected: false, edits: [] },
+        { id: 'N-106-2', by: 'BO-02', byName: 'Bazaar Officer 2', role: 'BO', visitDate: '2026-11-03', at: '2026-11-03 12:30', notes: 'Re-inspected. Fire exit route now marked as advised.', files: [], originalsCollected: false, edits: [] },
+        { id: 'N-106-3', by: 'JD-01', byName: 'Joint Director 1', role: 'Joint Director', visitDate: null, at: '2026-11-09 11:40', notes: 'Premises are in Mangan district; applied under the North-East circle (HQ) as allowed. File in order.', files: [], originalsCollected: false, edits: [] }],
       history: [['2026-10-20 15:00', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-10-22 10:20', 'INS-01', 'Verification started', '', 'Under Inspection'],
         ['2026-10-28 13:00', 'INS-01', 'Inspection report added · fee assessed ₹11,000 (licence fee ₹10,000 + garbage fee ₹1,000)', 'Site visited on 28 Oct 2026', 'Under Inspection'],
-        ['2026-10-29 11:00', 'INS-01', 'Forwarded to BO (Sushma Rai)', '', 'With BO'],
+        ['2026-10-29 11:00', 'INS-01', 'Forwarded to BO (Bazaar Officer 2)', '', 'With BO'],
         ['2026-11-03 12:30', 'BO-02', 'Re-inspection note added', 'Site visited on 3 Nov 2026', 'With BO'],
         ['2026-11-05 16:05', 'BO-02', 'Forwarded to Joint Director / Director', 'Recommended.', 'With Joint Director / Director'],
         ['2026-11-09 11:40', 'JD-01', 'Joint Director note added', '', 'With Joint Director / Director'],
@@ -364,13 +364,13 @@
     // BO → Special Secretary → Issuing Authority
     app({ appId: 'TL-NE-2026-000107', businessKey: 'bizK', status: 'With Issuing Authority', firstSubmittedOn: '2026-10-05', submittedOn: '2026-10-05', updatedOn: '2026-11-13', selectedBo: 'BO-02',
       assessment: assessed(6000, 1000, 'INS-02', '2026-10-12'), path: ['ss', 'hod'], sentBy: { role: 'ss', userId: 'SS-01' },
-      inspections: [{ id: 'N-107-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-10-12', at: '2026-10-12 12:45', notes: 'Lubricant store visited. Stock kept on racks, fire extinguishers and sand buckets in place. Fire NOC valid till 2028.', files: ['store_siniolchu.jpg'], originalsCollected: true,
-        edits: [{ notes: 'Lubricant store visited. Stock kept on racks.', editedBy: 'Tenzing Wangchuk', editedRole: 'Special Secretary', editedOn: '2026-11-12 11:20' }] }],
+      inspections: [{ id: 'N-107-1', by: 'INS-02', byName: 'Inspector 2', role: 'Inspector', visitDate: '2026-10-12', at: '2026-10-12 12:45', notes: 'Lubricant store visited. Stock kept on racks, fire extinguishers and sand buckets in place. Fire NOC valid till 2028.', files: ['store_siniolchu.jpg'], originalsCollected: true,
+        edits: [{ notes: 'Lubricant store visited. Stock kept on racks.', editedBy: 'Special Secretary 1', editedRole: 'Special Secretary', editedOn: '2026-11-12 11:20' }] }],
       originalsChecks: [oc('INS-02', '2026-10-12', 'at inspection')],
       history: [['2026-10-05 10:30', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-10-08 09:40', 'INS-02', 'Verification started', '', 'Under Inspection'],
         ['2026-10-12 12:45', 'INS-02', 'Inspection report added · fee assessed ₹7,000 (licence fee ₹6,000 + garbage fee ₹1,000) · originals verified at inspection', 'Site visited on 12 Oct 2026', 'Under Inspection'],
-        ['2026-10-14 10:00', 'INS-02', 'Forwarded to BO (Sushma Rai)', '', 'With BO'],
+        ['2026-10-14 10:00', 'INS-02', 'Forwarded to BO (Bazaar Officer 2)', '', 'With BO'],
         ['2026-10-30 15:30', 'BO-02', 'Forwarded to Special Secretary', 'Recommended.', 'With Special Secretary'],
         ['2026-11-12 11:20', 'SS-01', 'Inspection note edited (original kept)', 'Added fire NOC validity from the file.', 'With Special Secretary'],
         ['2026-11-13 10:10', 'SS-01', 'Approved and forwarded to Issuing Authority', 'Verified. Fire NOC validity confirmed.', 'With Issuing Authority']] }),
@@ -378,7 +378,7 @@
     // Paid: challan generated and BR uploaded – waiting for BR verification.
     app({ appId: 'TL-NE-2026-000108', businessKey: 'bizL', status: 'BR Uploaded', firstSubmittedOn: '2026-08-12', submittedOn: '2026-08-12', updatedOn: '2026-11-14', selectedBo: 'BO-02',
       assessment: A108, path: ['hod'], approvedBy: approvedBy('HOD-CCS', '2026-11-03'),
-      inspections: [{ id: 'N-108-1', by: 'INS-01', byName: 'Karma Tshering Bhutia', role: 'Inspector', visitDate: '2026-08-20', at: '2026-08-20 15:15', notes: 'Office visited. All originals seen and collected at site.', files: [], originalsCollected: true, edits: [] }],
+      inspections: [{ id: 'N-108-1', by: 'INS-01', byName: 'Inspector 1', role: 'Inspector', visitDate: '2026-08-20', at: '2026-08-20 15:15', notes: 'Office visited. All originals seen and collected at site.', files: [], originalsCollected: true, edits: [] }],
       originalsChecks: [oc('INS-01', '2026-08-20', 'at inspection')],
       fee: fixed(A108, 'Licence', '2026-11-03'),
       challan: { no: 'UDD/CH/202627/000108-1', on: '2026-11-10', amount: 7500, status: 'Generated' },
@@ -386,7 +386,7 @@
       history: [['2026-08-12 11:00', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-08-18 10:15', 'INS-01', 'Verification started', '', 'Under Inspection'],
         ['2026-08-20 15:15', 'INS-01', 'Inspection report added · fee assessed ₹7,500 (licence fee ₹6,500 + garbage fee ₹1,000) · originals verified at inspection', 'Site visited on 20 Aug 2026', 'Under Inspection'],
-        ['2026-08-21 10:00', 'INS-01', 'Forwarded to BO (Sushma Rai)', '', 'With BO'],
+        ['2026-08-21 10:00', 'INS-01', 'Forwarded to BO (Bazaar Officer 2)', '', 'With BO'],
         ['2026-09-02 12:00', 'BO-02', 'Forwarded to Issuing Authority', 'Straightforward case – sent directly to the Issuing Authority.', 'With Issuing Authority'],
         ['2026-11-03 11:45', 'HOD-CCS', 'Approved (final) – fee ₹7,500 fixed (licence fee ₹6,500 + garbage fee ₹1,000)', 'Approved.', 'Approved – Payment Pending'],
         ['2026-11-10 10:05', 'APPLICANT', 'Challan generated · UDD/CH/202627/000108-1 · ₹7,500', '', 'Approved – Payment Pending'],
@@ -394,21 +394,21 @@
 
     app({ appId: 'TL-NE-2026-000109', businessKey: 'bizM', status: 'Returned to BO', firstSubmittedOn: '2026-10-10', submittedOn: '2026-10-10', updatedOn: '2026-11-11', selectedBo: 'BO-01',
       assessment: assessed(10000, 1500, 'INS-02', '2026-10-16'),
-      inspections: [{ id: 'N-109-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-10-16', at: '2026-10-16 14:00', notes: 'Plant visited. Production not yet started; machinery installed.', files: ['plant_rangpo.jpg'], originalsCollected: false, edits: [] }],
+      inspections: [{ id: 'N-109-1', by: 'INS-02', byName: 'Inspector 2', role: 'Inspector', visitDate: '2026-10-16', at: '2026-10-16 14:00', notes: 'Plant visited. Production not yet started; machinery installed.', files: ['plant_rangpo.jpg'], originalsCollected: false, edits: [] }],
       history: [['2026-10-10 12:00', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-10-13 10:00', 'INS-02', 'Verification started', '', 'Under Inspection'],
         ['2026-10-16 14:00', 'INS-02', 'Inspection report added · fee assessed ₹11,500 (licence fee ₹10,000 + garbage fee ₹1,500)', 'Site visited on 16 Oct 2026', 'Under Inspection'],
-        ['2026-10-17 11:00', 'INS-02', 'Forwarded to BO (Ranjit Pradhan)', '', 'With BO'],
+        ['2026-10-17 11:00', 'INS-02', 'Forwarded to BO (Bazaar Officer 1)', '', 'With BO'],
         ['2026-10-27 15:10', 'BO-01', 'Forwarded to Special Secretary', '', 'With Special Secretary'],
-        ['2026-11-11 12:30', 'SS-01', 'Returned to BO (Ranjit Pradhan)', 'Confirm whether the drug manufacturing licence covers all three product lines before forwarding.', 'Returned to BO']] }),
+        ['2026-11-11 12:30', 'SS-01', 'Returned to BO (Bazaar Officer 1)', 'Confirm whether the drug manufacturing licence covers all three product lines before forwarding.', 'Returned to BO']] }),
 
     app({ appId: 'TL-NE-2026-000110', businessKey: 'bizN', status: 'Returned to Special Secretary', firstSubmittedOn: '2026-09-25', submittedOn: '2026-09-25', updatedOn: '2026-11-12', selectedBo: 'BO-02',
       assessment: assessed(8000, 1000, 'INS-01', '2026-10-01'), path: ['ss'], sentBy: { role: 'ss', userId: 'SS-01' },
-      inspections: [{ id: 'N-110-1', by: 'INS-01', byName: 'Karma Tshering Bhutia', role: 'Inspector', visitDate: '2026-10-01', at: '2026-10-01 13:30', notes: 'Hotel at Upper Deorali visited. Restaurant and parking available. Tourism registration certificate seen.', files: [], originalsCollected: false, edits: [] }],
+      inspections: [{ id: 'N-110-1', by: 'INS-01', byName: 'Inspector 1', role: 'Inspector', visitDate: '2026-10-01', at: '2026-10-01 13:30', notes: 'Hotel at Upper Deorali visited. Restaurant and parking available. Tourism registration certificate seen.', files: [], originalsCollected: false, edits: [] }],
       history: [['2026-09-25 10:00', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-09-29 11:30', 'INS-01', 'Verification started', '', 'Under Inspection'],
         ['2026-10-01 13:30', 'INS-01', 'Inspection report added · fee assessed ₹9,000 (licence fee ₹8,000 + garbage fee ₹1,000)', 'Site visited on 1 Oct 2026', 'Under Inspection'],
-        ['2026-10-02 10:00', 'INS-01', 'Forwarded to BO (Sushma Rai)', '', 'With BO'],
+        ['2026-10-02 10:00', 'INS-01', 'Forwarded to BO (Bazaar Officer 2)', '', 'With BO'],
         ['2026-10-15 16:00', 'BO-02', 'Forwarded to Special Secretary', '', 'With Special Secretary'],
         ['2026-10-30 12:00', 'SS-01', 'Approved and forwarded to Issuing Authority', 'Verified.', 'With Issuing Authority'],
         ['2026-11-12 14:45', 'HOD-CCS', 'Returned to Special Secretary', 'Inspection note does not record the number of rooms actually in use. Please confirm.', 'Returned to Special Secretary']] }),
@@ -419,15 +419,15 @@
     app({ appId: 'TL-NE-2026-000111', kind: 'Renewal', licenceNo: 'UDD/TL/NE/2025/0004', businessKey: 'bizF', status: 'Resubmitted', firstSubmittedOn: '2026-06-04', submittedOn: '2026-11-14', updatedOn: '2026-11-14', selectedBo: 'BO-02', round: 2,
       returnedBy: { role: 'bo', userId: 'BO-02' },
       assessment: assessed(12000, 1500, 'INS-01', '2026-06-06', { late: 100, lateDays: 20 }),
-      inspections: [{ id: 'N-111-1', by: 'INS-01', byName: 'Karma Tshering Bhutia', role: 'Inspector', visitDate: null, at: '2026-06-06 15:40', notes: 'Renewal request checked. Licence in order; no change of items. Late fee as per the rule (20 days after the grace period).', files: [], originalsCollected: false, edits: [] }],
+      inspections: [{ id: 'N-111-1', by: 'INS-01', byName: 'Inspector 1', role: 'Inspector', visitDate: null, at: '2026-06-06 15:40', notes: 'Renewal request checked. Licence in order; no change of items. Late fee as per the rule (20 days after the grace period).', files: [], originalsCollected: false, edits: [] }],
       docs: { gstClearance: { file: 'gst_certificate_rumtek_fuel_station_v2.pdf', v: 2, on: '2026-11-14' } },
-      versions: [{ round: 1, submittedOn: '2026-06-04', returnedOn: '2026-06-10', returnedBy: 'Sushma Rai (BO)', remarks: 'The GST certificate uploaded is for FY 2024-25. Upload the certificate for FY 2025-26.', changedFields: [], changedDocs: [{ key: 'gstClearance', old: 'gst_certificate_rumtek_fuel_station.pdf', new: 'gst_certificate_rumtek_fuel_station_v2.pdf' }] }],
+      versions: [{ round: 1, submittedOn: '2026-06-04', returnedOn: '2026-06-10', returnedBy: 'Bazaar Officer 2 (BO)', remarks: 'The GST certificate uploaded is for FY 2024-25. Upload the certificate for FY 2025-26.', changedFields: [], changedDocs: [{ key: 'gstClearance', old: 'gst_certificate_rumtek_fuel_station.pdf', new: 'gst_certificate_rumtek_fuel_station_v2.pdf' }] }],
       history: [['2026-06-04 10:30', 'APPLICANT', 'Renewal request submitted', '', 'Submitted'],
         ['2026-06-05 11:00', 'INS-01', 'Verification started', '', 'Under Inspection'],
         ['2026-06-06 15:40', 'INS-01', 'Renewal verification note added · fee assessed ₹13,600 (renewal fee ₹12,000 + garbage fee ₹1,500 + late fee ₹100)', '', 'Under Inspection'],
-        ['2026-06-06 16:00', 'INS-01', 'Forwarded to BO (Sushma Rai) for approval', 'Fee worked out as per the renewal amount and the late fee rule.', 'With BO'],
+        ['2026-06-06 16:00', 'INS-01', 'Forwarded to BO (Bazaar Officer 2) for approval', 'Fee worked out as per the renewal amount and the late fee rule.', 'With BO'],
         ['2026-06-10 12:10', 'BO-02', 'Returned to applicant for correction', 'The GST certificate uploaded is for FY 2024-25. Upload the certificate for FY 2025-26.', 'Returned to Applicant'],
-        ['2026-11-14 17:05', 'APPLICANT', 'Corrected and resubmitted – goes back to BO Sushma Rai', '', 'Resubmitted']] }),
+        ['2026-11-14 17:05', 'APPLICANT', 'Corrected and resubmitted – goes back to BO Bazaar Officer 2', '', 'Resubmitted']] }),
 
     // Change of name on an active licence – in the Inspector pool.
     app({ appId: 'TL-NE-2026-000112', kind: 'Change', licenceNo: 'UDD/TL/NE/2025/0007', businessKey: 'bizQ', status: 'Submitted', firstSubmittedOn: '2026-11-15', submittedOn: '2026-11-15', updatedOn: '2026-11-15',
@@ -455,12 +455,12 @@
     // Beauty parlour (two sub-items): BO forwarded to the Joint Director / Director.
     app({ appId: 'TL-NE-2026-000116', businessKey: 'bizU', status: 'With Joint Director / Director', firstSubmittedOn: '2026-10-28', submittedOn: '2026-10-28', updatedOn: '2026-11-15', selectedBo: 'BO-02',
       assessment: assessed(4000, 500, 'INS-02', '2026-11-04'), path: ['jd'], sentBy: { role: 'bo', userId: 'BO-02' },
-      inspections: [{ id: 'N-116-1', by: 'INS-02', byName: 'Pema Doma Lepcha', role: 'Inspector', visitDate: '2026-11-04', at: '2026-11-04 12:15', notes: 'Parlour at Singtam Bazaar visited. Two chairs, wash basin and sterilisation unit; cosmetics counter at the front. Premises in Singtam, applied under the North-East circle.', files: [], originalsCollected: true, edits: [] }],
+      inspections: [{ id: 'N-116-1', by: 'INS-02', byName: 'Inspector 2', role: 'Inspector', visitDate: '2026-11-04', at: '2026-11-04 12:15', notes: 'Parlour at Singtam Bazaar visited. Two chairs, wash basin and sterilisation unit; cosmetics counter at the front. Premises in Singtam, applied under the North-East circle.', files: [], originalsCollected: true, edits: [] }],
       originalsChecks: [oc('INS-02', '2026-11-04', 'at inspection')],
       history: [['2026-10-28 10:10', 'APPLICANT', 'Application submitted', '', 'Submitted'],
         ['2026-10-30 11:00', 'INS-02', 'Verification started', '', 'Under Inspection'],
         ['2026-11-04 12:15', 'INS-02', 'Inspection report added · fee assessed ₹4,500 (licence fee ₹4,000 + garbage fee ₹500) · originals verified at inspection', 'Site visited on 4 Nov 2026', 'Under Inspection'],
-        ['2026-11-05 10:00', 'INS-02', 'Forwarded to BO (Sushma Rai)', '', 'With BO'],
+        ['2026-11-05 10:00', 'INS-02', 'Forwarded to BO (Bazaar Officer 2)', '', 'With BO'],
         ['2026-11-15 15:20', 'BO-02', 'Forwarded to Joint Director / Director', 'Two sub-items under one licence – for approval.', 'With Joint Director / Director']] })
   ];
   // Change request carries the new name
@@ -473,28 +473,28 @@
   function fees(fee, garbage, on, by, extra) { return Object.assign({ first: { fee: fee, garbage: garbage, on: on, by: by }, renewal: fee, garbage: garbage, history: [] }, extra || {}); }
   function lic(key, o) { return Object.assign({ businessKey: key, circle: 'NE', details: clone(BUSINESSES[key].form) }, purposeOf(key), o); }
   var LICENCES = [
-    lic('bizD', { licenceNo: 'UDD/TL/NE/2024/0003', firstIssuedOn: '2024-06-12', validTo: '2027-03-31', fees: fees(8000, 1500, '2024-05-28', 'Karma Tshering Bhutia'),
+    lic('bizD', { licenceNo: 'UDD/TL/NE/2024/0003', firstIssuedOn: '2024-06-12', validTo: '2027-03-31', fees: fees(8000, 1500, '2024-05-28', 'Inspector 1'),
       versions: [
-        ver({ v: 1, businessName: 'Gangtok Pharma Industries', premisesAddress: 'Plot 12, Industrial Estate', locality: 'Bojoghari', district: 'Gangtok', officeAddress: 'H. No. 21, Lower Burtuk, Burtuk, PO Gangtok, Gangtok', issuedOn: '2024-06-12', appId: 'TL-NE-2024-000031', approvedBy: 'Dorjee Namgyal (CCS)', brNo: '2425N-11001-00877', superseded: '2025-09-10' }),
-        ver({ v: 2, businessName: 'Gangtok Pharma Industries Ltd.', premisesAddress: 'Plot 12, Industrial Estate', locality: 'Bojoghari', district: 'Gangtok', officeAddress: 'H. No. 21, Lower Burtuk, Burtuk, PO Gangtok, Gangtok', issuedOn: '2025-09-10', appId: 'TL-NE-2025-000058', approvedBy: 'Nima Sherpa (Issuing Authority)', brNo: '2526N-11001-02210',
+        ver({ v: 1, businessName: 'Gangtok Pharma Industries', premisesAddress: 'Plot 12, Industrial Estate', locality: 'Bojoghari', district: 'Gangtok', officeAddress: 'H. No. 21, Lower Burtuk, Burtuk, PO Gangtok, Gangtok', issuedOn: '2024-06-12', appId: 'TL-NE-2024-000031', approvedBy: 'CCS 1 (CCS)', brNo: '2425N-11001-00877', superseded: '2025-09-10' }),
+        ver({ v: 2, businessName: 'Gangtok Pharma Industries Ltd.', premisesAddress: 'Plot 12, Industrial Estate', locality: 'Bojoghari', district: 'Gangtok', officeAddress: 'H. No. 21, Lower Burtuk, Burtuk, PO Gangtok, Gangtok', issuedOn: '2025-09-10', appId: 'TL-NE-2025-000058', approvedBy: 'Issuing Authority 1 (Issuing Authority)', brNo: '2526N-11001-02210',
           change: { types: ['name'], from: { companyName: 'Gangtok Pharma Industries' }, to: { companyName: 'Gangtok Pharma Industries Ltd.' } } })
       ],
       renewals: [
         { appId: 'TL-NE-2025-000019', on: '2025-04-22', validTo: '2026-03-31', fee: 8000, garbage: 1500, fine: 0, brNo: '2526N-11001-00412' },
         { appId: 'TL-NE-2026-000014', on: '2026-04-18', validTo: '2027-03-31', fee: 8000, garbage: 1500, fine: 0, brNo: '2627N-11001-00398' }
       ] }),
-    lic('bizE', { licenceNo: 'UDD/TL/NE/2024/0011', firstIssuedOn: '2024-09-03', validTo: '2026-03-31', fees: fees(20000, 2000, '2024-08-21', 'Pema Doma Lepcha'),
-      versions: [ver({ v: 1, businessName: 'Denzong Petro Depot', premisesAddress: 'Depot Yard, Depot Road', locality: 'Majhitar', district: 'Pakyong', officeAddress: 'H. No. 8, Majhitar Road, Rangpo, PO Rangpo, Pakyong, 737132', issuedOn: '2024-09-03', appId: 'TL-NE-2024-000047', approvedBy: 'Dorjee Namgyal (CCS)', brNo: '2425N-11001-01544' })],
+    lic('bizE', { licenceNo: 'UDD/TL/NE/2024/0011', firstIssuedOn: '2024-09-03', validTo: '2026-03-31', fees: fees(20000, 2000, '2024-08-21', 'Inspector 2'),
+      versions: [ver({ v: 1, businessName: 'Denzong Petro Depot', premisesAddress: 'Depot Yard, Depot Road', locality: 'Majhitar', district: 'Pakyong', officeAddress: 'H. No. 8, Majhitar Road, Rangpo, PO Rangpo, Pakyong, 737132', issuedOn: '2024-09-03', appId: 'TL-NE-2024-000047', approvedBy: 'CCS 1 (CCS)', brNo: '2425N-11001-01544' })],
       renewals: [{ appId: 'TL-NE-2025-000022', on: '2025-04-28', validTo: '2026-03-31', fee: 20000, garbage: 2000, fine: 0, brNo: '2526N-11001-00467' }] }),
-    lic('bizF', { licenceNo: 'UDD/TL/NE/2025/0004', firstIssuedOn: '2025-05-06', validTo: '2026-03-31', fees: fees(12000, 1500, '2025-04-24', 'Karma Tshering Bhutia'),
-      versions: [ver({ v: 1, businessName: 'Rumtek Fuel Station', premisesAddress: 'Km 4, Rumtek Road', locality: 'Ranka', district: 'Gangtok', officeAddress: 'H. No. 45, Rumtek Road, Ranka, PO Rumtek, Gangtok, 737135', issuedOn: '2025-05-06', appId: 'TL-NE-2025-000009', approvedBy: 'Nima Sherpa (Issuing Authority)', brNo: '2526N-11001-00630' })],
+    lic('bizF', { licenceNo: 'UDD/TL/NE/2025/0004', firstIssuedOn: '2025-05-06', validTo: '2026-03-31', fees: fees(12000, 1500, '2025-04-24', 'Inspector 1'),
+      versions: [ver({ v: 1, businessName: 'Rumtek Fuel Station', premisesAddress: 'Km 4, Rumtek Road', locality: 'Ranka', district: 'Gangtok', officeAddress: 'H. No. 45, Rumtek Road, Ranka, PO Rumtek, Gangtok, 737135', issuedOn: '2025-05-06', appId: 'TL-NE-2025-000009', approvedBy: 'Issuing Authority 1 (Issuing Authority)', brNo: '2526N-11001-00630' })],
       renewals: [] }),
     lic('bizQ', { licenceNo: 'UDD/TL/NE/2025/0007', firstIssuedOn: '2025-06-20', validTo: '2027-03-31',
-      fees: fees(12000, 1500, '2025-06-09', 'Pema Doma Lepcha', { renewal: 12500, history: [{ oldRenewal: 12000, oldGarbage: 1500, renewal: 12500, garbage: 1500, changedBy: 'Sangeeta Subba (Department Admin)', changedOn: '2026-11-10', remarks: 'Revised as per departmental order dated 5 Nov 2026 – applies from the 2027-28 renewal' }] }),
-      versions: [ver({ v: 1, businessName: 'Ranipool Fuel Point', premisesAddress: 'Km 12, NH-10', locality: 'Ranipool', district: 'Gangtok', officeAddress: 'H. No. 2, NH-10, Ranipool, PO Ranipool, Gangtok, 737135', issuedOn: '2025-06-20', appId: 'TL-NE-2025-000027', approvedBy: 'Dorjee Namgyal (CCS)', brNo: '2526N-11001-00901' })],
+      fees: fees(12000, 1500, '2025-06-09', 'Inspector 2', { renewal: 12500, history: [{ oldRenewal: 12000, oldGarbage: 1500, renewal: 12500, garbage: 1500, changedBy: 'Department Admin 1 (Department Admin)', changedOn: '2026-11-10', remarks: 'Revised as per departmental order dated 5 Nov 2026 – applies from the 2027-28 renewal' }] }),
+      versions: [ver({ v: 1, businessName: 'Ranipool Fuel Point', premisesAddress: 'Km 12, NH-10', locality: 'Ranipool', district: 'Gangtok', officeAddress: 'H. No. 2, NH-10, Ranipool, PO Ranipool, Gangtok, 737135', issuedOn: '2025-06-20', appId: 'TL-NE-2025-000027', approvedBy: 'CCS 1 (CCS)', brNo: '2526N-11001-00901' })],
       renewals: [{ appId: 'TL-NE-2026-000011', on: '2026-04-09', validTo: '2027-03-31', fee: 12000, garbage: 1500, fine: 0, brNo: '2627N-11001-00222' }] }),
-    lic('bizT', { licenceNo: 'UDD/TL/NE/2024/0015', firstIssuedOn: '2024-07-15', validTo: '2026-03-31', fees: fees(5000, 500, '2024-07-02', 'Pema Doma Lepcha'),
-      versions: [ver({ v: 1, businessName: 'Namgyal Auto Spares', premisesAddress: 'Shop No. 4, NH-10', locality: 'Ranipool Bazaar', district: 'Gangtok', officeAddress: 'H. No. 11, Singtam Road, Ranipool, PO Ranipool, Gangtok, 737135', issuedOn: '2024-07-15', appId: 'TL-NE-2024-000052', approvedBy: 'Nima Sherpa (Issuing Authority)', brNo: '2425N-11001-01208' })],
+    lic('bizT', { licenceNo: 'UDD/TL/NE/2024/0015', firstIssuedOn: '2024-07-15', validTo: '2026-03-31', fees: fees(5000, 500, '2024-07-02', 'Inspector 2'),
+      versions: [ver({ v: 1, businessName: 'Namgyal Auto Spares', premisesAddress: 'Shop No. 4, NH-10', locality: 'Ranipool Bazaar', district: 'Gangtok', officeAddress: 'H. No. 11, Singtam Road, Ranipool, PO Ranipool, Gangtok, 737135', issuedOn: '2024-07-15', appId: 'TL-NE-2024-000052', approvedBy: 'Issuing Authority 1 (Issuing Authority)', brNo: '2425N-11001-01208' })],
       renewals: [{ appId: 'TL-NE-2025-000031', on: '2025-05-30', validTo: '2026-03-31', fee: 5000, garbage: 500, fine: 75, brNo: '2526N-11001-00815' }] })
   ];
   LICENCES[0].details.companyName = 'Gangtok Pharma Industries Ltd.';
@@ -563,8 +563,8 @@
       // Renewal opens this many months before the licence expires on 31 March (set by the Department Admin).
       renewalWindow: { monthsBefore: 2 },
       settingsHistory: [
-        { setting: 'Renewal opens before expiry', oldValue: '1 month', newValue: '2 months', changedBy: 'Sangeeta Subba (Department Admin)', changedOn: '2026-10-01', remarks: 'Give licence holders more time to renew before 31 March' },
-        { setting: 'Renewal grace period', oldValue: '30 days', newValue: '45 days', changedBy: 'Sangeeta Subba (Department Admin)', changedOn: '2026-11-17', remarks: 'Late fee of ₹5 per day only after 45 days from expiry' }
+        { setting: 'Renewal opens before expiry', oldValue: '1 month', newValue: '2 months', changedBy: 'Department Admin 1 (Department Admin)', changedOn: '2026-10-01', remarks: 'Give licence holders more time to renew before 31 March' },
+        { setting: 'Renewal grace period', oldValue: '30 days', newValue: '45 days', changedBy: 'Department Admin 1 (Department Admin)', changedOn: '2026-11-17', remarks: 'Late fee of ₹5 per day only after 45 days from expiry' }
       ],
       banks: [{ name: 'State Bank of India', branch: 'MG Marg Branch, Gangtok' }],
       // Head of account printed on the challan (to be confirmed by the department).

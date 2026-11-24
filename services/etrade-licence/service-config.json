@@ -39,7 +39,7 @@
     "qrcode-generator 1.4.4 (jsdelivr) – licence QR code"
   ],
   "demoDate": "2026-11-17",
-  "storage": "localStorage key tl_demo_state_v8 (Reset demo data restores the seed); uploaded files in IndexedDB tl_demo_files",
+  "storage": "localStorage key tl_demo_state_v9 (Reset demo data restores the seed); uploaded files in IndexedDB tl_demo_files",
   "workflow": {
     "new_and_change": [
       "Applicant (one or more items / sub-items)",
@@ -80,7 +80,7 @@
     "C_bizC": "Teesta Telecom Services (company, Others) – TL-NE-2026-000102 approved, ₹10,500 (₹9,000 + garbage ₹1,000 + penalty ₹500) – generate challan and pay; Inspector / BO can exempt the penalty first",
     "D_bizD": "Gangtok Pharma Industries Ltd. (company, pharma) – UDD/TL/NE/2024/0003 active, v2 after a name change (request change)",
     "E_bizE": "Denzong Petro Depot (individual, LPG distributor) – UDD/TL/NE/2024/0011 expired 31 Mar 2026 (submit renewal request: GST certificate; optional item changes)",
-    "F_bizF": "Rumtek Fuel Station – renewal TL-NE-2026-000111 resubmitted to BO Sushma Rai after GST certificate correction; Inspector assessed ₹13,600 incl. ₹100 late fee (first submitted 4 Jun)"
+    "F_bizF": "Rumtek Fuel Station – renewal TL-NE-2026-000111 resubmitted to BO Bazaar Officer 2 after GST certificate correction; Inspector assessed ₹13,600 incl. ₹100 late fee (first submitted 4 Jun)"
   },
   "officerQueueSeeds": {
     "TL-NE-2026-000103": "Submitted – Inspector pool",
