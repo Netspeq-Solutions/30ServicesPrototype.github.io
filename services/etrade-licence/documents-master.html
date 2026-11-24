@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -36,9 +36,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -51,7 +51,7 @@
       var canEdit = u.role === 'admin'; // the Department Admin maintains the masters
       D.config.docHistory = D.config.docHistory || [];
       var REQ = { M: 'Mandatory', O: 'Optional' };
-      var CHANGE = { name: 'Change of name', premises: 'Change of premises', address: 'Change of address' };
+      var CHANGE = { name: 'Change of name', premises: 'Change of premises', address: 'Change of address', purpose: 'Add / remove items' };
       $('modePill').innerHTML = canEdit ? App.pill('Active', 'You can edit the master') : App.pill('Superseded', 'View only');
       if (canEdit) $('pageActions').innerHTML = '<button type="button" class="btn btn-sm btn-primary" id="btnAdd"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Document Type</button>';
 

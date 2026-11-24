@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -29,10 +29,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
-  <script src="tl-view.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
+  <script src="tl-view.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -49,24 +49,27 @@
       var next = '';
       if (a.status === ST.DRAFT) next = '<a class="btn btn-sm btn-primary" href="apply.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Continue Application</a>';
       if (a.status === ST.RETURNED) next = '<a class="btn btn-sm btn-warning" href="apply.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Correct &amp; Resubmit</a>';
-      if (a.status === ST.PAYMENT || a.status === ST.BR_INVALID) next = '<a class="btn btn-sm btn-primary" href="upload-br.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Bank Receipt</a>';
+      if (a.status === ST.PAYMENT || a.status === ST.BR_INVALID) next = '<a class="btn btn-sm btn-primary" href="upload-br.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-receipt me-1" aria-hidden="true"></i>' + (F.challanValid(a) ? 'Pay &amp; Upload Bank Receipt' : 'Generate Challan &amp; Pay') + '</a>';
       if (a.status === ST.ISSUED) next = '<a class="btn btn-sm btn-success" href="licence.html?no=' + encodeURIComponent(a.licenceNo) + '"><i class="bi bi-download me-1" aria-hidden="true"></i>Download Licence</a>';
 
+      var renewal = a.kind === 'Renewal';
       var msg = {
         'Draft': 'Your application is saved as a draft and has not been submitted.',
-        'Submitted': a.kind === 'Renewal' ? 'Submitted with the Bank Receipt. Give the original BR at the department; the Inspector checks it and forwards the renewal to the BO.' : 'Submitted. It is now with the Inspector.',
-        'Under Inspection': 'An Inspector is checking the documents and will visit the site. No appointment is needed.',
+        'Submitted': renewal ? 'Renewal request submitted. The Inspector works out the fee and forwards it to the BO for approval. You will see the amount to pay after approval.' : 'Submitted. It is now with the Inspector.',
+        'Under Inspection': renewal ? 'The Inspector is checking your renewal request.' : 'An Inspector is checking the documents and will visit the site. No appointment is needed.',
         'Returned to Applicant': 'Correction required. Edit the marked fields and documents, then resubmit.',
         'Resubmitted': 'Resubmitted. It is back with ' + esc(F.pendingWith(a).label) + '.',
-        'With BO': a.kind === 'Renewal' ? 'With the BO for approval. The BO may visit the site; this is optional for renewals.' : 'With the BO for review.',
-        'With Special Secretary': 'With the Special Secretary for verification.',
-        'Returned to BO': 'The Special Secretary has sent it back to the BO for review.',
-        'Returned to Special Secretary': 'The HOD has sent it back to the Special Secretary.',
-        'With HOD': 'With the HOD (CCS / Issuing Authority) for final approval.',
-        'Approved – Payment Pending': 'Approved. Pay the fee at the bank, upload the Bank Receipt and bring it with the original documents to the department' + (a.originalsVerified ? ' (originals already verified at inspection &ndash; bring only the BR)' : '') + '.',
-        'BR Uploaded': 'Bank Receipt uploaded. The Inspector / BO will verify it' + (a.originalsVerified ? '.' : ' and your original documents. Bring the BR and originals to the department.'),
+        'With BO': renewal ? 'With the BO for approval.' : 'With the BO for review.',
+        'Returned to BO': 'Sent back to the BO for review.',
+        'With Joint Director / Director': 'With the Joint Director / Director for approval.',
+        'Returned to Joint Director / Director': 'Sent back to the Joint Director / Director for review.',
+        'With Special Secretary': 'With the Special Secretary for approval.',
+        'Returned to Special Secretary': 'Sent back to the Special Secretary for review.',
+        'With Issuing Authority': 'With the Issuing Authority (CCS / Secretary) for final approval.',
+        'Approved – Payment Pending': 'Approved. Generate the challan, pay it at the bank and upload the Bank Receipt' + (F.needsOriginals(a) && !a.originalsVerified ? '. Bring the BR and your original documents to the department' : '') + '.',
+        'BR Uploaded': 'Bank Receipt uploaded. The Inspector / BO will verify it' + (F.needsOriginals(a) && !a.originalsVerified ? ' and your original documents. Bring the BR and originals to the department.' : '.'),
         'BR Invalid': 'The Bank Receipt was not accepted. See the remarks and upload a valid one.',
-        'Licence Issued': 'Licence ' + esc(a.licenceNo || '') + (a.kind === 'Renewal' ? ' is renewed and' : '') + ' is ready to download.'
+        'Licence Issued': 'Licence ' + esc(a.licenceNo || '') + (renewal ? ' is renewed and' : '') + ' is ready to download.'
       }[a.status] || '';
 
       root.innerHTML = (App.qs('done') ? '<div class="alert alert-success small"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i><strong>' + (a.round > 1 ? 'Resubmitted.' : 'Submitted.') + '</strong> Your Application ID is <span class="tl-ref-id">' + esc(a.appId) + '</span>. You will get an SMS and email at each stage.</div>' : '') +

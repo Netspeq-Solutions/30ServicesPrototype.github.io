@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../../common/css/gigw-template.css">
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal" class="tl-doc-page">
   <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
@@ -31,9 +31,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -64,28 +64,13 @@
       var d = F.licenceDetails(lic), isInd = F.typeOf(lic) === 'IND';
       var renewed = !!(lastRenewal && !superseded && lastRenewal.on > v.issuedOn);
       var srcApp = App.app(renewed ? lastRenewal.appId : v.appId);
-      var first = F.renewalAmounts(lic).first || {};
-      // First issue of a renewed old licence may carry the fine / surcharge assessed for the lapsed years.
-      var oldFine = !renewed && v.v === 1 && srcApp && srcApp.fee && F.isOldRenewal(srcApp) ? srcApp.fee.fine || 0 : 0;
-      var fee = renewed ? lastRenewal.fee : first.fee || 0, garbage = renewed ? (lastRenewal.garbage || 0) : (first.garbage || 0), fine = renewed ? (lastRenewal.fine || 0) : oldFine;
+      // Charges on this licence: the renewal (if renewed), else the first issue / change of the version shown.
+      var charges = renewed ? lastRenewal.charges : ((srcApp && srcApp.fee) || (v.v === 1 ? lic.firstCharges : null) || lic.firstCharges);
+      var lines = F.feeLines(charges || {}).filter(function (l) { return !l.exempt && l.amount > 0; });
+      var total = F.feeTotal(charges || {});
       var brNo = renewed ? lastRenewal.brNo : v.brNo, brDate = srcApp && srcApp.br ? srcApp.br.brDate : (renewed ? lastRenewal.on : v.issuedOn);
-      var paid = srcApp && srcApp.br ? srcApp.br.amount : fee + garbage + fine;
+      var paid = srcApp && srcApp.br ? srcApp.br.amount : total;
       function ln(val) { return '<span class="tl-form-fill">' + (val ? esc(val) : '&nbsp;') + '</span>'; }
-      // Amount in words (Indian numbering).
-      function words(n) {
-        n = Math.round(n);
-        var a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-        var t = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-        function two(x) { return x < 20 ? a[x] : t[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : ''); }
-        function three(x) { return (x >= 100 ? a[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + two(x % 100); }
-        if (!n) return 'Zero';
-        var out = [], cr = Math.floor(n / 10000000), la = Math.floor(n / 100000) % 100, th = Math.floor(n / 1000) % 100, rest = n % 1000;
-        if (cr) out.push(three(cr) + ' Crore');
-        if (la) out.push(two(la) + ' Lakh');
-        if (th) out.push(two(th) + ' Thousand');
-        if (rest) out.push(three(rest));
-        return out.join(' ');
-      }
       // Applicant photo uploaded with the application (individuals).
       var att = null;
       if (isInd) [srcApp].concat(D.applications.filter(function (x) { return x.licenceNo === lic.licenceNo; })).forEach(function (x) {
@@ -93,8 +78,8 @@
       });
       // Photograph only on licences of individuals; a registered company's licence carries none.
       var photo = isInd ? '<div class="tl-photo-box">' + (att ? '<span class="tl-thumb" data-att="' + esc(att.id) + '" role="img" aria-label="Photograph of the licensee"></span>' : 'A passport size photograph') + '</div>' : '<div aria-hidden="true"></div>';
-      var catName = App.category(lic.category).name;
-      var article = catName + (lic.orgType && lic.orgType !== catName ? ' – ' + lic.orgType : '');
+      // One row per item / sub-item on the licence.
+      var articles = F.purposesOf(lic).map(function (p) { var c = App.category(p.category), n = F.purposeName(p, d); return c && n !== c.name ? c.name + ' – ' + n : n; });
       var TERMS = [
         'That you shall not contravene any of the provisions of the Sikkim (Repeal and Miscellaneous) Provisions Act, 1985 and rules made there under;',
         'That you shall abide by all instructions given by the Department from time to time;',
@@ -129,8 +114,8 @@
             '<div class="fw-bold">GOVERNMENT OF SIKKIM</div><div class="fw-bold">URBAN DEVELOPMENT DEPARTMENT</div><div class="fw-bold">GANGTOK, SIKKIM</div>' +
             '<h1 class="tl-doc-title">TRADE LICENSE</h1></header>' +
           '<div class="tl-form3-qr"><div class="tl-qr" id="qr"></div><div class="small text-muted">Scan to verify</div></div></div>' +
-        '<p class="mb-1">License No. ' + ln(lic.licenceNo) + ' / File No. ' + ln(renewed ? lastRenewal.appId : v.appId) + ' Dated ' + ln(App.fmtDate(renewed ? lastRenewal.on : v.issuedOn)) + '</p>' +
-        (lic.oldLicenceNo ? '<p class="mb-1">Old License No. ' + ln(lic.oldLicenceNo) + ' <span class="small text-muted">(issued before this online system)</span></p>' : '') +
+        '<p class="mb-1">License No. ' + ln(lic.licenceNo) + ' Dated ' + ln(App.fmtDate(renewed ? lastRenewal.on : v.issuedOn)) + '</p>' +
+        (lic.oldLicenceNo && lic.oldLicenceNo !== lic.licenceNo ? '<p class="mb-1">Earlier License No. / BRN No. ' + ln(lic.oldLicenceNo) + ' <span class="small text-muted">(issued before this online system; same number, year updated)</span></p>' : '') +
         '<p class="mb-0">Shri / Smt / Sushri ' + ln(d.applicantName) + (isInd ? '' : ' on behalf of ' + ln(d.companyName || v.businessName)) + '</p>' +
         '<p class="mb-0">S/o, D/o, W/o ' + ln(d.guardianName) + '</p>' +
         '<p class="mb-0">R/o ' + ln(v.officeAddress) + '</p>' +
@@ -139,11 +124,10 @@
         '<p class="mb-2 tl-indent">You shall run trade' + (v.businessName ? ' under the name <strong>' + esc(v.businessName) + '</strong>' : '') + ' in the building/house/premises of Shri/Smt ' + ln(d.premOwner) + ' bearing Census house No. ' + ln(d.premHouseNo) +
           ' located at ' + ln([d.premStreet, d.premLocality].filter(Boolean).join(', ')) + ' District ' + ln(d.premDistrict) + ' Police Station ' + ln(d.premPs) + '.</p>' +
         '<div class="table-responsive"><table class="table table-sm table-bordered mb-2"><caption class="visually-hidden">Articles of trade and licence fee</caption><thead><tr><th scope="col" style="width:12%;">Sl. No.</th><th scope="col">Name of articles of trade</th><th scope="col" class="text-end" style="width:28%;">License fee amount</th></tr></thead><tbody>' +
-          '<tr><td>1</td><td>' + esc(article) + '</td><td class="text-end">' + inr(fee) + '</td></tr>' +
-          '<tr><td></td><td class="text-muted">Garbage fee</td><td class="text-end">' + inr(garbage) + '</td></tr>' +
-          (fine ? '<tr><td></td><td class="text-muted">' + (oldFine ? 'Fine / surcharge (old licence)' : 'Late surcharge on renewal') + '</td><td class="text-end">' + inr(fine) + '</td></tr>' : '') +
-        '</tbody><tfoot><tr><th scope="row">Total items: 1</th><th class="text-end">Total amount</th><th class="text-end">' + inr(fee + garbage + fine) + '</th></tr></tfoot></table></div>' +
-        '<p class="mb-3">A sum of Rs. ' + ln(Math.round(paid).toLocaleString('en-IN')) + ' (Rupees ' + ln(words(paid) + ' only') + ') has been received vide BR No. / Challan No. ' + ln(brNo || '—') + ' dated ' + ln(App.fmtDate(brDate)) + ' as license fee.</p>' +
+          articles.map(function (t, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(t) + '</td><td></td></tr>'; }).join('') +
+          lines.map(function (l) { return '<tr><td></td><td class="text-muted">' + esc(l.label) + '</td><td class="text-end">' + inr(l.amount) + '</td></tr>'; }).join('') +
+        '</tbody><tfoot><tr><th scope="row">Total items: ' + articles.length + '</th><th class="text-end">Total amount</th><th class="text-end">' + inr(total) + '</th></tr></tfoot></table></div>' +
+        '<p class="mb-3">A sum of Rs. ' + ln(Math.round(paid).toLocaleString('en-IN')) + ' (Rupees ' + ln(App.amountWords(paid) + ' only') + ') has been received vide BR No. / Challan No. ' + ln(brNo || '—') + ' dated ' + ln(App.fmtDate(brDate)) + ' as license fee.</p>' +
         '<div class="d-flex justify-content-between align-items-end flex-wrap gap-3 small">' +
           '<div class="text-muted">Version v' + v.v + (v.change ? ' &ndash; ' + v.change.types.map(function (t) { return esc(F.CHANGE_TYPES[t].label.toLowerCase()); }).join(', ') : '') + '<br>First issued ' + App.fmtDate(lic.firstIssuedOn) + ' &bull; ' + esc(App.circle(lic.circle).name) +
             '<br>Approved by ' + esc(renewed && lastRenewal.approvedBy ? lastRenewal.approvedBy : v.approvedBy) + '</div>' +
@@ -168,8 +152,8 @@
         return '<tr><td class="small">' + App.fmtDate(r.on) + '</td><td class="small">' + App.fmtDate(r.validTo) + '</td><td class="small text-end">' + inr(r.fee) + '</td><td class="small text-end">' + inr(r.garbage || 0) + '</td><td class="small text-end">' + inr(r.fine) + '</td><td class="small font-monospace">' + esc(r.brNo) + '</td></tr>';
       }).join('');
       document.getElementById('histRoot').innerHTML =
-        '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Licence versions</h2><div class="small text-muted">Every version is kept. Older versions are marked Superseded and can still be viewed.</div></div><div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Licence versions</caption><thead><tr><th scope="col">Version</th><th scope="col">Status</th><th scope="col">Change (old &rarr; new)</th><th scope="col">Date &amp; HOD</th><th scope="col">BR</th></tr></thead><tbody>' + vers + '</tbody></table></div></div>' +
-        '<div class="card border-0 shadow-xs"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Renewals</h2></div><div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Renewals</caption><thead><tr><th scope="col">Renewed on</th><th scope="col">Valid to</th><th scope="col" class="text-end">Renewal fee</th><th scope="col" class="text-end">Garbage fee</th><th scope="col" class="text-end">Late surcharge</th><th scope="col">BR</th></tr></thead><tbody>' + (rens || '<tr><td colspan="6" class="text-muted small text-center py-3">Not renewed yet.</td></tr>') + '</tbody></table></div></div>';
+        '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Licence versions</h2><div class="small text-muted">Every version is kept. Older versions are marked Superseded and can still be viewed.</div></div><div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Licence versions</caption><thead><tr><th scope="col">Version</th><th scope="col">Status</th><th scope="col">Change (old &rarr; new)</th><th scope="col">Date &amp; approved by</th><th scope="col">BR</th></tr></thead><tbody>' + vers + '</tbody></table></div></div>' +
+        '<div class="card border-0 shadow-xs"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Renewals</h2></div><div class="table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Renewals</caption><thead><tr><th scope="col">Renewed on</th><th scope="col">Valid to</th><th scope="col" class="text-end">Renewal fee</th><th scope="col" class="text-end">Garbage fee</th><th scope="col" class="text-end">Late fee</th><th scope="col">BR</th></tr></thead><tbody>' + (rens || '<tr><td colspan="6" class="text-muted small text-center py-3">Not renewed yet.</td></tr>') + '</tbody></table></div></div>';
     })();
   </script>
 </body>

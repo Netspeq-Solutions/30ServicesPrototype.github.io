@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -28,9 +28,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -71,15 +71,15 @@
         function col(list, k) { return list.map(function (x) { return x[k]; }).join(''); }
         var rule = D.config.renewalFine;
         $('feeRoot').innerHTML =
-          '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i><strong>How the fee is set:</strong> for a new licence the Inspector enters the licence fee and the garbage fee in the inspection report (as per the UDD notification for the activity); the HOD fixes it on approval. ' +
-            'At renewal the applicant pays the renewal amount + garbage fee + any late surcharge on one BR with the application.</div>' +
+          '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i><strong>How the fee is set:</strong> for a new licence the Inspector enters the licence fee, garbage fee and any late fee, backlog fee, penalties or other charges in the inspection report (as per the UDD notification for the activity); the BO can revise it, and it is fixed on final approval. ' +
+            'At renewal the applicant only submits the request; the Inspector works out the fee starting from the renewal amount below and the late fee rule, and the BO approves it. After approval the Inspector or BO may exempt the late fee, backlog fee, penalties or other charges. The applicant then generates the challan and pays.</div>' +
           App.tableCard('t-amounts', 'Renewal amount by licence', 'First amount assessed by the Inspector, and the amount charged at the next renewal (renewal fee + garbage fee).',
             [{ t: 'Licence', w: '20%' }, { t: 'Licensee & activity', w: '30%' }, { t: 'First assessed (fee + garbage)', end: true, w: '18%' }, { t: 'Next renewal (fee + garbage)', end: true, w: '20%' }, { t: canEdit ? 'Action' : '', end: true, w: '12%' }], col(rows, 'row'), col(rows, 'card'), 'No licences yet.') +
           renewalCard() +
-          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Renewal late surcharge (system rule)</h2></div><div class="card-body"><dl class="tl-meta-grid mb-0">' +
-            '<div><dt>Licence expires</dt><dd>31 March every year</dd></div><div><dt>Grace period</dt><dd>' + rule.graceDays + ' days (to 30 April) &ndash; no surcharge</dd></div>' +
-            '<div><dt>Surcharge after grace period</dt><dd>₹' + rule.perDay + ' per day, counted to the first renewal submission date</dd></div><div><dt>Cut-off</dt><dd>None &ndash; renewed through the same flow</dd></div></dl>' +
-            '<p class="small text-muted mt-2 mb-0">Calculated by the system and paid on the same BR as the renewal amount. Officers cannot edit it.</p></div></div>' +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Renewal late fee (system rule)</h2></div><div class="card-body"><dl class="tl-meta-grid mb-0">' +
+            '<div><dt>Licence expires</dt><dd>31 March every year</dd></div><div><dt>Grace period</dt><dd>' + rule.graceDays + ' days (to ' + App.fmtDate(F.addDays('2027-03-31', rule.graceDays)).replace(/ \d{4}$/, '') + ') &ndash; no late fee</dd></div>' +
+            '<div><dt>Late fee after the grace period</dt><dd>₹' + rule.perDay + ' per day, counted to the first renewal submission date</dd></div><div><dt>Cut-off</dt><dd>None &ndash; renewed through the same flow</dd></div></dl>' +
+            '<p class="small text-muted mt-2 mb-0">Worked out by the system and filled in the Inspector&rsquo;s fee assessment; the Inspector can change it, and the Inspector or BO may exempt it after approval.</p></div></div>' +
           App.tableCard('t-hist', 'Revision history', 'Old amount, new amount, changed by and changed on. Revisions apply to renewals submitted after the change.',
             [{ t: 'Licence', w: '28%' }, { t: 'Renewal fee', w: '18%' }, { t: 'Garbage fee', w: '18%' }, { t: 'Changed by / on', w: '36%' }], col(hRows, 'row'), col(hRows, 'card'), 'No revisions yet.');
         var b = $('btnWindow');

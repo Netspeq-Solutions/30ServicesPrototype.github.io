@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -32,9 +32,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -53,7 +53,7 @@
           var v = F.currentVersion(l);
           if (l.circle !== u.circle) return false;
           if (st && F.licenceState(l) !== st) return false;
-          if (c && l.category !== c) return false;
+          if (c && !F.hasCategory(l, c)) return false;
           return !q || (l.licenceNo + ' ' + v.businessName).toLowerCase().indexOf(q) !== -1;
         });
         var rows = current.map(function (l) {
@@ -61,7 +61,7 @@
           var btn = '<a class="btn btn-sm btn-outline-primary" href="licence.html?no=' + encodeURIComponent(l.licenceNo) + '">View Licence</a>';
           var extra = open ? '<div class="small"><a href="review.html?app=' + encodeURIComponent(open.appId) + '">' + esc(open.kind) + ' in process</a></div>' : '';
           return { row: '<tr><td><span class="tl-ref-id small">' + esc(l.licenceNo) + '</span><div class="small text-muted">v' + v.v + (l.versions.length > 1 ? ' (' + (l.versions.length - 1) + ' superseded)' : '') + '</div></td>' +
-              '<td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(v.businessName) + '</div><div class="small text-muted">' + esc(l.orgType) + '</div></td><td class="small">' + esc(App.category(l.category).short) + '</td>' +
+              '<td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(v.businessName) + '</div><div class="small text-muted">' + esc(l.orgType) + '</div></td><td class="small">' + esc(F.categoryShort(l)) + '</td>' +
               '<td class="small">' + App.fmtDate(l.validTo) + '</td><td>' + App.pill(F.licenceState(l)) + extra + '</td><td class="text-end text-nowrap">' + btn + '</td></tr>',
             card: App.mobileCard('<span class="tl-ref-id small">' + esc(l.licenceNo) + '</span>', App.pill(F.licenceState(l)), '<div class="small fw-semibold">' + esc(v.businessName) + '</div><div class="small text-muted">Valid up to ' + App.fmtDate(l.validTo) + '</div>' + extra, btn) };
         });
@@ -74,7 +74,7 @@
       $('btnCsv').addEventListener('click', function () {
         App.downloadCsv('etrade-licences.csv', [['Licence No.', 'Business', 'Item', 'Sub-item / purpose', 'First issued', 'Valid up to', 'Status', 'Version']].concat(current.map(function (l) {
           var v = F.currentVersion(l);
-          return [l.licenceNo, v.businessName, App.category(l.category).name, l.orgType, l.firstIssuedOn, l.validTo, F.licenceState(l), 'v' + v.v];
+          return [l.licenceNo, v.businessName, F.categoryNames(l), l.orgType, l.firstIssuedOn, l.validTo, F.licenceState(l), 'v' + v.v];
         })));
       });
       render();

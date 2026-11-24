@@ -1,31 +1,32 @@
 {
   "serviceId": "etrade-licence",
   "serviceName": "e-Trade Licence",
-  "currentStage": "Stages 01–06 prototype (North-East circle) – updated 20 Nov 2026 for applicant types, notified items, document rules, Inspector fee assessment and renewal with upfront BR",
+  "currentStage": "Stages 01–07 prototype (North-East circle) – updated 24 Nov 2026: multi-select items, flexible approval chain (Joint Director / Director, Special Secretary, Issuing Authority), itemised fees with exemptions, challan payment, renewal request flow, period reports",
   "departmentName": "Urban Development Department",
   "departmentShortName": "UDD",
   "governmentName": "Government of Sikkim",
   "theme": "teal",
   "designBaseline": "Same shell, store and document patterns as services/ground-rent-payment (Tourism Permission common platform)",
-  "servicePurpose": "Online issue, yearly renewal and change (name / premises / address) of e-Trade Licences issued by UDD to individuals / firms (firms, enterprises or establishments of a proprietor or partners) and registered companies (Pvt. Ltd., Public Ltd., societies), for the activities / items in the UDD notification.",
+  "servicePurpose": "Online issue, yearly renewal and change (name / premises / address / add or remove items) of e-Trade Licences issued by UDD to individuals / firms and registered companies, for one or more activities / items in the UDD notification.",
   "screens": {
     "landing_and_login": "index.html (#login opens the prototype login popup)",
     "applicant_dashboard": "dashboard.html (#dashboard, #applications, #licences, #notifications, #support, #profile)",
     "application_form": "apply.html?type=new | ?type=renewal&licence= | ?type=change&licence= | ?app= (draft or correction)",
     "applicant_tracking": "application.html?app=",
-    "upload_bank_receipt": "upload-br.html?app=",
+    "upload_bank_receipt": "upload-br.html?app= – Pay Fee: generate challan, pay at the bank, upload BR",
     "officer_dashboard": "dashboard-staff.html",
     "officer_queues": "applications.html?view=mine | br | all",
     "officer_review_desk": "review.html?app=",
     "licence_register": "licences.html",
     "licence_certificate": "licence.html?no=&v=",
     "public_verification": "verify.html?ref=",
-    "fee_master": "fee-master.html – Renewal Amounts & Settings (renewal fee + garbage fee per licence, renewal window, late surcharge)",
-    "reports_and_audit": "reports.html, reports.html#audit",
+    "fee_master": "fee-master.html – Renewal Amounts & Settings (renewal fee + garbage fee per licence, renewal window, late fee rule)",
+    "reports_and_audit": "reports.html (month / quarter / FY: new licences, renewals, changes, revenue, late fee, backlog & penalties, exempted), reports.html#audit",
     "uploaded_document_viewer": "document.html",
     "prescribed_formats": "format.html?f=undertaking | ?f=recommendation (printable placeholders)",
     "items_master": "items-master.html – Items & sub-items master (Department Admin edits; other officers view)",
-    "documents_master": "documents-master.html – Document types master: who each document is asked of (every individual / company, renewal, change, form answers), format, and mapping to items / sub-items"
+    "documents_master": "documents-master.html – Document types master: who each document is asked of (every individual / company, renewal, change, form answers), format, and mapping to items / sub-items",
+    "challan": "challan.html?app= – printable challan (applicant and bank copies)"
   },
   "scripts": {
     "mockData": "mock-data.js",
@@ -38,55 +39,63 @@
     "qrcode-generator 1.4.4 (jsdelivr) – licence QR code"
   ],
   "demoDate": "2026-11-17",
-  "storage": "localStorage key tl_demo_state_v6 (Reset demo data restores the seed); uploaded files in IndexedDB tl_demo_files",
+  "storage": "localStorage key tl_demo_state_v8 (Reset demo data restores the seed); uploaded files in IndexedDB tl_demo_files",
   "workflow": {
     "new_and_change": [
-      "Applicant",
-      "Inspector (circle pool) – inspection report with fee assessment: licence/change fee + garbage fee",
-      "BO (chosen by Inspector)",
-      "Special Secretary",
-      "HOD (CCS / Issuing Authority) – fixes the assessed fee",
-      "Payment by BR",
-      "BR + originals verified",
-      "Licence generated"
+      "Applicant (one or more items / sub-items)",
+      "Inspector (circle pool) – inspection report with fee assessment: licence/change fee, garbage fee, late fee, backlog fee, penalties and any other charges (addable)",
+      "BO (chosen by Inspector) – same fee fields; may revise. Forwards to Joint Director / Director, Special Secretary, or Issuing Authority directly",
+      "Joint Director / Director (optional) – approves and forwards to Special Secretary or Issuing Authority; notes; returns to BO",
+      "Special Secretary (optional) – final approval, or approves and forwards to Issuing Authority; notes (no visit date); returns to BO or Joint Director / Director",
+      "Issuing Authority (CCS / Secretary) – final approval, or return to the officer who sent it",
+      "Approved – Payment Pending: Inspector / BO may exempt late fee, backlog fee, penalties or other charges",
+      "Applicant generates challan, pays at the bank, uploads BR",
+      "BR (+ originals for new / change) verified – licence generated"
     ],
     "renewal": [
-      "Applicant uploads GST clearance certificate and pays renewal fee + garbage fee + late surcharge by BR, uploads BR with the renewal",
-      "Inspector checks BR, marks original BR received, forwards",
-      "BO – site inspection optional, approves",
-      "Licence renewed (same number) – download"
+      "Applicant submits renewal request: GST certificate; may add / remove items (documents of added items not already on the licence are asked); no fee shown",
+      "Inspector works out the fee: renewal fee + garbage fee (from the licence), late fee (system suggestion), backlog, penalties, other charges; forwards to BO",
+      "BO approves (fee fixed) – may revise the fee first",
+      "Applicant generates challan, pays, uploads BR; Inspector / BO verify BR",
+      "Licence renewed (same number); new version if items changed"
     ],
+    "remarksMandatory": "On every return; and on every action of the Joint Director / Director, Special Secretary and Issuing Authority",
     "sendBacks": {
       "Inspector → Applicant": "resubmission goes to the Inspector",
       "BO → Applicant": "resubmission goes to the same BO",
-      "Special Secretary → BO": "BO acts again",
-      "HOD → Special Secretary": "Special Secretary acts again"
+      "Joint Director / Director → BO": "BO acts again",
+      "Special Secretary → BO or Joint Director / Director": "that officer acts again",
+      "Issuing Authority → sender": "the officer who forwarded it (BO, Joint Director / Director or Special Secretary) acts again"
     },
-    "renewalFine": "Late surcharge: 30-day grace to 30 April; ₹5/day from 1 May counted to the first submission date; paid with the renewal; no cut-off",
-    "renewalWindow": "Configurable by the Department Admin (fee-master.html): renewal opens 1–6 months before 31 March, default 2 months (1 February). Change request is blocked once renewal is due.",
-    "licenceNumberFormat": "UDD/TL/<circle>/<year>/<serial> – accepted for the demo",
-    "inspectionNotes": "Visible to officers only, not to applicants",
-    "fees": "No fee master. Inspector assesses the fee + garbage fee for each new licence; HOD fixes it. The licence keeps that first amount as its renewal amount; the Department Admin (ADM-01) can revise it per licence, each revision kept with old/new amounts, changed by/on."
+    "renewalFine": "Late fee: 45-day grace after 31 March (to 15 May); ₹5/day after that, counted to the first submission date; included by the Inspector in the fee assessment; may be exempted after approval; no cut-off",
+    "renewalWindow": "Configurable by the Department Admin (fee-master.html): renewal opens 1–6 months before 31 March, default 2 months (1 February). While renewal is due, items are added / removed with the renewal; other change requests wait.",
+    "licenceNumberFormat": "Awaited from the department (may depend on district, type etc.). Demo: UDD/TL/<circle>/<year>/<serial>. Renewal of an old licence keeps the old number with the year part changed. File No. removed from the licence print.",
+    "inspectionNotes": "Visible to officers only. The applicant does not see inspection notes, fee assessments or officers' internal remarks; the fee is shown only after approval",
+    "fees": "No fee master. Inspector (and BO) assess the itemised fee for each application; it is fixed on final approval. The licence keeps the first licence fee as its renewal amount; the Department Admin (ADM-01) can revise it per licence.",
+    "districts": "Premises district dropdown lists all districts; businesses in any district may apply to the North-East circle (Headquarters)"
   },
   "demoScenarios": {
     "A_bizA": "Anil Gurung – new applicant, no licence (apply as an individual or a registered company)",
     "B_bizB": "Kanchenjunga Fuels (individual, petrol pump) – TL-NE-2026-000101 returned by Inspector (PAN + NOC of house owner flagged)",
-    "C_bizC": "Teesta Telecom Services (company, Others) – TL-NE-2026-000102 approved, ₹10,000 (₹9,000 + garbage ₹1,000) payment pending (upload BR)",
+    "C_bizC": "Teesta Telecom Services (company, Others) – TL-NE-2026-000102 approved, ₹10,500 (₹9,000 + garbage ₹1,000 + penalty ₹500) – generate challan and pay; Inspector / BO can exempt the penalty first",
     "D_bizD": "Gangtok Pharma Industries Ltd. (company, pharma) – UDD/TL/NE/2024/0003 active, v2 after a name change (request change)",
-    "E_bizE": "Denzong Petro Depot (individual, LPG distributor) – UDD/TL/NE/2024/0011 expired 31 Mar 2026 (renew: GST clearance + BR with late surcharge)",
-    "F_bizF": "Rumtek Fuel Station – renewal TL-NE-2026-000111 resubmitted to BO Sushma Rai after GST clearance correction; BR ₹13,600 incl. ₹100 surcharge counted to first submission (20 May)"
+    "E_bizE": "Denzong Petro Depot (individual, LPG distributor) – UDD/TL/NE/2024/0011 expired 31 Mar 2026 (submit renewal request: GST certificate; optional item changes)",
+    "F_bizF": "Rumtek Fuel Station – renewal TL-NE-2026-000111 resubmitted to BO Sushma Rai after GST certificate correction; Inspector assessed ₹13,600 incl. ₹100 late fee (first submitted 4 Jun)"
   },
   "officerQueueSeeds": {
     "TL-NE-2026-000103": "Submitted – Inspector pool",
     "TL-NE-2026-000104": "Under Inspection – franchise department store; fee assessed; originals seen at inspection",
     "TL-NE-2026-000105": "With BO-01 (pharma)",
-    "TL-NE-2026-000106": "With Special Secretary",
-    "TL-NE-2026-000107": "With HOD – note edited by Special Secretary (original kept)",
-    "TL-NE-2026-000108": "BR Uploaded – ready for BR verification",
+    "TL-NE-2026-000106": "With Special Secretary – via Joint Director (BO → JD → SS); premises in Mangan applying to NE HQ",
+    "TL-NE-2026-000107": "With Issuing Authority – via Special Secretary; note edited by Special Secretary (original kept)",
+    "TL-NE-2026-000108": "BR Uploaded with challan – ready for BR verification (BO sent it directly to the Issuing Authority)",
     "TL-NE-2026-000109": "Returned to BO by Special Secretary",
-    "TL-NE-2026-000110": "Hotel company – returned to Special Secretary by HOD",
+    "TL-NE-2026-000110": "Hotel company – returned to Special Secretary by Issuing Authority",
     "TL-NE-2026-000112": "Change of name – Inspector pool",
-    "TL-NE-2026-000113": "Individual meat shop – Submitted (Animal Husbandry NOC + FSSAI asked for)"
+    "TL-NE-2026-000113": "Individual meat & fish shop – two sub-items (Animal Husbandry NOC + FSSAI asked for)",
+    "TL-NE-2026-000114": "Renewal of old licence UDD/TL/1187/2016 (two sub-items) – Under Inspection; on issue becomes UDD/TL/1187/2026; backlog fee",
+    "TL-NE-2026-000115": "Renewal request with an item added (UDD/TL/NE/2024/0015) – Inspector pool; late fee suggested",
+    "TL-NE-2026-000116": "Beauty parlour, two sub-items – With Joint Director / Director"
   },
   "pendingDepartmentalConfirmation": [
     "South-West circle workflow (Soreng, Jorethang and other offices)",
@@ -94,14 +103,16 @@
     "Fee and garbage fee rates per activity used by Inspectors (prototype values are placeholders)",
     "Official Undertaking and Panchayat / Councillor recommendation formats",
     "Which individual categories need PFA / FSSAI, Health Care or Drug licences",
-    "Designated bank for BR payments",
-    "Helpline number, official email and Web Information Manager"
+    "Helpline number, official email and Web Information Manager",
+    "Licence number format (may depend on district, type etc.)",
+    "Head of account and designated bank printed on the challan",
+    "Who may order exemptions of late fee / backlog / penalties, and the order reference to record"
   ],
   "sikkimGoLoginUrl": "https://sso.sikkim.gov.in/",
   "applicantTypes": {
     "IND": "Individual / firm – 27 items from the UDD notification (sample), most with sub-items; Boutique Tea Shop, Mineral Water, Rice, Heavy Machinery and Cyber Café have none",
     "COMP": "Registered company – Manufacturing, Security/Manpower, Banking & Non-Banking, Departmental Stores, Casino, Hotels/Restaurants, Pharmaceutical, Others (specify; optional notified item)"
   },
-  "documentRules": "tl-flow.js docList() reads config.docTypes (document types master) and the documents mapped to the chosen item / sub-item (config.categories[].docs, items[].docs). Mandatory wins when a document is asked for more than one reason. Masters are edited by the Department Admin.",
+  "documentRules": "tl-flow.js docList() reads config.docTypes (document types master) and the documents mapped to every chosen item / sub-item. Change requests: documents per change type (name / premises / address / add-remove items) set in the document types master, plus optional \"Other supporting documents\" (several files). Renewal / item change: GST certificate + documents of added items not already on the licence. Mandatory wins.",
   "itemsMaster": "config.categories: item (purpose) → optional sub-items (activity). Department Admin can add, rename (earlier names kept), deactivate / activate items and sub-items and choose the extra documents each calls for from the document types master. Changes kept in config.itemHistory and the audit log. Each item also switches on the form questions it needs (hotel details, franchise, educational institute); other items do not show them."
 }

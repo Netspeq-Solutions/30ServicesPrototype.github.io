@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -29,9 +29,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -53,7 +53,7 @@
         var cls = compact ? 'btn btn-sm ' : 'btn btn-sm ';
         if (a.status === ST.DRAFT) return '<a class="' + cls + 'btn-primary" href="apply.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Continue</a>';
         if (a.status === ST.RETURNED) return '<a class="' + cls + 'btn-warning" href="apply.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Correct &amp; Resubmit</a>';
-        if (a.status === ST.PAYMENT || a.status === ST.BR_INVALID) return '<a class="' + cls + 'btn-primary" href="upload-br.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload BR</a>';
+        if (a.status === ST.PAYMENT || a.status === ST.BR_INVALID) return '<a class="' + cls + 'btn-primary" href="upload-br.html?app=' + encodeURIComponent(a.appId) + '"><i class="bi bi-receipt me-1" aria-hidden="true"></i>Pay Fee</a>';
         if (a.status === ST.ISSUED) return '<a class="' + cls + 'btn-outline-primary" href="licence.html?no=' + encodeURIComponent(a.licenceNo) + '"><i class="bi bi-download me-1" aria-hidden="true"></i>Licence</a>';
         return '<a class="' + cls + 'btn-outline-primary" href="application.html?app=' + encodeURIComponent(a.appId) + '">Track</a>';
       }
@@ -66,9 +66,9 @@
       // ---------- Dashboard (simple: greeting, what to do next, where to go) ----------
       var MSG = { 'Draft': ['Finish your draft', 'Complete the form and submit it.'],
         'Returned to Applicant': ['Correct your application', 'Returned for correction by ' + '{by}' + '.'],
-        'Approved – Payment Pending': ['Pay the fee and upload the Bank Receipt', 'Approved. Pay {fee} at the bank, then upload the receipt.'],
+        'Approved – Payment Pending': ['Generate the challan and pay the fee', 'Approved. Generate the challan for {fee}, pay it at the bank, then upload the Bank Receipt.'],
         'BR Invalid': ['Upload a valid Bank Receipt', 'Your earlier Bank Receipt was not accepted.'] };
-      function btnOf(a) { return { 'Draft': 'Continue', 'Returned to Applicant': 'Correct now', 'Approved – Payment Pending': 'Upload BR', 'BR Invalid': 'Upload BR' }[a.status]; }
+      function btnOf(a) { return { 'Draft': 'Continue', 'Returned to Applicant': 'Correct now', 'Approved – Payment Pending': 'Pay Fee', 'BR Invalid': 'Upload BR' }[a.status]; }
       function hrefOf(a) { return a.status === ST.PAYMENT || a.status === ST.BR_INVALID ? 'upload-br.html?app=' + encodeURIComponent(a.appId) : 'apply.html?app=' + encodeURIComponent(a.appId); }
       var todoItems = actionNeeded.map(function (a) {
         var m = MSG[a.status];
@@ -77,11 +77,11 @@
           href: hrefOf(a), button: btnOf(a) };
       });
       dueLics.forEach(function (l) {
-        var chk = F.renewalCheck(l), isExp = F.licenceState(l) === 'Expired', fine = F.renewalFine(l.validTo, D.demoToday);
+        var chk = F.renewalCheck(l), isExp = F.licenceState(l) === 'Expired', graceEnd = F.addDays(l.validTo, D.config.renewalFine.graceDays);
         if (!chk.ok) return;
         todoItems.push({ label: 'To do', title: 'Renew ' + esc(App.appName(l)), pillHtml: App.pill(isExp ? 'Expired' : 'Approved – Payment Pending', isExp ? 'Expired' : 'Renewal open'),
-          meta: '<span class="tl-ref-id">' + esc(l.licenceNo) + '</span> &bull; ' + (isExp ? 'Expired on ' : 'Valid to ') + App.fmtDate(l.validTo) + (fine.fine ? ' &bull; late surcharge today ' + inr(fine.fine) : ''),
-          href: 'apply.html?type=renewal&amp;licence=' + encodeURIComponent(l.licenceNo), button: 'Renew now' });
+          meta: '<span class="tl-ref-id">' + esc(l.licenceNo) + '</span> &bull; ' + (isExp ? 'Expired on ' : 'Valid to ') + App.fmtDate(l.validTo) + (D.demoToday > graceEnd ? ' &bull; late fee applies (after ' + App.fmtDate(graceEnd) + ')' : ''),
+          href: 'apply.html?type=renewal&amp;licence=' + encodeURIComponent(l.licenceNo), button: 'Request renewal' });
       });
       var activeLics = lics.filter(function (l) { return F.licenceState(l) === 'Active'; }).length;
       var unread = biz.notifications.filter(function (n) { return n.unread; }).length;
@@ -102,7 +102,7 @@
           viewTile('bi-bell', 'warning', 'Notifications', unread ? unread + ' unread message' + (unread === 1 ? '' : 's') : 'Messages about your applications', 'notifications', unread || '') +
         '</div>' +
         App.sectionTitle('How it works') +
-        '<ol class="tl-steps-strip"><li>Apply online</li><li>Inspection</li><li>Approval</li><li>Pay fee + garbage fee &amp; upload BR</li><li>Download licence</li></ol>';
+        '<ol class="tl-steps-strip"><li>Apply online</li><li>Inspection</li><li>Approval</li><li>Generate challan, pay &amp; upload BR</li><li>Download licence</li></ol>';
 
       // ---------- My Applications ----------
       var rows = apps.map(function (a) {
@@ -122,24 +122,24 @@
         var v = F.currentVersion(l), state = F.licenceState(l);
         var rc = F.renewalCheck(l), cc = F.changeCheck(l);
         var open = F.openAppFor(l.licenceNo);
-        var fine = state === 'Expired' ? F.renewalFine(l.validTo, D.demoToday) : null;
+        var rule = D.config.renewalFine, graceEnd = F.addDays(l.validTo, rule.graceDays), expired = state === 'Expired';
         return '<div class="col-lg-6"><div class="tl-licence-card ' + (state === 'Expired' ? 'is-overdue' : (F.renewalDue(l) ? 'is-due' : 'is-clear')) + ' p-3">' +
           '<div class="d-flex justify-content-between align-items-start gap-2 mb-2"><div class="min-w-0"><div class="tl-ref-id">' + esc(l.licenceNo) + '</div><div class="fw-bold text-dark">' + esc(v.businessName) + '</div></div>' + App.pill(state) + '</div>' +
-          '<dl class="tl-meta-grid mb-2"><div><dt>Item</dt><dd>' + esc(App.category(l.category).name) + '</dd></div><div><dt>Sub-item / purpose</dt><dd>' + esc(l.orgType) + '</dd></div>' +
+          '<dl class="tl-meta-grid mb-2"><div><dt>Item</dt><dd>' + esc(F.categoryNames(l)) + '</dd></div><div><dt>Sub-items / purpose</dt><dd>' + esc(l.orgType) + '</dd></div>' +
             '<div><dt>Valid up to</dt><dd>' + App.fmtDate(l.validTo) + '</dd></div><div><dt>Version</dt><dd>v' + v.v + (l.versions.length > 1 ? ' <span class="text-muted fw-normal">(' + (l.versions.length - 1) + ' earlier)</span>' : '') + '</dd></div>' +
             '<div class="tl-span-2"><dt>Premises</dt><dd>' + esc(v.premisesAddress) + ', ' + esc(v.locality) + '</dd></div></dl>' +
           (open ? '<div class="alert alert-info small py-2 mb-2"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>' + esc(open.kind === 'Renewal' ? 'Renewal' : 'Change request') + ' <a href="application.html?app=' + encodeURIComponent(open.appId) + '">' + esc(open.appId) + '</a> is ' + esc(open.status.toLowerCase()) + '. Your licence stays as it is until it is completed.</div>' : '') +
-          (!fine && rc.ok ? '<div class="alert alert-info small py-2 mb-2"><i class="bi bi-calendar-check me-1" aria-hidden="true"></i>Renewal is open (since ' + App.fmtDate(F.renewalOpensOn(l)) + '). Renew before ' + App.fmtDate(l.validTo) + '; no fine if submitted by ' + App.fmtDate(F.addDays(l.validTo, D.config.renewalFine.graceDays)) + '.</div>' : '') +
-          (fine && rc.ok ? '<div class="alert alert-warning small py-2 mb-2"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Expired on ' + App.fmtDate(l.validTo) + '. Late surcharge if you submit today: <strong>' + inr(fine.fine) + '</strong> (' + fine.lateDays + ' days &times; ₹' + fine.perDay + ').</div>' : '') +
+          (!expired && rc.ok ? '<div class="alert alert-info small py-2 mb-2"><i class="bi bi-calendar-check me-1" aria-hidden="true"></i>Renewal is open (since ' + App.fmtDate(F.renewalOpensOn(l)) + '). Renew before ' + App.fmtDate(l.validTo) + '; no late fee if submitted by ' + App.fmtDate(graceEnd) + '.</div>' : '') +
+          (expired && rc.ok ? '<div class="alert alert-warning small py-2 mb-2"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>Expired on ' + App.fmtDate(l.validTo) + '. Submit the renewal request now' + (D.demoToday > graceEnd ? '; a late fee of ₹' + rule.perDay + ' per day applies after ' + App.fmtDate(graceEnd) : '') + '. The Inspector works out the fee; you see it after approval.</div>' : '') +
           '<div class="mt-auto d-flex flex-wrap gap-2 pt-2 border-top">' +
             '<a class="btn btn-sm btn-outline-primary" href="licence.html?no=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-download me-1" aria-hidden="true"></i>' + (state === 'Expired' ? 'View Licence' : 'Download Licence') + '</a>' +
-            (rc.ok ? '<a class="btn btn-sm btn-primary" href="apply.html?type=renewal&amp;licence=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Renew</a>' : '') +
+            (rc.ok ? '<a class="btn btn-sm btn-primary" href="apply.html?type=renewal&amp;licence=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Request Renewal</a>' : '') +
             (cc.ok ? '<a class="btn btn-sm btn-outline-secondary" href="apply.html?type=change&amp;licence=' + encodeURIComponent(l.licenceNo) + '"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Request Change</a>' : '') +
           '</div>' +
           (!rc.ok || !cc.ok ? '<div class="small text-muted mt-2">' + (!rc.ok && !open ? '<div><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Renewal: ' + esc(rc.reason) + '</div>' : '') + (!cc.ok && !open ? '<div><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Change: ' + esc(cc.reason) + '</div>' : '') + '</div>' : '') +
         '</div></div>';
       }).join('');
-      $('view-licences').innerHTML = heading('h-licences', 'My Licences', 'Download your licence, renew it every year or request a change of name, premises or address.') +
+      $('view-licences').innerHTML = heading('h-licences', 'My Licences', 'Download your licence, renew it every year, or request a change of name, premises, address or items.') +
         (licCards ? '<div class="row g-3">' + licCards + '</div>' : '<div class="card border-0 shadow-xs"><div class="card-body text-center py-5"><span class="tl-icon-circle bg-primary-subtle text-primary mb-3"><i class="bi bi-patch-check" aria-hidden="true"></i></span><h2 class="h6 fw-bold">No licence yet</h2><p class="small text-muted mb-3">Your licence appears here once it is issued.</p><a class="btn btn-sm btn-success" href="apply.html?type=new">Apply for New Licence</a></div></div>');
 
       // ---------- Notifications ----------

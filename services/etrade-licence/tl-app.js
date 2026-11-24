@@ -10,7 +10,7 @@
   'use strict';
 
   var SESSION_KEY = 'tl_demo_session';
-  var STATE_KEY = 'tl_demo_state_v7';
+  var STATE_KEY = 'tl_demo_state_v8';
   var FILE_DB = 'tl_demo_files';
   var SEED = global.TL_DATA;
 
@@ -116,6 +116,21 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  // Amount in words (Indian numbering): 10500 → "Ten Thousand Five Hundred".
+  function amountWords(n) {
+    n = Math.round(Number(n) || 0);
+    var a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    var t = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    function two(x) { return x < 20 ? a[x] : t[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : ''); }
+    function three(x) { return (x >= 100 ? a[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + two(x % 100); }
+    if (!n) return 'Zero';
+    var out = [], cr = Math.floor(n / 10000000), la = Math.floor(n / 100000) % 100, th = Math.floor(n / 1000) % 100, rest = n % 1000;
+    if (cr) out.push(three(cr) + ' Crore');
+    if (la) out.push(two(la) + ' Lakh');
+    if (th) out.push(two(th) + ' Thousand');
+    if (rest) out.push(three(rest));
+    return out.join(' ');
+  }
   function maskMobile(m) { return m ? 'XXXXXX' + String(m).slice(-4) : 'Not recorded'; }
   function nowTime() {
     var d = new Date();
@@ -156,8 +171,10 @@
     'With BO': ['review', 'bi-hourglass-split'],
     'With Special Secretary': ['review', 'bi-hourglass-split'],
     'Returned to BO': ['returned', 'bi-arrow-return-left'],
+    'With Joint Director / Director': ['review', 'bi-hourglass-split'],
+    'Returned to Joint Director / Director': ['returned', 'bi-arrow-return-left'],
     'Returned to Special Secretary': ['returned', 'bi-arrow-return-left'],
-    'With HOD': ['review', 'bi-hourglass-split'],
+    'With Issuing Authority': ['review', 'bi-hourglass-split'],
     'Approved – Payment Pending': ['due', 'bi-currency-rupee'],
     'BR Uploaded': ['submitted', 'bi-receipt'],
     'BR Invalid': ['overdue', 'bi-x-octagon-fill'],
@@ -601,11 +618,11 @@
   }
 
   // ---------------- Common workspace shell ----------------
-  var ROLE_TITLES = { inspector: 'Inspector', bo: 'BO', ss: 'Special Secretary', hod: 'HOD', admin: 'Admin' };
+  var ROLE_TITLES = { inspector: 'Inspector', bo: 'BO', jd: 'Joint Director / Director', ss: 'Special Secretary', hod: 'Issuing Authority', admin: 'Admin' };
   var STAFF_MENU = [
     ['Overview', [{ key: 'dash', icon: 'bi-speedometer2', label: 'Dashboard', href: 'dashboard-staff.html' }]],
     ['Applications', [
-      { key: 'mine', icon: 'bi-inbox', label: 'My Work Queue', href: 'applications.html?view=mine', badge: 'mine', roles: ['inspector', 'bo', 'ss', 'hod'] },
+      { key: 'mine', icon: 'bi-inbox', label: 'My Work Queue', href: 'applications.html?view=mine', badge: 'mine', roles: ['inspector', 'bo', 'jd', 'ss', 'hod'] },
       { key: 'br', icon: 'bi-receipt', label: 'BR Verification', href: 'applications.html?view=br', badge: 'br', roles: ['inspector', 'bo'] },
       { key: 'all', icon: 'bi-list-ul', label: 'All Applications', href: 'applications.html?view=all' }
     ]],
@@ -803,7 +820,7 @@
     save: save, resetDemo: resetDemo,
     getSession: getSession, setSession: setSession, logout: logout, requireSession: requireSession, me: me, actor: actor, ROLE_TITLES: ROLE_TITLES,
     business: business, currentBusiness: currentBusiness,
-    inr: inr, fmtDate: fmtDate, fmtStamp: fmtStamp, esc: esc, maskMobile: maskMobile, stamp: stamp, qs: qs,
+    inr: inr, amountWords: amountWords, fmtDate: fmtDate, fmtStamp: fmtStamp, esc: esc, maskMobile: maskMobile, stamp: stamp, qs: qs,
     app: app, licence: licence, circle: circle, category: category, appsOf: appsOf, licencesOf: licencesOf, appName: appName,
     audit: audit, notify: notify, pill: pill, kindBadge: kindBadge,
     toast: toast, checkFile: checkFile, fieldError: fieldError, addAttachments: addAttachments, attachmentFor: attachmentFor, fileLink: fileLink, fileThumb: fileThumb, openDoc: openDoc, docSample: docSample, fileView: fileView, previewInto: previewInto, dropzone: dropzone, bindDropzones: bindDropzones, hydrateThumbs: hydrateThumbs, getFile: getFile, filesReady: filesReady,

@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -36,10 +36,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
-  <script src="tl-view.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
+  <script src="tl-view.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -74,7 +74,7 @@
         current = base().filter(function (a) {
           if (st && a.status !== st) return false;
           if (k && a.kind !== k) return false;
-          if (c && a.category !== c) return false;
+          if (c && !F.hasCategory(a, c)) return false;
           if (q && (a.appId + ' ' + App.appName(a) + ' ' + (a.licenceNo || '')).toLowerCase().indexOf(q) === -1) return false;
           return true;
         }).sort(function (a, b) { return view === 'all' ? ((b.updatedOn || '') < (a.updatedOn || '') ? -1 : 1) : ((a.updatedOn || '') < (b.updatedOn || '') ? -1 : 1); });
@@ -83,8 +83,8 @@
       ['fq', 'fStatus', 'fKind', 'fCat'].forEach(function (id) { $(id).addEventListener(id === 'fq' ? 'input' : 'change', render); });
       $('filters').addEventListener('submit', function (e) { e.preventDefault(); });
       $('btnCsv').addEventListener('click', function () {
-        App.downloadCsv('etrade-applications-' + view + '.csv', [['Application ID', 'Type', 'Business', 'Item', 'Sub-item / purpose', 'Licence No.', 'First submitted', 'Last action', 'Status', 'Pending with']].concat(current.map(function (a) {
-          return [a.appId, a.kind, App.appName(a), App.category(a.category).name, a.orgType, a.licenceNo || '', a.firstSubmittedOn, a.updatedOn, a.status, F.pendingWith(a).label];
+        App.downloadCsv('etrade-applications-' + view + '.csv', [['Application ID', 'Type', 'Business', 'Items', 'Sub-items / purpose', 'Licence No.', 'First submitted', 'Last action', 'Status', 'Pending with']].concat(current.map(function (a) {
+          return [a.appId, a.kind, App.appName(a), F.categoryNames(a), a.orgType, a.licenceNo || '', a.firstSubmittedOn, a.updatedOn, a.status, F.pendingWith(a).label];
         })));
       });
       render();
