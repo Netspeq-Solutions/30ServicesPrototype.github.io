@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -35,10 +35,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
-  <script src="tl-view.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
+  <script src="tl-view.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -71,12 +71,13 @@
         if (!chk.ok) return stop(esc(chk.reason));
         // Start from the details held on the licence (from its application and later renewals / changes).
         var form = F.licenceDetails(lic);
-        w = { appId: null, kind: type === 'renewal' ? 'Renewal' : 'Change', licenceNo: lic.licenceNo, businessKey: session.scenario, circle: lic.circle, applicantType: lic.applicantType, category: lic.category, item: lic.item, orgType: lic.orgType,
+        var ps = clone(F.purposesOf(lic));
+        w = { appId: null, kind: type === 'renewal' ? 'Renewal' : 'Change', licenceNo: lic.licenceNo, businessKey: session.scenario, circle: lic.circle, applicantType: lic.applicantType, purposes: ps, prevPurposes: clone(ps), category: lic.category, item: lic.item, orgType: lic.orgType,
           form: form, docs: {}, br: null, change: type === 'change' ? { types: [], old: clone(form) } : null };
         mode = type;
       } else {
         // Sikkim GO is only the identity provider: pre-fill the applicant's name, mobile and email; everything else is entered here.
-        w = { appId: null, kind: 'New', licenceNo: null, businessKey: session.scenario, circle: '', applicantType: '', category: '', item: '', orgType: '', docs: {}, br: null, change: null,
+        w = { appId: null, kind: 'New', licenceNo: null, businessKey: session.scenario, circle: '', applicantType: '', purposes: [], category: '', item: '', orgType: '', docs: {}, br: null, change: null,
           form: { applyFor: 'new', applicantName: biz.authName, mobile: biz.mobile, email: biz.email, presSame: true } };
         mode = 'new';
       }
@@ -90,18 +91,18 @@
       var corrAll = corr && !(corr.fields || []).length && !(corr.docs || []).length;
       function editable(key) {
         if (mode === 'correct') return corrAll || corr.fields.indexOf(key) !== -1 || (PURPOSE_KEYS.indexOf(key) !== -1 && corr.fields.indexOf('category') !== -1);
+        if (PURPOSE_KEYS.indexOf(key) !== -1) return kind === 'New' || F.changesPurpose(w);
         if (kind === 'Renewal') return F.renewalFields(w).indexOf(key) !== -1;
         if (kind === 'Change') return F.changeFields(w).indexOf(key) !== -1;
         return true;
       }
       function docEditable(key) {
-        if (key === 'br') return mode !== 'correct' || corrAll || corr.docs.indexOf('br') !== -1 || !w.br;
         return mode !== 'correct' || corrAll || corr.docs.indexOf(key) !== -1 || corr.fields.indexOf('category') !== -1 || !w.docs[key];
       }
       function flagged(key) { return mode === 'correct' && !corrAll && (corr.fields.indexOf(key) !== -1 || corr.docs.indexOf(key) !== -1); }
 
       // ---------- Header ----------
-      var titles = { New: 'Apply for New Licence', Renewal: 'Renew Licence', Change: 'Request Change to Licence' };
+      var titles = { New: 'Apply for New Licence', Renewal: 'Request Renewal of Licence', Change: 'Request Change to Licence' };
       $('pageTitle').textContent = mode === 'correct' ? 'Correct & Resubmit' : titles[kind];
       $('crumb').textContent = mode === 'correct' ? 'Correct & Resubmit' : titles[kind];
       $('pageKind').innerHTML = App.kindBadge(w) + (w.appId ? ' <span class="tl-ref-id small ms-1">' + esc(w.appId) + '</span>' : '');
@@ -110,9 +111,9 @@
 
       // ---------- Steps ----------
       // Instructions come first (documents, formats, acknowledgement); not repeated when correcting a returned application.
-      var STEPS = kind === 'Renewal' ? ['details', 'docs', 'payment', 'review'] : (kind === 'Change' ? ['changeType', 'changeDetails', 'docs', 'review'] : ['purpose', 'applicant', 'premises', 'docs', 'review']);
+      var STEPS = kind === 'Renewal' ? ['details', 'items', 'docs', 'review'] : (kind === 'Change' ? ['changeType', 'changeDetails', 'docs', 'review'] : ['purpose', 'applicant', 'premises', 'docs', 'review']);
       if (mode !== 'correct') STEPS.unshift('instructions');
-      var LABELS = { instructions: 'Instructions', purpose: 'Type & Purpose', applicant: 'Applicant', premises: 'Premises & Business', details: 'Licence & Contact', payment: 'Fee & Bank Receipt', changeType: 'Change Type', changeDetails: 'New Details', docs: 'Documents', review: 'Review & Submit' };
+      var LABELS = { instructions: 'Instructions', purpose: 'Type & Purpose', applicant: 'Applicant', premises: 'Premises & Business', details: 'Licence & Contact', items: 'Items (Add / Remove)', changeType: 'Change Type', changeDetails: 'New Details', docs: 'Documents', review: 'Review & Submit' };
       // A saved draft has already accepted the instructions: open it at the next step.
       var step = mode === 'draft' && w.instructionsAck ? 1 : 0;
       var fromReview = false; // opened a step with Edit on the review page
@@ -123,7 +124,7 @@
         if (t === 'textarea') return '<textarea id="' + id + '" class="form-control" rows="2"' + dis + '>' + esc(v) + '</textarea>';
         if (t === 'date') return '<input id="' + id + '" class="form-control" type="date" max="' + D.demoToday + '" value="' + esc(v) + '"' + dis + '>';
         if (t === 'select' || t === 'district' || t === 'yesno') {
-          var opts = t === 'district' ? (f.key === 'premDistrict' && kind === 'New' && App.circle(w.circle) ? App.circle(w.circle).districts : D.config.districts) : (t === 'yesno' ? ['Yes', 'No'] : f.options);
+          var opts = t === 'district' ? D.config.districts : (t === 'yesno' ? ['Yes', 'No'] : f.options);
           return '<select id="' + id + '" class="form-select"' + dis + '><option value="">Select</option>' + opts.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') + '</select>';
         }
         return '<input id="' + id + '" class="form-control' + (f.mono ? ' font-monospace' : '') + '" type="' + (t === 'number' ? 'number' : 'text') + '"' + (t === 'number' ? ' min="' + (f.min || 1) + '"' + (f.max ? ' max="' + f.max + '"' : '') : '') + ' value="' + esc(v) + '"' + dis + '>';
@@ -138,7 +139,7 @@
           var wide = f.type === 'textarea' || /Name$/.test(f.key) && f.section === 'applicant' || f.key === 'firmName';
           var col = wide ? 'col-12' + (f.type === 'textarea' ? '' : ' col-md-6') : (NARROW.indexOf(f.section) !== -1 ? 'col-sm-6 col-lg-4' : 'col-md-6');
           return '<div class="' + col + '"><div class="' + (fl ? 'tl-flagged border rounded p-2' : '') + '"><label for="f_' + f.key + '" class="form-label small fw-semibold">' + label + req(F.isRequired(f, w) && on) + badge + '</label>' +
-            inputHtml(f, w.form[f.key], on) + (f.hint && on ? '<div class="form-text">' + esc(f.hint) + '</div>' : '') + (f.key === 'premDistrict' && kind === 'New' && on && App.circle(w.circle) ? '<div class="form-text">Districts of the ' + esc(App.circle(w.circle).name) + ' you chose in step 1.</div>' : '') + '</div></div>';
+            inputHtml(f, w.form[f.key], on) + (f.hint && on ? '<div class="form-text">' + esc(f.hint) + '</div>' : '') + (f.key === 'premDistrict' && on ? '<div class="form-text">Any district. Businesses in other districts may also apply to the North-East Circle (Headquarters).</div>' : '') + '</div></div>';
         }).join('');
       }
       // edit: step key – shows an Edit button (review page) that opens that step.
@@ -151,38 +152,131 @@
       var SECTION_STEP = { oldLicence: 'purpose', applicant: 'applicant', perm: 'applicant', present: 'applicant', contact: 'applicant', firm: 'premises', hotel: 'premises', franchise: 'premises', education: 'premises' };
       function licenceSummary() {
         var v = F.currentVersion(lic);
-        return '<dl class="tl-dl"><dt>Licence number</dt><dd><span class="tl-ref-id">' + esc(lic.licenceNo) + '</span></dd><dt>Business</dt><dd>' + esc(v.businessName) + '</dd><dt>Purpose</dt><dd>' + esc(App.category(lic.category).name) + ' &bull; ' + esc(lic.orgType) + '</dd>' +
+        return '<dl class="tl-dl"><dt>Licence number</dt><dd><span class="tl-ref-id">' + esc(lic.licenceNo) + '</span></dd><dt>Business</dt><dd>' + esc(v.businessName) + '</dd><dt>Items</dt><dd>' + V.purposeList({ purposes: F.purposesOf(lic), form: lic.details }) + '</dd>' +
           '<dt>Premises</dt><dd>' + esc(v.premisesAddress) + ', ' + esc(v.locality) + ', ' + esc(v.district) + '</dd><dt>Valid up to</dt><dd>' + App.fmtDate(lic.validTo) + ' ' + App.pill(F.licenceState(lic)) + '</dd><dt>Circle</dt><dd>' + esc(App.circle(lic.circle).name) + '</dd></dl>';
       }
-      // Renewal amount: fixed at the first submission (late surcharge counted to that date).
-      function renewalFee() { return stored && stored.fee ? stored.fee : F.computeFee(Object.assign({}, w, { firstSubmittedOn: (stored && stored.firstSubmittedOn) || D.demoToday })); }
-      function feeTable(f) {
-        return '<table class="table table-sm mb-2"><tbody><tr><td>Renewal fee</td><td class="text-end">' + inr(f.base) + '</td></tr><tr><td>Garbage fee</td><td class="text-end">' + inr(f.garbage) + '</td></tr>' +
-          '<tr><td>Late surcharge' + (f.lateDays ? ' (' + f.lateDays + ' days &times; ₹' + D.config.renewalFine.perDay + ')' : '') + '</td><td class="text-end">' + inr(f.fine) + '</td></tr><tr><th>Total to pay on one BR</th><th class="text-end">' + inr(f.total) + '</th></tr></tbody></table>';
-      }
       function docBox(d) {
-        var k = d.key, cur = w.docs[k], on = docEditable(k), fl = flagged(k), why = d.why, fmt = F.formatUrl(k);
+        var k = d.key, cur = w.docs[k], on = docEditable(k), fl = flagged(k), why = d.why, fmt = F.formatUrl(k), multi = k === 'changeSupport';
         var title = esc(F.docLabel(k)) + (d.req ? '' : ' <span class="badge bg-light text-secondary border ms-1">optional</span>') + (fl ? ' <span class="badge bg-warning text-dark ms-1">Upload again</span>' : '');
         var extra = (why ? '<div class="small text-muted mb-2"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Asked for: ' + esc(why) + '</div>' : '') +
           (fmt ? '<a class="btn btn-sm btn-outline-primary mb-2" href="' + fmt + '" target="_blank" rel="noopener"><i class="bi bi-download me-1" aria-hidden="true"></i>Download Format</a>' : '');
         if (!on) return '<div class="col-md-6"><div class="p-3 rounded border bg-light h-100"><div class="small fw-semibold mb-1">' + title + '</div>' +
-          '<div class="small text-muted mb-2"><i class="bi bi-lock me-1" aria-hidden="true"></i>Not asked to change</div><div class="tl-thumbs">' + (cur ? App.fileThumb(cur.file, cur.file, F.docLabel(k), 'Version ' + cur.v) : '') + '</div></div></div>';
+          '<div class="small text-muted mb-2"><i class="bi bi-lock me-1" aria-hidden="true"></i>Not asked to change</div><div class="tl-thumbs">' + (cur ? (cur.files || [cur.file]).map(function (x) { return App.fileThumb(x, x, F.docLabel(k), 'Version ' + cur.v); }).join('') : '') + '</div></div></div>';
         return '<div class="col-md-6"><div class="p-3 rounded border h-100' + (fl ? ' tl-flagged' : ' bg-light') + '">' + extra +
-          App.dropzone({ id: 'd_' + k, label: title, required: d.req, docType: F.docLabel(k), current: cur ? cur.file : '', currentLabel: cur ? 'Uploaded (version ' + cur.v + ')' + (fl ? ' – replace it' : '') : '', attrs: ' data-doc="' + k + '"',
-            help: k === 'photo' ? 'Recent passport-size photo, JPG or PNG, up to 5 MB' : null }) + '</div></div>';
+          App.dropzone({ id: 'd_' + k, label: title, required: d.req, multiple: multi, docType: F.docLabel(k), current: cur ? cur.file : '', currentLabel: cur ? 'Uploaded (version ' + cur.v + ')' + (fl ? ' – replace it' : '') : '', attrs: ' data-doc="' + k + '"',
+            help: k === 'photo' ? 'Recent passport-size photo, JPG or PNG, up to 5 MB' : (multi ? 'Any other papers for this change. PDF, JPG or PNG, up to 5 MB each; you can add several.' : null) }) + '</div></div>';
+      }
+
+      // ---------- Items and sub-items (multi-select) ----------
+      // From the items master; a record already holding an inactive entry still shows it.
+      // For a renewal or change request, items added and removed against the licence are marked.
+      var pFilter = '';
+      function markOf(was, is) {
+        if (!w.prevPurposes) return '';
+        return is && !was ? ' <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">added</span>' : (!is && was ? ' <span class="badge bg-light text-secondary border">removed</span>' : '');
+      }
+      function purposePicker(lockP) {
+        var chosen = F.purposesOf(w), keys = chosen.map(F.purposeKey), prev = w.prevPurposes || [], prevKeys = prev.map(F.purposeKey);
+        var cats = F.categoriesOf(w.applicantType).concat(F.categoriesOf(w.applicantType, true).filter(function (c) { return c.active === false && F.hasCategory(w, c.code); }));
+        var dis = lockP ? ' disabled' : '', fl = flagged('category');
+        var list = cats.map(function (c, n) {
+          var on = F.hasCategory(w, c.code), wasCat = prev.some(function (p) { return p.category === c.code; });
+          var subs = F.items(c.code).concat(F.items(c.code, true).filter(function (i) { return i.active === false && keys.indexOf(c.code + '|' + i.name) !== -1; }));
+          var body = '';
+          if (on && c.code === 'OTHER') {
+            var cur = chosen.filter(function (p) { return p.category === 'OTHER'; })[0] || {};
+            var groups = F.categoriesOf('IND').map(function (g) {
+              var gs = F.items(g.code);
+              return '<optgroup label="' + esc(g.name) + '">' + (gs.length ? gs : [g]).map(function (x) { return '<option' + (x.name === cur.item ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('') + '</optgroup>';
+            }).join('');
+            body = '<div class="tl-purpose-subs row g-2"><div class="col-md-6"><label for="f_otherPurpose" class="form-label small fw-semibold">Describe exactly what the business is' + req(!lockP) + '</label><input id="f_otherPurpose" class="form-control form-control-sm" value="' + esc(w.form.otherPurpose || '') + '"' + dis + '></div>' +
+              '<div class="col-md-6"><label for="p_item_OTHER" class="form-label small fw-semibold">Item / sub-item as per the UDD notification <span class="text-muted fw-normal">(if listed)</span></label><select id="p_item_OTHER" class="form-select form-select-sm"' + dis + '><option value="">Not listed</option>' + groups + '</select></div></div>';
+          } else if (on && subs.length) {
+            body = '<div class="tl-purpose-subs" role="group" aria-label="Sub-items of ' + esc(c.name) + '">' + subs.map(function (x, i) {
+              var k = c.code + '|' + x.name, chk = keys.indexOf(k) !== -1, id = 'ps_' + c.code + '_' + i;
+              return '<div class="form-check"><input class="form-check-input" type="checkbox" id="' + id + '" data-sub="' + c.code + '" value="' + esc(x.name) + '"' + (chk ? ' checked' : '') + dis + '><label class="form-check-label small" for="' + id + '">' + esc(x.name) + markOf(prevKeys.indexOf(k) !== -1, chk) + '</label></div>';
+            }).join('') + '</div>';
+          }
+          var hay = (c.name + ' ' + subs.map(function (x) { return x.name; }).join(' ')).toLowerCase();
+          return '<div class="tl-purpose-item' + (on ? ' is-on' : '') + '" data-hay="' + esc(hay) + '"><div class="form-check mb-0"><input class="form-check-input" type="checkbox" id="pc_' + c.code + '" data-cat="' + c.code + '"' + (on ? ' checked' : '') + dis + '>' +
+            '<label class="form-check-label small fw-semibold" for="pc_' + c.code + '">' + (w.applicantType === 'IND' ? (n + 1) + '. ' : '') + esc(c.name) + '</label>' +
+            (subs.length && c.code !== 'OTHER' ? ' <span class="small text-muted">&bull; ' + subs.length + ' sub-item' + (subs.length > 1 ? 's' : '') + '</span>' : '') + markOf(wasCat, on) + '</div>' + body + '</div>';
+        }).join('');
+        return '<div class="' + (fl ? 'tl-flagged border rounded p-2' : '') + '">' + (fl ? '<span class="badge bg-warning text-dark mb-2">Correct this</span>' : '') +
+          '<div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-2"><div class="flex-grow-1 tl-purpose-filter"><label for="p_filter" class="form-label small fw-semibold mb-1">Find an item</label><input id="p_filter" type="search" class="form-control form-control-sm" placeholder="Type to filter the list" autocomplete="off"></div>' +
+          '<div class="small fw-semibold text-primary" id="p_count" aria-live="polite"></div></div>' +
+          '<div class="tl-purpose-list" id="p_list" role="group" aria-label="Items and sub-items">' + list + '<p class="small text-muted mb-0 d-none p-2" id="p_none">No item matches. Clear the filter to see all items.</p></div><div class="invalid-feedback d-block" id="p_err"></div></div>';
+      }
+      function purposeCount() {
+        var el = $('p_count');
+        if (!el) return;
+        var n = F.purposesOf(w).filter(function (p) { return p.item || p.category === 'OTHER' || !F.items(p.category).length; }).length;
+        el.textContent = n ? n + ' selected' : 'None selected';
+      }
+      function filterItems() {
+        var q = pFilter.trim().toLowerCase(), shown = 0;
+        root.querySelectorAll('.tl-purpose-item').forEach(function (it) {
+          var vis = !q || it.classList.contains('is-on') || it.getAttribute('data-hay').indexOf(q) !== -1;
+          it.classList.toggle('d-none', !vis);
+          if (vis) shown++;
+        });
+        if ($('p_none')) $('p_none').classList.toggle('d-none', shown > 0);
+        purposeCount();
+      }
+      // Read the ticked items: an item with sub-items holds one entry per ticked sub-item
+      // ({ category, item: '' } until one is ticked); an item without sub-items holds one entry.
+      function readPurposes() {
+        var boxes = root.querySelectorAll('input[data-cat]');
+        if (!boxes.length || boxes[0].disabled) return;
+        var prev = F.purposesOf(w), next = [];
+        root.querySelectorAll('input[data-cat]:checked').forEach(function (cb) {
+          var code = cb.getAttribute('data-cat');
+          if (code === 'OTHER') { var sel = $('p_item_OTHER'), old = prev.filter(function (p) { return p.category === 'OTHER'; })[0]; next.push({ category: 'OTHER', item: sel ? sel.value : (old ? old.item : '') }); return; }
+          var subs = root.querySelectorAll('input[data-sub="' + code + '"]');
+          if (subs.length) {
+            var any = false;
+            subs.forEach(function (x) { if (x.checked) { next.push({ category: code, item: x.value }); any = true; } });
+            if (!any) next.push({ category: code, item: '' });
+            return;
+          }
+          var its = F.items(code), kept = prev.filter(function (p) { return p.category === code && p.item; });
+          if (!its.length) next.push({ category: code, item: '' });
+          else if (kept.length) next = next.concat(kept);
+          else next.push({ category: code, item: its.length === 1 ? its[0].name : '' });
+        });
+        if ($('f_otherPurpose') && !$('f_otherPurpose').disabled) w.form.otherPurpose = $('f_otherPurpose').value.trim();
+        w.purposes = next;
+        w.category = next.length ? next[0].category : '';
+        w.item = next.length ? next[0].item : '';
+      }
+      function purposeGaps() {
+        var ps = F.purposesOf(w), out = [];
+        if (!ps.length) out.push('Choose at least one item (purpose of the licence).');
+        ps.forEach(function (p) { if (!p.item && p.category !== 'OTHER' && F.items(p.category).length) out.push('Choose at least one sub-item of ' + App.category(p.category).name + '.'); });
+        if (F.hasCategory(w, 'OTHER') && (w.form.otherPurpose || '').length < 3) out.push('Describe the business (Others).');
+        return out;
+      }
+      function checkPurposes() {
+        var err = $('p_err'), first = root.querySelector('input[data-cat]');
+        if (!err || !first || first.disabled) return true;
+        var gaps = purposeGaps();
+        err.textContent = gaps.join(' ');
+        if ($('f_otherPurpose')) App.fieldError($('f_otherPurpose'), (w.form.otherPurpose || '').length < 3 ? 'Describe the business.' : '');
+        if (gaps.length) { var bad = root.querySelector('.tl-purpose-item.is-on input[data-sub]') || first; bad.focus(); }
+        return !gaps.length;
       }
 
       var RENDER = {
         instructions: function () {
           var how, docs;
           if (kind === 'Renewal') {
-            how = ['Check the licence and confirm your contact details.', 'Upload the documents asked for renewal.', 'Pay the renewal amount + garbage fee (+ any late surcharge) at the bank and enter the Bank Receipt (BR).', 'Review and submit. Give the original BR at the department.', 'The Inspector checks the BR and the BO approves. Then download the renewed licence.'];
+            how = ['Check the licence and confirm your contact details.', 'Add or remove items (purposes) if needed. Documents for added items that your licence does not already have are asked for.', 'Upload the GST certificate and any other documents asked for.', 'Review and submit the renewal request. No fee is paid now.', 'The Inspector works out the renewal fee, garbage fee and any late fee (₹' + D.config.renewalFine.perDay + ' per day after ' + D.config.renewalFine.graceDays + ' days from expiry), backlog or penalty. The BO approves.', 'After approval, generate the challan, pay at the bank and upload the Bank Receipt. Once it is verified, download the renewed licence.'];
             docs = '<h3 class="h6 fw-semibold mb-2">Documents for renewal</h3>' + V.renewalDocList();
           } else if (kind === 'Change') {
-            how = ['Choose what you want to change: name, premises or address (one or more).', 'Enter the new details.', 'Upload the documents for the change.', 'Review and submit. Your licence stays valid while the request is processed.', 'After inspection and approval, pay the fee by BR. A new version of the licence is issued with the same number and validity.'];
+            how = ['Choose what you want to change: name, premises, address, or add / remove items (one or more).', 'Enter the new details or choose the items.', 'Upload the documents for the change. Each change type asks for its own documents; you can also add other supporting documents.', 'Review and submit. Your licence stays valid while the request is processed.', 'It follows the same approval as a new licence. After approval, generate the challan, pay at the bank and upload the Bank Receipt. A new version of the licence is issued with the same number and validity.'];
             docs = Object.keys(F.CHANGE_TYPES).map(function (t) { return '<h3 class="h6 fw-semibold mb-2">' + esc(F.CHANGE_TYPES[t].label) + '</h3>' + V.changeDocList(t); }).join('');
           } else {
-            how = ['Choose the circle, whether it is a new licence or the renewal of a licence issued before this system, the applicant type and the item (purpose).', 'Fill in the applicant, address, contact and premises details.', 'Upload the documents asked for. Formats are provided below where a prescribed form is needed.', 'Review every section (you can edit any of them) and submit with the declaration.', 'An Inspector of your circle visits the site and assesses the licence fee and garbage fee. The BO, Special Secretary and HOD review and approve.', 'Pay the fee at the bank, upload the Bank Receipt and bring the originals. Then download your licence.'];
+            how = ['Choose the circle, whether it is a new licence or the renewal of a licence issued before this system, the applicant type and one or more items and sub-items (purpose).', 'Fill in the applicant, address, contact and premises details.', 'Upload the documents asked for. Formats are provided below where a prescribed form is needed.', 'Review every section (you can edit any of them) and submit with the declaration.', 'An Inspector of your circle visits the site and assesses the fee. The BO and senior officers review and approve.', 'After approval, generate the challan, pay at the bank, upload the Bank Receipt and bring the originals if asked. Then download your licence.'];
             docs = '<div class="row g-3"><div class="col-md-6"><h3 class="h6 fw-semibold mb-2"><i class="bi ' + F.TYPES.IND.icon + ' text-primary me-1" aria-hidden="true"></i>' + esc(F.TYPES.IND.label) + '</h3>' + V.baseDocList('IND') + '</div>' +
               '<div class="col-md-6"><h3 class="h6 fw-semibold mb-2"><i class="bi ' + F.TYPES.COMP.icon + ' text-primary me-1" aria-hidden="true"></i>' + esc(F.TYPES.COMP.label) + '</h3>' + V.baseDocList('COMP') + '</div></div>' +
               '<h3 class="h6 fw-semibold mt-3 mb-2">Depending on your answers in the form</h3>' + V.whenDocList() +
@@ -206,7 +300,7 @@
                   return '<div class="col-md-6"><label class="tl-scenario-chip d-flex gap-2 align-items-start h-100' + (on ? ' active' : '') + '" for="af_' + o[0] + '"><input class="form-check-input mt-1" type="radio" name="applyFor" id="af_' + o[0] + '" value="' + o[0] + '"' + (on ? ' checked' : '') + (lockA ? ' disabled' : '') + '>' +
                     '<span><span class="fw-bold d-block"><i class="bi ' + o[2] + ' me-1 text-primary" aria-hidden="true"></i>' + o[1] + '</span><span class="small text-muted d-block">' + o[3] + '</span></span></label></div>';
                 }).join('') + '</div></fieldset>' +
-              (oldOn ? '<div class="row g-3 mt-1">' + fieldsHtml('oldLicence') + '</div><div class="alert alert-light border small mt-3 mb-0"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>A new licence number is issued under this system. The Inspector may add a fine / surcharge for the years the licence was not renewed, along with the licence fee and garbage fee. Upload a copy of the old licence in the Documents step.</div>' : ''),
+              (oldOn ? '<div class="row g-3 mt-1">' + fieldsHtml('oldLicence') + '</div><div class="alert alert-light border small mt-3 mb-0"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>The same licence number is kept &ndash; only the year part changes (e.g. UDD/TL/1187/2016 becomes UDD/TL/1187/' + D.demoToday.slice(0, 4) + '). The Inspector may add a backlog fee for the years the licence was not renewed, and any late fee or penalty, along with the licence fee and garbage fee. Upload a copy of the old licence in the Documents step.</div>' : ''),
               'Old licences were not moved into this system.');
           }
           var circles = D.config.circles.map(function (c) {
@@ -219,34 +313,11 @@
             return '<div class="col-md-6"><label class="tl-scenario-chip d-flex gap-2 align-items-start h-100' + (on ? ' active' : '') + '" for="t_' + t + '"><input class="form-check-input mt-1" type="radio" name="ptype" id="t_' + t + '" value="' + t + '"' + (on ? ' checked' : '') + (lockP ? ' disabled' : '') + '>' +
               '<span><span class="fw-bold d-block"><i class="bi ' + x.icon + ' me-1 text-primary" aria-hidden="true"></i>' + esc(x.label) + '</span><span class="small text-muted d-block">' + esc(x.hint) + '</span></span></label></div>';
           }).join('');
-          var purpose = '';
-          if (w.applicantType) {
-            // Items and sub-items come from the items master; a record already holding an inactive entry still shows it.
-            var cats = F.categoriesOf(w.applicantType).concat(F.categoriesOf(w.applicantType, true).filter(function (c) { return c.active === false && c.code === w.category; }));
-            var its = w.category ? F.items(w.category).concat(F.items(w.category, true).filter(function (i) { return i.active === false && i.name === w.item; })) : [];
-            var dis = lockP ? ' disabled' : '', fl = flagged('category');
-            function opt(name) { return '<option' + (name === w.item ? ' selected' : '') + '>' + esc(name) + '</option>'; }
-            purpose = '<div class="row g-3' + (fl ? ' tl-flagged border rounded p-2 mx-0' : '') + '"><div class="col-md-6"><label for="p_category" class="form-label small fw-semibold">Item &ndash; purpose for which the licence is required' + req(!lockP) + (fl ? ' <span class="badge bg-warning text-dark ms-1">Correct this</span>' : '') + '</label>' +
-              '<select id="p_category" class="form-select"' + dis + '><option value="">Select the item</option>' + cats.map(function (c, n) { return '<option value="' + c.code + '"' + (c.code === w.category ? ' selected' : '') + '>' + (w.applicantType === 'IND' ? (n + 1) + '. ' : '') + esc(c.name) + '</option>'; }).join('') + '</select></div>';
-            if (w.category === 'OTHER') {
-              var groups = F.categoriesOf('IND').map(function (c) {
-                var subs = F.items(c.code);
-                return '<optgroup label="' + esc(c.name) + '">' + (subs.length ? subs.map(function (x) { return opt(x.name); }).join('') : opt(c.name)) + '</optgroup>';
-              }).join('');
-              purpose += '<div class="col-md-6"><label for="f_otherPurpose" class="form-label small fw-semibold">Describe exactly what the business is' + req(!lockP) + '</label><input id="f_otherPurpose" class="form-control" value="' + esc(w.form.otherPurpose || '') + '"' + dis + '></div>' +
-                '<div class="col-12"><label for="p_item" class="form-label small fw-semibold">Item / sub-item as per the UDD notification <span class="text-muted fw-normal">(if listed)</span></label><select id="p_item" class="form-select"' + dis + '><option value="">Not listed</option>' + groups + '</select></div>';
-            } else if (its.length) {
-              purpose += '<div class="col-md-6"><label for="p_item" class="form-label small fw-semibold">Sub-item &ndash; activity as per the UDD notification' + req(!lockP) + '</label><select id="p_item" class="form-select"' + dis + '>' + (its.length > 1 ? '<option value="">Select the sub-item</option>' : '') +
-                its.map(function (x) { return opt(x.name); }).join('') + '</select></div>';
-            } else if (w.category) {
-              purpose += '<div class="col-md-6 d-flex align-items-end"><p class="small text-muted mb-2"><i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>This item has no sub-items.</p></div>';
-            }
-            purpose += '</div>' + (w.applicantType === 'IND' ? '<p class="small text-muted mt-2 mb-0">Items and sub-items as notified by UDD (sample list; the department keeps it up to date).</p>' : '');
-          }
+          var purpose = w.applicantType ? purposePicker(lockP) + (w.applicantType === 'IND' ? '<p class="small text-muted mt-2 mb-0">Items and sub-items as notified by UDD (sample list; the department keeps it up to date).</p>' : '') : '';
           return applyFor + card('Circle' + req(editable('circle')) + (flagged('circle') ? ' <span class="badge bg-warning text-dark ms-1">Correct this</span>' : ''), '<fieldset><legend class="visually-hidden">Circle (required)</legend><div class="row g-2">' + circles + '</div></fieldset>', 'Choose the circle where your premises are. Only officers of that circle act on your application.') +
             card('Applicant type', '<fieldset><legend class="visually-hidden">Applicant type</legend><div class="row g-2">' + types + '</div></fieldset>', 'The form fields and the documents asked for depend on this.') +
-            (w.applicantType ? card('Purpose of licence', purpose, 'Select the item and, where it has them, the sub-item.') : '') +
-            '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>The licence fee and the garbage fee are assessed by the Inspector at the site inspection. You see the amount to pay once the application is approved.</div>';
+            (w.applicantType ? card('Purpose of licence', purpose, 'Tick one or more items and, where an item has them, one or more sub-items.') : '') +
+            '<div class="alert alert-light border small"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>The fee is assessed by the Inspector at the site inspection. You see the amount to pay once the application is approved.</div>';
         },
         applicant: function () {
           var photo = tp() === 'IND' ? docBox({ key: 'photo', req: true }) : '';
@@ -256,43 +327,34 @@
         premises: function () {
           var extra = ['hotel', 'franchise', 'education'].map(function (s) { var b = fieldsHtml(s); return b ? '<h3 class="h6 fw-semibold small text-muted text-uppercase mt-1 mb-2">' + esc(F.sectionLabel(s, tp())) + '</h3><div class="row g-3 mb-3">' + b + '</div>' : ''; }).join('');
           return sectionCard('firm', tp() === 'COMP' ? '' : 'Where the trade / manufacture is proposed to be carried out.') +
-            (extra ? card('Other details for ' + esc(App.category(w.category).name), extra, 'Asked for this item. The details and documents needed follow your answers.') : '');
+            (extra ? card('Other details for ' + esc(F.categoryNames(w)), extra, 'Asked for this item. The details and documents needed follow your answers.') : '');
         },
         details: function () {
-          var fee = renewalFee();
+          var rule = D.config.renewalFine;
           return card('Licence to renew', licenceSummary() +
-              '<div class="alert ' + (fee.fine ? 'alert-warning' : 'alert-success') + ' small mt-3 mb-0"><i class="bi ' + (fee.fine ? 'bi-exclamation-triangle' : 'bi-check-circle') + ' me-1" aria-hidden="true"></i>' +
-              (fee.fine ? 'Late surcharge if submitted today: <strong>' + inr(fee.fine) + '</strong> (' + fee.lateDays + ' days &times; ₹' + D.config.renewalFine.perDay + '). It is counted to the date you first submit.' : 'No late surcharge.') +
-              ' Amount to pay with this renewal: <strong>' + inr(fee.total) + '</strong>.</div>') +
-            card('Confirm contact details', '<div class="row g-3">' + fieldsHtml(null, F.renewalFields(w)) + '</div>', 'Name, premises and address can only be changed through a change request.');
+              '<div class="alert alert-light border small mt-3 mb-0"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>No fee is paid with the renewal request. The Inspector works out the renewal fee, garbage fee and any late fee (₹' + rule.perDay + ' per day after ' + rule.graceDays + ' days from expiry, counted to the date you first submit), backlog or penalty. You see the amount to pay once the BO approves the renewal.</div>') +
+            card('Confirm contact details', '<div class="row g-3">' + fieldsHtml(null, F.renewalFields(w)) + '</div>', 'Name, premises and address can only be changed through a change request. Items can be added or removed in the next step.');
         },
-        payment: function () {
-          var fee = renewalFee(), bank = D.config.banks[0], on = docEditable('br'), b = w.br || {}, fl = flagged('br');
-          var body = feeTable(fee) + '<p class="small text-muted mb-0">Renewal and garbage fee as set by the department for this licence (based on its first licence fee). The late surcharge is calculated by the system.</p>';
-          var brBody = !on ? '<dl class="tl-dl"><dt>BR number</dt><dd class="font-monospace">' + esc(b.brNo) + '</dd><dt>BR date</dt><dd>' + App.fmtDate(b.brDate) + '</dd><dt>Amount</dt><dd>' + inr(b.amount) + '</dd></dl><div class="tl-thumbs">' + (b.scan ? App.fileThumb(b.scan, 'BR scan', 'Bank Receipt') : '') + '</div><div class="small text-muted mt-2"><i class="bi bi-lock me-1" aria-hidden="true"></i>Not asked to change</div>' :
-            '<div class="row g-3' + (fl ? ' tl-flagged border rounded p-2 mx-0' : '') + '">' + (fl ? '<div class="col-12"><span class="badge bg-warning text-dark">Upload a new Bank Receipt</span></div>' : '') +
-              '<div class="col-md-6"><label for="f_brNo" class="form-label small fw-semibold">BR number' + req(true) + '</label><input id="f_brNo" class="form-control font-monospace" placeholder="2627N-11001-04512" value="' + esc(fl ? '' : b.brNo || '') + '"></div>' +
-              '<div class="col-6 col-md-3"><label for="f_brDate" class="form-label small fw-semibold">BR date' + req(true) + '</label><input id="f_brDate" type="date" class="form-control" max="' + D.demoToday + '" value="' + esc(fl ? '' : b.brDate || '') + '"></div>' +
-              '<div class="col-6 col-md-3"><label for="f_brAmount" class="form-label small fw-semibold">Amount paid' + req(true) + '</label><input id="f_brAmount" type="number" min="1" class="form-control" value="' + esc(fl ? fee.total : (b.amount || fee.total)) + '"></div>' +
-              '<div class="col-12">' + App.dropzone({ id: 'd_br', label: 'Scanned copy of the BR', required: true, docType: 'Bank Receipt', current: fl ? '' : b.scan || '', currentLabel: 'Uploaded', attrs: ' data-doc="br"', help: 'PDF, JPG or PNG, up to 5 MB. Keep the original BR; submit it at the department.' }) + '</div>' +
-              '<div class="col-12" id="brWarn"></div></div>';
-          return card('Amount to pay', body) +
-            '<div class="alert alert-light border small"><i class="bi bi-bank me-1 text-primary" aria-hidden="true"></i>Pay at <strong>' + esc(bank.name) + ', ' + esc(bank.branch) + '</strong> (designated bank pending departmental confirmation), quoting your licence number. After submitting, give the <strong>original BR</strong> at the department.</div>' +
-            card('Bank Receipt', brBody);
+        items: function () {
+          return card('Licence', licenceSummary()) + card('Items on the licence', purposePicker(!editable('category')), 'Keep the items as they are, or tick to add and untick to remove. Documents for added items that your licence does not already have are asked in the next step.');
         },
         changeType: function () {
           var types = Object.keys(F.CHANGE_TYPES).map(function (t) {
             var c = F.CHANGE_TYPES[t], on = (w.change.types || []).indexOf(t) !== -1, dis = mode === 'correct' ? ' disabled' : '';
-            return '<div class="col-md-4"><label class="tl-scenario-chip d-flex gap-2 align-items-start h-100' + (on ? ' active' : '') + '" for="t_' + t + '"><input class="form-check-input mt-1" type="checkbox" id="t_' + t + '" value="' + t + '"' + (on ? ' checked' : '') + dis + '>' +
+            return '<div class="col-md-6 col-lg-3"><label class="tl-scenario-chip d-flex gap-2 align-items-start h-100' + (on ? ' active' : '') + '" for="t_' + t + '"><input class="form-check-input mt-1" type="checkbox" id="t_' + t + '" value="' + t + '"' + (on ? ' checked' : '') + dis + '>' +
               '<span><span class="fw-bold d-block">' + esc(c.label) + '</span><span class="small text-muted d-block">' + esc(c.hint) + '</span></span></label></div>';
           }).join('');
-          return card('Licence', licenceSummary()) + card('What do you want to change?', '<fieldset><legend class="visually-hidden">Change type</legend><div class="row g-2">' + types + '</div></fieldset><div class="small text-muted mt-2">You can choose more than one. On approval, a new version of the licence is issued with the same licence number and validity.</div>');
+          return card('Licence', licenceSummary()) + card('What do you want to change?', '<fieldset><legend class="visually-hidden">Change type</legend><div class="row g-2">' + types + '</div></fieldset><div class="small text-muted mt-2">You can choose more than one. Each change type asks for its own documents. On approval, a new version of the licence is issued with the same licence number and validity.</div>');
         },
         changeDetails: function () {
-          var keys = F.changeFields(w);
-          var cur = keys.map(function (k) { return '<dt>' + esc(F.fieldLabel(k, tp())) + '</dt><dd>' + esc(F.showValue(F.field(k), w.change.old[k])) + '</dd>'; }).join('');
-          return card('Current details', '<dl class="tl-dl">' + cur + '</dl>') + card('New details', '<div class="row g-3">' + fieldsHtml(null, keys) + '</div>',
-            keys.indexOf('premDistrict') !== -1 ? 'If the new premises are in the other circle, that circle\'s officers handle the request.' : '');
+          var keys = F.changeFields(w), out = '';
+          if (keys.length) {
+            var cur = keys.map(function (k) { return '<dt>' + esc(F.fieldLabel(k, tp())) + '</dt><dd>' + esc(F.showValue(F.field(k), w.change.old[k])) + '</dd>'; }).join('');
+            out += card('Current details', '<dl class="tl-dl">' + cur + '</dl>') + card('New details', '<div class="row g-3">' + fieldsHtml(null, keys) + '</div>',
+              keys.indexOf('premDistrict') !== -1 ? 'The premises may be in any district; the request stays with your licence&rsquo;s circle.' : '');
+          }
+          if (F.changesPurpose(w)) out += card('Items on the licence', purposePicker(!editable('category')), 'Tick to add items or sub-items; untick to remove them. Documents for added items that your licence does not already have are asked in the next step.');
+          return out;
         },
         docs: function () {
           var list = F.docList(w).filter(function (d) { return d.key !== 'photo'; });
@@ -307,8 +369,8 @@
             gaps.map(function (g) { return '<li>' + esc(g.text) + ' <button type="button" class="btn btn-link btn-sm p-0 align-baseline" data-goto="' + g.step + '">Go to ' + esc(LABELS[g.step]) + '</button></li>'; }).join('') + '</ul></div>';
           body += '<p class="small text-muted"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Check every section. Use <strong>Edit</strong> on a section to change it, then return to this page.</p>';
           if (kind !== 'New') body += card('Licence', licenceSummary());
-          else body += card('Circle &amp; purpose', '<dl class="tl-dl"><dt>Applying for</dt><dd>' + (F.isOldRenewal(w) ? 'Renewal of an old licence (issued before this system)' : 'New licence') + '</dd><dt>Circle</dt><dd>' + esc(App.circle(w.circle).name) + '</dd><dt>Applicant type</dt><dd>' + esc(F.TYPES[tp()].label) + '</dd><dt>Category</dt><dd>' + esc(App.category(w.category).name) + '</dd>' +
-            (w.category === 'OTHER' ? '<dt>Purpose (as described)</dt><dd>' + esc(w.form.otherPurpose) + '</dd>' : '') + (w.item ? '<dt>Sub-item</dt><dd>' + esc(w.item) + '</dd>' : '') + '</dl>', '', 'purpose');
+          else body += card('Circle &amp; purpose', '<dl class="tl-dl"><dt>Applying for</dt><dd>' + (F.isOldRenewal(w) ? 'Renewal of an old licence (issued before this system)' : 'New licence') + '</dd><dt>Circle</dt><dd>' + esc(App.circle(w.circle).name) + '</dd><dt>Applicant type</dt><dd>' + esc(F.TYPES[tp()].label) + '</dd><dt>Items</dt><dd>' + V.purposeList(w) + '</dd>' +
+            (F.hasCategory(w, 'OTHER') ? '<dt>Purpose (as described)</dt><dd>' + esc(w.form.otherPurpose) + '</dd>' : '') + '</dl>', '', 'purpose');
           if (kind === 'Change') body += card('Change requested', '<p class="mb-0 small">' + (w.change.types || []).map(function (t) { return esc(F.CHANGE_TYPES[t].label); }).join(', ') + '</p>', '', 'changeType');
           function dl(fields) {
             return '<dl class="tl-dl">' + fields.map(function (f) {
@@ -316,21 +378,20 @@
               return '<dt>' + esc(F.labelOf(f, tp())) + '</dt><dd>' + esc(F.showValue(f, w.form[f.key])) + old + '</dd>';
             }).join('') + '</dl>';
           }
-          if (kind === 'Change') body += card('New details', dl(F.changeFields(w).map(F.field)), '', 'changeDetails');
-          else if (kind === 'Renewal') body += card('Contact details', dl(F.renewalFields(w).map(F.field)), '', 'details');
+          if (kind === 'Change') {
+            if (F.changeFields(w).length) body += card('New details', dl(F.changeFields(w).map(F.field)), '', 'changeDetails');
+            if (F.changesPurpose(w)) body += card('Items', V.purposeList(w), F.purposeChanged(w) ? 'Items added / removed' : 'No change of items yet', 'changeDetails');
+          } else if (kind === 'Renewal') body += card('Contact details', dl(F.renewalFields(w).map(F.field)), '', 'details') + card('Items', V.purposeList(w), F.purposeChanged(w) ? 'Items added / removed with this renewal' : 'No change of items', 'items');
           else Object.keys(F.SECTIONS).forEach(function (sec) { var list = F.fieldsFor(w, sec); if (list.length) body += card(esc(F.sectionLabel(sec, tp())), dl(list), '', SECTION_STEP[sec]); });
           body += card('Documents', '<div class="tl-thumbs mt-0">' + F.docList(w).map(function (d) {
             var k = d.key;
-            if (newFiles[k]) return '<div class="tl-thumb-item"><button type="button" class="tl-thumb" data-newdoc="' + k + '" aria-label="View ' + esc(newFiles[k].name) + '"><i class="bi bi-file-earmark" aria-hidden="true"></i></button>' +
-              '<div class="tl-thumb-cap"><div class="fw-semibold">' + esc(F.docLabel(k)) + '</div><span class="text-break">' + esc(newFiles[k].name) + '</span> <span class="badge bg-success-subtle text-success">new</span></div></div>';
+            var nf = newFiles[k];
+            if (nf) return '<div class="tl-thumb-item"><button type="button" class="tl-thumb" data-newdoc="' + k + '" aria-label="View ' + esc(nf[0].name) + '"><i class="bi bi-file-earmark" aria-hidden="true"></i></button>' +
+              '<div class="tl-thumb-cap"><div class="fw-semibold">' + esc(F.docLabel(k)) + '</div><span class="text-break">' + esc(nf[0].name) + (nf.length > 1 ? ' + ' + (nf.length - 1) + ' more' : '') + '</span> <span class="badge bg-success-subtle text-success">new</span></div></div>';
             if (w.docs[k]) return App.fileThumb(w.docs[k].file, F.docLabel(k), F.docLabel(k), esc(w.docs[k].file));
             if (!d.req) return '';
             return '<div class="tl-thumb-item"><span class="tl-thumb"><i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i></span><div class="tl-thumb-cap"><div class="fw-semibold">' + esc(F.docLabel(k)) + '</div><span class="text-danger">missing</span></div></div>';
           }).join('') + '</div>', '', 'docs');
-          if (kind === 'Renewal') {
-            var b = w.br || {};
-            body += card('Fee &amp; Bank Receipt', feeTable(renewalFee()) + '<dl class="tl-dl"><dt>BR number</dt><dd class="font-monospace">' + esc(b.brNo) + '</dd><dt>BR date</dt><dd>' + App.fmtDate(b.brDate) + '</dd><dt>Amount paid</dt><dd>' + inr(b.amount) + '</dd><dt>BR scan</dt><dd>' + (newFiles.br ? esc(newFiles.br.name) + ' <span class="badge bg-success-subtle text-success">new</span>' : esc(b.scan || '—')) + '</dd></dl>', '', 'payment');
-          }
           body += '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Declaration</h2></div><div class="card-body"><div class="form-check"><input class="form-check-input" type="checkbox" id="declare"><label class="form-check-label small" for="declare">I declare that the information given is true and the documents uploaded are genuine. I will produce the originals when asked.</label></div></div></div>';
           return body;
         }
@@ -340,9 +401,9 @@
       function incomplete() {
         var out = [];
         if (kind === 'New') {
-          if (!w.circle || !w.applicantType || !w.category) out.push({ text: 'Circle, applicant type and item (purpose)', step: 'purpose' });
-          else if (w.category !== 'OTHER' && F.items(w.category).length && !w.item) out.push({ text: 'Sub-item', step: 'purpose' });
-        }
+          if (!w.circle || !w.applicantType) out.push({ text: 'Circle and applicant type', step: 'purpose' });
+          else purposeGaps().forEach(function (g) { out.push({ text: g, step: 'purpose' }); });
+        } else if (F.changesPurpose(w)) purposeGaps().forEach(function (g) { out.push({ text: g, step: kind === 'Renewal' ? 'items' : 'changeDetails' }); });
         var fieldKeys = kind === 'Renewal' ? F.renewalFields(w) : (kind === 'Change' ? F.changeFields(w) : null);
         F.FIELDS.filter(function (f) { return F.applies(f, w) && F.isRequired(f, w) && f.type !== 'check' && editable(f.key) && (!fieldKeys || fieldKeys.indexOf(f.key) !== -1); }).forEach(function (f) {
           var v = w.form[f.key];
@@ -351,7 +412,6 @@
         F.docList(w).forEach(function (d) {
           if (d.req && !w.docs[d.key] && !newFiles[d.key]) out.push({ text: F.docLabel(d.key) + ' (document)', step: d.key === 'photo' ? 'applicant' : 'docs' });
         });
-        if (kind === 'Renewal' && !(w.br && w.br.brNo && (w.br.scan || newFiles.br))) out.push({ text: 'Bank Receipt', step: 'payment' });
         return out;
       }
 
@@ -364,15 +424,10 @@
         if (s === 'purpose') {
           var c = document.querySelector('input[name="circle"]:checked'), t = document.querySelector('input[name="ptype"]:checked:not([disabled])');
           if (c) w.circle = c.value;
-          var cat = $('p_category'), it = $('p_item'), op = $('f_otherPurpose');
-          if (t && t.value !== w.applicantType) { w.applicantType = t.value; w.category = ''; w.item = ''; cat = it = op = null; }
-          if (cat && !cat.disabled && cat.value !== w.category) {
-            w.category = cat.value; w.item = '';
-            var its = F.items(w.category);
-            if (its.length === 1) w.item = its[0].name;
-          } else if (it && !it.disabled) w.item = it.value;
-          if (op && !op.disabled) w.form.otherPurpose = op.value.trim();
+          if (t && t.value !== w.applicantType) { w.applicantType = t.value; w.purposes = []; w.category = ''; w.item = ''; w.form.otherPurpose = ''; }
+          else readPurposes();
         }
+        if (s === 'items' || s === 'changeDetails') readPurposes();
         if (s === 'changeType') w.change.types = Array.prototype.slice.call(document.querySelectorAll('input[id^="t_"]:checked')).map(function (x) { return x.value; });
         F.FIELDS.forEach(function (f) {
           var el = $('f_' + f.key);
@@ -381,10 +436,9 @@
           else if (f.type === 'number') w.form[f.key] = el.value === '' ? '' : +el.value;
           else w.form[f.key] = f.upper ? el.value.trim().toUpperCase() : el.value.trim();
         });
-        if ($('f_brNo')) w.br = Object.assign({}, w.br || {}, { brNo: $('f_brNo').value.trim(), brDate: $('f_brDate').value, amount: $('f_brAmount').value === '' ? '' : Math.round(+$('f_brAmount').value) });
         root.querySelectorAll('input[data-doc]').forEach(function (el) {
-          var k = el.getAttribute('data-doc');
-          if (el.files && el.files[0]) { if (!App.checkFile(el, false)) newFiles[k] = el.files[0]; }
+          var k = el.getAttribute('data-doc'), files = el.files ? Array.prototype.slice.call(el.files) : [];
+          if (files.length) { if (!App.checkFile(el, false)) newFiles[k] = files; }
           else delete newFiles[k];
         });
         F.derive(w);
@@ -395,13 +449,9 @@
         if (s === 'purpose') {
           if (!w.circle) { App.toast('Choose the circle where your premises are.', 'danger'); var c0 = root.querySelector('input[name="circle"]:not([disabled])'); if (c0) c0.focus(); return false; }
           if (!w.applicantType) { App.toast('Choose the applicant type.', 'danger'); return false; }
-          var cat = $('p_category');
-          if (cat && !cat.disabled) {
-            ok = App.fieldError(cat, w.category ? '' : 'Select the item (purpose of the licence).');
-            if ($('p_item') && w.category !== 'OTHER') ok = App.fieldError($('p_item'), w.item ? '' : 'Select the sub-item.') && ok;
-            if ($('f_otherPurpose')) ok = App.fieldError($('f_otherPurpose'), (w.form.otherPurpose || '').length < 3 ? 'Describe the business.' : '') && ok;
-          }
+          ok = checkPurposes() && ok;
         }
+        if (s === 'items' || (s === 'changeDetails' && F.changesPurpose(w))) ok = checkPurposes() && ok;
         if (s === 'changeType') { if (!w.change.types.length) { App.toast('Choose at least one change.', 'danger'); return false; } return true; }
         F.FIELDS.forEach(function (f) {
           var el = $('f_' + f.key);
@@ -414,40 +464,25 @@
           ok = App.fieldError(el, msg) && ok;
           if (!msg && f.upper) el.value = v.toUpperCase();
         });
-        var pd = $('f_premDistrict'), circ = App.circle(w.circle);
-        if (kind === 'New' && pd && !pd.disabled && pd.value && circ && circ.districts.indexOf(pd.value) === -1) ok = App.fieldError(pd, pd.value + ' is not in the ' + circ.name + '. Go back to step 1 and choose the right circle.') && ok;
-        if (s === 'changeDetails' && ok && !F.changeFields(w).some(function (k) { return String(w.form[k]) !== String(w.change.old[k]); })) {
-          App.toast('Enter the new details – they are the same as on the current licence.', 'danger');
+        // The premises may be in any district (the North-East circle is the Headquarters), so the district is not checked against the circle.
+        if (s === 'changeDetails' && ok && !F.changeFields(w).some(function (k) { return String(w.form[k]) !== String(w.change.old[k]); }) && !F.purposeChanged(w)) {
+          App.toast(F.changeFields(w).length ? 'Enter the new details – they are the same as on the current licence.' : 'Add or remove at least one item.', 'danger');
           return false;
-        }
-        if ($('f_brNo')) {
-          ok = App.fieldError($('f_brNo'), $('f_brNo').value.trim() ? '' : 'Enter the BR number.') && ok;
-          ok = App.fieldError($('f_brDate'), $('f_brDate').value ? ($('f_brDate').value > D.demoToday ? 'BR date cannot be in the future.' : '') : 'Enter the BR date.') && ok;
-          ok = App.fieldError($('f_brAmount'), +$('f_brAmount').value > 0 ? '' : 'Enter the amount paid.') && ok;
         }
         root.querySelectorAll('input[data-doc]').forEach(function (el) {
           var k = el.getAttribute('data-doc');
           var err = App.checkFile(el, false);
           if (!err && k === 'photo' && el.files && el.files[0] && !/\.(jpe?g|png)$/i.test(el.files[0].name)) err = 'Upload the photo as JPG or PNG.';
           if (err) { ok = App.fieldError(el, err) && ok; return; }
-          if (el.files && el.files[0]) newFiles[k] = el.files[0];
-          var required = k === 'br' || F.docRequired(w, k);
-          var has = k === 'br' ? (w.br && w.br.scan && !flagged('br')) : w.docs[k];
+          if (el.files && el.files.length) newFiles[k] = Array.prototype.slice.call(el.files);
+          var required = F.docRequired(w, k);
+          var has = w.docs[k];
           var missing = required && !has && !newFiles[k];
           var mustNew = flagged(k) && !newFiles[k];
           ok = App.fieldError(el, missing ? 'Upload this document.' : (mustNew ? 'Upload a corrected file for this document.' : '')) && ok;
         });
         if (!ok) { var first = root.querySelector('.is-invalid'); if (first) first.focus(); }
         return ok;
-      }
-
-      function brWarn() {
-        var box = $('brWarn');
-        if (!box) return;
-        var msgs = [], amt = +$('f_brAmount').value, total = renewalFee().total, dup = F.brDuplicate($('f_brNo').value, w.appId);
-        if (amt && amt < total) msgs.push('The amount is less than ' + inr(total) + '. The Inspector will return the renewal; pay the full amount.');
-        if (dup) msgs.push('This BR number is already used on ' + esc(dup) + '.');
-        box.innerHTML = msgs.length ? '<div class="alert alert-warning small mb-0"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>' + msgs.join('<br>') + '</div>' : '';
       }
 
       function render(focusId) {
@@ -478,16 +513,18 @@
             root.querySelectorAll('.tl-scenario-chip').forEach(function (l) { var i = l.querySelector('input'); l.classList.toggle('active', i.checked); });
           });
         });
-        ['p_category', 'p_item'].forEach(function (id) { if ($(id)) $(id).addEventListener('change', function () { rerender($(id)); }); });
+        // Items: ticking an item opens its sub-items; the filter only hides items that are not ticked.
+        root.querySelectorAll('input[data-cat], input[data-sub]').forEach(function (cb) { cb.addEventListener('change', function () { rerender(cb); }); });
+        root.querySelectorAll('#p_item_OTHER, #f_otherPurpose').forEach(function (x) { x.addEventListener('change', function () { readStep(); purposeCount(); }); });
+        if ($('p_filter')) { $('p_filter').value = pFilter; $('p_filter').addEventListener('input', function () { pFilter = $('p_filter').value; filterItems(); }); filterItems(); }
         F.FIELDS.filter(function (f) { return f.toggles; }).forEach(function (f) { var el = $('f_' + f.key); if (el) el.addEventListener('change', function () { rerender(el); }); });
-        if ($('f_brNo')) { $('f_brNo').addEventListener('input', brWarn); $('f_brAmount').addEventListener('input', brWarn); brWarn(); }
         root.querySelectorAll('input[data-doc]').forEach(function (el) {
           var nf = newFiles[el.getAttribute('data-doc')];
-          if (nf) { try { var dt = new DataTransfer(); dt.items.add(nf); el.files = dt.files; } catch (e) { /* ignore */ } }
+          if (nf) { try { var dt = new DataTransfer(); nf.forEach(function (x) { dt.items.add(x); }); el.files = dt.files; } catch (e) { /* ignore */ } }
         });
         App.bindDropzones(root);
         root.querySelectorAll('[data-newdoc]').forEach(function (b) {
-          var k = b.getAttribute('data-newdoc'), f = newFiles[k];
+          var k = b.getAttribute('data-newdoc'), f = newFiles[k][0];
           var url = URL.createObjectURL(f);
           if (/^image\//.test(f.type)) b.innerHTML = '<img src="' + url + '" alt="">';
           else if (/\.pdf$/i.test(f.name)) b.innerHTML = '<iframe src="' + url + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH" title="" tabindex="-1" aria-hidden="true"></iframe><span class="tl-thumb-ext">PDF</span>';
@@ -504,7 +541,7 @@
           if (!validateStep()) return;
           step = STEPS.length - 1; fromReview = false; render(); window.scrollTo(0, 0); $('main-content').focus({ preventScroll: true });
         });
-        if ($('btnDraft')) $('btnDraft').addEventListener('click', function () { readStep(); if (!w.circle || !w.applicantType || !w.category) { App.toast('Choose the circle, applicant type and purpose before saving a draft.', 'danger'); return; } saveDraft(); });
+        if ($('btnDraft')) $('btnDraft').addEventListener('click', function () { readStep(); if (!w.circle || !w.applicantType || !F.purposesOf(w).length) { App.toast('Choose the circle, applicant type and at least one item before saving a draft.', 'danger'); return; } saveDraft(); });
         $('stepForm').addEventListener('submit', function (e) {
           e.preventDefault();
           readStep();
@@ -520,36 +557,22 @@
       // ---------- Persist ----------
       function storeFiles(target) {
         Object.keys(newFiles).forEach(function (k) {
-          if (k === 'br') return;
-          var name = App.addAttachments(target.appId, F.docLabel(k), { files: [newFiles[k]] })[0];
+          var names = App.addAttachments(target.appId, F.docLabel(k), { files: newFiles[k] });
           var prev = target.docs[k];
-          target.docs[k] = { file: name, v: prev ? prev.v + 1 : 1, on: D.demoToday };
+          target.docs[k] = { file: names[0], files: names.length > 1 ? names : undefined, v: prev ? prev.v + 1 : 1, on: D.demoToday };
           delete newFiles[k];
         });
       }
-      // Renewal: the BR entered on the form. A replaced BR is kept in the BR history; its original must be given again.
-      function storeBr(target) {
-        if (kind !== 'Renewal' || !w.br || !docEditable('br')) return;
-        var prev = target.br, scan = prev && !flagged('br') ? prev.scan : null;
-        if (newFiles.br) { scan = App.addAttachments(target.appId, 'Bank Receipt', { files: [newFiles.br] })[0]; delete newFiles.br; }
-        var changed = !prev || prev.brNo !== w.br.brNo || prev.scan !== scan || prev.amount !== w.br.amount || prev.brDate !== w.br.brDate;
-        if (!changed) return;
-        if (prev && prev.status !== 'Draft') {
-          if (prev.status !== 'Invalid') prev.status = 'Replaced';
-          target.brHistory.push(prev);
-          F.clearOriginals(target);
-        }
-        target.br = { brNo: w.br.brNo, brDate: w.br.brDate, amount: w.br.amount, scan: scan, uploadedOn: D.demoToday, status: 'Draft' };
-      }
       function blank() {
-        return { appId: F.nextAppId(w.circle), status: ST.DRAFT, history: [], inspections: [], versions: [], brHistory: [], boHistory: [], round: 1, selectedBo: null, returnedBy: null, correction: null, assessment: null, originalsChecks: [], originalsVerified: false, originalsVerifiedBy: null, fee: null, br: null, firstSubmittedOn: null, submittedOn: null };
+        return { appId: F.nextAppId(w.circle), status: ST.DRAFT, history: [], inspections: [], versions: [], brHistory: [], boHistory: [], round: 1, selectedBo: null, returnedBy: null, correction: null, assessment: null, path: [], sentBy: null, approvedBy: null,
+          originalsChecks: [], originalsVerified: false, originalsVerifiedBy: null, fee: null, challan: null, challanHistory: [], br: null, firstSubmittedOn: null, submittedOn: null };
       }
       function writeBack(target) {
-        ['circle', 'applicantType', 'category', 'item', 'orgType', 'kind', 'licenceNo', 'businessKey', 'change', 'instructionsAck'].forEach(function (k) { target[k] = clone(w[k] == null ? null : w[k]); });
+        ['circle', 'applicantType', 'purposes', 'prevPurposes', 'category', 'item', 'orgType', 'kind', 'licenceNo', 'businessKey', 'change', 'instructionsAck'].forEach(function (k) { target[k] = clone(w[k] == null ? null : w[k]); });
         target.form = clone(w.form);
         target.updatedOn = D.demoToday;
       }
-      function persist(target) { writeBack(target); storeFiles(target); storeBr(target); w.docs = clone(target.docs); w.br = clone(target.br); }
+      function persist(target) { writeBack(target); storeFiles(target); w.docs = clone(target.docs); }
       function saveDraft() {
         var target = stored;
         if (!target) {
@@ -571,9 +594,9 @@
         if (mode === 'correct') {
           // Keep the earlier version: record what changed in this round.
           var changedFields = [], changedDocs = [];
-          if (stored.category !== w.category || stored.item !== w.item || stored.applicantType !== w.applicantType) changedFields.push({ key: 'category', old: stored.orgType, new: w.orgType });
+          if (!F.samePurposes(F.purposesOf(stored), F.purposesOf(w)) || stored.applicantType !== w.applicantType) changedFields.push({ key: 'category', old: stored.orgType, new: w.orgType });
           F.FIELDS.forEach(function (f) { if (String(stored.form[f.key] == null ? '' : stored.form[f.key]) !== String(w.form[f.key] == null ? '' : w.form[f.key])) changedFields.push({ key: f.key, old: stored.form[f.key], new: w.form[f.key] }); });
-          Object.keys(newFiles).forEach(function (k) { changedDocs.push({ key: k, old: k === 'br' ? (stored.br ? stored.br.scan : null) : (stored.docs[k] ? stored.docs[k].file : null), new: newFiles[k].name }); });
+          Object.keys(newFiles).forEach(function (k) { changedDocs.push({ key: k, old: stored.docs[k] ? stored.docs[k].file : null, new: newFiles[k].map(function (x) { return x.name; }).join(', ') }); });
           target.versions.push({ round: target.round || 1, submittedOn: target.submittedOn, returnedOn: corr.on, returnedBy: corr.by + ' (' + corr.role + ')', remarks: corr.remarks, form: clone(stored.form), changedFields: changedFields, changedDocs: changedDocs });
         }
         persist(target);

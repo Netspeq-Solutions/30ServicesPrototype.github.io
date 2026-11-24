@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -28,10 +28,10 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
-  <script src="tl-view.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
+  <script src="tl-view.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -45,59 +45,76 @@
       if (!a || !F.visibleTo(a, me)) { root.innerHTML = '<div class="alert alert-warning">Application not found, or not visible to your account.' + (a && u.role === 'bo' ? ' A BO sees an application only after an Inspector forwards it.' : '') + '</div><a class="btn btn-sm btn-outline-secondary" href="applications.html?view=mine">My Work Queue</a>'; return; }
       document.title = a.appId + ' | Review | e-Trade Licence';
       var activeTab = 'details';
+      var senior = F.REMARKS_REQUIRED.indexOf(u.role) !== -1; // Joint Director / Director, Special Secretary, Issuing Authority: remarks on every action
+      var STAGE_LABEL = { jd: 'Joint Director / Director', ss: 'Special Secretary', hod: 'Issuing Authority (CCS / Secretary)', bo: 'BO' };
 
       // ---------- Action desk ----------
       function btn(id, cls, icon, label, disabled) {
         return '<button type="button" class="btn btn-sm ' + cls + '" data-act="' + id + '"' + (disabled ? ' disabled aria-disabled="true"' : '') + '><i class="bi ' + icon + '" aria-hidden="true"></i>' + label + '</button>';
       }
+      function returnBtns() {
+        return F.returnTargets(a, u.role).map(function (t) { return btn('returnTo:' + t.to, 'btn-outline-warning', 'bi-arrow-return-left', 'Return to ' + esc(t.label)); }).join('');
+      }
       function desk() {
         var can = F.canAct(a, me), s = a.status, primary = '', secondary = '', hint = '';
         var reassign = F.canReassign(a, me) ? btn('reassignBo', 'btn-outline-primary', 'bi-arrow-left-right', 'Forward to Another BO') : '';
+        var exempt = F.canExempt(a, me) ? btn('exempt', 'btn-outline-success', 'bi-percent', 'Exempt Charges') : '';
         if (!can) {
           var viewOnly = '<p class="small text-muted mb-0"><i class="bi bi-eye me-1" aria-hidden="true"></i>View only. This application is pending with <strong>' + esc(F.pendingWith(a).label) + '</strong>.</p>';
-          // An Inspector can still send it on to another BO while it waits with the BO.
-          return viewOnly + (reassign ? '<div id="workflowActionsContainer" class="mt-2"><div class="gov-action-subgroup">' + reassign + '</div></div><p class="small text-muted mt-2 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>If BO ' + esc(F.staffName(a.selectedBo)) + ' cannot take it up, forward it to another BO.</p>' : '');
+          // An Inspector can still send it on to another BO while it waits with the BO; after approval the Inspector / BO may exempt charges.
+          if (!reassign && !exempt) return viewOnly;
+          return viewOnly + '<div id="workflowActionsContainer" class="mt-2"><div class="gov-action-subgroup">' + reassign + exempt + '</div></div><p class="small text-muted mt-2 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>' +
+            (reassign ? 'If BO ' + esc(F.staffName(a.selectedBo)) + ' cannot take it up, forward it to another BO.' : 'Approved and awaiting payment. You may exempt the late fee, backlog fee, penalties or other charges (e.g. on a departmental order). The applicant then generates a new challan.') + '</p>';
         }
+        var renewal = a.kind === 'Renewal', needsAssess = !a.assessment;
         var origMine = !!F.originalsBy(a, u.role);
-        var renewal = a.kind === 'Renewal', needsNote = !renewal && !a.assessment;
-        var brPr = renewal ? F.brProblem(a) : '';
+        var feeNow = a.assessment ? inr(F.feeTotal(a.assessment)) : '';
         if (u.role === 'inspector' && s !== ST.BR_UPLOADED) {
           if (s === ST.SUBMITTED || s === ST.RESUBMITTED) {
             primary = btn('start', 'btn-primary', 'bi-play-circle', 'Start Verification');
             secondary = btn('return', 'btn-outline-warning', 'bi-arrow-return-left', 'Return for Correction');
             hint = 'No lock: another Inspector can also work on this application.';
-          } else if (renewal) {
-            primary = btn('forwardBo', 'btn-primary', 'bi-send', 'Forward to BO', !a.originalsVerified || !!brPr);
-            secondary = (origMine ? '' : btn('originals', 'btn-outline-primary', 'bi-receipt', 'Mark Original BR Received')) + btn('note', 'btn-outline-primary', 'bi-journal-plus', 'Add Inspection Note') + btn('return', 'btn-outline-warning', 'bi-arrow-return-left', 'Return for Correction');
-            hint = brPr ? esc(brPr) + ' Return the renewal with the Bank Receipt marked.' : (a.originalsVerified ? 'BR in order and the original received. A site visit is optional for renewals.' : 'Check the BR against the bank record and mark the original BR as received before forwarding.');
           } else {
-            primary = btn('forwardBo', 'btn-primary', 'bi-send', 'Forward to BO', needsNote);
-            secondary = btn('note', 'btn-outline-primary', 'bi-journal-plus', a.assessment ? 'Add Inspection Note' : 'Add Inspection Report') + btn('return', 'btn-outline-warning', 'bi-arrow-return-left', 'Return for Correction');
-            hint = needsNote ? 'Visit the site and add the inspection report with the fee assessment (licence fee + garbage fee' + (F.isOldRenewal(a) ? ' + any fine / surcharge for the old licence' : '') + ') before forwarding.' : 'Fee assessed: ' + inr(F.computeFee(a).total) + '. Choose one of the BOs when forwarding.';
+            primary = btn('forwardBo', 'btn-primary', 'bi-send', renewal ? 'Forward to BO for Approval' : 'Forward to BO', needsAssess);
+            secondary = btn('note', 'btn-outline-primary', 'bi-journal-plus', needsAssess ? (renewal ? 'Add Fee Assessment' : 'Add Inspection Report') : 'Add Inspection Note') +
+              (needsAssess ? '' : btn('assess', 'btn-outline-primary', 'bi-calculator', 'Revise Fee Assessment')) + btn('return', 'btn-outline-warning', 'bi-arrow-return-left', 'Return for Correction');
+            hint = needsAssess ? (renewal ? 'Work out the renewal fee, garbage fee, late fee (suggested by the system), backlog and penalties in the fee assessment. A site visit is optional for renewals.'
+                : 'Visit the site and add the inspection report with the fee assessment (licence fee, garbage fee and any late fee, backlog' + (F.isOldRenewal(a) ? ' for the years the old licence was not renewed' : '') + ' or penalties) before forwarding.')
+              : 'Fee assessed: ' + feeNow + '. Choose one of the BOs when forwarding.';
           }
         } else if (u.role === 'bo' && s !== ST.BR_UPLOADED) {
-          primary = renewal ? btn('approveRenewal', 'btn-success', 'bi-check2-circle', 'Approve Renewal', !!brPr || !a.originalsVerified) : btn('forwardSs', 'btn-primary', 'bi-send', 'Forward to Special Secretary');
-          secondary = (renewal && !origMine ? btn('originals', 'btn-outline-primary', 'bi-receipt', 'Mark Original BR Received') : '') + btn('note', 'btn-outline-primary', 'bi-journal-plus', renewal ? 'Add Site Inspection Note' : 'Add Re-inspection Note') + reassign + btn('return', 'btn-outline-warning', 'bi-arrow-return-left', 'Return for Correction');
-          hint = s === ST.RETURNED_BO ? 'Returned by the Special Secretary &ndash; see the remarks in the history.' : (!renewal ? 'Fee assessed: ' + inr(F.computeFee(a).total) + ' by ' + esc(a.assessment ? a.assessment.by : 'the Inspector') + '. To revise it, add a re-inspection note.' : '') + (renewal ? (brPr ? esc(brPr) + ' Return the renewal with the Bank Receipt marked.' : (!a.originalsVerified ? 'A new BR was uploaded; mark the original as received first.' : 'Site inspection is optional for renewals. On approval the applicant can download the renewed licence.')) : '');
+          primary = renewal ? btn('approve', 'btn-success', 'bi-check2-circle', 'Approve Renewal') : btn('forward', 'btn-primary', 'bi-send', 'Forward for Approval');
+          secondary = btn('assess', 'btn-outline-primary', 'bi-calculator', 'Revise Fee Assessment') + btn('note', 'btn-outline-primary', 'bi-journal-plus', renewal ? 'Add Site Inspection Note' : 'Add Re-inspection Note') + reassign + btn('return', 'btn-outline-warning', 'bi-arrow-return-left', 'Return for Correction');
+          hint = (s === ST.RETURNED_BO ? 'Returned to you &ndash; see the remarks in the history. ' : '') + 'Fee assessed: ' + feeNow + ' by ' + esc(a.assessment ? a.assessment.by : 'the Inspector') + '. ' +
+            (renewal ? 'On approval the fee is fixed; the applicant generates the challan, pays and uploads the Bank Receipt.' : 'Forward to the Joint Director / Director, the Special Secretary, or directly to the Issuing Authority.');
+        } else if (u.role === 'jd') {
+          primary = btn('forward', 'btn-primary', 'bi-send-check', 'Approve &amp; Forward');
+          secondary = btn('note', 'btn-outline-primary', 'bi-journal-plus', 'Add Note') + returnBtns();
+          hint = (s === ST.RETURNED_JD ? 'Returned to you by the Special Secretary &ndash; see the remarks in the history. ' : '') + 'Approve and forward to the Special Secretary or directly to the Issuing Authority, or return it to the BO. Remarks are mandatory.';
         } else if (u.role === 'ss') {
-          primary = btn('forwardHod', 'btn-primary', 'bi-send', 'Forward to HOD');
-          secondary = btn('note', 'btn-outline-primary', 'bi-journal-plus', 'Add Note') + btn('editNotes', 'btn-outline-primary', 'bi-pencil', 'Edit Inspection Notes') + btn('returnBo', 'btn-outline-warning', 'bi-arrow-return-left', 'Return to BO');
-          hint = s === ST.RETURNED_SS ? 'Returned by the HOD &ndash; see the remarks in the history.' : 'Add your own note (with a site visit if you made one), or edit the notes of other officers. Edited notes keep the original version in the history.';
+          primary = btn('approve', 'btn-success', 'bi-check2-circle', 'Approve (Final)');
+          secondary = btn('forward', 'btn-outline-primary', 'bi-send-check', 'Approve &amp; Forward to Issuing Authority') + btn('note', 'btn-outline-primary', 'bi-journal-plus', 'Add Note') + btn('editNotes', 'btn-outline-primary', 'bi-pencil', 'Edit Inspection Notes') + returnBtns();
+          hint = (s === ST.RETURNED_SS ? 'Returned by the Issuing Authority &ndash; see the remarks in the history. ' : '') + 'Give the final approval yourself, or approve and forward to the Issuing Authority (CCS / Secretary). Remarks are mandatory. Edited notes keep the original version.';
         } else if (u.role === 'hod') {
           primary = btn('approve', 'btn-success', 'bi-check2-circle', 'Approve');
-          secondary = btn('returnSs', 'btn-outline-warning', 'bi-arrow-return-left', 'Return to Special Secretary');
-          hint = 'On approval, the fee assessed by the Inspector (' + inr(F.computeFee(a).total) + ') is fixed and the payment step opens for the applicant.';
+          secondary = returnBtns();
+          hint = 'On approval the fee assessed (' + feeNow + ') is fixed and the applicant generates the challan and pays. Remarks are mandatory.';
         }
         if (s === ST.BR_UPLOADED) {
-          var dup = F.brDuplicate(a.br.brNo, a.appId), short = a.br.amount < a.fee.total;
-          var blocked = dup || short;
+          var pr = F.brProblem(a), needO = F.needsOriginals(a);
           // The popup shows the uploaded BR; from there the officer verifies it or marks it invalid.
-          primary = btn('brVerify', 'btn-success', 'bi-patch-check', 'Verify BR &amp; Generate Licence');
-          secondary = origMine ? '' : btn('originals', 'btn-outline-primary', 'bi-folder-check', 'Mark Originals Verified');
-          hint = blocked ? (dup ? 'Duplicate BR number (also used on ' + esc(dup) + ').' : 'BR amount ' + inr(a.br.amount) + ' is less than ' + inr(a.fee.total) + '.') + ' Open Verify BR to mark it invalid.'
-            : (a.originalsVerified ? 'Originals verified. Open Verify BR to check the receipt against the bank record.' : 'The licence is generated only after the originals are seen. Mark originals verified first.');
+          primary = btn('brVerify', 'btn-success', 'bi-patch-check', renewal ? 'Verify BR &amp; Renew Licence' : 'Verify BR &amp; Generate Licence');
+          secondary = needO && !origMine ? btn('originals', 'btn-outline-primary', 'bi-folder-check', 'Mark Originals Verified') : '';
+          hint = pr ? esc(pr) + ' Open Verify BR to mark it invalid.'
+            : (!needO || a.originalsVerified ? 'Open Verify BR to check the receipt against the challan and the bank record.' : 'The licence is generated only after the originals are seen. Mark originals verified first.');
         }
         return '<div id="workflowActionsContainer">' + primary + (secondary ? '<div class="gov-action-subgroup">' + secondary + '</div>' : '') + '</div>' + (hint ? '<p class="small text-muted mt-2 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + hint + '</p>' : '');
+      }
+      function deskTitle() {
+        if (!F.canAct(a, me) || a.status === ST.BR_UPLOADED) return ['Verification Decision', 'Remarks are mandatory on every return. No outright rejection.'];
+        if (u.role === 'jd' || u.role === 'ss') return ['Approve and Forward', 'Remarks are mandatory on every action. No outright rejection.'];
+        if (u.role === 'hod') return ['Final Approval', 'Remarks are mandatory on every action. No outright rejection.'];
+        return ['Verification Decision', 'Remarks are mandatory on every return. No outright rejection.'];
       }
 
       function render() {
@@ -110,6 +127,7 @@
           history: V.history(a),
           versions: V.versions(a)
         };
+        var dt = deskTitle();
         root.innerHTML =
           '<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"><div class="min-w-0"><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0">' + esc(a.appId) + '</h1>' + App.kindBadge(a) + App.pill(a.status) + '</div>' +
             '<p class="text-muted small mb-0">' + esc(App.appName(a)) + ' &bull; ' + esc(a.orgType) + ' &bull; pending with ' + esc(F.pendingWith(a).label) + '</p></div>' +
@@ -123,7 +141,7 @@
               tabs.map(function (t) { return '<div class="tab-pane fade' + (t[0] === activeTab ? ' show active' : '') + '" id="pane-' + t[0] + '" role="tabpanel" aria-labelledby="tab-' + t[0] + '" tabindex="0">' + (t[0] === 'docs' ? '<div class="mx-n3">' + panes.docs + '</div>' : panes[t[0]]) + '</div>'; }).join('') +
             '</div></div>' +
           '</div><div class="col-xl-4 order-first order-xl-last"><div class="tl-action-rail">' +
-            '<div class="gov-workflow-panel mb-3"><div class="gov-workflow-panel-header"><h2 class="h6 fw-bold mb-0">Verification Decision</h2><div class="small text-muted">Remarks are mandatory on every return. No outright rejection.</div></div>' + desk() + '</div>' +
+            '<div class="gov-workflow-panel mb-3"><div class="gov-workflow-panel-header"><h2 class="h6 fw-bold mb-0">' + dt[0] + '</h2><div class="small text-muted">' + dt[1] + '</div></div>' + desk() + '</div>' +
             V.card('Summary', V.summary(a)) +
             V.card('Fee', V.fee(a)) +
             (a.br || a.brHistory.length ? V.card('Bank Receipt', V.br(a)) : '') +
@@ -145,65 +163,189 @@
         } catch (err) { App.toast(esc(err.message), 'danger'); return false; }
       }
       function remarksField(required, placeholder) {
-        return '<label for="mRemarks" class="form-label fw-semibold">Remarks' + (required ? ' <span class="text-danger" aria-hidden="true">*</span>' : ' (optional)') + '</label><textarea id="mRemarks" class="form-control form-control-sm" rows="3" placeholder="' + esc(placeholder || '') + '"></textarea>';
+        return '<label for="mRemarks" class="form-label fw-semibold">Remarks' + (required ? ' <span class="text-danger" aria-hidden="true">*</span>' : ' (optional)') + '</label><textarea id="mRemarks" class="form-control form-control-sm" rows="3" placeholder="' + esc(placeholder || '') + '"' + (required ? ' aria-required="true"' : '') + '></textarea>';
       }
       function readRemarks(el, required) {
         var r = el.querySelector('#mRemarks'), v = r.value.trim();
         return App.fieldError(r, required && v.length < 5 ? 'Enter remarks (at least 5 characters).' : '') ? v : null;
       }
-      function simple(action, title, okLabel, okClass, required, body, placeholder) {
+      function simple(action, title, okLabel, okClass, required, body, placeholder, extra) {
         App.modal({ title: title, ok: okLabel, okClass: okClass, body: (body || '') + remarksField(required, placeholder), onOk: function (el) {
           var r = readRemarks(el, required);
           if (r === null) return false;
-          return run(action, { remarks: r });
+          return run(action, Object.assign({ remarks: r }, extra || {}));
         } });
       }
 
       function open(act) {
         if (act === 'start') return run('start', {});
-        if (act === 'forwardSs') return simple('forwardSs', 'Forward to Special Secretary', 'Forward', 'btn-primary', false, '<p>Forward ' + esc(a.appId) + ' to the Special Secretary for verification.</p>', 'Recommendation');
-        if (act === 'forwardHod') return simple('forwardHod', 'Forward to HOD', 'Forward', 'btn-primary', false, '<p>Forward to the HOD. Any one of the CCS or Issuing Authorities can give final approval.</p>');
-        if (act === 'returnBo') return simple('returnBo', 'Return to BO', 'Return to BO', 'btn-warning', true, '<p>Return to BO <strong>' + esc(F.staffName(a.selectedBo)) + '</strong>. The BO can then forward again or return to the applicant.</p>', 'What should the BO check?');
-        if (act === 'returnSs') return simple('returnSs', 'Return to Special Secretary', 'Return', 'btn-warning', true, '<p>Return to the Special Secretary, who can forward to HOD again or return to the BO.</p>', 'What should be checked?');
-        if (act === 'originals') return a.kind === 'Renewal' ? simple('originals', 'Original Bank Receipt received', 'Mark Received', 'btn-primary', false, '<p>Confirm that the applicant has given the original Bank Receipt <strong>' + esc(a.br ? a.br.brNo : '') + '</strong> at the department.</p>') : simple('originals', 'Mark original documents verified', 'Mark Verified', 'btn-primary', false, '<p>Confirm that you have seen the original documents brought by the applicant.</p>');
-        if (act === 'approve') {
-          var fee = F.computeFee(a);
-          var body = '<div class="alert alert-light border"><div class="fw-semibold mb-1">Fee to be fixed now</div><table class="table table-sm mb-1"><tbody><tr><td>' + esc(fee.kind) + ' fee</td><td class="text-end">' + inr(fee.base) + '</td></tr>' +
-            '<tr><td>Garbage fee</td><td class="text-end">' + inr(fee.garbage) + '</td></tr>' + (fee.fine ? '<tr><td>Fine / surcharge (old licence)</td><td class="text-end">' + inr(fee.fine) + '</td></tr>' : '') + '<tr><th>Total</th><th class="text-end">' + inr(fee.total) + '</th></tr></tbody></table><div class="text-muted">Assessed by ' + esc(fee.assessedBy) + ' (' + esc(fee.assessedRole) + ') on ' + App.fmtDate(fee.assessedOn) + '.' +
-            (a.kind === 'New' ? ' This becomes the renewal amount of the licence; the department can revise it later.' : '') + '</div></div>';
-          return simple('approve', 'Approve application', 'Approve', 'btn-success', false, body);
+        if (act.indexOf('returnTo:') === 0) {
+          var to = act.split(':')[1];
+          return simple('returnTo', 'Return to ' + STAGE_LABEL[to], 'Return', 'btn-warning', true,
+            '<p>Return ' + esc(a.appId) + ' to the <strong>' + esc(STAGE_LABEL[to]) + (to === 'bo' ? ' (' + esc(F.staffName(a.selectedBo)) + ')' : '') + '</strong>. They can act on it again and forward it, or return it further.</p>', 'What should be checked?', { to: to });
         }
-        if (act === 'approveRenewal') {
-          return simple('approveRenewal', 'Approve renewal', 'Approve Renewal', 'btn-success', false,
-            '<ul class="mb-2"><li>BR ' + esc(a.br.brNo) + ' dated ' + App.fmtDate(a.br.brDate) + ' &ndash; ' + inr(a.br.amount) + ' (amount due ' + inr(a.fee.total) + ')</li><li>Original BR received:' + V.originals(a) + '</li>' +
-            '<li>Same licence number; new validity to the next 31 March. The applicant can download the renewed licence straight away.</li></ul>' + (a.inspections.some(function (n) { return n.role === 'BO'; }) ? '' : '<p class="text-muted">No site inspection note by the BO &ndash; optional for renewals.</p>'));
-        }
+        if (act === 'originals') return simple('originals', 'Mark original documents verified', 'Mark Verified', 'btn-primary', false, '<p>Confirm that you have seen the original documents brought by the applicant.</p>');
+        if (act === 'approve') return approveModal();
+        if (act === 'forward') return forwardModal();
         if (act === 'return') return returnModal();
         if (act === 'forwardBo') return forwardBoModal();
         if (act === 'reassignBo') return forwardBoModal(true);
         if (act === 'note') return noteModal();
+        if (act === 'assess') return assessModal();
+        if (act === 'exempt') return exemptModal();
         if (act === 'editNotes') { activeTab = 'notes'; render(); document.getElementById('pane-notes').scrollIntoView({ behavior: 'smooth' }); return; }
         if (act === 'brVerify') return brVerifyModal();
       }
 
-      // Verify BR & generate licence: the uploaded BR is shown in the popup; it can be marked invalid from here.
+      // ---------- Fee assessment fields (Inspector and BO – the same fields) ----------
+      // Licence / renewal / change fee and garbage fee, then late fee, backlog fee and penalties, and any number of other charges.
+      var otherSeq = 0;
+      function otherRow(o) {
+        var i = ++otherSeq;
+        return '<div class="row g-2 align-items-end mb-2" data-other><div class="col-7 col-md-8"><label class="form-label small mb-1" for="mOL' + i + '">Charge</label><input id="mOL' + i + '" class="form-control form-control-sm" data-ol value="' + esc(o ? o.label : '') + '" placeholder="e.g. Signboard fee"></div>' +
+          '<div class="col-3 col-md-3"><label class="form-label small mb-1" for="mOA' + i + '">Amount (₹)</label><input id="mOA' + i + '" type="number" min="0" class="form-control form-control-sm" data-oa value="' + esc(o ? o.amount : '') + '"></div>' +
+          '<div class="col-2 col-md-1"><button type="button" class="btn btn-sm btn-outline-danger tl-icon-btn" data-remove-other aria-label="Remove this charge"><i class="bi bi-trash" aria-hidden="true"></i></button></div></div>';
+      }
+      function feeFields(s) {
+        s = s || {};
+        var kind = a.kind === 'Change' ? 'Change fee' : (a.kind === 'Renewal' ? 'Renewal fee' : 'Licence fee'), sug = F.suggestedCharges(a);
+        function num(id, label, val, req) {
+          return '<div class="col-6 col-md-4"><label for="' + id + '" class="form-label fw-semibold">' + label + (req ? ' <span class="text-danger" aria-hidden="true">*</span>' : '') + '</label><input type="number" min="0" id="' + id + '" class="form-control form-control-sm" data-fee value="' + esc(val == null || val === '' ? (req ? '' : 0) : val) + '"></div>';
+        }
+        var lic = a.licenceNo ? App.licence(a.licenceNo) : null, rule = D.config.renewalFine;
+        var lateHint = a.kind === 'Renewal' && lic ? (function () { var r = F.renewalFine(lic.validTo, a.firstSubmittedOn || D.demoToday); return 'Late fee by the rule: grace to ' + App.fmtDate(r.graceEnd) + ', then ₹' + rule.perDay + ' per day to the first submission (' + App.fmtDate(a.firstSubmittedOn) + ') = ' + r.lateDays + ' days, ' + inr(r.fine) + '. Renewal amount of the licence: ' + inr(F.renewalAmounts(lic).renewal) + ' + garbage fee ' + inr(F.renewalAmounts(lic).garbage) + '.'; })() : '';
+        return '<fieldset class="border rounded p-3" id="mFeeBox"><legend class="float-none w-auto px-1 mb-0 small fw-semibold">Fee assessment' + (a.assessment ? ' <span class="text-muted fw-normal">(revise if needed)</span>' : '') + '</legend>' +
+          (F.isOldRenewal(a) ? '<div class="alert alert-warning small py-2 mb-2"><i class="bi bi-clock-history me-1" aria-hidden="true"></i>Renewal of old licence <span class="tl-ref-id">' + esc(a.form.oldLicenceNo) + '</span>, valid to ' + App.fmtDate(a.form.oldValidTo) + '. Add the backlog fee for the years it was not renewed, and any late fee or penalty.</div>' : '') +
+          (lateHint ? '<div class="alert alert-light border small py-2 mb-2"><i class="bi bi-calculator me-1 text-primary" aria-hidden="true"></i>' + esc(lateHint) + (sug && sug.suggested ? ' Filled in below; change if needed.' : '') + '</div>' : '') +
+          '<div class="row g-3">' + num('mFee', kind + ' (₹)', s.base, true) + num('mGarbage', 'Garbage fee (₹)', s.garbage, true) + num('mLate', 'Late fee (₹)', s.late) + num('mBacklog', 'Backlog fee (₹)', s.backlog) + num('mPenalty', 'Penalties (₹)', s.penalty) + '</div>' +
+          '<div class="mt-3"><div class="small fw-semibold mb-1">Other charges <span class="text-muted fw-normal">(optional)</span></div><div id="mOthers">' + (s.others || []).map(otherRow).join('') + '</div>' +
+            '<button type="button" class="btn btn-sm btn-outline-primary" id="mAddOther"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add Another Charge</button></div>' +
+          '<div class="d-flex justify-content-between align-items-center border-top mt-3 pt-2"><span class="fw-semibold">Total payable</span><span class="tl-amount" id="mTotal"></span></div>' +
+          (a.assessment ? '<p class="text-muted mb-0 mt-2">Current: ' + inr(F.feeTotal(a.assessment)) + ' by ' + esc(a.assessment.by) + ' (' + esc(a.assessment.role || 'Inspector') + ').</p>' : '') +
+          '<p class="text-muted mb-0 mt-2">Work out the fee as per the UDD notification for ' + esc(a.orgType) + '. It is fixed on final approval' + (a.kind === 'New' ? '; the licence fee becomes the renewal amount of the licence' : '') + '. Late fee, backlog fee, penalties and other charges can be exempted after approval.</p></fieldset>';
+      }
+      function bindFeeFields(el) {
+        var box = el.querySelector('#mFeeBox');
+        if (!box) return;
+        function total() {
+          var t = 0;
+          box.querySelectorAll('[data-fee],[data-oa]').forEach(function (i) { t += Math.max(0, +i.value || 0); });
+          el.querySelector('#mTotal').textContent = inr(t);
+        }
+        box.addEventListener('input', total);
+        el.querySelector('#mAddOther').addEventListener('click', function () {
+          el.querySelector('#mOthers').insertAdjacentHTML('beforeend', otherRow(null));
+          var rows = el.querySelectorAll('[data-other]');
+          rows[rows.length - 1].querySelector('[data-ol]').focus();
+        });
+        box.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-remove-other]');
+          if (!b) return;
+          b.closest('[data-other]').remove();
+          total();
+          el.querySelector('#mAddOther').focus();
+        });
+        total();
+      }
+      // Returns the charges, or null when something is missing.
+      function readFeeFields(el) {
+        var fe = el.querySelector('#mFee'), ga = el.querySelector('#mGarbage'), ok = true;
+        ok = App.fieldError(fe, fe.value === '' || +fe.value <= 0 ? 'Enter the fee assessed.' : '') && ok;
+        ok = App.fieldError(ga, ga.value === '' || +ga.value < 0 ? 'Enter the garbage fee (0 if none).' : '') && ok;
+        ['#mLate', '#mBacklog', '#mPenalty'].forEach(function (q) { var i = el.querySelector(q); ok = App.fieldError(i, i.value !== '' && +i.value < 0 ? 'Cannot be negative.' : '') && ok; });
+        var others = [];
+        el.querySelectorAll('[data-other]').forEach(function (r) {
+          var l = r.querySelector('[data-ol]'), m = r.querySelector('[data-oa]');
+          if (!l.value.trim() && !m.value) return; // empty row – ignored
+          ok = App.fieldError(l, l.value.trim().length < 2 ? 'Name the charge.' : '') && ok;
+          ok = App.fieldError(m, !(+m.value > 0) ? 'Enter the amount.' : '') && ok;
+          others.push({ label: l.value.trim(), amount: Math.round(+m.value) });
+        });
+        if (!ok) return null;
+        var late = Math.round(+el.querySelector('#mLate').value || 0), prev = F.suggestedCharges(a) || {};
+        return { base: Math.round(+fe.value), garbage: Math.round(+ga.value), late: late, lateDays: late && late === prev.late ? prev.lateDays || 0 : 0,
+          backlog: Math.round(+el.querySelector('#mBacklog').value || 0), penalty: Math.round(+el.querySelector('#mPenalty').value || 0), others: others };
+      }
+
+      function assessModal() {
+        App.modal({ title: a.assessment ? 'Revise fee assessment' : 'Fee assessment', ok: 'Save Fee Assessment', okClass: 'btn-primary', size: 'lg', scroll: false,
+          body: '<div class="mb-3">' + feeFields(F.suggestedCharges(a)) + '</div>' + remarksField(false, 'Reason for the revision'),
+          onShow: bindFeeFields,
+          onOk: function (el) {
+            var c = readFeeFields(el);
+            if (!c) { var bad = el.querySelector('.is-invalid'); if (bad) bad.focus(); return false; }
+            return run('assess', { assess: c, remarks: el.querySelector('#mRemarks').value.trim() });
+          } });
+      }
+      function approveModal() {
+        var fee = F.computeFee(a), renewal = a.kind === 'Renewal';
+        var body = '<div class="alert alert-light border"><div class="fw-semibold mb-1">Fee to be fixed now</div>' + V.feeTable(fee) + '<div class="text-muted">Assessed by ' + esc(fee.assessedBy) + ' (' + esc(fee.assessedRole) + ') on ' + App.fmtDate(fee.assessedOn) + '.' +
+          (a.kind === 'New' ? ' The licence fee becomes the renewal amount of the licence; the department can revise it later.' : '') + '</div></div>' +
+          '<p>' + (renewal ? 'The applicant then generates the challan, pays at the bank and uploads the Bank Receipt. The licence is renewed once the BR is verified.' : 'This is the final approval. The applicant then generates the challan, pays at the bank and uploads the Bank Receipt.') + '</p>';
+        return simple('approve', renewal ? 'Approve renewal' : 'Final approval', renewal ? 'Approve Renewal' : 'Approve', 'btn-success', senior, body, senior ? 'Approval remarks (mandatory)' : '');
+      }
+      // BO: Joint Director / Director, Special Secretary or Issuing Authority. Joint Director / Director: SS or IA. SS: IA.
+      function forwardModal() {
+        var opts = F.FORWARD_TO[u.role] || [];
+        var DESC = { jd: 'Approves and forwards to the Special Secretary or the Issuing Authority.', ss: 'May give the final approval or forward to the Issuing Authority.', hod: 'Gives the final approval (CCS / Secretary / Issuing Authority).' };
+        var choose = opts.length > 1 ? '<fieldset class="mb-3"><legend class="fw-semibold small">Forward to <span class="text-danger" aria-hidden="true">*</span></legend>' + opts.map(function (k, i) {
+            return '<div class="form-check mb-1"><input class="form-check-input" type="radio" name="mTo" id="mTo' + i + '" value="' + k + '"><label class="form-check-label" for="mTo' + i + '"><strong>' + esc(STAGE_LABEL[k]) + '</strong> <span class="text-muted">&ndash; ' + esc(DESC[k]) + '</span></label></div>';
+          }).join('') + '<div class="invalid-feedback d-block" id="mToErr"></div></fieldset>'
+          : '<input type="hidden" name="mTo" value="' + opts[0] + '"><p>Forward ' + esc(a.appId) + ' to the <strong>' + esc(STAGE_LABEL[opts[0]]) + '</strong>.</p>';
+        App.modal({ title: u.role === 'bo' ? 'Forward for approval' : 'Approve and forward', ok: u.role === 'bo' ? 'Forward' : 'Approve &amp; Forward', okClass: 'btn-primary',
+          body: choose + remarksField(senior, senior ? 'Your remarks (mandatory)' : 'Recommendation'),
+          onOk: function (el) {
+            var c = el.querySelector('input[name="mTo"]:checked') || el.querySelector('input[type="hidden"][name="mTo"]');
+            if (el.querySelector('#mToErr')) el.querySelector('#mToErr').textContent = c ? '' : 'Choose where to forward it.';
+            var r = readRemarks(el, senior);
+            if (!c || r === null) return false;
+            return run('forward', { to: c.value, remarks: r });
+          } });
+      }
+      // After approval: exempt the late fee, backlog fee, penalties or other charges (Inspector / BO).
+      function exemptModal() {
+        var lines = F.feeLines(a.fee).filter(function (l) { return l.exemptible && !l.exempt && l.amount > 0; });
+        App.modal({ title: 'Exempt charges', ok: 'Exempt', okClass: 'btn-success',
+          body: '<p>Fee fixed on approval: <strong>' + inr(a.fee.total) + '</strong>. Choose the charges to exempt. The licence fee and garbage fee cannot be exempted.</p>' +
+            '<fieldset class="mb-2"><legend class="fw-semibold small">Charges <span class="text-danger" aria-hidden="true">*</span></legend>' + lines.map(function (l, i) {
+              return '<div class="form-check mb-1"><input class="form-check-input" type="checkbox" id="mEx' + i + '" value="' + l.key + '" data-amt="' + l.amount + '" data-ex><label class="form-check-label" for="mEx' + i + '">' + esc(l.label) + ' &ndash; <strong>' + inr(l.amount) + '</strong></label></div>';
+            }).join('') + '<div class="invalid-feedback d-block" id="mExErr"></div></fieldset>' +
+            '<p class="mb-3">New fee payable: <strong id="mExTotal">' + inr(a.fee.total) + '</strong>' + (a.challan ? '. <span class="text-warning-emphasis">The challan already generated will be superseded; the applicant must generate a new one.</span>' : '.') + '</p>' +
+            remarksField(true, 'Order reference / reason for the exemption'),
+          onShow: function (el) {
+            el.querySelectorAll('[data-ex]').forEach(function (c) { c.addEventListener('change', function () {
+              var off = 0; el.querySelectorAll('[data-ex]:checked').forEach(function (x) { off += +x.getAttribute('data-amt'); });
+              el.querySelector('#mExTotal').textContent = inr(a.fee.total - off);
+            }); });
+          },
+          onOk: function (el) {
+            var keys = Array.prototype.slice.call(el.querySelectorAll('[data-ex]:checked')).map(function (x) { return x.value; });
+            el.querySelector('#mExErr').textContent = keys.length ? '' : 'Choose at least one charge.';
+            var r = readRemarks(el, true);
+            if (!keys.length || r === null) return false;
+            return run('exempt', { lines: keys, remarks: r });
+          } });
+      }
+
+      // Verify BR & generate / renew the licence: the uploaded BR is shown in the popup; it can be marked invalid from here.
       function brVerifyModal() {
-        var dup = F.brDuplicate(a.br.brNo, a.appId), short = a.br.amount < a.fee.total;
+        var dup = F.brDuplicate(a.br.brNo, a.appId), short = a.br.amount < a.fee.total, needO = F.needsOriginals(a);
         var problems = [];
         if (dup) problems.push('Duplicate BR number &ndash; also used on ' + esc(dup) + '.');
         if (short) problems.push('BR amount ' + inr(a.br.amount) + ' is less than the fee payable ' + inr(a.fee.total) + '.');
-        if (!a.originalsVerified) problems.push('Originals not verified yet. Close this and use Mark Originals Verified first.');
+        if (needO && !a.originalsVerified) problems.push('Originals not verified yet. Close this and use Mark Originals Verified first.');
         var sugg = [];
         if (short) sugg.push('BR amount ' + inr(a.br.amount) + ' is less than the fee payable ' + inr(a.fee.total) + '. Pay the balance of ' + inr(a.fee.total - a.br.amount) + ' and upload again.');
         if (dup) sugg.push('BR number ' + a.br.brNo + ' is already used on ' + dup + '. Upload the correct Bank Receipt.');
         sugg.push('BR scan is not readable. Upload a clear copy.');
         sugg.push('BR not found in the bank record. Check the BR number and date.');
-        var outcome = a.kind === 'New' ? 'A new licence number is generated, valid to ' + App.fmtDate(F.fyEnd(D.demoToday)) + '.' : (a.kind === 'Renewal' ? 'Same licence number; new validity to the next 31 March.' : 'A new version is generated with the same licence number and validity; the old version is marked Superseded.');
+        var outcome = a.kind === 'New' ? (F.isOldRenewal(a) ? 'Licence ' + F.oldRenewalNo(a.form.oldLicenceNo) + ' is issued (same number as the old licence, year changed)' : 'A new licence number is generated') + ', valid to ' + App.fmtDate(F.fyEnd(D.demoToday)) + '.'
+          : (a.kind === 'Renewal' ? 'Same licence number; new validity to the next 31 March.' + (F.purposeChanged(a) ? ' A new version is issued with the items added / removed.' : '') : 'A new version is generated with the same licence number and validity; the old version is marked Superseded.');
         var body = '<div class="row g-3"><div class="col-lg-7"><div class="small fw-semibold mb-1">Bank Receipt uploaded by the applicant</div><div class="tl-br-preview" id="mBrPreview"></div>' +
             '<div class="small mt-1">' + App.fileLink(a.br.scan, 'Open in the document viewer', 'Bank Receipt') + '</div></div>' +
           '<div class="col-lg-5"><dl class="tl-dl"><dt>BR number</dt><dd class="font-monospace">' + esc(a.br.brNo) + '</dd><dt>BR date</dt><dd>' + App.fmtDate(a.br.brDate) + '</dd><dt>Amount paid</dt><dd>' + inr(a.br.amount) + '</dd>' +
-            '<dt>Fee payable</dt><dd>' + inr(a.fee.total) + '</dd><dt>Uploaded on</dt><dd>' + App.fmtDate(a.br.uploadedOn) + '</dd></dl>' +
-            '<div class="small fw-semibold mb-1">Originals verified</div>' + V.originals(a) +
+            '<dt>Fee payable</dt><dd>' + inr(a.fee.total) + '</dd>' + (a.challan ? '<dt>Challan</dt><dd class="font-monospace small">' + esc(a.challan.no) + '</dd>' : '') + '<dt>Uploaded on</dt><dd>' + App.fmtDate(a.br.uploadedOn) + '</dd></dl>' +
+            (needO ? '<div class="small fw-semibold mb-1">Originals verified</div>' + V.originals(a, { empty: 'None recorded yet' }) : '') +
             (problems.length ? '<div class="alert alert-warning small mt-2 mb-2"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>' + problems.join('<br>') + '</div>' : '<p class="small text-muted mt-2 mb-2"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + outcome + '</p>') +
             remarksField(false, 'Checked against the bank record') + '</div></div>' +
           '<div class="border-top mt-3 pt-3"><button type="button" class="btn btn-sm btn-outline-danger" id="mInvalidToggle" aria-expanded="false" aria-controls="mInvalidPanel"><i class="bi bi-x-octagon me-1" aria-hidden="true"></i>Mark BR Invalid</button>' +
@@ -211,11 +353,11 @@
               '<div class="mb-2 d-flex flex-wrap gap-1">' + sugg.map(function (t, i) { return '<button type="button" class="btn btn-sm btn-outline-secondary" data-sugg="' + i + '">' + esc(t.split('.')[0]) + '</button>'; }).join('') + '</div>' +
               '<label for="mInvalidRemarks" class="form-label fw-semibold">Reason <span class="text-danger" aria-hidden="true">*</span></label><textarea id="mInvalidRemarks" class="form-control form-control-sm" rows="2"></textarea>' +
               '<button type="button" class="btn btn-sm btn-danger mt-2" id="mInvalidConfirm"><i class="bi bi-x-octagon me-1" aria-hidden="true"></i>Confirm BR Invalid</button></div></div>';
-        App.modal({ title: 'Verify Bank Receipt &amp; generate licence', ok: '<i class="bi bi-patch-check me-1" aria-hidden="true"></i>Verify &amp; Generate Licence', okClass: 'btn-success', okDisabled: problems.length > 0, size: 'xl', body: body,
+        App.modal({ title: 'Verify Bank Receipt &amp; ' + (a.kind === 'Renewal' ? 'renew licence' : 'generate licence'), ok: '<i class="bi bi-patch-check me-1" aria-hidden="true"></i>Verify &amp; ' + (a.kind === 'Renewal' ? 'Renew Licence' : 'Generate Licence'), okClass: 'btn-success', okDisabled: problems.length > 0, size: 'xl', body: body,
           onShow: function (el) {
             App.previewInto(el.querySelector('#mBrPreview'), a.br.scan, 'Bank Receipt');
             var tg = el.querySelector('#mInvalidToggle'), panel = el.querySelector('#mInvalidPanel'), rr = el.querySelector('#mInvalidRemarks');
-            tg.addEventListener('click', function () { var open = panel.classList.toggle('d-none') === false; tg.setAttribute('aria-expanded', String(open)); if (open) rr.focus(); });
+            tg.addEventListener('click', function () { var opened = panel.classList.toggle('d-none') === false; tg.setAttribute('aria-expanded', String(opened)); if (opened) rr.focus(); });
             el.querySelectorAll('[data-sugg]').forEach(function (b) { b.addEventListener('click', function () { rr.value = sugg[+b.getAttribute('data-sugg')]; App.fieldError(rr, ''); }); });
             el.querySelector('#mInvalidConfirm').addEventListener('click', function () {
               if (!App.fieldError(rr, rr.value.trim().length < 5 ? 'Enter the reason (at least 5 characters).' : '')) { rr.focus(); return; }
@@ -226,9 +368,9 @@
       }
 
       function returnModal() {
-        var keys = F.docKeys(a).concat(a.kind === 'Renewal' && a.br ? ['br'] : []);
+        var keys = F.docKeys(a);
         var editableFields = a.kind === 'Change' ? F.changeFields(a) : (a.kind === 'Renewal' ? F.renewalFields(a) : F.fieldsFor(a).map(function (f) { return f.key; }));
-        var fieldOpts = (a.kind === 'New' ? [['circle', 'Circle (wrong circle chosen)'], ['category', F.fieldLabel('category')]] : []).concat(editableFields.map(function (k) { return [k, F.fieldLabel(k, F.typeOf(a))]; }));
+        var fieldOpts = (a.kind === 'New' ? [['circle', 'Circle (wrong circle chosen)'], ['category', F.fieldLabel('category')]] : (F.changesPurpose(a) ? [['category', F.fieldLabel('purposes')]] : [])).concat(editableFields.map(function (k) { return [k, F.fieldLabel(k, F.typeOf(a))]; }));
         function boxes(prefix, list) {
           return list.map(function (o) { return '<div class="form-check"><input class="form-check-input" type="checkbox" id="' + prefix + o[0] + '" value="' + o[0] + '" data-' + prefix + '><label class="form-check-label" for="' + prefix + o[0] + '">' + esc(o[1]) + '</label></div>'; }).join('');
         }
@@ -236,7 +378,7 @@
         App.modal({ title: 'Return for correction', ok: 'Return to Applicant', okClass: 'btn-warning', size: 'lg',
           body: '<p>The applicant edits only the fields and documents you mark, then resubmits. It comes back to ' + returnTo + '.</p>' + remarksField(true, 'What must the applicant correct?') +
             '<div class="row g-3 mt-1"><div class="col-md-6"><fieldset><legend class="fw-semibold small">Fields to correct</legend><div style="max-height:220px;overflow:auto;">' + boxes('rf', fieldOpts) + '</div></fieldset></div>' +
-            '<div class="col-md-6"><fieldset><legend class="fw-semibold small">Documents to upload again</legend><div style="max-height:220px;overflow:auto;">' + boxes('rd', keys.map(function (k) { return [k, F.docLabel(k)]; })) + '</div></fieldset></div></div>' +
+            '<div class="col-md-6"><fieldset><legend class="fw-semibold small">Documents to upload again</legend><div style="max-height:220px;overflow:auto;">' + (keys.length ? boxes('rd', keys.map(function (k) { return [k, F.docLabel(k)]; })) : '<p class="small text-muted mb-0">No documents on this application.</p>') + '</div></fieldset></div></div>' +
             '<p class="text-muted mt-2 mb-0">If nothing is marked, the applicant may edit the whole form.</p>',
           onOk: function (el) {
             var r = readRemarks(el, true);
@@ -250,12 +392,12 @@
       function forwardBoModal(again) {
         var bos = Object.keys(D.staff).filter(function (k) { return D.staff[k].role === 'bo' && D.staff[k].circle === a.circle && (!again || k !== a.selectedBo); });
         App.modal({ title: again ? 'Forward to another BO' : 'Forward to BO', ok: 'Forward', okClass: 'btn-primary',
-          body: (again ? '<p>Now with BO <strong>' + esc(F.staffName(a.selectedBo)) + '</strong>. The application moves to the BO you choose, at the same stage; the earlier BO can still view it.</p>' : '') +
+          body: (again ? '<p>Now with BO <strong>' + esc(F.staffName(a.selectedBo)) + '</strong>. The application moves to the BO you choose, at the same stage; the earlier BO can still view it.</p>' : (a.kind === 'Renewal' ? '<p>The BO approves the renewal with the fee you worked out (' + inr(F.feeTotal(a.assessment)) + ').</p>' : '')) +
             '<fieldset><legend class="fw-semibold small">Select the BO <span class="text-danger" aria-hidden="true">*</span></legend>' + bos.map(function (k, i) {
               var b = D.staff[k];
               return '<div class="form-check mb-1"><input class="form-check-input" type="radio" name="mBo" id="mBo' + i + '" value="' + k + '"><label class="form-check-label" for="mBo' + i + '"><strong>' + esc(b.name) + '</strong> <span class="text-muted">&ndash; ' + esc(b.note || 'BO') + '</span></label></div>';
             }).join('') + '<div class="invalid-feedback d-block" id="mBoErr"></div></fieldset>' +
-            (a.category === 'PHARMA' && !again ? '<p class="text-muted">Pharma case. You may choose either BO; there is no automatic routing.</p>' : '') + remarksField(!!again, again ? 'Why it goes to another BO' : 'Inspection summary'),
+            (F.hasCategory(a, 'PHARMA') && !again ? '<p class="text-muted">Pharma case. You may choose either BO; there is no automatic routing.</p>' : '') + remarksField(!!again, again ? 'Why it goes to another BO' : 'Inspection summary'),
           onOk: function (el) {
             var c = el.querySelector('input[name="mBo"]:checked');
             el.querySelector('#mBoErr').textContent = c ? '' : 'Select a BO.';
@@ -265,50 +407,35 @@
           } });
       }
       function noteModal() {
-        // The Inspector assesses the fee (licence / change fee + garbage fee) in the inspection report.
-        var assess = (u.role === 'inspector' || u.role === 'bo') && a.kind !== 'Renewal', as = a.assessment || {};
-        // Old licence renewed as a new application: the officer may also add a fine / surcharge for the lapsed years.
-        var old = F.isOldRenewal(a), col = old ? 'col-6 col-md-3' : 'col-sm-4';
-        var feeBox = assess ? '<div class="col-12"><fieldset class="border rounded p-3"><legend class="float-none w-auto px-1 mb-0 small fw-semibold">Fee assessment' + (a.assessment ? ' <span class="text-muted fw-normal">(revise if needed)</span>' : '') + '</legend>' +
-            (old ? '<div class="alert alert-warning small py-2 mb-2"><i class="bi bi-clock-history me-1" aria-hidden="true"></i>Renewal of old licence <span class="tl-ref-id">' + esc(a.form.oldLicenceNo) + '</span>, valid to ' + App.fmtDate(a.form.oldValidTo) + '. Add any fine / surcharge for the years it was not renewed.</div>' : '') +
-            '<div class="row g-3">' +
-            '<div class="' + col + '"><label for="mFee" class="form-label fw-semibold">' + (a.kind === 'Change' ? 'Change fee' : 'Licence fee') + ' (₹) <span class="text-danger" aria-hidden="true">*</span></label><input type="number" min="0" id="mFee" class="form-control form-control-sm" value="' + esc(as.fee == null ? '' : as.fee) + '"></div>' +
-            '<div class="' + col + '"><label for="mGarbage" class="form-label fw-semibold">Garbage fee (₹) <span class="text-danger" aria-hidden="true">*</span></label><input type="number" min="0" id="mGarbage" class="form-control form-control-sm" value="' + esc(as.garbage == null ? '' : as.garbage) + '"></div>' +
-            (old ? '<div class="' + col + '"><label for="mFine" class="form-label fw-semibold">Fine / surcharge (₹) <span class="text-danger" aria-hidden="true">*</span></label><input type="number" min="0" id="mFine" class="form-control form-control-sm" value="' + esc(as.fine == null ? 0 : as.fine) + '"></div>' : '') +
-            '<div class="' + col + '"><div class="form-label fw-semibold">Total payable</div><div class="tl-amount" id="mTotal">' + inr((as.fee || 0) + (as.garbage || 0) + (old ? as.fine || 0 : 0)) + '</div></div></div>' +
-            (a.assessment ? '<p class="text-muted mb-0 mt-2">Current: ' + inr(F.computeFee(a).total) + ' by ' + esc(as.by) + ' (' + esc(as.role || 'Inspector') + '). Leave it as it is, or enter the revised amounts.</p>' : '') + '<p class="text-muted mb-0 mt-2">Work out the fee as per the UDD notification for ' + esc(a.orgType) + '. It is fixed when the HOD approves' + (a.kind === 'New' ? ' and the licence fee becomes the renewal amount of the licence.' : '.') + '</p></fieldset></div>' : '';
-        var isSS = u.role === 'ss', mineOrig = F.originalsBy(a, u.role);
-        var origBox = isSS ? '' : '<div class="col-12"><div class="small fw-semibold mb-1">Original documents</div>' + V.originals(a) +
+        // Inspector and BO: visit date, fee assessment (the same fields for both) and notes.
+        // Joint Director / Director and Special Secretary: notes only (no date of visit).
+        var isSenior = u.role === 'jd' || u.role === 'ss', renewal = a.kind === 'Renewal';
+        var withFee = !isSenior, visitReq = !isSenior && !renewal;
+        var mineOrig = F.originalsBy(a, u.role);
+        var origBox = isSenior || !F.needsOriginals(a) ? '' : '<div class="col-12"><div class="small fw-semibold mb-1">Original documents</div>' + V.originals(a, { empty: 'Not verified yet' }) +
           (mineOrig ? '' : '<div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="mOrig"><label class="form-check-label" for="mOrig">I saw and checked the original documents during this inspection' + (a.originalsVerified ? '' : ' (the applicant need not bring them later)') + '</label></div>') + '</div>';
-        App.modal({ title: isSS ? 'Add Special Secretary note' : assess && u.role === 'inspector' ? 'Add inspection report' : assess ? 'Add re-inspection note' : (u.role === 'bo' ? (a.kind === 'Renewal' ? 'Add site inspection note' : 'Add re-inspection note') : 'Add inspection note'), ok: 'Save', okClass: 'btn-primary', size: 'lg', scroll: false,
-          footerNote: assess ? 'Check the fee assessment before saving.' : '',
-          body: '<p class="text-muted mb-3"><i class="bi bi-list-check me-1" aria-hidden="true"></i>' + (assess ? 'Fill in the visit date, the fee assessment and the inspection notes. ' : '') + 'Save is at the end of this form.</p>' +
-            '<div class="row g-3"><div class="col-md-4"><label for="mVisit" class="form-label fw-semibold">Date of site visit' + (isSS ? ' <span class="text-muted fw-normal">(if visited)</span>' : ' <span class="text-danger" aria-hidden="true">*</span>') + '</label><input type="date" id="mVisit" class="form-control form-control-sm" max="' + D.demoToday + '" value="' + (isSS ? '' : D.demoToday) + '"></div>' + feeBox +
-            '<div class="col-12"><label for="mNotes" class="form-label fw-semibold">' + (isSS ? 'Notes' : 'Inspection notes') + ' <span class="text-danger" aria-hidden="true">*</span></label><textarea id="mNotes" class="form-control form-control-sm" rows="4" placeholder="What was seen at the site"></textarea></div>' +
+        var title = isSenior ? 'Add ' + u.designation + ' note' : (u.role === 'inspector' ? (a.assessment ? 'Add inspection note' : (renewal ? 'Add fee assessment' : 'Add inspection report')) : (renewal ? 'Add site inspection note' : 'Add re-inspection note'));
+        App.modal({ title: title, ok: 'Save', okClass: 'btn-primary', size: 'lg', scroll: false,
+          footerNote: withFee ? 'Check the fee assessment before saving.' : '',
+          body: (withFee ? '<p class="text-muted mb-3"><i class="bi bi-list-check me-1" aria-hidden="true"></i>Fill in ' + (renewal ? 'the fee assessment and the notes (site visit optional for renewals)' : 'the visit date, the fee assessment and the notes') + '. Save is at the end of this form.</p>' : '') +
+            '<div class="row g-3">' +
+            (isSenior ? '' : '<div class="col-md-4"><label for="mVisit" class="form-label fw-semibold">Date of site visit' + (visitReq ? ' <span class="text-danger" aria-hidden="true">*</span>' : ' <span class="text-muted fw-normal">(if visited)</span>') + '</label><input type="date" id="mVisit" class="form-control form-control-sm" max="' + D.demoToday + '" value="' + (visitReq ? D.demoToday : '') + '"></div>') +
+            (withFee ? '<div class="col-12">' + feeFields(F.suggestedCharges(a)) + '</div>' : '') +
+            '<div class="col-12"><label for="mNotes" class="form-label fw-semibold">' + (isSenior ? 'Notes' : 'Inspection notes') + ' <span class="text-danger" aria-hidden="true">*</span></label><textarea id="mNotes" class="form-control form-control-sm" rows="4" placeholder="' + (isSenior ? 'Your notes on the file' : (renewal ? 'What was checked for the renewal' : 'What was seen at the site')) + '"></textarea></div>' +
             '<div class="col-12">' + App.dropzone({ id: 'mFiles', label: 'Photos / documents (optional)', multiple: true, docType: 'Inspection photo / document' }) + '</div>' + origBox + '</div>',
-          onShow: function (el) {
-            App.bindDropzones(el);
-            if (assess) ['#mFee', '#mGarbage', '#mFine'].forEach(function (q) {
-              var inp = el.querySelector(q);
-              if (inp) inp.addEventListener('input', function () { el.querySelector('#mTotal').textContent = inr((+el.querySelector('#mFee').value || 0) + (+el.querySelector('#mGarbage').value || 0) + (old ? +el.querySelector('#mFine').value || 0 : 0)); });
-            });
-          },
+          onShow: function (el) { App.bindDropzones(el); bindFeeFields(el); },
           onOk: function (el) {
             var n = el.querySelector('#mNotes'), d = el.querySelector('#mVisit'), f = el.querySelector('#mFiles');
-            var ok = App.fieldError(n, n.value.trim().length < 5 ? (isSS ? 'Enter the notes.' : 'Enter the inspection notes.') : '');
-            ok = App.fieldError(d, !d.value ? (isSS ? '' : 'Enter the visit date.') : (d.value > D.demoToday ? 'The visit date cannot be in the future.' : '')) && ok;
+            var ok = App.fieldError(n, n.value.trim().length < 5 ? 'Enter the notes.' : '');
+            if (d) ok = App.fieldError(d, !d.value ? (visitReq ? 'Enter the visit date.' : '') : (d.value > D.demoToday ? 'The visit date cannot be in the future.' : '')) && ok;
             ok = App.fieldError(f, App.checkFile(f, false)) && ok;
-            var fe = el.querySelector('#mFee'), ga = el.querySelector('#mGarbage'), fi = el.querySelector('#mFine');
-            if (assess) {
-              ok = App.fieldError(fe, fe.value === '' || +fe.value <= 0 ? 'Enter the fee assessed.' : '') && ok;
-              ok = App.fieldError(ga, ga.value === '' || +ga.value < 0 ? 'Enter the garbage fee (0 if none).' : '') && ok;
-              if (fi) ok = App.fieldError(fi, fi.value === '' || +fi.value < 0 ? 'Enter the fine / surcharge (0 if none).' : '') && ok;
-            }
+            var c = withFee ? readFeeFields(el) : null;
+            if (withFee && !c) ok = false;
             if (!ok) { var bad = el.querySelector('.is-invalid'); if (bad) bad.focus(); return false; }
             var files = App.addAttachments(a.appId, 'Inspection photo / document', f);
             var o = el.querySelector('#mOrig');
             activeTab = 'notes';
-            return run('note', { notes: n.value.trim(), visitDate: d.value, files: files, originals: !!(o && o.checked), assess: assess ? { fee: Math.round(+fe.value), garbage: Math.round(+ga.value), fine: fi ? Math.round(+fi.value) : 0 } : null });
+            return run('note', { notes: n.value.trim(), visitDate: d ? d.value : '', files: files, originals: !!(o && o.checked), assess: c });
           } });
       }
       function editNote(id) {

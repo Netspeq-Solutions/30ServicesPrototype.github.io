@@ -644,3 +644,32 @@ body.high-contrast .udd-preview { box-shadow: none; border: 2px solid #ff0; }
 .tl-br-preview img { max-height: 60vh; width: auto; max-width: 100%; }
 .tl-br-preview .tl-viewer-frame { height: 60vh; }
 @media (max-width: 767.98px) { .tl-br-preview .tl-viewer-frame { height: 50vh; } }
+
+/* Purpose of licence: items and sub-items (multi-select) */
+.tl-purpose-filter { max-width: 360px; }
+.tl-purpose-list { max-height: 440px; overflow-y: auto; border: 1px solid var(--gov-border, #dee2e6); border-radius: var(--gov-radius-md, 6px); padding: 0.25rem; }
+.tl-purpose-item { padding: 0.45rem 0.6rem; border-radius: var(--gov-radius-sm, 4px); }
+.tl-purpose-item + .tl-purpose-item { border-top: 1px solid #f1f5f9; }
+.tl-purpose-item.is-on { background: var(--gov-sidebar-active, #ecfdf5); }
+.tl-purpose-item .form-check { min-height: 1.75rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem; }
+.tl-purpose-item .form-check-input { margin-top: 0; }
+.tl-purpose-subs { margin: 0.35rem 0 0.15rem 1.9rem; }
+.tl-purpose-subs .form-check { min-height: 1.6rem; }
+.tl-purpose-view { list-style: none; padding-left: 0; margin-bottom: 0; }
+.tl-purpose-view li + li { margin-top: 0.2rem; }
+@media (max-width: 575.98px) { .tl-purpose-subs { margin-left: 1.25rem; } .tl-purpose-list { max-height: none; } }
+
+/* Fee lines with exemptions */
+.tl-fee-table .tl-exempt th, .tl-fee-table .tl-exempt td { background: #f8fafc; }
+.tl-icon-btn { min-width: 36px; justify-content: center; }
+@media (max-width: 575.98px) { .tl-icon-btn { min-width: 44px; min-height: 44px; } }
+
+/* Pay Fee: numbered steps */
+.tl-step-no { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--gov-primary, #0f766e); color: #fff; font-size: 0.75rem; margin-right: 0.5rem; }
+
+/* Challan (two copies on one page) */
+.tl-challan-copy { padding: 0.25rem 0; }
+.tl-challan-emblem { height: 44px; width: auto; display: block; margin: 0 auto 0.25rem; }
+.tl-challan-cut { border-top: 2px dashed #94a3b8; margin: 1.25rem 0; text-align: center; line-height: 0; }
+.tl-challan-cut span { background: #fff; padding: 0 0.5rem; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+@media print { .tl-challan-cut { margin: 0.6rem 0; } .tl-challan .table { font-size: 0.75rem; } }

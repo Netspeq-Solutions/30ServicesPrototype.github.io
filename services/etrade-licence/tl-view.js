@@ -12,67 +12,93 @@
     return '<div class="card border-0 shadow-xs mb-3"><div class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2"><div><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (sub ? '<div class="small text-muted">' + sub + '</div>' : '') + '</div>' + (extra || '') + '</div><div class="card-body">' + body + '</div></div>';
   }
 
-  // Forward path for this kind, with done / current markers.
+  // Approval path with done / current markers. After the BO the path follows where the application was
+  // actually sent (Joint Director / Director, Special Secretary, Issuing Authority); a stage not decided yet shows as "Final approval".
   function flow(a) {
-    var steps = a.kind === 'Renewal'
-      ? [['Submitted with BR', 'Applicant'], ['Inspector', 'Inspector'], ['BO approves', 'BO'], ['Renewed licence', 'Licence']]
-      : [['Submitted', 'Applicant'], ['Inspector', 'Inspector'], ['BO', 'BO'], ['Special Secretary', 'Special Secretary'], ['HOD', 'HOD'], ['Payment', 'Payment'], ['Licence', 'Licence']];
-    var ST = F.ST, idx;
-    switch (a.status) {
-      case ST.DRAFT: case ST.RETURNED: idx = 0; break;
-      case ST.SUBMITTED: case ST.UNDER_INSPECTION: idx = 1; break;
-      case ST.RESUBMITTED: idx = a.returnedBy && a.returnedBy.role === 'bo' ? 2 : 1; break;
-      case ST.WITH_BO: case ST.RETURNED_BO: idx = 2; break;
-      case ST.WITH_SS: case ST.RETURNED_SS: idx = 3; break;
-      case ST.WITH_HOD: idx = 4; break;
-      case ST.PAYMENT: case ST.BR_UPLOADED: case ST.BR_INVALID: idx = steps.length - 2; break;
-      default: idx = steps.length;
+    var ST = F.ST, s = a.status, steps, idx;
+    if (a.kind === 'Renewal') {
+      steps = ['Submitted', 'Inspector', 'BO approves', 'Payment', 'Renewed licence'];
+      switch (s) {
+        case ST.DRAFT: case ST.RETURNED: idx = 0; break;
+        case ST.SUBMITTED: case ST.UNDER_INSPECTION: idx = 1; break;
+        case ST.RESUBMITTED: idx = a.returnedBy && a.returnedBy.role === 'bo' ? 2 : 1; break;
+        case ST.WITH_BO: case ST.RETURNED_BO: idx = 2; break;
+        case ST.PAYMENT: case ST.BR_UPLOADED: case ST.BR_INVALID: idx = 3; break;
+        default: idx = steps.length;
+      }
+    } else {
+      var path = (a.path || []).slice();
+      var at = { 'With Joint Director / Director': 'jd', 'Returned to Joint Director / Director': 'jd', 'With Special Secretary': 'ss', 'Returned to Special Secretary': 'ss', 'With Issuing Authority': 'hod' }[s];
+      if (at && path.indexOf(at) === -1) path.push(at);
+      var approved = [ST.PAYMENT, ST.BR_UPLOADED, ST.BR_INVALID, ST.ISSUED].indexOf(s) !== -1;
+      steps = ['Submitted', 'Inspector', 'BO'].concat(path.map(function (r) { return F.STAGE[r].label; }));
+      if (!approved && path[path.length - 1] !== 'hod') steps.push('Final approval');
+      steps.push('Payment', 'Licence');
+      if (s === ST.DRAFT || s === ST.RETURNED) idx = 0;
+      else if (s === ST.SUBMITTED || s === ST.UNDER_INSPECTION) idx = 1;
+      else if (s === ST.RESUBMITTED) idx = a.returnedBy && a.returnedBy.role === 'bo' ? 2 : 1;
+      else if (s === ST.WITH_BO || s === ST.RETURNED_BO) idx = 2;
+      else if (at) idx = 3 + path.indexOf(at);
+      else if (approved && s !== ST.ISSUED) idx = steps.length - 2;
+      else idx = steps.length;
     }
-    return '<ol class="tl-flow" aria-label="Approval path">' + steps.map(function (s, i) {
+    return '<ol class="tl-flow" aria-label="Approval path">' + steps.map(function (t, i) {
       var cls = i < idx ? 'done' : (i === idx ? 'now' : '');
       return (i ? '<li class="tl-flow-sep" aria-hidden="true"><i class="bi bi-chevron-right"></i></li>' : '') +
-        '<li class="' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '>' + (i < idx ? '<i class="bi bi-check-lg" aria-hidden="true"></i>' : '') + esc(s[0]) + '</li>';
+        '<li class="' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '>' + (i < idx ? '<i class="bi bi-check-lg" aria-hidden="true"></i>' : '') + esc(t) + '</li>';
     }).join('') + '</ol>';
   }
 
-  // Original documents (renewal: original BR) as seen by the Inspector and by the BO – each check shown separately.
+  // Original documents as seen by the Inspector and by the BO – only the checks made are shown (not mandatory for both).
   function originals(a, opts) {
-    var short = opts && opts.short;
-    return '<ul class="list-unstyled mb-0 tl-originals">' + [['inspector', 'Inspector'], ['bo', 'BO']].map(function (r) {
-      var c = F.originalsBy(a, r[0]);
-      return '<li class="small">' + (c ? '<i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i><span class="fw-semibold">' + r[1] + ':</span> ' + esc(c.by) + (short ? '' : ' &ndash; ' + esc(c.how)) + ', ' + App.fmtDate(c.on)
-        : '<i class="bi bi-circle text-muted me-1" aria-hidden="true"></i><span class="fw-semibold">' + r[1] + ':</span> <span class="text-muted">not yet</span>') + '</li>';
+    var short = opts && opts.short, done = [['inspector', 'Inspector'], ['bo', 'BO']].map(function (r) { return [r, F.originalsBy(a, r[0])]; }).filter(function (x) { return x[1]; });
+    if (!done.length) return '<span class="small text-muted">' + esc((opts && opts.empty) || '—') + '</span>';
+    return '<ul class="list-unstyled mb-0 tl-originals">' + done.map(function (x) {
+      var c = x[1];
+      return '<li class="small"><i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i><span class="fw-semibold">' + x[0][1] + ':</span> ' + esc(c.by) + (short ? '' : ' &ndash; ' + esc(c.how)) + ', ' + App.fmtDate(c.on) + '</li>';
     }).join('') + '</ul>';
   }
+
+  // Items and sub-items on the application; for a renewal / change, items added and removed are marked.
+  function purposeList(a) {
+    var tracked = !!a.prevPurposes, added = tracked ? F.addedPurposes(a).map(F.purposeKey) : [], removed = tracked ? F.removedPurposes(a) : [];
+    function li(p, mark) {
+      var c = App.category(p.category), sub = p.category === 'OTHER' ? [(a.form && a.form.otherPurpose) || '', p.item].filter(Boolean).join(' – ') : p.item;
+      return '<li class="' + (mark === 'removed' ? 'text-muted' : '') + '"><span class="' + (mark === 'removed' ? 'text-decoration-line-through' : 'fw-semibold') + '">' + esc(c ? c.name : p.category) + '</span>' + (sub ? ' <span class="text-muted">&rsaquo;</span> <span class="' + (mark === 'removed' ? 'text-decoration-line-through' : '') + '">' + esc(sub) + '</span>' : '') +
+        (mark === 'added' ? ' <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">added</span>' : (mark === 'removed' ? ' <span class="badge bg-light text-secondary border">removed</span>' : '')) + '</li>';
+    }
+    return '<ul class="tl-purpose-view">' + F.purposesOf(a).map(function (p) { return li(p, added.indexOf(F.purposeKey(p)) !== -1 ? 'added' : ''); }).join('') + removed.map(function (p) { return li(p, 'removed'); }).join('') + '</ul>';
+  }
+
   function summary(a) {
     var c = App.circle(a.circle), lic = a.licenceNo ? App.licence(a.licenceNo) : null;
+    var origs = F.needsOriginals(a) && F.originals(a).length ? '<dt>Originals verified</dt><dd>' + originals(a, { short: true }) + '</dd>' : '';
     return '<dl class="tl-dl">' +
       '<dt>Application ID</dt><dd><span class="tl-ref-id">' + esc(a.appId) + '</span></dd>' +
-      '<dt>Type</dt><dd>' + App.kindBadge(a) + (a.kind === 'Change' && a.change ? ' ' + a.change.types.map(function (t) { return esc(F.CHANGE_TYPES[t].label); }).join(', ') : '') + '</dd>' +
-      (F.isOldRenewal(a) ? '<dt>Old licence</dt><dd><span class="tl-ref-id">' + esc(a.form.oldLicenceNo) + '</span> <span class="text-muted fw-normal">&bull; valid to ' + App.fmtDate(a.form.oldValidTo) + '</span></dd>' : '') +
+      '<dt>Type</dt><dd>' + App.kindBadge(a) + (a.kind === 'Change' && a.change ? ' ' + a.change.types.map(function (t) { return esc(F.CHANGE_TYPES[t].label); }).join(', ') : '') + (a.kind === 'Renewal' && F.purposeChanged(a) ? ' <span class="small text-muted fw-normal">with items added / removed</span>' : '') + '</dd>' +
+      (F.isOldRenewal(a) ? '<dt>Licence No. / BRN No.</dt><dd><span class="tl-ref-id">' + esc(a.form.oldLicenceNo) + '</span> <span class="text-muted fw-normal">&bull; valid to ' + App.fmtDate(a.form.oldValidTo) + '</span></dd>' : '') +
       (a.licenceNo ? '<dt>Licence</dt><dd><a class="tl-ref-id" href="licence.html?no=' + encodeURIComponent(a.licenceNo) + '">' + esc(a.licenceNo) + '</a>' + (lic && a.kind !== 'New' ? ' ' + App.pill(F.licenceState(lic)) : '') + '</dd>' : '') +
       '<dt>Circle</dt><dd>' + esc(c ? c.name : a.circle) + '</dd>' +
       '<dt>Applicant type</dt><dd>' + esc(F.TYPES[F.typeOf(a)].label) + '</dd>' +
-      '<dt>Purpose</dt><dd>' + esc(App.category(a.category).name) + (a.orgType !== App.category(a.category).name ? ' &bull; ' + esc(a.orgType) : '') + '</dd>' +
-      '<dt>First submitted</dt><dd>' + App.fmtDate(a.firstSubmittedOn) + (a.round > 1 ? ' <span class="text-muted fw-normal">&bull; resubmitted ' + App.fmtDate(a.submittedOn) + ' (round ' + a.round + ')</span>' : '') + '</dd>' +
+      '<dt>Items</dt><dd>' + purposeList(a) + '</dd>' +
+      '<dt>First submitted</dt><dd>' + App.fmtDate(a.firstSubmittedOn) + (a.submittedOn && a.submittedOn !== a.firstSubmittedOn ? ' <span class="text-muted fw-normal">&bull; resubmitted ' + App.fmtDate(a.submittedOn) + '</span>' : '') + '</dd>' +
       '<dt>Status</dt><dd>' + App.pill(a.status) + '</dd>' +
       '<dt>Pending with</dt><dd>' + esc(F.pendingWith(a).label) + '</dd>' +
       (a.selectedBo ? '<dt>BO selected</dt><dd>' + esc(F.staffName(a.selectedBo)) + '</dd>' : '') +
-      '<dt>' + (a.kind === 'Renewal' ? 'Original BR received' : 'Originals verified') + '</dt><dd>' + originals(a, { short: true }) + '</dd>' +
+      (a.approvedBy ? '<dt>Approved by</dt><dd>' + esc(a.approvedBy.name) + ' <span class="text-muted fw-normal">(' + esc(a.approvedBy.role) + '), ' + App.fmtDate(a.approvedBy.on) + '</span></dd>' : '') +
+      origs +
     '</dl>';
   }
 
   // Form details by section; flagged fields highlighted; change requests show old → new.
   function sectionHead(t) { return '<h3 class="h6 fw-semibold text-muted text-uppercase small mt-2 mb-2">' + esc(t) + '</h3>'; }
-  // Purpose of the licence: applicant type, category and activity / item.
+  // Purpose of the licence: applicant type and the items / sub-items chosen.
   function purpose(a) {
-    var c = App.category(a.category), fl = a.correction && (a.correction.fields || []).indexOf('category') !== -1;
+    var fl = a.correction && (a.correction.fields || []).indexOf('category') !== -1;
     return '<dl class="tl-dl mb-3"><dt' + (fl ? ' class="text-warning-emphasis"' : '') + '>Applicant type' + (fl ? ' <span class="badge bg-warning text-dark">flagged</span>' : '') + '</dt><dd>' + esc(F.TYPES[F.typeOf(a)].label) + '</dd>' +
-      '<dt>Item (purpose)</dt><dd>' + esc(c ? c.name : '—') + '</dd>' +
-      (a.category === 'OTHER' ? '<dt>Purpose (as described)</dt><dd>' + esc(a.form.otherPurpose || '—') + '</dd>' : '') +
-      (a.item ? '<dt>Sub-item (activity)</dt><dd>' + esc(a.item) + '</dd>' : '') + '</dl>';
+      '<dt>Items &amp; sub-items</dt><dd>' + purposeList(a) + '</dd>' +
+      (F.hasCategory(a, 'OTHER') ? '<dt>Purpose (as described)</dt><dd>' + esc(a.form.otherPurpose || '—') + '</dd>' : '') + '</dl>';
   }
-  // Form details by section; flagged fields highlighted; change requests show old → new.
   function details(a) {
     var flagged = a.correction ? a.correction.fields || [] : [];
     var keys = a.kind === 'Change' && a.change ? F.changeFields(a) : null;
@@ -97,14 +123,17 @@
     var list = F.docList(a);
     Object.keys(a.docs || {}).forEach(function (k) { if (!list.some(function (d) { return d.key === k; })) list.push({ key: k, req: false }); });
     var flagged = a.correction ? a.correction.docs || [] : [];
+    if (!list.length) return '<p class="small text-muted p-3 mb-0">No documents asked for.</p>';
     return '<ul class="list-group list-group-flush">' + list.map(function (x) {
-      var k = x.key, d = a.docs[k];
-      return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2' + (flagged.indexOf(k) !== -1 ? ' tl-flagged' : '') + '"><div class="min-w-0"><div class="small fw-semibold">' + esc(F.docLabel(k)) + (x.req ? '' : ' <span class="badge bg-light text-secondary border">optional</span>') + (flagged.indexOf(k) !== -1 ? ' <span class="badge bg-warning text-dark">flagged</span>' : '') + '</div>' +
-        '<div class="small mt-1">' + (d ? '<div class="tl-thumbs mt-0">' + App.fileThumb(d.file, d.file, F.docLabel(k), 'Version ' + d.v + ' &bull; ' + App.fmtDate(d.on)) + '</div>' : (x.req ? '<span class="text-danger">Not uploaded</span>' : '<span class="text-muted">Not uploaded</span>')) + '</div></div></li>';
+      var k = x.key, d = a.docs[k], many = d && d.files && d.files.length > 1;
+      var thumbs = d ? (d.files || [d.file]).map(function (f) { return App.fileThumb(f, f, F.docLabel(k), 'Version ' + d.v + ' &bull; ' + App.fmtDate(d.on)); }).join('') : '';
+      return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2' + (flagged.indexOf(k) !== -1 ? ' tl-flagged' : '') + '"><div class="min-w-0"><div class="small fw-semibold">' + esc(F.docLabel(k)) + (x.req ? '' : ' <span class="badge bg-light text-secondary border">optional</span>') + (flagged.indexOf(k) !== -1 ? ' <span class="badge bg-warning text-dark">flagged</span>' : '') + (many ? ' <span class="badge bg-light text-secondary border">' + d.files.length + ' files</span>' : '') + '</div>' +
+        (x.why ? '<div class="small text-muted">For: ' + esc(x.why) + '</div>' : '') +
+        '<div class="small mt-1">' + (d ? '<div class="tl-thumbs mt-0">' + thumbs + '</div>' : (x.req ? '<span class="text-danger">Not uploaded</span>' : '<span class="text-muted">Not uploaded</span>')) + '</div></div></li>';
     }).join('') + '</ul>';
   }
 
-  // Inspection notes. opts.canEdit: show Edit buttons (Special Secretary).
+  // Inspection notes (officers only). opts.canEdit: show Edit buttons (Special Secretary).
   function notes(a, opts) {
     opts = opts || {};
     if (!a.inspections.length) return '<p class="small text-muted mb-0">No inspection notes yet.</p>';
@@ -122,11 +151,14 @@
     }).join('');
   }
 
-  // opts.applicant: inspection notes are internal – show the action but not its remarks.
+  // opts.applicant: inspection notes and fee assessments are internal – those entries are not shown at all,
+  // and the remarks officers write to each other are left out. Returns for correction and BR remarks stay.
+  var APPLICANT_HIDE = /nspection note|nspection report|e-inspection note|verification note| note added|Fee assessment|Verification started/;
+  var APPLICANT_NO_REMARKS = /^(Forwarded|Approved and forwarded|Returned to (BO|Special Secretary|Joint Director)|Approved \(final\)|Renewal approved)/;
   function history(a, opts) {
     var internal = opts && opts.applicant;
-    var rows = a.history.slice().reverse().map(function (h) {
-      return internal && /nspection note|nspection report|e-inspection note|Special Secretary note/.test(h.action) ? Object.assign({}, h, { remarks: '' }) : h;
+    var rows = a.history.filter(function (h) { return !(internal && APPLICANT_HIDE.test(h.action)); }).reverse().map(function (h) {
+      return internal && APPLICANT_NO_REMARKS.test(h.action) ? Object.assign({}, h, { remarks: '' }) : h;
     });
     return '<div class="gov-timeline my-0">' + rows.map(function (h, i) {
       return '<div class="gov-timeline-item ' + (i === 0 ? 'active' : 'completed') + '"><span class="gov-timeline-point" aria-hidden="true"><i class="bi ' + (i === 0 ? 'bi-dot' : 'bi-check') + '"></i></span>' +
@@ -135,37 +167,48 @@
     }).join('') + '</div>';
   }
 
-  // Earlier rounds kept after each return and resubmission.
+  // Earlier versions kept after each return and resubmission.
   function versions(a) {
     if (!a.versions || !a.versions.length) return '<p class="small text-muted mb-0">No earlier versions. Each time the application is returned and resubmitted, the earlier version is kept here.</p>';
     return a.versions.slice().reverse().map(function (v) {
       var ch = (v.changedFields || []).map(function (c) { return '<li>' + esc(F.fieldLabel(c.key, F.typeOf(a))) + ': <span class="text-decoration-line-through text-muted">' + esc(c.old) + '</span> &rarr; ' + esc(c.new) + '</li>'; })
         .concat((v.changedDocs || []).map(function (c) { return '<li>' + esc(F.docLabel(c.key)) + ': ' + (c.old ? App.fileLink(c.old, c.old + ' (earlier)') : 'none') + ' &rarr; ' + App.fileLink(c.new) + '</li>'; })).join('');
-      return '<div class="tl-note"><div class="small fw-semibold">Round ' + v.round + ' &bull; submitted ' + App.fmtDate(v.submittedOn) + ' &bull; returned ' + App.fmtDate(v.returnedOn) + ' by ' + esc(v.returnedBy) + '</div>' +
+      return '<div class="tl-note"><div class="small fw-semibold">Version ' + v.round + ' &bull; submitted ' + App.fmtDate(v.submittedOn) + ' &bull; returned ' + App.fmtDate(v.returnedOn) + ' by ' + esc(v.returnedBy) + '</div>' +
         '<div class="small text-muted mb-1">Remarks: ' + esc(v.remarks) + '</div>' + (ch ? '<ul class="small mb-0 ps-3">' + ch + '</ul>' : '<div class="small text-muted">No field changes recorded.</div>') + '</div>';
     }).join('');
   }
 
-  // Fee lines: fee + garbage fee (+ late surcharge for renewals) = total on one BR.
-  function feeTable(f, renewal) {
-    return '<table class="table table-sm mb-2"><tbody>' +
-      '<tr><th scope="row" class="fw-semibold text-muted">' + esc(f.kind) + ' fee</th><td class="text-end">' + inr(f.base) + '</td></tr>' +
-      '<tr><th scope="row" class="fw-semibold text-muted">Garbage fee</th><td class="text-end">' + inr(f.garbage) + '</td></tr>' +
-      (renewal ? '<tr><th scope="row" class="fw-semibold text-muted">Late surcharge' + (f.lateDays ? ' (' + f.lateDays + ' days &times; ₹' + D().config.renewalFine.perDay + ')' : '') + '</th><td class="text-end">' + inr(f.fine) + '</td></tr>'
-        : (f.fine ? '<tr><th scope="row" class="fw-semibold text-muted">Fine / surcharge (old licence)</th><td class="text-end">' + inr(f.fine) + '</td></tr>' : '')) +
-      '<tr><th scope="row">Total payable on one BR</th><td class="text-end fw-bold">' + inr(f.total) + '</td></tr></tbody></table>';
+  // Fee lines: licence / renewal / change fee + garbage fee + late fee, backlog fee, penalties and other charges.
+  // Exempted lines are struck through; the total is what is payable on one challan / BR.
+  function feeTable(f, kind) {
+    var lines = F.feeLines(f, kind);
+    return '<table class="table table-sm mb-2 tl-fee-table"><caption class="visually-hidden">Fee</caption><tbody>' + lines.map(function (l) {
+      return '<tr' + (l.exempt ? ' class="tl-exempt"' : '') + '><th scope="row" class="fw-semibold text-muted">' + esc(l.label) + (l.exempt ? ' <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle">exempted</span>' : '') + '</th>' +
+        '<td class="text-end">' + (l.exempt ? '<span class="text-decoration-line-through text-muted">' + inr(l.amount) + '</span>' : inr(l.amount)) + '</td></tr>';
+    }).join('') + '<tr><th scope="row">Total payable</th><td class="text-end fw-bold">' + inr(F.feeTotal(f)) + '</td></tr></tbody></table>';
   }
-  // opts.applicant: the assessed fee is shown to the applicant only once it is fixed on approval.
+  function exemptions(f) {
+    var ex = F.feeLines(f).filter(function (l) { return l.exempt; });
+    return ex.length ? '<div class="small mt-1">' + ex.map(function (l) { return '<div><i class="bi bi-check2-circle text-success me-1" aria-hidden="true"></i>' + esc(l.label.replace(/ \(.*\)$/, '')) + ' ' + inr(l.amount) + ' exempted by ' + esc(l.exempt.by) + ' (' + esc(l.exempt.role) + '), ' + App.fmtDate(l.exempt.on) + ' &ndash; ' + esc(l.exempt.remarks) + '</div>'; }).join('') + '</div>' : '';
+  }
+  function challanLine(a) {
+    if (!a.challan) return a.status === F.ST.PAYMENT || a.status === F.ST.BR_INVALID ? '<div class="small text-muted mt-1"><i class="bi bi-receipt me-1" aria-hidden="true"></i>Challan not generated yet.</div>' : '';
+    var ok = F.challanValid(a);
+    return '<div class="small mt-1"><i class="bi bi-receipt me-1 text-primary" aria-hidden="true"></i>Challan <span class="font-monospace">' + esc(a.challan.no) + '</span> &bull; ' + inr(a.challan.amount) + ' &bull; ' + App.fmtDate(a.challan.on) +
+      (ok ? '' : ' <span class="text-danger">&ndash; superseded (the fee changed); a new challan must be generated</span>') + '</div>';
+  }
+  // opts.applicant: the fee is shown to the applicant only once it is fixed on approval.
   function fee(a, opts) {
-    var f = a.fee, applicant = opts && opts.applicant, renewal = a.kind === 'Renewal';
-    if (f) return feeTable(f, renewal) + '<div class="small text-muted">' + (renewal
-      ? 'Renewal amount set for this licence (based on its first licence fee). The late surcharge is counted to the first submission on ' + App.fmtDate(a.firstSubmittedOn) + ' and paid with the application.'
-      : 'Assessed by ' + esc(f.assessedBy || 'the Inspector') + ' (' + esc(f.assessedRole || 'Inspector') + ')' + (f.assessedOn ? ' on ' + App.fmtDate(f.assessedOn) : '') + '; fixed on approval, ' + App.fmtDate(f.fixedOn) + '.') + '</div>';
-    if (renewal) return feeTable(F.computeFee(a), true) + '<div class="small text-muted">If submitted today. The amount is paid with the renewal application.</div>';
-    if (!a.assessment) return '<p class="small text-muted mb-0"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Not yet assessed. The Inspector works out the ' + (a.kind === 'Change' ? 'change' : 'licence') + ' fee and the garbage fee in the inspection report.</p>';
-    if (applicant) return '<p class="small text-muted mb-0"><i class="bi bi-check-circle me-1 text-success" aria-hidden="true"></i>The fee has been assessed at the inspection. You will see the amount to pay once the application is approved.</p>';
-    return feeTable(F.computeFee(a), false) + '<div class="small text-muted">Assessed by ' + esc(a.assessment.by) + ' (' + esc(a.assessment.role || 'Inspector') + ') on ' + App.fmtDate(a.assessment.on) + '. Fixed when the HOD approves.</div>' +
-      ((a.assessmentHistory || []).length ? '<div class="small text-muted mt-1">Earlier: ' + a.assessmentHistory.slice().reverse().map(function (h) { return inr(h.fee + h.garbage + (h.fine || 0)) + ' by ' + esc(h.by) + ' (' + esc(h.role || 'Inspector') + '), ' + App.fmtDate(h.on); }).join('; ') + '</div>' : '');
+    var f = a.fee, applicant = opts && opts.applicant;
+    if (f) return feeTable(f) + '<div class="small text-muted">Assessed by ' + esc(f.assessedBy || 'the Inspector') + ' (' + esc(f.assessedRole || 'Inspector') + ')' + (f.assessedOn ? ' on ' + App.fmtDate(f.assessedOn) : '') + '; fixed on approval' + (a.approvedBy ? ' by ' + esc(a.approvedBy.name) + ' (' + esc(a.approvedBy.role) + ')' : '') + ', ' + App.fmtDate(f.fixedOn) + '.</div>' + exemptions(f) + challanLine(a);
+    if (applicant) return '<p class="small text-muted mb-0"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>The Inspector works out the fee' + (a.kind === 'Renewal' ? ' (renewal fee, garbage fee and any late fee, backlog or penalty)' : '') + '. You will see the amount to pay once the ' + (a.kind === 'Renewal' ? 'renewal' : 'application') + ' is approved.</p>';
+    var sug = F.suggestedCharges(a);
+    if (!a.assessment) {
+      if (sug) return feeTable(sug, a.kind) + '<div class="small text-muted">Suggested from the licence&rsquo;s renewal amount and the late fee rule (' + D().config.renewalFine.graceDays + ' days&rsquo; grace, then ₹' + D().config.renewalFine.perDay + ' per day to the first submission). The Inspector confirms it in the fee assessment.</div>';
+      return '<p class="small text-muted mb-0"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Not yet assessed. The Inspector works out the ' + (a.kind === 'Change' ? 'change' : 'licence') + ' fee, garbage fee and any late fee, backlog or penalty in the inspection report.</p>';
+    }
+    return feeTable(a.assessment, a.kind) + '<div class="small text-muted">Assessed by ' + esc(a.assessment.by) + ' (' + esc(a.assessment.role || 'Inspector') + ') on ' + App.fmtDate(a.assessment.on) + '. Fixed on final approval.</div>' +
+      ((a.assessmentHistory || []).length ? '<div class="small text-muted mt-1">Earlier: ' + a.assessmentHistory.slice().reverse().map(function (h) { return inr(F.feeTotal(h)) + ' by ' + esc(h.by) + ' (' + esc(h.role || 'Inspector') + '), ' + App.fmtDate(h.on); }).join('; ') + '</div>' : '');
   }
 
   function br(a) {
@@ -177,7 +220,7 @@
       var dup = b.status === 'Uploaded' ? F.brDuplicate(b.brNo, a.appId) : null;
       var short = a.fee && b.amount < a.fee.total;
       return '<div class="tl-note"><div class="d-flex justify-content-between flex-wrap gap-2"><span class="small fw-semibold font-monospace">BR ' + esc(b.brNo) + '</span>' + p + '</div>' +
-        '<div class="small text-muted">Dated ' + App.fmtDate(b.brDate) + ' &bull; ' + inr(b.amount) + ' &bull; uploaded ' + App.fmtDate(b.uploadedOn) + '</div>' + (b.scan ? '<div class="tl-thumbs mt-2">' + App.fileThumb(b.scan, 'BR scan', 'Bank Receipt', esc(b.scan)) + '</div>' : '') +
+        '<div class="small text-muted">Dated ' + App.fmtDate(b.brDate) + ' &bull; ' + inr(b.amount) + ' &bull; uploaded ' + App.fmtDate(b.uploadedOn) + (b.challanNo ? ' &bull; challan ' + esc(b.challanNo) : '') + '</div>' + (b.scan ? '<div class="tl-thumbs mt-2">' + App.fileThumb(b.scan, 'BR scan', 'Bank Receipt', esc(b.scan)) + '</div>' : '') +
         (dup ? '<div class="small text-danger mt-1"><i class="bi bi-exclamation-octagon-fill me-1" aria-hidden="true"></i>Duplicate: this BR number is already used on ' + esc(dup) + '.</div>' : '') +
         (short && b.status === 'Uploaded' ? '<div class="small text-danger mt-1"><i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>Amount is less than the fee payable (' + inr(a.fee.total) + ').</div>' : '') +
         (b.remarks ? '<div class="small mt-1">Remarks: ' + esc(b.remarks) + (b.checkedBy ? ' &ndash; ' + esc(b.checkedBy) : '') + '</div>' : (b.checkedBy ? '<div class="small mt-1 text-muted">Checked by ' + esc(b.checkedBy) + ' on ' + App.fmtDate(b.checkedOn) + '</div>' : '')) + '</div>';
@@ -196,12 +239,12 @@
   function queueTable(id, title, sub, list, emptyText, headerExtra) {
     var s = App.getSession();
     var rows = list.map(function (a) {
-      var mine = F.canAct(a, s.userId);
-      var btn = '<a class="btn btn-sm ' + (mine ? 'btn-primary' : 'btn-outline-primary') + '" href="review.html?app=' + encodeURIComponent(a.appId) + '">' + (mine ? (a.status === F.ST.BR_UPLOADED ? 'Verify BR' : 'Review Application') : 'View') + '</a>';
+      var mine = F.canAct(a, s.userId), exempt = F.canExempt(a, s.userId);
+      var btn = '<a class="btn btn-sm ' + (mine ? 'btn-primary' : 'btn-outline-primary') + '" href="review.html?app=' + encodeURIComponent(a.appId) + '">' + (mine ? (a.status === F.ST.BR_UPLOADED ? 'Verify BR' : 'Review Application') : (exempt ? 'View / Exempt' : 'View')) + '</a>';
       var link = '<a class="tl-ref-id small" href="review.html?app=' + encodeURIComponent(a.appId) + '">' + esc(a.appId) + '</a>';
       return {
-        row: '<tr><td>' + link + '<div>' + App.kindBadge(a) + '</div></td><td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(App.appName(a)) + '</div><div class="small text-muted text-truncate" style="max-width:240px;">' + esc(a.orgType) + '</div></td>' +
-          '<td class="small">' + esc(App.category(a.category).short) + '<div class="text-muted">' + esc(F.TYPES[F.typeOf(a)].short) + '</div></td><td class="small">' + App.fmtDate(a.updatedOn) + '</td><td>' + App.pill(a.status) + '<div class="small text-muted text-truncate" style="max-width:200px;">' + esc(F.pendingWith(a).label) + '</div></td>' +
+        row: '<tr><td>' + link + '<div>' + App.kindBadge(a) + '</div></td><td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(App.appName(a)) + '</div><div class="small text-muted text-truncate" style="max-width:240px;" title="' + esc(a.orgType) + '">' + esc(a.orgType) + '</div></td>' +
+          '<td class="small">' + esc(F.categoryShort(a)) + '<div class="text-muted">' + esc(F.TYPES[F.typeOf(a)].short) + '</div></td><td class="small">' + App.fmtDate(a.updatedOn) + '</td><td>' + App.pill(a.status) + '<div class="small text-muted text-truncate" style="max-width:200px;">' + esc(F.pendingWith(a).label) + '</div></td>' +
           '<td class="text-end text-nowrap"><div class="d-inline-flex align-items-center gap-1 text-nowrap">' + btn + '</div></td></tr>',
         card: App.mobileCard(link, App.pill(a.status), '<div class="small fw-semibold">' + esc(App.appName(a)) + '</div><div class="small text-muted">' + App.kindBadge(a) + ' ' + esc(a.orgType) + ' &bull; ' + App.fmtDate(a.updatedOn) + '</div>', btn)
       };
@@ -245,12 +288,12 @@
     });
     return '<ul class="tl-doc-list">' + out.join('') + '</ul>';
   }
+  var ADDED_ITEMS_LI = '<li>Documents for any item you add &ndash; only those your licence does not already have <span class="text-muted">(see the extra documents by item)</span></li>';
   function renewalDocList() {
-    return '<ul class="tl-doc-list">' + F.docTypes().filter(function (d) { return d.renewal; }).map(function (d) { return docLi(d.key, d.renewal === 'M'); }).join('') +
-      '<li>Bank Receipt (BR) for the renewal amount + garbage fee + any late surcharge &ndash; BR number, date, amount and scan</li></ul>';
+    return '<ul class="tl-doc-list">' + F.docTypes().filter(function (d) { return d.renewal; }).map(function (d) { return docLi(d.key, d.renewal === 'M'); }).join('') + ADDED_ITEMS_LI + '</ul>';
   }
   function changeDocList(t) {
-    return '<ul class="tl-doc-list">' + F.docTypes().filter(function (d) { return d.change && d.change[t]; }).map(function (d) { return docLi(d.key, d.change[t] === 'M'); }).join('') + '</ul>';
+    return '<ul class="tl-doc-list">' + F.docTypes().filter(function (d) { return d.change && d.change[t]; }).map(function (d) { return docLi(d.key, d.change[t] === 'M'); }).join('') + (t === 'purpose' ? ADDED_ITEMS_LI : '') + '</ul>';
   }
   // Prescribed formats: download, fill, sign and upload.
   function formatList() {
@@ -261,6 +304,6 @@
     }).join('') + '</ul>';
   }
 
-  global.TLView = { queueTable: queueTable, card: card, flow: flow, originals: originals, summary: summary,
-    baseDocList: baseDocList, itemDocTable: itemDocTable, whenDocList: whenDocList, renewalDocList: renewalDocList, changeDocList: changeDocList, formatList: formatList, details: details, documents: documents, notes: notes, history: history, versions: versions, fee: fee, br: br, correction: correction };
+  global.TLView = { queueTable: queueTable, card: card, flow: flow, originals: originals, summary: summary, purposeList: purposeList,
+    baseDocList: baseDocList, itemDocTable: itemDocTable, whenDocList: whenDocList, renewalDocList: renewalDocList, changeDocList: changeDocList, formatList: formatList, details: details, documents: documents, notes: notes, history: history, versions: versions, fee: fee, feeTable: feeTable, exemptions: exemptions, challanLine: challanLine, br: br, correction: correction };
 })(window);

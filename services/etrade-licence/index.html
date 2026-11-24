@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal" class="d-flex flex-column min-vh-100">
 
@@ -241,8 +241,8 @@
                 </div>
                 <ul class="udd-preview-facts">
                   <li><i class="fas fa-calendar-check" aria-hidden="true"></i><span>Validity</span><strong>1 April &ndash; 31 March</strong></li>
-                  <li><i class="fas fa-hourglass-half" aria-hidden="true"></i><span>Renewal grace</span><strong>30 days (to 30 April)</strong></li>
-                  <li><i class="fas fa-receipt" aria-hidden="true"></i><span>Fee payment</span><strong>Fee + garbage fee by BR</strong></li>
+                  <li><i class="fas fa-hourglass-half" aria-hidden="true"></i><span>Renewal grace</span><strong>45 days (to 15 May)</strong></li>
+                  <li><i class="fas fa-receipt" aria-hidden="true"></i><span>Fee payment</span><strong>Challan, then BR upload</strong></li>
                 </ul>
                 <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-primary w-100 fw-semibold"><i class="fas fa-arrow-right" aria-hidden="true"></i>Apply via Sikkim GO</a>
               </div>
@@ -359,7 +359,7 @@
         <div class="row row-cols-2 row-cols-md-3 row-cols-xl-6 g-3">
           <div class="col"><a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-file-signature" aria-hidden="true"></i></div><div class="gov-action-tile-title">Apply for Licence</div><p class="gov-action-tile-desc">Login via Sikkim GO</p></a></div>
           <div class="col"><a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-redo" aria-hidden="true"></i></div><div class="gov-action-tile-title">Renew Licence</div><p class="gov-action-tile-desc">Every financial year</p></a></div>
-          <div class="col"><a href="#fees-renewal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-rupee-sign" aria-hidden="true"></i></div><div class="gov-action-tile-title">Fees &amp; Renewal</div><p class="gov-action-tile-desc">Garbage fee and late surcharge</p></a></div>
+          <div class="col"><a href="#fees-renewal" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-rupee-sign" aria-hidden="true"></i></div><div class="gov-action-tile-title">Fees &amp; Renewal</div><p class="gov-action-tile-desc">Garbage fee and late fee</p></a></div>
           <div class="col"><a href="verify.html" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-qrcode" aria-hidden="true"></i></div><div class="gov-action-tile-title">Verify a Licence</div><p class="gov-action-tile-desc">By licence number</p></a></div>
           <div class="col"><a href="#documents-formats" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-file-download" aria-hidden="true"></i></div><div class="gov-action-tile-title">Download Formats</div><p class="gov-action-tile-desc">Documents checklist &amp; forms</p></a></div>
           <div class="col"><a href="#help-contacts" class="gov-action-tile"><div class="gov-action-tile-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div class="gov-action-tile-title">Contact Support</div><p class="gov-action-tile-desc">Department helpdesk</p></a></div>
@@ -419,13 +419,13 @@
             <div class="gov-card p-4 h-100 d-flex flex-column">
               <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="gov-action-icon" style="width: 52px; height: 52px; font-size: 1.5rem;"><i class="fas fa-calendar-alt text-primary" aria-hidden="true"></i></div>
-                <div><span class="gov-card-badge mb-1">Renewal</span><h3 class="h6 fw-bold mb-0">Renewal &amp; Late Surcharge</h3></div>
+                <div><span class="gov-card-badge mb-1">Renewal</span><h3 class="h6 fw-bold mb-0">Renewal &amp; Late Fee</h3></div>
               </div>
               <ul class="small text-secondary mb-3 ps-3">
                 <li class="mb-1">Licence expires on 31 March. Renewal opens a month or two before (as set by the Department).</li>
-                <li class="mb-1">Upload the <strong>GST clearance certificate</strong>, pay the renewal amount + garbage fee (+ any surcharge) at the bank and upload the BR with the renewal. Give the original BR at the department.</li>
-                <li class="mb-1">No surcharge by 30 April. From 1 May: <strong>₹5 per day</strong>, counted to the date you first submit (e.g. 20 May &rarr; ₹100).</li>
-                <li>The Inspector checks the BR and forwards to the BO, who approves (a site visit is optional). Then download the renewed licence.</li>
+                <li class="mb-1">Submit the renewal request with the <strong>GST certificate</strong>. You can add or remove items at the same time. No fee is paid with the request.</li>
+                <li class="mb-1">No late fee by 15 May (45 days' grace). After that: <strong>₹5 per day</strong>, counted to the date you first submit (e.g. 4 June &rarr; ₹100).</li>
+                <li>The Inspector works out the fee and the BO approves. Then generate the challan, pay, upload the BR and download the renewed licence.</li>
               </ul>
               <div class="mt-auto pt-2 border-top"><span class="small text-muted"><i class="fas fa-check text-success me-1" aria-hidden="true"></i> No cut-off: however late, you renew through the same flow.</span></div>
             </div>
@@ -491,12 +491,12 @@
         </div>
         <div class="row row-cols-1 row-cols-md-5 g-3">
           <div class="col"><div class="gov-step-card"><div class="gov-step-number">1</div><h3 class="h6 fw-bold mb-2">Apply Online</h3><p class="small text-muted mb-0">Log in through Sikkim GO, choose the applicant type, item and sub-item, fill the form and upload the documents asked for.</p></div></div>
-          <div class="col"><div class="gov-step-card"><div class="gov-step-number">2</div><h3 class="h6 fw-bold mb-2">Inspection</h3><p class="small text-muted mb-0">An Inspector of your circle checks the documents, visits the site and assesses the licence fee and garbage fee.</p></div></div>
-          <div class="col"><div class="gov-step-card"><div class="gov-step-number">3</div><h3 class="h6 fw-bold mb-2">Review &amp; Approval</h3><p class="small text-muted mb-0">The BO, the Special Secretary and the HOD review and approve. If anything needs correction, it is returned to you with remarks.</p></div></div>
-          <div class="col"><div class="gov-step-card"><div class="gov-step-number">4</div><h3 class="h6 fw-bold mb-2">Pay by Bank Receipt</h3><p class="small text-muted mb-0">Pay the licence fee + garbage fee at the bank, upload the BR and bring it with your original documents.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">2</div><h3 class="h6 fw-bold mb-2">Inspection</h3><p class="small text-muted mb-0">An Inspector of your circle checks the documents, visits the site and assesses the licence fee, garbage fee and any other charges.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">3</div><h3 class="h6 fw-bold mb-2">Review &amp; Approval</h3><p class="small text-muted mb-0">The BO reviews; the Joint Director / Director, the Special Secretary or the Issuing Authority approves. If anything needs correction, it is returned to you with remarks.</p></div></div>
+          <div class="col"><div class="gov-step-card"><div class="gov-step-number">4</div><h3 class="h6 fw-bold mb-2">Challan &amp; Bank Receipt</h3><p class="small text-muted mb-0">Generate the challan, pay it at the bank and upload the BR. Bring your original documents if asked.</p></div></div>
           <div class="col"><div class="gov-step-card"><div class="gov-step-number">5</div><h3 class="h6 fw-bold mb-2">Download Licence</h3><p class="small text-muted mb-0">Once the BR is verified, download your QR-verifiable e-Trade Licence.</p></div></div>
         </div>
-        <p class="small text-muted text-center mt-3 mb-0">Renewals: pay and upload the BR with the renewal; the Inspector checks it and the BO approves. The Special Secretary and HOD are not involved.</p>
+        <p class="small text-muted text-center mt-3 mb-0">Renewals: submit the request; the Inspector works out the fee and the BO approves. Then pay by challan and upload the BR.</p>
         <div class="text-center mt-4 pt-2">
           <a href="#login" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-gov-accent btn-lg px-4"><i class="fas fa-arrow-right me-2" aria-hidden="true"></i> Apply Now</a>
         </div>
@@ -519,7 +519,7 @@
           </div>
           <div class="accordion-item">
             <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="false" aria-controls="faq6">I have an old trade licence issued before this online system. How do I renew it?</button></h3>
-            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">Old licences are not moved into this system. Apply online and choose <strong>Renewal of an old licence</strong>, then give the old licence number and its validity and upload a copy of it. It follows the same steps as a new licence. The Inspector assesses the licence fee and garbage fee, and may add a fine / surcharge for the years it was not renewed. A new licence number is issued under this system.</div></div>
+            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">Old licences are not moved into this system. Apply online and choose <strong>Renewal of an old licence</strong>, then give the old licence number and its validity and upload a copy of it. It follows the same steps as a new licence. The Inspector assesses the licence fee and garbage fee, and may add a backlog fee for the years it was not renewed. The same licence number is kept; only the year part changes.</div></div>
           </div>
           <div class="accordion-item">
             <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">What happens if my application needs correction?</button></h3>
@@ -534,8 +534,8 @@
             <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">Open the licence in My Licences and choose Request Change. Your existing licence stays valid while the request is processed. On approval and BR verification, a new version is issued with the same licence number and validity. If renewal is due, complete the renewal first.</div></div>
           </div>
           <div class="accordion-item">
-            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false" aria-controls="faq5">Is the late surcharge counted to the payment date?</button></h3>
-            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">No. The surcharge is counted only up to the date you first submit the renewal, and you pay it with the renewal. If it is returned and you resubmit later, the amount stays as on the first submission. The system calculates it; officers cannot change it.</div></div>
+            <h3 class="accordion-header"><button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false" aria-controls="faq5">Is the late fee counted to the payment date?</button></h3>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body small text-secondary">No. The late fee is counted only up to the date you first submit the renewal request. If it is returned and you resubmit later, the days stay as on the first submission. The Inspector includes it in the fee, and the department may exempt it after approval.</div></div>
           </div>
         </div>
       </div>
@@ -837,10 +837,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
-  <script src="tl-view.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
+  <script src="tl-view.js?v=20261124"></script>
   <script>
     // Documents & formats section: built from the masters, the same lists the application form uses.
     (function () {
@@ -884,12 +884,13 @@
       });
 
       // ---------- Officers (one account each) ----------
-      var ICONS = { inspector: 'bi-clipboard-check', bo: 'bi-person-workspace', ss: 'bi-person-badge', hod: 'bi-award', admin: 'bi-gear' };
+      var ICONS = { inspector: 'bi-clipboard-check', bo: 'bi-person-workspace', jd: 'bi-person-check', ss: 'bi-person-badge', hod: 'bi-award', admin: 'bi-gear' };
       var DESC = {
-        inspector: 'Checks documents, visits the site, adds inspection notes, forwards to a BO. Verifies Bank Receipts.',
-        bo: 'Reviews and may re-inspect. Forwards new and change requests to the Special Secretary; approves renewals.',
-        ss: 'Verifies, may edit inspection notes (original kept), returns to BO or forwards to HOD.',
-        hod: 'Final approval of new licences and changes, or return to the Special Secretary.',
+        inspector: 'Checks documents, visits the site, assesses the fee, forwards to a BO. Verifies Bank Receipts; may exempt charges after approval.',
+        bo: 'Reviews, may re-inspect and revise the fee. Forwards to the Joint Director / Director, Special Secretary or Issuing Authority; approves renewals.',
+        jd: 'Approves and forwards to the Special Secretary or the Issuing Authority, adds notes, or returns to the BO. Remarks are mandatory.',
+        ss: 'Gives final approval or forwards to the Issuing Authority; adds notes, may edit inspection notes; returns to the BO or Joint Director / Director.',
+        hod: 'Final approval of new licences and changes, or return to the officer who sent it. Remarks are mandatory.',
         admin: 'Revises the fee master and sets when renewal opens. View-only on applications.'
       };
       var grid = document.getElementById('staffRoleGrid');
@@ -901,7 +902,7 @@
           '<div class="d-flex align-items-center gap-2 mb-2"><span class="tl-icon-circle bg-primary-subtle text-primary" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + ICONS[u.role] + '" aria-hidden="true"></i></span>' +
           '<div class="min-w-0"><h4 class="h6 fw-bold mb-0">' + esc(u.designation) + '</h4><div class="small text-muted text-truncate">' + esc(u.name) + ' (demo)' + (u.note ? ' &bull; ' + esc(u.note) : '') + '</div></div></div>' +
           '<p class="small text-secondary mb-3">' + esc(DESC[u.role]) + '</p>' +
-          '<div class="mt-auto"><button type="button" class="btn btn-sm btn-primary" data-user="' + key + '">Continue as ' + esc(u.short) + ' <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></button></div></div>';
+          '<div class="mt-auto"><button type="button" class="btn btn-sm btn-primary" data-user="' + key + '">Continue as ' + esc(u.designation) + ' <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></button></div></div>';
         grid.appendChild(col);
       });
       grid.addEventListener('click', function (e) {

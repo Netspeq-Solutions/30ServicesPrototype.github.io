@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../../common/css/gigw-template.css">
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal" class="tl-doc-page">
   <a class="gov-skip-link" href="#main-content">Skip to Main Content</a>
@@ -36,9 +36,9 @@
     </div>
   </main>
 
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -51,7 +51,7 @@
         out.innerHTML = '<div class="alert ' + (st === 'Active' ? 'alert-success' : 'alert-warning') + ' small"><i class="bi ' + (st === 'Active' ? 'bi-patch-check-fill' : 'bi-exclamation-triangle-fill') + ' me-1" aria-hidden="true"></i>' +
           (st === 'Active' ? 'This is a valid e-Trade Licence.' : 'This licence has expired and is due for renewal.') + '</div>' +
           '<table class="table table-sm"><tbody>' +
-          [['Licence No.', '<span class="tl-ref-id">' + esc(lic.licenceNo) + '</span>'], ['Status', App.pill(st)], ['Business / entity', esc(v.businessName)], ['Item', esc(App.category(lic.category).name) + ' &bull; ' + esc(lic.orgType)],
+          [['Licence No.', '<span class="tl-ref-id">' + esc(lic.licenceNo) + '</span>'], ['Status', App.pill(st)], ['Business / entity', esc(v.businessName)], ['Items', esc(F.categoryNames(lic)) + ' &bull; ' + esc(lic.orgType)],
             ['Premises', esc(v.premisesAddress) + ', ' + esc(v.locality)], ['Valid up to', App.fmtDate(lic.validTo)], ['Current version', 'v' + v.v + ' issued ' + App.fmtDate(v.issuedOn)], ['Circle', esc(App.circle(lic.circle).name)]]
             .map(function (r) { return '<tr><th scope="row" class="text-muted fw-semibold" style="width:38%;">' + r[0] + '</th><td>' + r[1] + '</td></tr>'; }).join('') + '</tbody></table>';
       }

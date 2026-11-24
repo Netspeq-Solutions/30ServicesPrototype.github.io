@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261123">
+  <link rel="stylesheet" href="tl-common.css?v=20261124">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -27,9 +27,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261123"></script>
-  <script src="tl-app.js?v=20261123"></script>
-  <script src="tl-flow.js?v=20261123"></script>
+  <script src="mock-data.js?v=20261124"></script>
+  <script src="tl-app.js?v=20261124"></script>
+  <script src="tl-flow.js?v=20261124"></script>
   <script>
     (function () {
       'use strict';
@@ -47,8 +47,11 @@
       if (!isAudit) {
         $('pageTitle').textContent = 'Reports';
         $('pageSubtitle').innerHTML = esc(App.circle(u.circle).name) + ' &bull; position as on ' + App.fmtDate(D.demoToday) + ' (demo data).';
-        var collected = 0;
-        apps.forEach(function (a) { if (a.status === ST.ISSUED && a.br) collected += a.br.amount; });
+        // Collections ledger: one row per verified Bank Receipt (new licence, renewal, change).
+        var pays = (D.payments || []).slice().sort(function (x, y) { return x.on < y.on ? -1 : 1; });
+        var fyNow = F.fyLabel(D.demoToday);
+        var fys = pays.map(function (x) { return F.fyLabel(x.on); }).concat([fyNow]).filter(function (v, i, arr) { return arr.indexOf(v) === i; }).sort();
+        var revFy = pays.filter(function (x) { return F.fyLabel(x.on) === fyNow; }).reduce(function (n, x) { return n + x.total; }, 0);
         function kpi(icon, tone, value, label, sub) {
           return '<div class="col-6 col-xl-3"><div class="gov-kpi-card d-flex"><div class="d-flex justify-content-between align-items-start gap-2"><div class="gov-kpi-count">' + value + '</div>' +
             '<span class="tl-icon-circle bg-' + tone + '-subtle text-' + tone + '-emphasis" style="width:40px;height:40px;min-width:40px;font-size:1.1rem;"><i class="bi ' + icon + '" aria-hidden="true"></i></span></div><div><p class="gov-kpi-label">' + label + '</p><div class="small text-muted">' + sub + '</div></div></div></div>';
@@ -57,7 +60,52 @@
           kpi('bi-folder2-open', 'primary', apps.length, 'Applications', 'Submitted online') +
           kpi('bi-hourglass-split', 'warning', apps.filter(F.isOpen).length, 'In process', 'Not yet issued') +
           kpi('bi-patch-check', 'success', lics.filter(function (l) { return F.licenceState(l) === 'Active'; }).length, 'Active licences', 'Valid to 31 March') +
-          kpi('bi-currency-rupee', 'info', inr(collected), 'Fees verified', 'BR verified in this system') + '</div>';
+          kpi('bi-currency-rupee', 'info', inr(revFy), 'Revenue FY ' + fyNow, 'BR verified') + '</div>';
+
+        // ---------- Period report: month / quarter / financial year ----------
+        html += '<form class="card border-0 shadow-xs mb-3" id="pForm" aria-label="Choose the period"><div class="card-body"><div class="row g-2 align-items-end">' +
+          '<div class="col-6 col-md-3"><label for="pBy" class="form-label small fw-semibold">Show by</label><select id="pBy" class="form-select form-select-sm"><option value="month">Month</option><option value="quarter">Quarter</option><option value="fy">Financial year</option></select></div>' +
+          '<div class="col-6 col-md-3"><label for="pFy" class="form-label small fw-semibold">Financial year</label><select id="pFy" class="form-select form-select-sm">' + fys.map(function (f) { return '<option' + (f === fyNow ? ' selected' : '') + '>' + f + '</option>'; }).join('') + '</select></div>' +
+          '<div class="col-md-6 small text-muted">New licences, renewals and changes are counted when the Bank Receipt is verified and the licence is issued. Revenue is the amount collected after any exemptions.</div>' +
+          '</div></div></form><div id="pRoot"></div>';
+        var MON = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+        // Buckets for the chosen view: [{ key, label, rows }]
+        function buckets(by, fy) {
+          var y = +fy.slice(0, 4), out;
+          if (by === 'fy') out = fys.map(function (f) { return { key: f, label: 'FY ' + f, test: function (x) { return F.fyLabel(x.on) === f; } }; });
+          else if (by === 'quarter') out = ['Q1', 'Q2', 'Q3', 'Q4'].map(function (q, i) { return { key: q, label: q + ' (' + MON[i * 3] + '–' + MON[i * 3 + 2] + ' ' + (i === 3 ? y + 1 : y) + ')', test: function (x) { return F.fyLabel(x.on) === fy && F.fyQuarter(x.on) === q; } }; });
+          else out = MON.map(function (m, i) { var yy = i >= 9 ? y + 1 : y, mm = String(((i + 3) % 12) + 1).padStart(2, '0'); return { key: yy + '-' + mm, label: m + ' ' + yy, test: function (x) { return x.on.slice(0, 7) === yy + '-' + mm; } }; });
+          out.forEach(function (b) { b.rows = pays.filter(b.test); });
+          return out;
+        }
+        function sum(rows, f) { return rows.reduce(function (n, x) { return n + f(x); }, 0); }
+        var periodCsv = [];
+        function drawPeriod() {
+          var by = $('pBy').value, fy = $('pFy').value, list = buckets(by, fy);
+          $('pFy').disabled = by === 'fy';
+          var all = [].concat.apply([], list.map(function (b) { return b.rows; }));
+          var cnt = function (rows, k) { return rows.filter(function (x) { return x.kind === k; }).length; };
+          periodCsv = [['Period', 'New licences', 'Renewals', 'Changes', 'Licence & garbage fee', 'Late fee', 'Backlog fee', 'Penalties & other', 'Exempted', 'Total collected']];
+          var c1 = [], c2 = [];
+          list.concat([{ label: 'Total', rows: all, total: true }]).forEach(function (b) {
+            var r = b.rows, n = cnt(r, 'New'), rn = cnt(r, 'Renewal'), ch = cnt(r, 'Change');
+            var fee = sum(r, function (x) { return x.base + x.garbage; }), late = sum(r, function (x) { return x.late; }), back = sum(r, function (x) { return x.backlog; }), pen = sum(r, function (x) { return x.penalty + x.other; }), ex = sum(r, function (x) { return x.exempted; }), tot = sum(r, function (x) { return x.total; });
+            periodCsv.push([b.label, n, rn, ch, fee, late, back, pen, ex, tot]);
+            var th = b.total ? ' class="fw-bold"' : '', lab = b.total ? '<strong>Total</strong>' : esc(b.label);
+            c1.push({ row: '<tr' + th + '><td class="small">' + lab + '</td><td class="text-end">' + n + '</td><td class="text-end">' + rn + '</td><td class="text-end">' + ch + '</td><td class="text-end fw-bold">' + (n + rn + ch) + '</td></tr>',
+              card: r.length || b.total ? App.mobileCard('<span class="small fw-semibold">' + lab + '</span>', '<span class="fw-bold">' + (n + rn + ch) + '</span>', '<div class="small text-muted">New ' + n + ' &bull; Renewals ' + rn + ' &bull; Changes ' + ch + '</div>', '') : '' });
+            c2.push({ row: '<tr' + th + '><td class="small">' + lab + '</td><td class="text-end">' + inr(fee) + '</td><td class="text-end">' + inr(late) + '</td><td class="text-end">' + inr(back + pen) + '</td><td class="text-end text-muted">' + inr(ex) + '</td><td class="text-end fw-bold">' + inr(tot) + '</td></tr>',
+              card: r.length || b.total ? App.mobileCard('<span class="small fw-semibold">' + lab + '</span>', '<span class="fw-bold">' + inr(tot) + '</span>', '<div class="small text-muted">Licence &amp; garbage ' + inr(fee) + ' &bull; Late fee ' + inr(late) + ' &bull; Backlog &amp; penalties ' + inr(back + pen) + ' &bull; Exempted ' + inr(ex) + '</div>', '') : '' });
+          });
+          var sub = by === 'fy' ? 'By financial year' : (by === 'quarter' ? 'By quarter, FY ' + fy : 'By month, FY ' + fy);
+          $('pRoot').innerHTML =
+            App.tableCard('r-issued', 'New licences, renewals and changes', sub,
+              [{ t: 'Period', w: '32%' }, { t: 'New licences', end: true, w: '17%' }, { t: 'Renewals', end: true, w: '17%' }, { t: 'Changes', end: true, w: '17%' }, { t: 'Total', end: true, w: '17%' }],
+              c1.map(function (x) { return x.row; }).join(''), c1.map(function (x) { return x.card; }).join(''), 'No licences issued.') +
+            App.tableCard('r-revenue', 'Revenue collected', sub + '. Late fee, backlog fee and penalties are shown separately; exempted amounts are not collected.',
+              [{ t: 'Period', w: '24%' }, { t: 'Licence &amp; garbage fee', end: true, w: '18%' }, { t: 'Late fee', end: true, w: '14%' }, { t: 'Backlog &amp; penalties', end: true, w: '16%' }, { t: 'Exempted', end: true, w: '13%' }, { t: 'Total collected', end: true, w: '15%' }],
+              c2.map(function (x) { return x.row; }).join(''), c2.map(function (x) { return x.card; }).join(''), 'No revenue.');
+        }
 
         var statuses = Object.keys(ST).map(function (k) { return ST[k]; }).filter(function (s) { return s !== ST.DRAFT; });
         var sRows = statuses.map(function (s) {
@@ -86,19 +134,25 @@
         html += App.tableCard('r-type', 'By applicant type', 'Individuals / firms and registered companies.',
           [{ t: 'Applicant type', w: '40%' }, { t: 'Applications', end: true, w: '15%' }, { t: 'Active', end: true, w: '15%' }, { t: 'Expired', end: true, w: '15%' }, { t: 'Fees verified', end: true, w: '15%' }],
           tRows.map(function (r) { return r.row; }).join(''), tRows.map(function (r) { return r.card; }).join(''), 'No data.');
-        var cRows = D.config.categories.filter(function (c) { return apps.some(function (a) { return a.category === c.code; }) || lics.some(function (l) { return l.category === c.code; }); }).map(function (c) {
-          var ca = apps.filter(function (a) { return a.category === c.code; }), cl = lics.filter(function (l) { return l.category === c.code; });
+        var cRows = D.config.categories.filter(function (c) { return apps.some(function (a) { return F.hasCategory(a, c.code); }) || lics.some(function (l) { return F.hasCategory(l, c.code); }); }).map(function (c) {
+          var ca = apps.filter(function (a) { return F.hasCategory(a, c.code); }), cl = lics.filter(function (l) { return F.hasCategory(l, c.code); });
           var act = cl.filter(function (l) { return F.licenceState(l) === 'Active'; }).length, exp = cl.length - act;
           var fee = ca.filter(function (a) { return a.status === ST.ISSUED && a.br; }).reduce(function (n, a) { return n + a.br.amount; }, 0);
           csv.push(['Item', c.name + ' (' + F.TYPES[c.type].short + ')', ca.length, act, exp, fee]);
           return { row: '<tr><td class="fw-semibold small"><i class="bi ' + c.icon + ' me-1 text-primary" aria-hidden="true"></i>' + esc(c.name) + '<div class="text-muted fw-normal">' + esc(F.TYPES[c.type].short) + '</div></td><td class="text-end">' + ca.length + '</td><td class="text-end">' + act + '</td><td class="text-end">' + exp + '</td><td class="text-end">' + inr(fee) + '</td></tr>',
             card: App.mobileCard('<span class="fw-semibold small">' + esc(c.name) + '</span>', '', '<div class="small text-muted">' + ca.length + ' applications &bull; ' + act + ' active &bull; ' + exp + ' expired &bull; ' + inr(fee) + ' verified</div>', '') };
         });
-        html += App.tableCard('r-cat', 'By item', 'Items with at least one application or licence. Expired licences are due for renewal (late surcharge ₹5 per day after 30 April).',
+        html += App.tableCard('r-cat', 'By item', 'Items with at least one application or licence (a licence with several items counts under each). Expired licences are due for renewal (late fee ₹' + D.config.renewalFine.perDay + ' per day after ' + D.config.renewalFine.graceDays + ' days from expiry).',
           [{ t: 'Item', w: '40%' }, { t: 'Applications', end: true, w: '15%' }, { t: 'Active', end: true, w: '15%' }, { t: 'Expired', end: true, w: '15%' }, { t: 'Fees verified', end: true, w: '15%' }],
           cRows.map(function (r) { return r.row; }).join(''), cRows.map(function (r) { return r.card; }).join(''), 'No data.');
         csv.unshift(['Report', 'Row', 'Col 1', 'Col 2', 'Col 3', 'Total / Fee']);
         $('repRoot').innerHTML = html;
+        var baseCsv = csv.slice();
+        function redraw() { drawPeriod(); csv = periodCsv.concat([[]]).concat(baseCsv); }
+        $('pBy').addEventListener('change', redraw);
+        $('pFy').addEventListener('change', redraw);
+        $('pForm').addEventListener('submit', function (e) { e.preventDefault(); });
+        redraw();
       } else {
         $('pageTitle').textContent = 'Audit Log';
         $('pageSubtitle').textContent = 'Every action with user, role, date-time and remarks. Read-only.';
