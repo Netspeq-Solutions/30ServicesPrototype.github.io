@@ -44,6 +44,11 @@
       width: 100% !important;
       max-width: 100% !important;
     }
+    #main-reports-content {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      overflow-x: hidden !important;
+    }
     body {
       background-color: #f8fafc;
       font-family: 'Noto Sans', sans-serif;
@@ -252,6 +257,9 @@
     <div class="container-fluid px-lg-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-sm btn-outline-secondary d-lg-none" id="gov-sidebar-toggle" type="button" aria-label="Toggle Menu">
+            <i class="bi bi-list"></i>
+          </button>
           <a href="index.html" class="d-inline-block">
             <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
           </a>
@@ -279,8 +287,18 @@
     </div>
   </header>
 
-  <!-- Main Reports Content -->
-  <main id="main-reports-content" class="flex-grow-1 p-3 p-lg-4" tabindex="-1">
+  <!-- Workspace Container with Role Sidebar -->
+  <div class="officer-workspace-container flex-grow-1" id="reportsWorkspaceLayout">
+
+    <!-- Role-Based Navigation Sidebar (260px Desktop) -->
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block no-print" id="sidebar-nav" aria-label="Officer Navigation Menu">
+      <div id="reportsSidebarNavContainer">
+        <!-- Rendered dynamically by renderReportsRoleSidebar() based on active role -->
+      </div>
+    </aside>
+
+    <!-- Main Reports Content -->
+    <main id="main-reports-content" class="gov-workspace-content flex-grow-1 p-3 p-lg-4" tabindex="-1">
     <div class="container-fluid px-0">
 
       <!-- Active Scope & Governance Banner (No-Print) -->
@@ -609,6 +627,7 @@
 
     </div>
   </main>
+  </div>
 
   <!-- Official Government Footer (No-Print) -->
   <footer class="gov-footer mt-auto py-3 bg-dark text-white-50 border-top no-print" role="contentinfo">
@@ -654,6 +673,8 @@
         initOfficerContext();
         initFilterDropdowns();
         applyReportFilters();
+        renderReportsRoleSidebar(currentRole);
+        initMobileDrawer();
         initAccessibility();
       });
 
@@ -775,21 +796,436 @@
       function updateDashboardBackLink() {
         const btnBack = document.getElementById('btnBackToDashboard');
         if (!btnBack) return;
+        const uParam = currentUserId ? ('?user=' + encodeURIComponent(currentUserId)) : '';
         if (currentRole === 'ro') {
-          btnBack.href = 'dashboard-ro.html';
+          btnBack.href = 'dashboard-ro.html' + uParam;
           btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to RO Dashboard';
         } else if (currentRole === 'bo') {
-          btnBack.href = 'dashboard-bo.html';
+          btnBack.href = 'dashboard-bo.html' + uParam;
           btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to BO Dashboard';
         } else if (currentRole === 'acf') {
-          btnBack.href = 'dashboard-acf.html';
+          btnBack.href = 'dashboard-acf.html' + uParam;
           btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to ACF Dashboard';
         } else if (currentRole === 'dfo') {
-          btnBack.href = 'dashboard-dfo.html';
+          btnBack.href = 'dashboard-dfo.html' + uParam;
           btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to DFO Dashboard';
         } else if (currentRole === 'admin') {
-          btnBack.href = 'dashboard-admin.html';
+          btnBack.href = 'dashboard-admin.html' + uParam;
           btnBack.innerHTML = '<i class="bi bi-arrow-left me-1"></i> Back to Admin Dashboard';
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function getRoleQueueCounts(role) {
+        const allScoped = scopedApplications || [];
+        const counts = {
+          pending: 0,
+          scheduled: 0,
+          verified: 0,
+          reports: 0,
+          approved: 0,
+          forwarded: 0,
+          rejected: 0,
+          delayed: 0,
+          orders: 0,
+          assigned: 0,
+          allUsers: 0,
+          citizens: 0,
+          deptUsers: 0,
+          totalApps: 0
+        };
+
+        const allApps = (typeof MarkingOrderData !== 'undefined' && MarkingOrderData.getAllApplications) ? MarkingOrderData.getAllApplications() : allScoped;
+        counts.totalApps = allApps.length;
+
+        allScoped.forEach(function (a) {
+          const s = (a.currentStatus || '').toLowerCase();
+          
+          if (s.includes('submitted') || s.includes('ro review') || s.includes('scrutiny') || (role === 'acf' && s.includes('forwarded to acf')) || (role === 'dfo' && s.includes('forwarded to dfo'))) {
+            counts.pending++;
+          }
+          if (s.includes('scheduled')) {
+            counts.scheduled++;
+          }
+          if (s.includes('verified') || s.includes('verification completed') || s.includes('bo verified')) {
+            counts.verified++;
+          }
+          if (s.includes('verified') || s.includes('report') || s.includes('bo verification completed')) {
+            counts.reports++;
+          }
+          if (s.includes('approved') || a.approvalStatus === 'Application Approved') {
+            counts.approved++;
+          }
+          if (s.includes('forwarded')) {
+            counts.forwarded++;
+          }
+          if (s.includes('rejected')) {
+            counts.rejected++;
+          }
+          if ((a.daysDelayed || 0) > 7 && s !== 'marking order issued' && s !== 'cancelled' && s !== 'rejected') {
+            counts.delayed++;
+          }
+          if (Boolean(a.markingOrderNo) || s.includes('marking order issued')) {
+            counts.orders++;
+          }
+          if (role === 'bo') {
+            counts.assigned++;
+          }
+        });
+
+        if (role === 'admin') {
+          const demo = (typeof MarkingOrderData !== 'undefined' && MarkingOrderData.demoUsers) ? MarkingOrderData.demoUsers : {};
+          const citizensCount = 14;
+          const deptCount = (demo.rangeOfficers ? demo.rangeOfficers.length : 4) +
+                            (demo.blockOfficers ? demo.blockOfficers.length : 4) +
+                            (demo.acfUsers ? demo.acfUsers.length : 2) +
+                            (demo.dfoUsers ? demo.dfoUsers.length : 2) + 1;
+          counts.citizens = citizensCount;
+          counts.deptUsers = deptCount;
+          counts.allUsers = citizensCount + deptCount;
+        }
+
+        return counts;
+      }
+
+      function renderReportsRoleSidebar(role) {
+        const navContainer = document.getElementById('reportsSidebarNavContainer');
+        if (!navContainer) return;
+
+        const officer = currentOfficer || {};
+        const counts = getRoleQueueCounts(role);
+        const uParam = officer.id ? ('&user=' + encodeURIComponent(officer.id)) : '';
+        const uQuery = officer.id ? ('?user=' + encodeURIComponent(officer.id)) : '';
+        let html = '';
+
+        if (role === 'ro') {
+          const rangeLabel = officer.range || 'Ranipool Range';
+          html =
+            '<div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">' +
+              '<span class="fw-bold small text-muted">RO WORKSPACE MENU</span>' +
+              '<button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>' +
+            '</div>' +
+            '<div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'RO Queues (<span id="sidebarRangeLabel">' + escapeHtml(rangeLabel) + '</span>)' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1 mb-3">' +
+              '<a href="dashboard-ro.html' + uQuery + '#dashboard" class="officer-nav-link" id="roNav-dashboard">' +
+                '<i class="bi bi-speedometer2"></i> <span>Dashboard Overview</span>' +
+              '</a>' +
+              '<a href="apply.html?role=ro" class="officer-nav-link text-success fw-semibold">' +
+                '<i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#pending" class="officer-nav-link" id="roNav-pending">' +
+                '<i class="bi bi-inbox-fill text-warning"></i> <span>Pending Applications</span>' +
+                '<span class="badge bg-warning text-dark" id="roBadgePending">' + counts.pending + '</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#scheduled" class="officer-nav-link" id="roNav-scheduled">' +
+                '<i class="bi bi-calendar-check-fill text-info"></i> <span>Verification Scheduled</span>' +
+                '<span class="badge bg-info text-dark" id="roBadgeScheduled">' + counts.scheduled + '</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#reports-submitted" class="officer-nav-link" id="roNav-reports">' +
+                '<i class="bi bi-clipboard2-check-fill text-primary"></i> <span>Verification Reports</span>' +
+                '<span class="badge bg-primary" id="roBadgeReports">' + counts.reports + '</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#approved" class="officer-nav-link" id="roNav-approved">' +
+                '<i class="bi bi-check-circle-fill text-success"></i> <span>Approved Applications</span>' +
+                '<span class="badge bg-success" id="roBadgeApproved">' + counts.approved + '</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#forwarded" class="officer-nav-link" id="roNav-forwarded">' +
+                '<i class="bi bi-send-check-fill text-secondary"></i> <span>Forwarded to ACF</span>' +
+                '<span class="badge bg-secondary" id="roBadgeForwarded">' + counts.forwarded + '</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#rejected" class="officer-nav-link" id="roNav-rejected">' +
+                '<i class="bi bi-x-circle-fill text-danger"></i> <span>Rejected Applications</span>' +
+                '<span class="badge bg-danger" id="roBadgeRejected">' + counts.rejected + '</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'Records &amp; Reports' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-ro.html' + uQuery + '#tree-details" class="officer-nav-link" id="roNav-trees">' +
+                '<i class="bi bi-tree-fill text-success"></i> <span>Tree Details</span>' +
+              '</a>' +
+              '<a href="reports.html?role=ro' + uParam + '" class="officer-nav-link active text-success fw-semibold" id="roNav-reports-page">' +
+                '<i class="bi bi-file-earmark-bar-graph text-success"></i> <span>Reports &amp; Analytics</span>' +
+              '</a>' +
+              '<a href="dashboard-ro.html' + uQuery + '#notifications" class="officer-nav-link" id="roNav-notifs">' +
+                '<i class="bi bi-bell-fill text-warning"></i> <span>Notifications</span>' +
+              '</a>' +
+              '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">' +
+                '<i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">' +
+              '<div class="fw-bold text-dark mb-1"><i class="bi bi-shield-lock-fill text-success me-1"></i> RO Statutory Authority</div>' +
+              '<div class="text-secondary" style="font-size: 0.75rem;">' +
+                '&bull; <strong>Firewood:</strong> Max 3 trees<br>' +
+                '&bull; <strong>Timber:</strong> Max 3 trees<br>' +
+                '<span class="text-muted">Beyond limit &rarr; Forward to ACF</span>' +
+              '</div>' +
+            '</div>';
+        } else if (role === 'bo') {
+          html =
+            '<div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">' +
+              '<span class="fw-bold small text-muted">BO WORKSPACE MENU</span>' +
+              '<button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>' +
+            '</div>' +
+            '<div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'Field Verification Desk' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-bo.html' + uQuery + '#dashboard" class="officer-nav-link" id="boNav-dashboard">' +
+                '<i class="bi bi-speedometer2"></i> <span>Dashboard</span>' +
+              '</a>' +
+              '<a href="apply.html?role=bo" class="officer-nav-link text-success fw-semibold">' +
+                '<i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span>' +
+              '</a>' +
+              '<a href="dashboard-bo.html' + uQuery + '#assigned" class="officer-nav-link" id="boNav-assigned">' +
+                '<i class="bi bi-inbox-fill text-primary"></i> <span>Assigned Applications</span>' +
+                '<span class="badge bg-primary" id="boBadgeAssigned">' + counts.assigned + '</span>' +
+              '</a>' +
+              '<a href="dashboard-bo.html' + uQuery + '#scheduled" class="officer-nav-link" id="boNav-scheduled">' +
+                '<i class="bi bi-calendar-event-fill text-warning"></i> <span>Scheduled Verification</span>' +
+                '<span class="badge bg-warning text-dark" id="boBadgeScheduled">' + counts.scheduled + '</span>' +
+              '</a>' +
+              '<a href="dashboard-bo.html' + uQuery + '#verified" class="officer-nav-link" id="boNav-verified">' +
+                '<i class="bi bi-check2-circle text-success"></i> <span>Verified Applications</span>' +
+                '<span class="badge bg-success" id="boBadgeVerified">' + counts.verified + '</span>' +
+              '</a>' +
+              '<a href="dashboard-bo.html' + uQuery + '#reports" class="officer-nav-link" id="boNav-reports">' +
+                '<i class="bi bi-file-earmark-check-fill text-info"></i> <span>Submitted Reports</span>' +
+                '<span class="badge bg-info text-dark" id="boBadgeReports">' + counts.reports + '</span>' +
+              '</a>' +
+              '<a href="dashboard-bo.html' + uQuery + '#tree-details" class="officer-nav-link" id="boNav-trees">' +
+                '<i class="bi bi-tree-fill text-success"></i> <span>Tree Details</span>' +
+              '</a>' +
+              '<a href="reports.html?role=bo' + uParam + '" class="officer-nav-link active text-success fw-semibold" id="boNav-reports-page">' +
+                '<i class="bi bi-file-earmark-bar-graph text-info"></i> <span>Reports &amp; Summary</span>' +
+              '</a>' +
+              '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">' +
+                '<i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">' +
+              '<div class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill text-warning-emphasis me-1"></i> BO Authority Rule</div>' +
+              '<div class="text-secondary" style="font-size: 0.74rem;">' +
+                'BO conducts on-site verification and submits reports to RO. <strong>BO cannot reject an application.</strong> Where discrepancies are found, BO forwards the report with remarks to RO.' +
+              '</div>' +
+            '</div>';
+        } else if (role === 'acf') {
+          const divLabel = officer.division || 'Gangtok';
+          html =
+            '<div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">' +
+              '<span class="fw-bold small text-muted">ACF WORKSPACE MENU</span>' +
+              '<button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>' +
+            '</div>' +
+            '<div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'ACF Queues (<span id="sidebarDivisionLabel">' + escapeHtml(divLabel) + '</span>)' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-acf.html' + uQuery + '#dashboard" class="officer-nav-link" id="acfNav-dashboard">' +
+                '<i class="bi bi-speedometer2"></i> <span>Dashboard</span>' +
+              '</a>' +
+              '<a href="apply.html?role=acf" class="officer-nav-link text-success fw-semibold">' +
+                '<i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span>' +
+              '</a>' +
+              '<a href="dashboard-acf.html' + uQuery + '#forwarded" class="officer-nav-link" id="acfNav-forwarded">' +
+                '<i class="bi bi-inbox-fill text-primary"></i> <span>Forwarded Applications</span>' +
+                '<span class="badge bg-primary" id="acfBadgeForwarded">' + counts.forwarded + '</span>' +
+              '</a>' +
+              '<a href="dashboard-acf.html' + uQuery + '#pending" class="officer-nav-link" id="acfNav-pending">' +
+                '<i class="bi bi-hourglass-split text-warning"></i> <span>Pending Applications</span>' +
+                '<span class="badge bg-warning text-dark" id="acfBadgePending">' + counts.pending + '</span>' +
+              '</a>' +
+              '<a href="dashboard-acf.html' + uQuery + '#verified" class="officer-nav-link" id="acfNav-verified">' +
+                '<i class="bi bi-clipboard2-check text-info"></i> <span>Verified Applications</span>' +
+                '<span class="badge bg-info text-dark" id="acfBadgeVerified">' + counts.verified + '</span>' +
+              '</a>' +
+              '<a href="dashboard-acf.html' + uQuery + '#approved" class="officer-nav-link" id="acfNav-approved">' +
+                '<i class="bi bi-check-circle-fill text-success"></i> <span>Approved Applications</span>' +
+                '<span class="badge bg-success" id="acfBadgeApproved">' + counts.approved + '</span>' +
+              '</a>' +
+              '<a href="dashboard-acf.html' + uQuery + '#rejected" class="officer-nav-link" id="acfNav-rejected">' +
+                '<i class="bi bi-x-circle-fill text-danger"></i> <span>Rejected Applications</span>' +
+                '<span class="badge bg-danger" id="acfBadgeRejected">' + counts.rejected + '</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="text-uppercase fw-bold text-muted small my-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'Records &amp; Reports' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-acf.html' + uQuery + '#tree-details" class="officer-nav-link" id="acfNav-trees">' +
+                '<i class="bi bi-tree-fill text-success"></i> <span>Tree Details</span>' +
+              '</a>' +
+              '<a href="dashboard-acf.html' + uQuery + '#transit-permit" class="officer-nav-link" id="acfNav-transit">' +
+                '<i class="bi bi-truck text-primary"></i> <span>Transit Permit</span>' +
+              '</a>' +
+              '<a href="reports.html?role=acf' + uParam + '" class="officer-nav-link active text-success fw-semibold" id="acfNav-reports-page">' +
+                '<i class="bi bi-file-earmark-bar-graph text-success"></i> <span>Reports &amp; Analytics</span>' +
+              '</a>' +
+              '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">' +
+                '<i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">' +
+              '<div class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-primary me-1"></i> ACF Statutory Authority</div>' +
+              '<div class="text-secondary" style="font-size: 0.74rem;">' +
+                '&bull; <strong>Firewood:</strong> Max 5 trees<br>' +
+                '&bull; <strong>Timber:</strong> Max 5 trees<br>' +
+                '<span class="text-muted">Beyond limit &rarr; Forward to DFO</span>' +
+              '</div>' +
+            '</div>';
+        } else if (role === 'dfo') {
+          const divLabel = officer.division || 'Gangtok';
+          html =
+            '<div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">' +
+              '<span class="fw-bold small text-muted">DFO WORKSPACE MENU</span>' +
+              '<button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>' +
+            '</div>' +
+            '<div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'DFO Authority (<span id="sidebarDfoDivisionLabel">' + escapeHtml(divLabel) + '</span>)' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-dfo.html' + uQuery + '#dashboard" class="officer-nav-link" id="dfoNav-dashboard">' +
+                '<i class="bi bi-speedometer2"></i> <span>Dashboard</span>' +
+              '</a>' +
+              '<a href="apply.html?role=dfo" class="officer-nav-link text-success fw-semibold">' +
+                '<i class="bi bi-person-plus-fill text-success"></i> <span>Assist Citizen (Apply)</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#forwarded" class="officer-nav-link" id="dfoNav-forwarded">' +
+                '<i class="bi bi-inbox-fill text-primary"></i> <span>Forwarded Applications</span>' +
+                '<span class="badge bg-primary" id="dfoBadgeForwarded">' + counts.forwarded + '</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#pending" class="officer-nav-link" id="dfoNav-pending">' +
+                '<i class="bi bi-hourglass-split text-warning"></i> <span>Pending Applications</span>' +
+                '<span class="badge bg-warning text-dark" id="dfoBadgePending">' + counts.pending + '</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#approved" class="officer-nav-link" id="dfoNav-approved">' +
+                '<i class="bi bi-check-circle-fill text-success"></i> <span>Approved Applications</span>' +
+                '<span class="badge bg-success" id="dfoBadgeApproved">' + counts.approved + '</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#rejected" class="officer-nav-link" id="dfoNav-rejected">' +
+                '<i class="bi bi-x-circle-fill text-danger"></i> <span>Rejected Applications</span>' +
+                '<span class="badge bg-danger" id="dfoBadgeRejected">' + counts.rejected + '</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#delayed" class="officer-nav-link" id="dfoNav-delayed">' +
+                '<i class="bi bi-alarm-fill text-danger"></i> <span>Delayed Applications</span>' +
+                '<span class="badge bg-danger" id="dfoBadgeDelayed">' + counts.delayed + '</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#issued-orders" class="officer-nav-link" id="dfoNav-orders">' +
+                '<i class="bi bi-file-earmark-check-fill text-success"></i> <span>Issued Marking Orders</span>' +
+                '<span class="badge bg-success" id="dfoBadgeOrders">' + counts.orders + '</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="text-uppercase fw-bold text-muted small my-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'Records &amp; Reports' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-dfo.html' + uQuery + '#tree-details" class="officer-nav-link" id="dfoNav-trees">' +
+                '<i class="bi bi-tree-fill text-success"></i> <span>Tree Details</span>' +
+              '</a>' +
+              '<a href="dashboard-dfo.html' + uQuery + '#transit-permit" class="officer-nav-link" id="dfoNav-transit">' +
+                '<i class="bi bi-truck text-primary"></i> <span>Transit Permit</span>' +
+              '</a>' +
+              '<a href="reports.html?role=dfo' + uParam + '" class="officer-nav-link active text-success fw-semibold" id="dfoNav-reports-page">' +
+                '<i class="bi bi-file-earmark-bar-graph text-success"></i> <span>Reports &amp; Analytics</span>' +
+              '</a>' +
+              '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">' +
+                '<i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span>' +
+              '</a>' +
+            '</nav>' +
+            '<div class="card border-0 bg-light p-2.5 rounded-2 mt-4 small">' +
+              '<div class="fw-bold text-dark mb-1"><i class="bi bi-award-fill text-success me-1"></i> DFO Statutory Authority</div>' +
+              '<div class="text-secondary" style="font-size: 0.74rem;">' +
+                '&bull; <strong>Timber:</strong> Max 10 trees<br>' +
+                '&bull; <strong>Firewood:</strong> Max 10 trees<br>' +
+                '&bull; Final in-scope approval authority &amp; sole authority to cancel an issued Marking Order.' +
+              '</div>' +
+            '</div>';
+        } else if (role === 'admin') {
+          html =
+            '<div class="d-flex justify-content-between align-items-center px-2 mb-2 d-lg-none">' +
+              '<span class="fw-bold small text-muted">SUPER ADMIN MENU</span>' +
+              '<button type="button" class="btn-close btn-sm" id="sidebar-close-btn" aria-label="Close Menu"></button>' +
+            '</div>' +
+            '<div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">' +
+              'System Administration' +
+            '</div>' +
+            '<nav class="nav flex-column gap-1">' +
+              '<a href="dashboard-admin.html#dashboard" class="officer-nav-link" id="adminNav-dashboard">' +
+                '<i class="bi bi-speedometer2"></i> <span>Dashboard</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#user-management" class="officer-nav-link" id="adminNav-users">' +
+                '<i class="bi bi-people-fill text-primary"></i> <span>User Management</span>' +
+                '<span class="badge bg-primary" id="adminBadgeAllUsers">' + counts.allUsers + '</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#citizen-users" class="officer-nav-link" id="adminNav-citizens">' +
+                '<i class="bi bi-person-fill text-success"></i> <span>Citizen Users</span>' +
+                '<span class="badge bg-success" id="adminBadgeCitizens">' + counts.citizens + '</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#department-users" class="officer-nav-link" id="adminNav-deptUsers">' +
+                '<i class="bi bi-person-badge-fill text-info"></i> <span>Department Users</span>' +
+                '<span class="badge bg-info text-dark" id="adminBadgeDeptUsers">' + counts.deptUsers + '</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#division-management" class="officer-nav-link" id="adminNav-divisions">' +
+                '<i class="bi bi-diagram-3-fill"></i> <span>Division Management</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#range-management" class="officer-nav-link" id="adminNav-ranges">' +
+                '<i class="bi bi-pin-map-fill"></i> <span>Forest Range Management</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#district-management" class="officer-nav-link" id="adminNav-districts">' +
+                '<i class="bi bi-geo-alt-fill"></i> <span>District Management</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#tree-species" class="officer-nav-link" id="adminNav-species">' +
+                '<i class="bi bi-tree-fill text-success"></i> <span>Tree Species Master</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#purpose-master" class="officer-nav-link" id="adminNav-purpose">' +
+                '<i class="bi bi-tags-fill text-warning"></i> <span>Purpose Master</span>' +
+              '</a>' +
+              '<a href="dashboard-admin.html#application-overview" class="officer-nav-link" id="adminNav-apps">' +
+                '<i class="bi bi-folder2-open text-primary"></i> <span>Application Overview</span>' +
+                '<span class="badge bg-secondary" id="adminBadgeApps">' + counts.totalApps + '</span>' +
+              '</a>' +
+              '<a href="reports.html?role=admin&user=ADMIN-STATE" class="officer-nav-link active text-success fw-semibold" id="adminNav-reports-page">' +
+                '<i class="bi bi-file-earmark-bar-graph text-warning"></i> <span>Reports &amp; Analytics</span>' +
+              '</a>' +
+              '<a href="role-select.html" class="officer-nav-link text-danger mt-2 pt-2 border-top">' +
+                '<i class="bi bi-box-arrow-left text-danger"></i> <span>Switch Role / Logout</span>' +
+              '</a>' +
+            '</nav>';
+        }
+
+        navContainer.innerHTML = html;
+
+        // Re-attach close drawer button event
+        const closeBtn = document.getElementById('sidebar-close-btn');
+        const sidebar = document.getElementById('sidebar-nav');
+        if (closeBtn && sidebar) {
+          closeBtn.addEventListener('click', function () {
+            sidebar.classList.add('d-none');
+            sidebar.classList.remove('show');
+          });
+        }
+      }
+
+      function initMobileDrawer() {
+        const toggleBtn = document.getElementById('gov-sidebar-toggle');
+        const sidebar = document.getElementById('sidebar-nav');
+        if (toggleBtn && sidebar) {
+          toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('d-none');
+            sidebar.classList.toggle('show');
+          });
         }
       }
 
@@ -1111,6 +1547,7 @@
         // Update UI
         updateKpiSummaryCards();
         renderReportTable();
+        renderReportsRoleSidebar(currentRole);
         updatePrintMetadata();
       };
 
