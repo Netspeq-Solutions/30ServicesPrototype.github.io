@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-font-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <title>Challan &amp; Bank Receipt | Online Ground Rent Payment System | Government of Sikkim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+  <link rel="stylesheet" href="gr-common.css">
+</head>
+<body data-theme="teal">
+  <main id="main-content">
+    <nav aria-label="Breadcrumb" class="mb-2"><ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="dashboard-staff.html">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="accounts.html?intent=challan">Generate Challan</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Challan &amp; Bank Receipt</li>
+    </ol></nav>
+    <div id="counterRoot"></div>
+  </main>
+
+  <!-- Confirm challan generation -->
+  <div class="modal fade" id="genModal" tabindex="-1" aria-labelledby="genTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><h2 class="modal-title h6 fw-bold" id="genTitle"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Generate Challan for the Allottee</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body small" id="genBody"></div>
+      <div class="modal-footer"><button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-sm btn-primary" id="btnGenConfirm"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Generate Challan</button></div>
+    </div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="mock-data.js"></script>
+  <script src="dues-engine.js"></script>
+  <script src="gr-app.js"></script>
+  <script src="gr-payments.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var App = window.GRApp, P = window.GRPay, D = App.data, esc = App.esc, inr = App.inr;
+      var session = App.requireSession('staff', 'payments');
+      if (!session) return;
+      App.shell({ type: 'staff', active: 'challan' });
+      var $ = function (id) { return document.getElementById(id); };
+      var root = $('counterRoot');
+      var site = App.site(App.qs('gr'));
+      if (!site || !App.inScope(site, session)) {
+        root.innerHTML = '<div class="alert alert-warning">Account not found, or outside your ULB.</div><a class="btn btn-sm btn-outline-secondary" href="accounts.html?intent=challan">Select an Account</a>';
+        return;
+      }
+      document.title = site.grId + ' | Challan & Bank Receipt | Online Ground Rent Payment System';
+      var genModal = new bootstrap.Modal($('genModal'));
+
+      function card(title, body, extra, cls) {
+        return '<div class="card border-0 shadow-xs mb-3' + (cls ? ' ' + cls : '') + '"><div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2"><h2 class="h6 fw-bold mb-0">' + title + '</h2>' + (extra || '') + '</div>' + body + '</div>';
+      }
+      function meta(pairs) { return '<dl class="gr-meta-grid mb-0">' + pairs.map(function (p) { return '<div><dt>' + p[0] + '</dt><dd>' + p[1] + '</dd></div>'; }).join('') + '</dl>'; }
+      function stepTitle(n, t) { return '<span class="badge rounded-pill bg-primary me-2">' + n + '</span>' + t; }
+      function mobiles() { return App.siteMobiles(site).map(App.maskMobile).join(', '); }
+
+      // The challan this account is working on: an open one, else none.
+      function openChallan() {
+        var c = App.challanFor(site.grId);
+        if (c && c.status === 'Generated' && c.validTill < D.demoToday) { c.status = 'Expired'; App.save(); c = App.challanFor(site.grId); }
+        return c;
+      }
+
+      // ---------- Step 1: challan ----------
+      function stepChallan(c, g) {
+        if (c && c.status === 'BR Recorded') {
+          return card(stepTitle(1, 'Challan'), '<div class="card-body">' + meta([['Challan No.', '<span class="font-monospace">' + esc(c.challanNo) + '</span>'], ['Amount', inr(c.amount)], ['BR uploaded', esc(c.brNo) + ' &bull; ' + App.fmtDate(c.brUploadedOn)]]) +
+            '<div class="alert alert-info small py-2 mt-3 mb-0"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>The allottee has already uploaded the Bank Receipt. Check it against the original and approve it.</div></div>' +
+            '<div class="card-footer bg-white d-flex flex-wrap gap-2"><a class="btn btn-sm btn-primary" href="payment-review.html?challan=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-eye me-1" aria-hidden="true"></i>Review &amp; Approve</a></div>');
+        }
+        if (c) {
+          return card(stepTitle(1, 'Challan generated'), '<div class="card-body">' + meta([['Challan No.', '<span class="font-monospace fw-bold">' + esc(c.challanNo) + '</span> ' + App.challanPill(c)], ['Amount to pay', '<span class="fs-6">' + inr(c.amount) + '</span>'],
+              ['Generated', App.fmtDate(c.generatedOn) + ' by ' + esc(c.generatedBy || 'Citizen')], ['Valid till', '<span class="text-danger fw-semibold">' + App.fmtDate(c.validTill) + '</span>']]) +
+            '<p class="small text-muted mt-3 mb-0"><i class="bi bi-info-circle me-1" aria-hidden="true"></i>Give the printed challan to the allottee to pay at the bank.</p></div>' +
+            '<div class="card-footer bg-white d-flex flex-wrap gap-2"><a class="btn btn-sm btn-primary" href="challan.html?no=' + encodeURIComponent(c.challanNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Challan</a>' +
+              (g.ok ? '<button type="button" class="btn btn-sm btn-outline-secondary" id="btnRegen"><i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>Generate New Challan</button>' : '') + '</div>');
+        }
+        if (!g.ok) return card(stepTitle(1, 'Challan'), '<div class="card-body"><div class="alert alert-light border small mb-0"><i class="bi bi-info-circle me-1 text-primary" aria-hidden="true"></i>A challan cannot be generated now. ' + esc(g.reason) + '</div></div>');
+        var lines = P.snapshot(g.dues).lines;
+        return card(stepTitle(1, 'Generate the challan'), '<div class="card-body">' +
+            '<table class="table table-sm table-bordered small mb-2"><caption class="visually-hidden">Amount on the challan</caption><thead class="table-light"><tr><th scope="col">Particulars</th><th scope="col" class="text-end">Amount</th></tr></thead><tbody>' +
+            lines.map(function (l) { return '<tr><td>' + esc(l.label) + '</td><td class="text-end">' + inr(l.amount) + '</td></tr>'; }).join('') +
+            '</tbody><tfoot><tr><th scope="row" class="text-end">Total</th><td class="text-end fw-bold">' + inr(g.dues.totalPayable) + '</td></tr></tfoot></table>' +
+            '<p class="small text-muted mb-0">Valid till ' + App.fmtDate(App.challanValidTill(D.demoToday)) + ' (' + D.config.settings.challanValidityDays + ' days, never past 31 March). The allottees are told by SMS' + (mobiles() ? ' (' + esc(mobiles()) + ')' : '') + '.</p></div>' +
+          '<div class="card-footer bg-white"><button type="button" class="btn btn-sm btn-primary" id="btnGen"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Generate Challan</button></div>');
+      }
+
+      // ---------- Step 2: Bank Receipt brought to the counter ----------
+      function stepBr(c) {
+        if (!c || c.status !== 'Generated') {
+          return card(stepTitle(2, 'Upload the Bank Receipt &amp; approve'), '<div class="card-body"><p class="small text-muted mb-0"><i class="bi bi-lock me-1" aria-hidden="true"></i>' +
+            (c ? 'Not needed here: the Bank Receipt for this challan is already uploaded.' : 'Available once a challan is generated.') + '</p></div>', '', 'opacity-75');
+        }
+        return '<form id="brForm" novalidate>' + card(stepTitle(2, 'Upload the Bank Receipt &amp; approve'), '<div class="card-body">' +
+            '<p class="small text-muted mb-3">For a BR brought to the office. The receipt is issued at once.</p><div class="row g-3">' +
+            '<div class="col-md-6"><label for="brNo" class="form-label small fw-semibold">BR no. <span class="text-danger" aria-hidden="true">*</span></label><input id="brNo" class="form-control font-monospace" placeholder="2627N-11001-02231" autocomplete="off"><div class="invalid-feedback"></div></div>' +
+            '<div class="col-6 col-md-3"><label for="brDate" class="form-label small fw-semibold">BR date <span class="text-danger" aria-hidden="true">*</span></label><input id="brDate" type="date" class="form-control" min="' + c.generatedOn + '" max="' + D.demoToday + '"><div class="invalid-feedback"></div></div>' +
+            '<div class="col-6 col-md-3"><label for="brAmt" class="form-label small fw-semibold">Amount paid <span class="text-danger" aria-hidden="true">*</span></label><input id="brAmt" type="number" min="1" class="form-control" value="' + c.amount + '"><div class="invalid-feedback"></div></div>' +
+            '<div class="col-12"><label for="brScan" class="form-label small fw-semibold">Scan / photo of the BR <span class="text-danger" aria-hidden="true">*</span></label><input id="brScan" type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png"><div class="invalid-feedback"></div><div class="form-text">PDF, JPG or PNG, up to 5 MB. Return the original BR to the allottee.</div></div>' +
+            '<div class="col-12" id="brPreview"></div>' +
+            '<div class="col-12"><div class="form-check"><input class="form-check-input" type="checkbox" id="chkOriginal"><label class="form-check-label small" for="chkOriginal">I have seen the original Bank Receipt and it matches these details.</label><div class="invalid-feedback">Confirm you have checked the original Bank Receipt.</div></div></div>' +
+            '<div class="col-12 d-none" id="brError"></div>' +
+          '</div></div><div class="card-footer bg-white d-flex flex-wrap gap-2"><button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check2-circle me-1" aria-hidden="true"></i>Upload BR &amp; Approve</button></div>') + '</form>';
+      }
+
+      // ---------- Allottee & account (right rail) ----------
+      function account() {
+        var d = App.dues(site), u = App.ulb(site.ulb), w = App.ward(site.ulb, site.ward);
+        var owners = '<ul class="list-unstyled small mb-0">' + site.owners.map(function (o) {
+          return '<li class="mb-1"><span class="fw-semibold">' + esc(o.name) + '</span> ' + esc(o.relation + ' ' + o.guardian) + '<div class="text-muted">' + (o.mobile ? esc(App.maskMobile(o.mobile)) : 'No mobile recorded') + (site.owners.length > 1 ? ' &bull; ' + o.share + '%' : '') + '</div></li>';
+        }).join('') + '</ul>';
+        return card('Allottee(s)', '<div class="card-body">' + owners + '</div>') +
+          card('Account', '<div class="card-body">' + meta([['ULB', esc(u.name)], ['Ward', esc(w ? w.name : site.ward)], ['Address', esc(site.address) + ', ' + esc(site.locality)],
+            ['Outstanding', d.blocked ? '—' : inr(d.totalPayable)], ['Paid up to', 'FY ' + esc(d.paidUpToFy || '—')]]) +
+            (site.flags && site.flags.length ? '<div class="small text-danger mt-2"><i class="bi bi-flag-fill me-1" aria-hidden="true"></i>' + site.flags.map(esc).join(' &bull; ') + '</div>' : '') + '</div>',
+            '<a class="btn btn-sm btn-outline-primary" href="ledger.html?gr=' + encodeURIComponent(site.grId) + '"><i class="bi bi-journal-text me-1" aria-hidden="true"></i>Full Account</a>');
+      }
+
+      function render() {
+        var c = openChallan(), g = P.canGenerate(site), role = D.staffRoles[session.role];
+        var done = App.qs('done'), dc = done ? P.challan(done) : null;
+        var banner = dc && dc.status === 'Verified' && dc.grId === site.grId
+          ? '<div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-2"><div><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Payment approved. Receipt <strong class="font-monospace">' + esc(dc.receiptNo) + '</strong> issued for challan ' + esc(dc.challanNo) + '. The allottees were told by SMS.</div>' +
+            '<a class="btn btn-sm btn-success" href="receipt.html?no=' + encodeURIComponent(dc.receiptNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Receipt</a></div>' : '';
+        root.innerHTML = '<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"><div class="min-w-0"><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><h1 class="h4 fw-bold mb-0">Challan &amp; Bank Receipt</h1></div>' +
+            '<p class="text-muted small mb-0"><span class="gr-gr-id">' + esc(site.grId) + '</span> &bull; ' + esc(App.ownersFull(site)) + '</p></div>' +
+            '<span class="badge bg-primary-subtle text-primary border border-primary-subtle">' + esc(role.title) + '</span></div>' + banner +
+          '<div class="row g-3"><div class="col-xl-8 min-w-0">' + stepChallan(c, g) + stepBr(c) + '</div>' +
+          '<div class="col-xl-4"><div class="gr-action-rail">' + account() + '</div></div></div>';
+        bind(c, g);
+      }
+
+      function bind(c, g) {
+        function askGenerate() {
+          var till = App.challanValidTill(D.demoToday);
+          $('genBody').innerHTML = '<p>A challan for <strong>' + inr(g.dues.totalPayable) + '</strong> will be generated for <span class="gr-gr-id">' + esc(site.grId) + '</span> (' + esc(App.ownersText(site)) + ').</p>' +
+            '<ul class="ps-3 mb-2"><li>Valid till <strong>' + App.fmtDate(till) + '</strong>.</li><li>Pay the exact amount at ' + esc(D.config.lists.banks[0].name) + '.</li><li>The allottees get an SMS and see the challan on their portal, where they can upload the Bank Receipt.</li></ul>' +
+            (c && c.status === 'Generated' ? '<div class="alert alert-warning py-2 mb-0">Challan ' + esc(c.challanNo) + ' will be cancelled.</div>' : '');
+          genModal.show();
+        }
+        if ($('btnGen')) $('btnGen').addEventListener('click', askGenerate);
+        if ($('btnRegen')) $('btnRegen').addEventListener('click', askGenerate);
+        var form = $('brForm');
+        if (!form) return;
+        $('brScan').addEventListener('change', function () {
+          var f = this.files && this.files[0], box = $('brPreview');
+          box.innerHTML = '';
+          if (f && /^image\//.test(f.type) && !App.checkFile(this, true)) {
+            box.innerHTML = '<img alt="Preview of the selected Bank Receipt" class="img-fluid border rounded" style="max-height:260px;">';
+            box.querySelector('img').src = URL.createObjectURL(f);
+          }
+        });
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var ok = App.fieldError($('brNo'), $('brNo').value.trim() ? '' : 'Enter the BR no.');
+          ok = App.fieldError($('brDate'), !$('brDate').value ? 'Enter the BR date.' : ($('brDate').value < c.generatedOn || $('brDate').value > D.demoToday ? 'The BR date must be between the challan date and today.' : '')) && ok;
+          ok = App.fieldError($('brAmt'), +$('brAmt').value > 0 ? '' : 'Enter the amount paid.') && ok;
+          ok = App.fieldError($('brScan'), App.checkFile($('brScan'), true)) && ok;
+          var chk = $('chkOriginal');
+          chk.classList.toggle('is-invalid', !chk.checked);
+          ok = chk.checked && ok;
+          if (!ok) { var bad = form.querySelector('.is-invalid'); if (bad) bad.focus(); return; }
+          var r = P.recordAndApprove(c, { brNo: $('brNo').value.trim(), brDate: $('brDate').value, brAmount: Math.round(+$('brAmt').value) }, $('brScan'), session);
+          if (r.error) {
+            $('brError').className = 'col-12';
+            $('brError').innerHTML = '<div class="alert alert-danger small py-2 mb-0" role="alert"><i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>' + esc(r.error) + '</div>';
+            return;
+          }
+          App.filesReady().then(function () { window.location.href = 'counter-payment.html?gr=' + encodeURIComponent(site.grId) + '&done=' + encodeURIComponent(c.challanNo); });
+        });
+      }
+
+      $('btnGenConfirm').addEventListener('click', function () {
+        try {
+          var c = P.generate(site, session);
+          genModal.hide();
+          App.toast('Challan ' + c.challanNo + ' generated. The allottees were told by SMS.');
+          history.replaceState(null, '', 'counter-payment.html?gr=' + encodeURIComponent(site.grId));
+          render();
+        } catch (e) { genModal.hide(); App.toast(esc(e.message), 'danger'); }
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

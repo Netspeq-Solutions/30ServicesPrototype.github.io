@@ -43,7 +43,7 @@
       "sysAdmin"
     ],
     "demoDate": "2026-11-16",
-    "offlineBrScan": "Uploaded by the citizen / allottee on the challan page; supervisor checks the original BR at the counter and approves (no data entry by staff)"
+    "offlineBrScan": "Uploaded by the citizen / allottee on the challan page and approved by the supervisor after checking the original BR; or uploaded by the supervisor at the counter (counter-payment.html) and approved directly. Supervisors can also generate the challan for the allottee."
   },
   "departmentName": "Urban Development Department",
   "departmentShortName": "UDD",

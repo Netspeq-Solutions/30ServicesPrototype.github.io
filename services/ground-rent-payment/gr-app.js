@@ -529,6 +529,7 @@
     dash: { icon: 'bi-speedometer2', label: 'Dashboard', href: 'dashboard-staff.html' },
     search: { icon: 'bi-search', label: 'Account Search', href: 'accounts.html', perm: 'viewAccounts' },
     create: { icon: 'bi-person-plus', label: 'Create Account', href: 'account-form.html', perm: 'editAccounts' },
+    challan: { icon: 'bi-file-earmark-text', label: 'Generate Challan', href: 'accounts.html?intent=challan', perm: 'payments' },
     verify: { icon: 'bi-patch-check', label: 'Approve Bank Payments', href: 'payment-desk.html', perm: 'payments', badge: 'challans' },
     adjust: { icon: 'bi-sliders2-vertical', label: 'Adjustments', href: 'accounts.html?intent=adjust', perm: 'adjust' },
     approvals: { icon: 'bi-check2-square', label: 'Approval Queue', href: 'approvals.html', perm: 'approve', makerChecker: true, badge: 'approvals' },
@@ -537,7 +538,7 @@
     audit: { icon: 'bi-journal-text', label: 'Audit Log', href: 'reports.html#audit' }
   };
   var STAFF_GROUPS = [
-    ['Overview', ['dash']], ['Accounts', ['search', 'create']], ['Payments', ['verify', 'adjust']],
+    ['Overview', ['dash']], ['Accounts', ['search', 'create']], ['Payments', ['challan', 'verify', 'adjust']],
     ['Approvals', ['approvals']], ['Monitoring', ['reports', 'audit']], ['Settings', ['config']]
   ];
   var CITIZEN_MENU = [
@@ -561,9 +562,47 @@
   }
 
   // opts: { type: 'citizen'|'staff', active: menu key, title: header title }
+  // ---------------- Mobile-friendly tables ----------------
+  // On phones every data table is shown as stacked cards (CSS: .gr-stack). Each cell gets the
+  // label of its column so the value still makes sense. Tables already paired with mobile cards
+  // (.gov-table-desktop), tables without headings and tables marked .no-stack are left alone.
+  function stackTables(root) {
+    (root || document).querySelectorAll('table:not([data-stacked])').forEach(function (t) {
+      t.setAttribute('data-stacked', '1');
+      if (t.closest('.gov-table-desktop') || t.classList.contains('no-stack') || !t.tHead) return; // no headings: a document or a short label/value table
+      var heads = [];
+      var hr = t.tHead && t.tHead.rows[t.tHead.rows.length - 1];
+      if (hr) [].forEach.call(hr.cells, function (c) { for (var i = 0; i < (c.colSpan || 1); i++) heads.push(c.textContent.trim()); });
+      t.classList.add('gr-stack');
+      [].forEach.call(t.tBodies, function (b) {
+        [].forEach.call(b.rows, function (r) {
+          var col = 0;
+          [].forEach.call(r.cells, function (c) {
+            if (!c.hasAttribute('data-label')) c.setAttribute('data-label', c.colSpan > 1 ? '' : (heads[col] || ''));
+            col += c.colSpan || 1;
+          });
+        });
+      });
+      var wrap = t.parentElement;
+      if (wrap && wrap.classList.contains('table-responsive')) wrap.classList.add('gr-stack-wrap');
+    });
+  }
+  // Pages render after the shell, so label tables whenever the content changes.
+  function watchTables(main) {
+    if (!main || !global.MutationObserver) return;
+    var queued = false;
+    new MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      setTimeout(function () { queued = false; stackTables(main); }, 0);
+    }).observe(main, { childList: true, subtree: true });
+    stackTables(main);
+  }
+
   function shell(opts) {
     var session = getSession();
     var main = document.getElementById('main-content');
+    watchTables(main);
     var isStaff = opts.type === 'staff';
     var onDashboard = /dashboard\.html$/.test(location.pathname);
 

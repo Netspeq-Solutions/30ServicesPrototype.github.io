@@ -267,8 +267,16 @@
   function docTypes(all) { return (D().config.docTypes || []).filter(function (d) { return all || d.active !== false; }); }
   function docType(key) { return (D().config.docTypes || []).filter(function (d) { return d.key === key; })[0] || null; }
   // Prescribed formats the applicant downloads, fills and uploads (format.html).
-  var FORMATS = { undertaking: 'Undertaking (Form VIII)', recommendation: 'Recommendation of Gram Panchayat / Councillor (Form VI)', houseOwnerNoc: 'NOC of the house owner (Form X)' };
-  function formatUrl(key) { var d = docType(key); return d && d.format && FORMATS[d.format] ? 'format.html?f=' + d.format : ''; }
+  var FORMATS = { undertaking: 'Undertaking (Form VIII)', recommendation: 'Recommendation of Gram Panchayat / Councillor (Form VI)', recommendationCompany: 'Recommendation of Gram Panchayat / Councillor – Company (Form VI)', houseOwnerNoc: 'NOC of the house owner (Form X)' };
+  // Some formats have a separate wording for a registered company.
+  var FORMAT_BY_TYPE = { recommendation: { COMP: 'recommendationCompany' } };
+  function formatKey(key, type) {
+    var d = docType(key);
+    if (!d || !d.format) return '';
+    var f = (type && FORMAT_BY_TYPE[d.format] && FORMAT_BY_TYPE[d.format][type]) || d.format;
+    return FORMATS[f] ? f : '';
+  }
+  function formatUrl(key, type) { var f = formatKey(key, type); return f ? 'format.html?f=' + f : ''; }
   // Answers in the form that can call for a document.
   var WHEN = {
     franchise: { label: 'Franchise of a parent company = Yes', test: function (f, c) { return !!c.asks.franchise && f.isFranchise === 'Yes'; } },
@@ -867,7 +875,7 @@
     QUESTIONS: QUESTIONS, items: items, categoriesOf: categoriesOf, findItem: findItem, itemDocs: itemDocs, purpose: purpose, purposeName: purposeName, purposeNames: purposeNames, categoryNames: categoryNames, categoryShort: categoryShort, derive: derive,
     purposesOf: purposesOf, purposeKey: purposeKey, samePurposes: samePurposes, hasCategory: hasCategory, addedPurposes: addedPurposes, removedPurposes: removedPurposes, purposeChanged: purposeChanged,
     CHANGE_TYPES: CHANGE_TYPES, changeFields: changeFields, changesPurpose: changesPurpose, renewalFields: renewalFields,
-    docTypes: docTypes, docType: docType, FORMATS: FORMATS, formatUrl: formatUrl, WHEN: WHEN, docList: docList, docKeys: docKeys, docRequired: docRequired, docLabel: docLabel, docMappings: docMappings, newItemDocs: newItemDocs,
+    docTypes: docTypes, docType: docType, FORMATS: FORMATS, formatKey: formatKey, formatUrl: formatUrl, WHEN: WHEN, docList: docList, docKeys: docKeys, docRequired: docRequired, docLabel: docLabel, docMappings: docMappings, newItemDocs: newItemDocs,
     ST: ST, STAGE: STAGE, FORWARD_TO: FORWARD_TO, REMARKS_REQUIRED: REMARKS_REQUIRED, isOpen: isOpen, pendingWith: pendingWith, canAct: canAct, canReassign: canReassign, canExempt: canExempt, visibleTo: visibleTo, returnTargets: returnTargets, isOldRenewal: isOldRenewal,
     originals: originals, originalsBy: originalsBy, originalsText: originalsText, clearOriginals: clearOriginals, needsOriginals: needsOriginals,
     EXEMPTIBLE: EXEMPTIBLE, charges: charges, feeLines: feeLines, feeGross: feeGross, feeExempted: feeExempted, feeTotal: feeTotal, suggestedCharges: suggestedCharges,

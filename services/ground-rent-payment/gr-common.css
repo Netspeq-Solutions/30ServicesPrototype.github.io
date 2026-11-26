@@ -355,3 +355,40 @@ body.high-contrast .udd-preview { box-shadow: none; border: 2px solid #ff0; }
 .gr-kpi-tag-action { background: #fff8e6; color: #8a5300; border: 1px solid #fcd580; }
 .gr-kpi-tag-pending { background: #e1f5fe; color: #01579b; border: 1px solid #81d4fa; }
 .gr-kpi-tag-info { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+/* ==========================================================================
+   Phones: data tables become stacked cards (labels added by the shell script)
+   ========================================================================== */
+@media (max-width: 575.98px) {
+  .gr-stack-wrap { overflow: visible; }
+  table.gr-stack, .gr-stack tbody, .gr-stack tfoot, .gr-stack tr, .gr-stack td, .gr-stack tbody th { display: block; width: 100% !important; max-width: none !important; }
+  .gr-stack thead { display: none; }
+  table.gr-stack { border: 0; margin-bottom: 0; }
+  .gr-stack tbody tr {
+    margin: 0 0 0.6rem; padding: 0.55rem 0.75rem;
+    border: 1px solid var(--gov-border, #e2e8f0) !important; border-radius: var(--gov-radius-lg, 10px);
+    background: #fff; box-shadow: var(--gov-shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+  }
+  .card .gr-stack-wrap, .card > .gr-stack-wrap { padding: 0.6rem 0.6rem 0; }
+  .gr-stack td, .gr-stack tbody th {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem;
+    padding: 0.2rem 0 !important; border: 0 !important; background: transparent !important;
+    text-align: right !important; white-space: normal !important; font-size: 0.8125rem;
+  }
+  .gr-stack td::before, .gr-stack tbody th::before {
+    content: attr(data-label); flex: 0 0 38%; text-align: left;
+    font-weight: 500; color: var(--gov-text-muted, #64748b);
+  }
+  .gr-stack td[data-label=""]::before, .gr-stack tbody th:not([data-label])::before, .gr-stack tbody th[data-label=""]::before { display: none; }
+  .gr-stack td[data-label=""] { justify-content: center; text-align: center !important; }
+  /* First cell is the card title */
+  .gr-stack tbody tr > :first-child { justify-content: flex-start; text-align: left !important; font-weight: 700; font-size: 0.875rem; }
+  .gr-stack tbody tr > :first-child::before { display: none; }
+  .gr-stack tbody tr > :first-child > * { text-align: left; }
+  .gr-stack td > .d-inline-flex, .gr-stack td > div { max-width: 100%; }
+  .gr-stack .text-truncate { max-width: 100% !important; white-space: normal; }
+  /* Totals */
+  .gr-stack tfoot tr { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; border-top: 2px solid var(--gov-border, #e2e8f0); }
+  .gr-stack tfoot th, .gr-stack tfoot td { display: block; width: auto !important; border: 0 !important; padding: 0 !important; background: transparent !important; }
+}
+@media (min-width: 1200px) { .gr-pay-box { position: sticky; top: 1rem; } }

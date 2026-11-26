@@ -114,7 +114,9 @@
       // ================= Supervisor & Dept. Admin (S1) =================
       if (scopeUlb) {
         document.getElementById('pageSubtitle').textContent = 'Your work first: bank payments to approve and accounts to verify, then what is waiting on citizens.';
-        actions = '<a class="btn btn-sm btn-primary" href="payment-desk.html"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>Approve Bank Payments</a><a class="btn btn-sm btn-outline-primary" href="accounts.html"><i class="bi bi-search me-1" aria-hidden="true"></i>Account Search</a>';
+        actions = '<a class="btn btn-sm btn-primary" href="payment-desk.html"><i class="bi bi-patch-check me-1" aria-hidden="true"></i>Approve Bank Payments</a>' +
+          (App.can('payments') ? '<a class="btn btn-sm btn-outline-primary" href="accounts.html?intent=challan"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Generate Challan</a>' : '') +
+          '<a class="btn btn-sm btn-outline-primary" href="accounts.html"><i class="bi bi-search me-1" aria-hidden="true"></i>Account Search</a>';
         var toApprove = pendingChallans.filter(function (c) { return c.status === 'BR Recorded'; }).sort(function (a, b) { return P.daysWaiting(b) - P.daysWaiting(a); });
         var awaitingBr = pendingChallans.filter(function (c) { return c.status === 'Generated'; });
         var toVerify = unverified(scopedSites);

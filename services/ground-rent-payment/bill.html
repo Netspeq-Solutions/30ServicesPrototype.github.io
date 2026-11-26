@@ -46,10 +46,11 @@
   <script src="mock-data.js"></script>
   <script src="dues-engine.js"></script>
   <script src="gr-app.js"></script>
+  <script src="gr-payments.js"></script>
   <script>
     (function () {
       'use strict';
-      var App = window.GRApp, D = App.data, esc = App.esc, inr = App.inr;
+      var App = window.GRApp, P = window.GRPay, D = App.data, esc = App.esc, inr = App.inr;
       var session = App.requireSession('citizen');
       if (!session) return;
       App.shell({ type: 'citizen', active: 'pay' });
@@ -65,12 +66,7 @@
       var ch = App.challanFor(s.grId);
 
       // Snapshot of the bill lines – frozen into the intent / challan.
-      function snapshot() {
-        var lines = [];
-        if (d.opening.balance > 0) lines.push({ fy: 'OB', label: d.opening.label, amount: d.opening.balance });
-        d.years.forEach(function (y) { if (y.balance > 0) lines.push({ fy: y.label, label: 'FY ' + y.label + ' rent' + (y.surcharge ? ' + surcharge' : ''), amount: y.balance }); });
-        return { lines: lines, total: d.totalPayable, paidUpToFy: d.paidUpToFy, asOf: D.demoToday };
-      }
+      function snapshot() { return P.snapshot(d); }
 
       function rateText(y) {
         return y.segments.map(function (g) { return inr(g.rate) + '/100 sq ft' + (y.segments.length > 1 ? ' × ' + g.months + ' mo' : ''); }).join(' + ');
@@ -132,7 +128,7 @@
                 '<div class="small text-muted">' + (x.lengthFt ? x.lengthFt + "' × " + x.widthFt + "' = " : '') + App.sqft(x.areaSqft) + ' &bull; ' + esc(x.mutationNo || '—') + '</div></div>';
             }).join('') + '</div>' +
             '<div class="card-footer bg-white small d-flex justify-content-between flex-wrap gap-2"><span>Total chargeable area: <strong>' + App.sqft(d.currentArea || 0) + '</strong></span><span>Annual rent FY ' + esc(d.currentFy) + ': <strong>' + inr(d.annualRent) + '</strong></span></div></div>' +
-          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Year-wise Dues</h2><div class="small text-muted">Calculated by the system from the structures and the notified rate. Surcharge applies once to a year paid after its 31 March due date.</div></div>' +
+          '<div class="card border-0 shadow-xs mb-4"><div class="card-header bg-white"><h2 class="h6 fw-bold mb-0">Year-wise Dues</h2><div class="small text-muted">Surcharge applies to a year paid after 31 March.</div></div>' +
             (d.blocked ? '<div class="card-body small text-muted">Not available.</div>' :
             '<div class="gov-table-desktop table-responsive"><table class="table gov-table-compact mb-0"><caption class="visually-hidden">Year-wise dues</caption><thead><tr><th scope="col" style="width:30%">Year</th><th scope="col" class="text-end">Rent</th><th scope="col" class="text-end">Surcharge</th>' + (hasAdj ? '<th scope="col" class="text-end">Adjustment</th>' : '') + '<th scope="col" class="text-end">Paid</th><th scope="col" class="text-end">Balance</th><th scope="col">Status</th></tr></thead><tbody>' +
               rows.map(function (r) { return '<tr><td><div class="fw-semibold">' + r.label + '</div><div class="small text-muted">' + r.sub + '</div></td><td class="text-end">' + inr(r.rent) + '</td><td class="text-end">' + inr(r.surcharge) + '</td>' + (hasAdj ? '<td class="text-end">' + adjCell(r.adj) + '</td>' : '') + '<td class="text-end">' + inr(r.paid) + '</td><td class="text-end fw-bold">' + inr(r.balance) + '</td><td>' + r.state + '</td></tr>'; }).join('') +
@@ -143,14 +139,14 @@
             }).join('') + '<div class="text-end fw-bold">Total payable ' + inr(d.totalPayable) + '</div></div>') +
           '</div>' +
         '</div>' +
-        '<div class="col-xl-4">' +
-          '<div class="card border-primary border-2 shadow-sm position-sticky" style="top:1rem;"><div class="card-body">' +
+        '<div class="col-xl-4 order-first order-xl-last">' +
+          '<div class="card border-primary border-2 shadow-sm gr-pay-box"><div class="card-body">' +
             '<div class="small text-muted">Total amount payable</div><div class="gr-amount mb-1">' + (d.blocked ? '—' : inr(d.totalPayable)) + '</div>' +
             '<div class="small text-muted mb-3">Paid up to FY <strong class="text-dark">' + esc(d.paidUpToFy || '—') + '</strong> &bull; Current FY due by ' + App.fmtDate(d.currentDueDate) + '</div>' +
             (canPay ?
-              '<div class="d-flex flex-wrap gap-2 mb-3"><button type="button" class="btn btn-sm btn-primary" id="btnPayOnline"><i class="bi bi-globe me-1" aria-hidden="true"></i>Pay Online</button>' +
-              '<button type="button" class="btn btn-sm btn-outline-primary" id="btnPayOffline"><i class="bi bi-bank me-1" aria-hidden="true"></i>Pay Offline (Bank)</button></div>' +
-              '<ul class="small text-secondary ps-3 mb-0"><li><strong>Online:</strong> UPI, card or net banking. Receipt issued at once.</li><li><strong>Offline:</strong> challan valid till ' + App.fmtDate(App.challanValidTill(D.demoToday)) + '; pay at the designated bank, then upload the Bank Receipt for verification.</li><li>The bill covers up to the current FY only. Advance payment is not accepted.</li></ul>'
+              '<div class="d-flex flex-wrap gap-2 mb-2"><button type="button" class="btn btn-primary flex-fill" id="btnPayOnline"><i class="bi bi-globe me-1" aria-hidden="true"></i>Pay Online</button>' +
+              '<button type="button" class="btn btn-outline-primary flex-fill" id="btnPayOffline"><i class="bi bi-bank me-1" aria-hidden="true"></i>Pay Offline (Bank)</button></div>' +
+              '<p class="small text-muted mb-0"><strong>Online:</strong> receipt at once. <strong>Bank:</strong> challan valid till ' + App.fmtDate(App.challanValidTill(D.demoToday)) + '.</p>'
               : '<p class="small text-muted mb-0">Payment is not available for this bill right now.</p>') +
           '</div></div>' +
         '</div></div>';
@@ -180,13 +176,9 @@
       });
       var btnConfirm = document.getElementById('btnConfirmChallan');
       btnConfirm.addEventListener('click', function () {
-        if (ch) { ch.status = 'Cancelled'; }
-        var c = { challanNo: App.newChallanNo(), grId: s.grId, amount: d.totalPayable, generatedOn: D.demoToday, validTill: App.challanValidTill(D.demoToday),
-          status: 'Generated', generatedBy: 'Citizen', snapshot: snapshot(), payerMobile: session.mobile };
-        D.challans.unshift(c);
+        var c;
+        try { c = P.generate(s, session, session.mobile); } catch (e) { modal.hide(); App.toast(esc(e.message), 'danger'); return; }
         App.saveSiteForCitizen(session.mobile, s.grId);
-        App.audit({ grId: s.grId, entity: 'Challan', action: 'Offline challan ' + c.challanNo + ' generated · ' + inr(c.amount) + ' · valid till ' + App.fmtDate(c.validTill) });
-        App.notify(session.mobile, 'Offline challan generated', 'Challan ' + c.challanNo + ' for ' + inr(c.amount) + ' (' + s.grId + ') is valid till ' + App.fmtDate(c.validTill) + '. Pay the exact amount at the designated bank.', s.grId);
         App.save();
         window.location.href = 'challan.html?no=' + encodeURIComponent(c.challanNo);
       });

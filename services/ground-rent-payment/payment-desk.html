@@ -20,7 +20,10 @@
 <body data-theme="teal">
   <main id="main-content">
     <h1 class="h4 fw-bold mb-1">Approve Bank Payments</h1>
-    <p class="text-muted small mb-3">The citizen generates a challan, pays at the bank and uploads the Bank Receipt. Open a payment to see the allottee's details and the uploaded BR, check the original BR, then approve it.</p>
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+      <p class="text-muted small mb-0" style="max-width: 720px;">Check each uploaded Bank Receipt against the original, then approve it.</p>
+      <a class="btn btn-sm btn-outline-primary" href="accounts.html?intent=challan"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Generate Challan</a>
+    </div>
 
     <div class="card border-0 shadow-xs mb-3">
       <div class="card-body">
@@ -44,6 +47,11 @@
       </div>
       <div class="gov-cards-mobile p-3" id="tCards"></div>
       <div class="card-footer bg-white small text-muted" id="waitNote"></div>
+    </div>
+
+    <div class="card border-0 shadow-xs mt-3">
+      <div class="card-header bg-white"><h2 class="h6 fw-bold mb-0" id="issuedTitle">Challans issued &ndash; Bank Receipt not uploaded yet</h2><div class="small text-muted">Allottee brought the BR to the office? Upload and approve it here.</div></div>
+      <ul class="list-group list-group-flush" id="issuedList"></ul>
     </div>
   </main>
 
@@ -97,7 +105,20 @@
         $('tBody').innerHTML = rows.map(function (r) { return r.row; }).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">' + empty + '</td></tr>';
         $('tCards').innerHTML = rows.map(function (r) { return r.card; }).join('') || '<p class="text-center text-muted small mb-0">' + empty + '</p>';
         var issued = D.challans.filter(function (c) { var s = App.site(c.grId); return s && App.inScope(s, session) && c.status === 'Generated' && c.validTill >= D.demoToday; }).length;
-        $('waitNote').innerHTML = '<i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + (issued ? issued + ' more challan' + (issued === 1 ? ' is' : 's are') + ' issued but the citizen has not uploaded the Bank Receipt yet.' : 'All issued challans have a Bank Receipt uploaded.');
+        $('waitNote').innerHTML = '<i class="bi bi-info-circle me-1" aria-hidden="true"></i>' + (issued ? issued + ' more challan' + (issued === 1 ? ' is' : 's are') + ' issued but the citizen has not uploaded the Bank Receipt yet (listed below).' : 'All issued challans have a Bank Receipt uploaded.');
+        // Issued challans without a BR: staff can upload the BR brought to the counter and approve at once.
+        var open = D.challans.filter(function (c) {
+          var s = App.site(c.grId);
+          if (!s || !App.inScope(s, session) || s.status === 'Closed' || c.status !== 'Generated' || c.validTill < D.demoToday) return false;
+          return !t || App.norm(c.challanNo).indexOf(tc) !== -1 || App.norm(c.grId).indexOf(tc) !== -1 || s.owners.some(function (o) { return App.norm(o.name).indexOf(t) !== -1; });
+        });
+        $('issuedTitle').innerHTML = 'Challans issued &ndash; Bank Receipt not uploaded yet (' + open.length + ')';
+        $('issuedList').innerHTML = open.map(function (c) {
+          var s = App.site(c.grId);
+          return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2"><div class="min-w-0"><span class="font-monospace fw-bold small">' + esc(c.challanNo) + '</span> ' + App.challanPill(c) +
+            '<div class="small text-muted"><span class="gr-gr-id">' + esc(c.grId) + '</span> &bull; ' + esc(App.ownersText(s)) + ' &bull; ' + inr(c.amount) + ' &bull; valid till ' + App.fmtDate(c.validTill) + ' &bull; by ' + esc(c.generatedBy || 'Citizen') + '</div></div>' +
+            '<a class="btn btn-sm btn-outline-primary" href="counter-payment.html?gr=' + encodeURIComponent(c.grId) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload BR &amp; Approve</a></li>';
+        }).join('') || '<li class="list-group-item small text-muted text-center py-3">No open challan without a Bank Receipt.</li>';
       }
 
       $('fFind').addEventListener('input', render);
