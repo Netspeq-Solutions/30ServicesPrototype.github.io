@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
-  <link rel="stylesheet" href="tl-common.css?v=20261124">
+  <link rel="stylesheet" href="tl-common.css?v=20261127">
 </head>
 <body data-theme="teal">
   <main id="main-content">
@@ -29,9 +29,9 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="mock-data.js?v=20261124"></script>
-  <script src="tl-app.js?v=20261124"></script>
-  <script src="tl-flow.js?v=20261124"></script>
+  <script src="mock-data.js?v=20261127"></script>
+  <script src="tl-app.js?v=20261127"></script>
+  <script src="tl-flow.js?v=20261127"></script>
   <script>
     (function () {
       'use strict';
@@ -93,13 +93,16 @@
       function viewTile(icon, tone, title, sub, view, count) { return App.dashTile(icon, tone, title, sub, '#' + view, count, ' data-view="' + view + '"'); }
 
       $('view-dashboard').innerHTML = App.dashHero({ id: 'h-dashboard', eyebrow: 'e-Trade Licence &bull; Urban Development Department', title: App.greeting(biz.authName), summary: summary, chips: chips,
-          action: '<a class="btn btn-sm btn-success" href="apply.html?type=new"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Apply for New Licence</a>' }) +
+          action: '<div class="d-flex flex-wrap gap-2"><a class="btn btn-sm btn-success" href="apply.html?type=new"><i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Apply for New Licence</a>' +
+            '<a class="btn btn-sm btn-outline-primary" href="apply.html?type=old"><i class="bi bi-clock-history me-1" aria-hidden="true"></i>Apply for Renewal of Old Licence</a></div>' }) +
         (todoItems.length ? todoItems.map(function (t) { return App.dashNext(t); }).join('') : App.dashNext(null, apps.length || lics.length ? 'We will let you know by SMS and email when something needs your attention.' : 'Start with "Apply for New Licence".')) +
         App.sectionTitle('Go to') + '<div class="row g-3 mb-4">' +
           App.dashTile('bi-plus-circle', 'success', 'Apply for New Licence', 'Fill the form and upload documents', 'apply.html?type=new', '') +
+          App.dashTile('bi-clock-history', 'primary', 'Apply for Renewal of Old Licence', 'Licence issued before this online system', 'apply.html?type=old', '') +
           viewTile('bi-folder2-open', 'primary', 'My Applications', 'Track where each application is', 'applications', apps.length) +
           viewTile('bi-patch-check', 'info', 'My Licences', 'Download, renew or request a change', 'licences', lics.length) +
           viewTile('bi-bell', 'warning', 'Notifications', unread ? unread + ' unread message' + (unread === 1 ? '' : 's') : 'Messages about your applications', 'notifications', unread || '') +
+          viewTile('bi-headset', 'secondary', 'Help and Support', 'Circle offices and common questions', 'support', '') +
         '</div>' +
         App.sectionTitle('How it works') +
         '<ol class="tl-steps-strip"><li>Apply online</li><li>Inspection</li><li>Approval</li><li>Generate challan, pay &amp; upload BR</li><li>Download licence</li></ol>';

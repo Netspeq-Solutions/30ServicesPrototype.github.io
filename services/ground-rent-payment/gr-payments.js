@@ -1,9 +1,11 @@
 /* ==========================================================================
-   Online Ground Rent Payment System – bank payment (BR) approval
-   The citizen generates a challan, pays at the bank and uploads the Bank
-   Receipt. Staff open the allottee's details, check the original BR and
-   approve it (receipt issued) or return it to the citizen with a reason.
-   Used by payment-desk.html (list) and payment-review.html (review desk).
+   Online Ground Rent Payment System – offline challan and bank payment (BR) approval
+   The citizen (or a Supervisor for the allottee) generates a challan; the
+   allottee pays at the bank and uploads the Bank Receipt. Staff open the
+   allottee's details, check the original BR and approve it (receipt issued)
+   or return it to the citizen with a reason. At the counter, staff may also
+   upload the BR themselves and approve it directly.
+   Used by bill.html, payment-desk.html, payment-review.html and counter-payment.html.
    ========================================================================== */
 (function (global) {
   'use strict';
@@ -85,5 +87,57 @@
   }
   var RETURN_REASONS = ['BR no. does not match the original receipt', 'Amount does not match the original receipt', 'Scan is not readable', 'Original BR not produced at the counter'];
 
-  global.GRPay = { challan: challan, waiting: waiting, daysWaiting: daysWaiting, duplicateOf: duplicateOf, check: check, approve: approve, reject: reject, RETURN_REASONS: RETURN_REASONS };
+  // ---------------- Generating a challan (citizen on the bill, or staff at the counter) ----------------
+  // Snapshot of the bill lines – frozen into the challan.
+  function snapshot(d) {
+    var lines = [];
+    if (d.opening.balance > 0) lines.push({ fy: 'OB', label: d.opening.label, amount: d.opening.balance });
+    d.years.forEach(function (y) { if (y.balance > 0) lines.push({ fy: y.label, label: 'FY ' + y.label + ' rent' + (y.surcharge ? ' + surcharge' : ''), amount: y.balance }); });
+    return { lines: lines, total: d.totalPayable, paidUpToFy: d.paidUpToFy, asOf: D().demoToday };
+  }
+  // Can a new challan be generated for this site now?
+  function canGenerate(s) {
+    var d = App.dues(s), ch = App.challanFor(s.grId);
+    if (s.status === 'Closed') return { ok: false, reason: 'The account is closed.' };
+    if (d.blocked) return { ok: false, reason: 'Bill cannot be generated: ' + d.blockReason + '.' };
+    if (d.pendingPayment) return { ok: false, reason: 'An online payment of ' + App.inr(d.pendingPayment.amount) + ' is awaiting the gateway result.' };
+    if (ch && ch.status === 'BR Recorded') return { ok: false, reason: 'A Bank Receipt against challan ' + ch.challanNo + ' is waiting for approval.' };
+    if (d.totalPayable <= 0) return { ok: false, reason: 'Nothing is outstanding on this account.' };
+    return { ok: true, dues: d, open: ch };
+  }
+  // Generate a challan for the full outstanding amount; an earlier unpaid challan is cancelled.
+  // payerMobile: the citizen who generated it (citizen); staff challans go to the allottees' mobiles.
+  function generate(s, session, payerMobile) {
+    var k = canGenerate(s);
+    if (!k.ok) throw new Error(k.reason);
+    var d = k.dues, inr = App.inr, staff = session.type === 'staff';
+    if (k.open) { k.open.status = 'Cancelled'; App.audit({ grId: s.grId, entity: 'Challan', action: 'Challan ' + k.open.challanNo + ' cancelled · replaced by a new challan' }); }
+    var c = { challanNo: App.newChallanNo(), grId: s.grId, amount: d.totalPayable, generatedOn: D().demoToday, validTill: App.challanValidTill(D().demoToday),
+      status: 'Generated', generatedBy: staff ? D().staffRoles[session.role].user : 'Citizen', snapshot: snapshot(d) };
+    if (payerMobile) c.payerMobile = payerMobile;
+    D().challans.unshift(c);
+    App.audit({ grId: s.grId, entity: 'Challan', action: 'Offline challan ' + c.challanNo + ' generated' + (staff ? ' by staff for the allottee' : '') + ' · ' + inr(c.amount) + ' · valid till ' + App.fmtDate(c.validTill) });
+    var msg = 'Challan ' + c.challanNo + ' for ' + inr(c.amount) + ' (' + s.grId + ') is valid till ' + App.fmtDate(c.validTill) + '. Pay the exact amount at the designated bank' +
+      (staff ? ', then upload the Bank Receipt on the portal or bring it to the ULB office.' : '.');
+    (payerMobile ? [payerMobile] : App.siteMobiles(s)).forEach(function (m) { App.notify(m, 'Offline challan generated', msg, s.grId); });
+    App.save();
+    return c;
+  }
+
+  // ---------------- Staff record the BR at the counter and approve it at once ----------------
+  // br: { brNo, brDate, brAmount }; input: file input with the BR scan. Returns { payment } or { error }.
+  function recordAndApprove(c, br, input, session) {
+    var keep = { brNo: c.brNo, brDate: c.brDate, brAmount: c.brAmount };
+    c.brNo = br.brNo; c.brDate = br.brDate; c.brAmount = br.brAmount;
+    var k = check(c);
+    if (k.blocked) { c.brNo = keep.brNo; c.brDate = keep.brDate; c.brAmount = keep.brAmount; return { error: k.note || 'This payment cannot be approved.' }; }
+    var s = k.site, who = D().staffRoles[session.role].user;
+    c.brScan = App.addAttachment(s.grId, 'Bank Receipt scan', input);
+    c.status = 'BR Recorded'; c.brUploadedBy = who + ' (at the counter)'; c.brUploadedOn = D().demoToday; delete c.returnReason;
+    App.audit({ grId: s.grId, entity: 'Challan', action: 'Bank Receipt uploaded by staff at the counter against challan ' + c.challanNo + ' · BR ' + c.brNo + ' · ' + App.inr(c.brAmount), file: c.brScan });
+    return { payment: approve(c, session) };
+  }
+
+  global.GRPay = { challan: challan, waiting: waiting, daysWaiting: daysWaiting, duplicateOf: duplicateOf, check: check, approve: approve, reject: reject, RETURN_REASONS: RETURN_REASONS,
+    snapshot: snapshot, canGenerate: canGenerate, generate: generate, recordAndApprove: recordAndApprove };
 })(window);

@@ -65,11 +65,13 @@
       var session = App.requireSession('staff', 'viewAccounts');
       if (!session) return;
       var intent = App.qs('intent');
-      App.shell({ type: 'staff', active: intent === 'adjust' ? 'adjust' : 'search' });
+      if (intent === 'challan' && !App.can('payments')) intent = '';
+      App.shell({ type: 'staff', active: intent === 'adjust' || intent === 'challan' ? intent : 'search' });
 
       var scope = App.staffScope(session);
       if (App.can('editAccounts')) document.getElementById('btnCreate').classList.remove('d-none');
       if (session.role === 'hq') document.getElementById('pageSub').textContent = 'Read-only. Open any account to view it.';
+      if (intent === 'challan') document.getElementById('intentBanner').innerHTML = '<div class="alert alert-info small py-2"><i class="bi bi-file-earmark-text me-1" aria-hidden="true"></i>Select the account of the allottee to generate a challan, or to upload the Bank Receipt they bring to the counter and approve it.</div>';
       if (intent === 'adjust') document.getElementById('intentBanner').innerHTML = '<div class="alert alert-info small py-2"><i class="bi bi-sliders2-vertical me-1" aria-hidden="true"></i>Select the account for the adjustment. It opens on the Payments tab.</div>';
 
       // District → ULB → Ward → Locality; ULB-level staff see their own ULB fixed.
@@ -97,7 +99,8 @@
         var rows = list.map(function (s) {
           var d = App.dues(s), w = App.ward(s.ulb, s.ward);
           var p = App.duesPill(s, d);
-          var a = '<a class="btn btn-sm btn-outline-primary" href="ledger.html?gr=' + encodeURIComponent(s.grId) + target + '">Open</a>';
+          var a = intent === 'challan' ? '<a class="btn btn-sm btn-primary" href="counter-payment.html?gr=' + encodeURIComponent(s.grId) + '">Select</a>'
+            : '<a class="btn btn-sm btn-outline-primary" href="ledger.html?gr=' + encodeURIComponent(s.grId) + target + '">Open</a>';
           return {
             row: '<tr><td class="gr-gr-id small">' + esc(s.grId) + '</td><td><div class="small fw-semibold text-truncate" style="max-width:240px;">' + esc(App.ownersText(s)) + '</div><div class="small text-muted">' + esc(App.legacyRef(s)) + '</div></td>' +
               '<td class="small"><div class="text-truncate" style="max-width:200px;">' + esc(s.locality) + '</div><div class="text-muted">' + esc(w ? w.name : s.ward) + '</div></td>' +

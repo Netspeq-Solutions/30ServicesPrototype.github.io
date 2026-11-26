@@ -31,7 +31,7 @@
               <h1 id="welcomeHeading" class="h4 fw-bold mb-0 text-dark">Welcome, <span id="welcomeName">Citizen</span></h1>
               <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="scenarioBadge"></span>
             </div>
-            <p class="text-muted small mb-0">Find your ground rent account, check the year-wise dues and pay online or through a Bank Receipt.</p>
+            <p class="text-muted small mb-0">Check your dues and pay online or at the bank.</p>
           </div>
           <a href="search.html" class="btn btn-sm btn-gov-primary fw-semibold"><i class="bi bi-search me-1" aria-hidden="true"></i>Pay Ground Rent</a>
         </div>
@@ -40,7 +40,7 @@
       <div id="actionArea"></div>
 
       <h2 class="h5 fw-bold mb-0">My Ground Rent Accounts</h2>
-      <p class="small text-muted mb-3">Sites linked to your mobile number or paid by you before.</p>
+      <p class="small text-muted mb-3">Linked to your mobile number.</p>
       <div class="row g-3 mb-4" id="accountCards"></div>
 
       <div class="card border-0 shadow-xs mb-4">
@@ -49,7 +49,7 @@
             <span class="gr-icon-circle bg-primary-subtle text-primary"><i class="bi bi-search" aria-hidden="true"></i></span>
             <div>
               <h3 class="h6 fw-bold mb-1">Pay for another site</h3>
-              <p class="small text-muted mb-0">Search by plot no., allottee's name, father's / husband's name or GR ID. Anyone may pay for any site; the money goes to that site's account.</p>
+              <p class="small text-muted mb-0">Search by GR ID, plot no. or allottee name.</p>
             </div>
           </div>
           <a href="search.html" class="btn btn-sm btn-outline-primary">Search Account <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
@@ -221,10 +221,8 @@
               '<div class="text-end small text-muted">Due date<br><strong class="text-dark">' + App.fmtDate(d.currentDueDate) + '</strong></div>' +
             '</div>' +
             '<dl class="gr-meta-grid mb-0">' +
-              '<div><dt>Total area</dt><dd>' + App.sqft(d.currentArea) + '</dd></div>' +
               '<div><dt>Annual rent</dt><dd>' + inr(d.annualRent) + '</dd></div>' +
               '<div><dt>Paid up to</dt><dd>FY ' + esc(d.paidUpToFy || '—') + '</dd></div>' +
-              '<div><dt>Opening balance</dt><dd>' + inr(d.opening ? d.opening.balance : 0) + '</dd></div>' +
             '</dl>' +
           '</div>' +
           '<div class="p-3 border-top d-flex flex-wrap gap-2">' + actions + '</div>' +
@@ -237,7 +235,7 @@
           '<span class="gr-icon-circle bg-' + tone + '-subtle text-' + tone + '-emphasis"><i class="bi ' + icon + '" aria-hidden="true"></i></span>' +
           '<div><div class="d-flex align-items-center gap-2 flex-wrap mb-1"><span class="badge bg-' + tone + (tone === 'warning' || tone === 'info' ? ' text-dark' : '') + ' fw-bold">' + tag + '</span><span class="gr-gr-id small">' + esc(grId) + '</span></div>' +
           '<h3 class="h6 fw-bold mb-1 text-dark">' + title + '</h3><p class="small text-secondary mb-1">' + body + '</p>' +
-          '<p class="small mb-0"><i class="bi bi-arrow-right-circle me-1 text-primary" aria-hidden="true"></i><strong>What happens next:</strong> ' + next + '</p></div>' +
+          (next ? '<p class="small mb-0"><i class="bi bi-arrow-right-circle me-1 text-primary" aria-hidden="true"></i>' + next + '</p>' : '') + '</div>' +
           '</div>' + (button ? '<div>' + button + '</div>' : '') + '</div></div></div>';
       }
 
@@ -250,25 +248,21 @@
             var p = d.pendingPayment;
             html += alertCard('info', 'bi-hourglass-split', 'PAYMENT UNDER VERIFICATION', s.grId,
               'Your online payment of ' + inr(p.amount) + ' is awaiting confirmation from the payment gateway',
-              'Started ' + App.fmtDate(p.paidOn) + ' &bull; Ref. ' + esc(p.ref) + '. The bill is locked to stop a double payment. The status updates after the gateway confirms (checked every 15 minutes).',
-              'No action is required from you at this stage. Please do not pay again.',
+              'Ref. ' + esc(p.ref) + ' &bull; ' + App.fmtDate(p.paidOn) + '. Please do not pay again.', '',
               '<a class="btn btn-sm btn-outline-primary" href="pay-online.html?intent=' + encodeURIComponent(p.intentNo) + '"><i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>Check Status</a>');
           } else if (ch && ch.status === 'Generated') {
             html += alertCard('warning', 'bi-bank', 'PAY AT THE BANK', s.grId,
               'Pay challan ' + esc(ch.challanNo) + ' for ' + inr(ch.amount) + ' before ' + App.fmtDate(ch.validTill),
-              'Pay the exact amount at the Department\'s designated bank, then upload a scan or photo of the Bank Receipt. Bring the original BR to the ULB counter; staff approve it and issue your receipt.',
-              'If the challan expires, generate a new one from the bill.',
+              'Pay the exact amount at the bank, then upload the Bank Receipt or bring it to the ULB office.', '',
               '<div class="d-flex flex-wrap gap-2"><a class="btn btn-sm btn-warning" href="upload-br.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-upload me-1" aria-hidden="true"></i>Upload Bank Receipt</a>' +
               '<a class="btn btn-sm btn-outline-secondary" href="challan.html?no=' + encodeURIComponent(ch.challanNo) + '"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print Challan</a></div>');
           } else if (ch && ch.status === 'BR Recorded') {
             html += alertCard('info', 'bi-hourglass-split', 'BANK RECEIPT BEING VERIFIED', s.grId,
-              'Bank Receipt ' + esc(ch.brNo) + ' is awaiting approval', 'Bring the original Bank Receipt to the ULB counter. Staff will approve it and issue your receipt.',
-              'No other action is required.', ch.brScan ? '<div class="small">' + App.fileLink(ch.brScan, s.grId, 'View uploaded BR') + '</div>' : '');
+              'Bank Receipt ' + esc(ch.brNo) + ' is awaiting approval', 'The office will verify it and issue your receipt.', '', ch.brScan ? '<div class="small">' + App.fileLink(ch.brScan, s.grId, 'View uploaded BR') + '</div>' : '');
           } else if (!d.blocked && d.hasOverdue && d.totalPayable > 0) {
             html += alertCard('danger', 'bi-exclamation-triangle-fill', 'ARREARS PENDING', s.grId,
               inr(d.totalPayable) + ' is outstanding on this site',
-              'This includes a certified opening balance of ' + inr(d.opening.balance) + ' for years before go-live (paid up to FY ' + esc(d.paidUpToFy) + ').',
-              'Pay before 31 March to avoid surcharge on the current year.',
+              'Paid up to FY ' + esc(d.paidUpToFy) + '. Pay before 31 March to avoid surcharge.', '',
               '<a class="btn btn-sm btn-danger" href="bill.html?gr=' + encodeURIComponent(s.grId) + '"><i class="bi bi-credit-card me-1" aria-hidden="true"></i>Pay Now</a>');
           }
         });

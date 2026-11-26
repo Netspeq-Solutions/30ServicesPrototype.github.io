@@ -53,7 +53,7 @@
         '<div class="d-flex justify-content-between flex-wrap gap-2 mb-2"><span>Status: ' + App.challanPill(c) + '</span><span class="fw-bold text-danger">Valid till ' + App.fmtDate(c.validTill) + '</span></div>' +
         '<div class="row g-3 mb-3"><div class="col-sm-8"><table class="table table-sm table-borderless mb-0"><tbody>' +
           Docs.row('Challan No.', '<span class="font-monospace fw-bold">' + esc(c.challanNo) + '</span>') +
-          Docs.row('Generated on', App.fmtDate(c.generatedOn)) +
+          Docs.row('Generated on', App.fmtDate(c.generatedOn) + (c.generatedBy && c.generatedBy !== 'Citizen' ? ' <span class="small text-muted">(by the ULB office)</span>' : '')) +
           Docs.row('GR ID', '<span class="gr-gr-id">' + esc(s.grId) + '</span>') +
           Docs.row('Allottee(s)', s.owners.map(function (o) { return esc(o.name) + ' ' + esc(o.relation) + ' ' + esc(o.guardian); }).join('<br>')) +
           Docs.row('Site', esc(s.address) + ' &bull; ' + esc(s.locality) + ' &bull; ' + esc(u.name)) +
@@ -69,7 +69,7 @@
           '<div class="small mt-2">Account name: Urban Development Department, Govt. of Sikkim<br>Account no. / IFSC: <em>pending departmental confirmation (Q8)</em></div></div></div>' +
         '<div class="col-md-6"><div class="border rounded p-3 h-100"><h2 class="h6 fw-bold">What to do</h2><ol class="small ps-3 mb-0">' +
           '<li>Pay the exact amount at the bank before <strong>' + App.fmtDate(c.validTill) + '</strong> and collect the original Bank Receipt (BR).</li>' +
-          '<li>Log in to the portal and choose <strong>Upload Bank Receipt</strong> to upload a scan or photo of the BR. Keep the original BR.</li>' +
+          '<li>Log in to the portal and choose <strong>Upload Bank Receipt</strong> to upload a scan or photo of the BR, or bring the original BR to the ULB office counter. Keep the original BR.</li>' +
           '<li>The office verifies the BR and issues your system receipt.</li></ol></div></div></div>' +
         '<p class="small text-muted mb-0">The amount is frozen on this challan. It is never valid after 31 March, because the amount changes on 1 April (surcharge). If it expires, generate a new challan from the bill.</p>' +
         (c.brNo ? '<p class="small mt-2 mb-0"><strong>BR recorded:</strong> ' + esc(c.brNo) + (c.brDate ? ' dated ' + App.fmtDate(c.brDate) : '') + (c.receiptNo ? ' &bull; Receipt <a href="receipt.html?no=' + encodeURIComponent(c.receiptNo) + '">' + esc(c.receiptNo) + '</a>' : '') + '</p>' : '') +

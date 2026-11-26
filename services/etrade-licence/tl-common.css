@@ -188,6 +188,53 @@ html, body {
   background: var(--gov-primary-light, #f0fdfa);
 }
 
+/* Questions on the application form: numbered, with selectable cards (not to be read as instructions) */
+.tl-question { border-left: 4px solid var(--gov-primary, #0f766e) !important; }
+.tl-q-num {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gov-primary, #0f766e); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.8125rem; font-weight: 700; margin-top: 1px;
+}
+.tl-q-cue {
+  display: inline-block; vertical-align: middle; margin-left: 0.35rem;
+  padding: 0.1rem 0.5rem; border-radius: var(--gov-radius-pill, 50rem);
+  background: var(--gov-warning-light, #fff8e6); color: var(--gov-warning, #b26a00);
+  border: 1px solid var(--gov-warning-border, #fcd580);
+  font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.tl-choice {
+  position: relative; display: flex; align-items: flex-start; gap: 0.75rem;
+  width: 100%; min-height: 64px; padding: 0.875rem 2.25rem 0.875rem 1rem;
+  border: 2px solid #cbd5e1; border-radius: var(--gov-radius-lg, 10px);
+  background: #ffffff; box-shadow: var(--gov-shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+  cursor: pointer; transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+.tl-choice > .form-check-input { flex: 0 0 auto; width: 1.25em; height: 1.25em; margin: 0.6rem 0 0; border-width: 2px; border-color: #94a3b8; cursor: pointer; }
+.tl-choice-icon {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--gov-primary-light, #f0fdfa); color: var(--gov-primary, #0f766e); font-size: 1.15rem;
+}
+.tl-choice-title { display: block; font-weight: 700; font-size: 0.9375rem; color: var(--gov-text, #1f2937); }
+.tl-choice-sub { display: block; font-size: 0.8125rem; color: var(--gov-text-muted, #6b7280); }
+.tl-choice:hover { border-color: var(--gov-primary, #0f766e); box-shadow: var(--gov-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1)); }
+.tl-choice:has(> input:checked), .tl-choice.active {
+  border-color: var(--gov-primary, #0f766e); background: var(--gov-primary-light, #f0fdfa);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+.tl-choice:has(> input:checked) .tl-choice-icon, .tl-choice.active .tl-choice-icon { background: var(--gov-primary, #0f766e); color: #fff; }
+.tl-choice:has(> input:checked)::after, .tl-choice.active::after {
+  content: "\F26A"; font-family: "bootstrap-icons"; position: absolute; top: 0.6rem; right: 0.7rem;
+  color: var(--gov-primary, #0f766e); font-size: 1.1rem; line-height: 1;
+}
+.tl-choice:has(> input:focus-visible) { outline: 3px solid var(--gov-primary, #0f766e); outline-offset: 2px; }
+.tl-choice:has(> input:disabled) { cursor: not-allowed; opacity: 0.7; }
+.tl-choice:has(> input:disabled):hover { border-color: #cbd5e1; box-shadow: none; }
+.tl-choice:has(> input:disabled:checked) { border-color: var(--gov-primary, #0f766e); }
+[data-theme="high-contrast"] .tl-choice { background: #000; border-color: #fff; }
+[data-theme="high-contrast"] .tl-choice-title, [data-theme="high-contrast"] .tl-choice-sub { color: #fff; }
+
 /* Notification list */
 .tl-notif-item { border-left: 3px solid transparent; }
 .tl-notif-item.is-unread {
@@ -673,3 +720,103 @@ body.high-contrast .udd-preview { box-shadow: none; border: 2px solid #ff0; }
 .tl-challan-cut { border-top: 2px dashed #94a3b8; margin: 1.25rem 0; text-align: center; line-height: 0; }
 .tl-challan-cut span { background: #fff; padding: 0 0.5rem; font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
 @media print { .tl-challan-cut { margin: 0.6rem 0; } .tl-challan .table { font-size: 0.75rem; } }
+
+/* ==========================================================================
+   Phones: data tables become stacked cards (labels added by the shell script)
+   ========================================================================== */
+@media (max-width: 575.98px) {
+  .tl-stack-wrap { overflow: visible; }
+  table.tl-stack, .tl-stack tbody, .tl-stack tfoot, .tl-stack tr, .tl-stack td, .tl-stack tbody th { display: block; width: 100% !important; max-width: none !important; }
+  .tl-stack thead { display: none; }
+  table.tl-stack { border: 0; margin-bottom: 0; }
+  .tl-stack tbody tr {
+    margin: 0 0 0.6rem; padding: 0.55rem 0.75rem;
+    border: 1px solid var(--gov-border, #e2e8f0) !important; border-radius: var(--gov-radius-lg, 10px);
+    background: #fff; box-shadow: var(--gov-shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+  }
+  .card .tl-stack-wrap, .card > .tl-stack-wrap { padding: 0.6rem 0.6rem 0; }
+  .tl-stack td, .tl-stack tbody th {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem;
+    padding: 0.2rem 0 !important; border: 0 !important; background: transparent !important;
+    text-align: right !important; white-space: normal !important; font-size: 0.8125rem;
+  }
+  .tl-stack td::before, .tl-stack tbody th::before {
+    content: attr(data-label); flex: 0 0 38%; text-align: left;
+    font-weight: 500; color: var(--gov-text-muted, #64748b);
+  }
+  .tl-stack td[data-label=""]::before, .tl-stack tbody th:not([data-label])::before, .tl-stack tbody th[data-label=""]::before { display: none; }
+  .tl-stack td[data-label=""] { justify-content: center; text-align: center !important; }
+  /* First cell is the card title */
+  .tl-stack tbody tr > :first-child { justify-content: flex-start; text-align: left !important; font-weight: 700; font-size: 0.875rem; }
+  .tl-stack tbody tr > :first-child::before { display: none; }
+  .tl-stack tbody tr > :first-child > * { text-align: left; }
+  .tl-stack td > .d-inline-flex, .tl-stack td > div { max-width: 100%; }
+  .tl-stack .text-truncate { max-width: 100% !important; white-space: normal; }
+  /* Totals */
+  .tl-stack tfoot tr { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.75rem; border-top: 2px solid var(--gov-border, #e2e8f0); }
+  .tl-stack tfoot th, .tl-stack tfoot td { display: block; width: auto !important; border: 0 !important; padding: 0 !important; background: transparent !important; }
+}
+
+/* ==========================================================================
+   Compact field grid for application details (pairs wrapped in <div>)
+   ========================================================================== */
+.tl-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem 1rem; margin: 0; font-size: 0.8125rem; }
+.tl-fields > div { min-width: 0; }
+.tl-fields > .tl-field-wide { grid-column: span 2; }
+.tl-fields dt { font-weight: 500; color: #64748b; margin: 0; font-size: 0.75rem; }
+.tl-fields dd { margin: 0; color: #1e293b; font-weight: 600; overflow-wrap: anywhere; }
+@media (max-width: 991.98px) { .tl-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 575.98px) {
+  .tl-fields { gap: 0.5rem 0.75rem; }
+  .tl-fields > .tl-field-wide { grid-column: 1 / -1; }
+  .tl-details-photo, .tl-details-photo .tl-thumb-item { width: 72px; }
+  .tl-details-photo .tl-thumb { width: 72px; height: 88px; }
+  .tl-details-photo .tl-thumb-cap { display: none; }
+  /* Plain label/value lists: label and value side by side */
+  .tl-dl { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); gap: 0.3rem 0.75rem; }
+  .tl-dl dd { margin-bottom: 0; }
+}
+
+/* Documents on the application view: name with a small preview on phones */
+@media (max-width: 575.98px) {
+  .tl-doc-view .list-group-item { padding: 0.6rem 0.75rem; }
+  .tl-doc-view .tl-thumbs:not(:empty) { gap: 0.4rem; margin-top: 0.35rem; }
+  .tl-doc-view .tl-thumb { width: 48px; height: 60px; }
+  .tl-doc-view .tl-thumb-cap { display: none; }
+}
+
+/* Form stepper on phones: all steps fit; the current step is named below */
+.tl-step-now { display: none; }
+@media (max-width: 575.98px) {
+  .tl-stepper { overflow: visible; margin-bottom: 0.5rem; padding-bottom: 0; }
+  .tl-stepper .gov-step-item { min-width: 0; }
+  .tl-stepper .gov-step-circle { width: 30px; height: 30px; font-size: 0.8rem; }
+  .tl-stepper::before { top: 14px; }
+  .tl-step-now { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--gov-primary, #0f766e); margin-bottom: 1rem; text-align: center; }
+}
+
+/* Instructions: short steps and collapsible document lists */
+.tl-howto { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; counter-reset: howto; }
+.tl-howto li { counter-increment: howto; display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.875rem; }
+.tl-howto li::before {
+  content: counter(howto); flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gov-primary-light, #f0fdfa); color: var(--gov-primary, #0f766e);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;
+}
+.tl-fold { border: 1px solid var(--gov-border, #e2e8f0); border-radius: var(--gov-radius-md, 6px); margin-bottom: 0.5rem; background: #fff; }
+.tl-fold > summary {
+  list-style: none; cursor: pointer; padding: 0.7rem 0.9rem; min-height: 44px;
+  display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.875rem;
+}
+.tl-fold > summary::-webkit-details-marker { display: none; }
+.tl-fold > summary::after { content: "\F282"; font-family: "bootstrap-icons"; margin-left: auto; transition: transform 0.15s; color: #64748b; }
+.tl-fold[open] > summary::after { transform: rotate(180deg); }
+.tl-fold > summary .badge { font-weight: 600; }
+.tl-fold > .tl-fold-body { padding: 0 0.9rem 0.8rem; }
+/* Documents on the application view: a grid of small cards */
+.tl-doc-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.6rem; padding: 0.75rem; }
+.tl-doc-view .list-group-item { border: 1px solid var(--gov-border, #e2e8f0) !important; border-radius: var(--gov-radius-md, 6px) !important; align-items: flex-start !important; }
+@media (max-width: 575.98px) {
+  .tl-doc-view { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; padding: 0.6rem; }
+  .tl-doc-view .list-group-item .small.text-muted { display: none; }
+}

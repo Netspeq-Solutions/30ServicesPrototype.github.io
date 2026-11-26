@@ -636,6 +636,7 @@
   var APPLICANT_MENU = [
     { key: 'dashboard', icon: 'bi-speedometer2', label: 'Dashboard', href: 'dashboard.html#dashboard', view: 'dashboard' },
     { key: 'apply', icon: 'bi-plus-circle-fill text-success', label: 'Apply for New Licence', href: 'apply.html?type=new', cls: 'text-success fw-semibold' },
+    { key: 'renew-old', icon: 'bi-clock-history text-primary', label: 'Apply for Renewal of Old Licence', href: 'apply.html?type=old', cls: 'text-primary fw-semibold' },
     { key: 'applications', icon: 'bi-folder2-open', label: 'My Applications', href: 'dashboard.html#applications', view: 'applications', badge: 'apps' },
     { key: 'licences', icon: 'bi-patch-check', label: 'My Licences', href: 'dashboard.html#licences', view: 'licences', badge: 'lics' },
     { key: 'notifications', icon: 'bi-bell-fill text-warning', label: 'Notifications', href: 'dashboard.html#notifications', view: 'notifications', badge: 'notifs' },
@@ -663,9 +664,47 @@
   }
 
   // opts: { type: 'applicant'|'staff', active: menu key }
+  // ---------------- Mobile-friendly tables ----------------
+  // On phones every data table is shown as stacked cards (CSS: .tl-stack). Each cell gets the
+  // label of its column so the value still makes sense. Tables already paired with mobile cards
+  // (.gov-table-desktop), tables without headings and tables marked .no-stack are left alone.
+  function stackTables(root) {
+    (root || document).querySelectorAll('table:not([data-stacked])').forEach(function (t) {
+      t.setAttribute('data-stacked', '1');
+      if (t.closest('.gov-table-desktop') || t.classList.contains('no-stack') || !t.tHead) return; // no headings: a document or a short label/value table
+      var heads = [];
+      var hr = t.tHead && t.tHead.rows[t.tHead.rows.length - 1];
+      if (hr) [].forEach.call(hr.cells, function (c) { for (var i = 0; i < (c.colSpan || 1); i++) heads.push(c.textContent.trim()); });
+      t.classList.add('tl-stack');
+      [].forEach.call(t.tBodies, function (b) {
+        [].forEach.call(b.rows, function (r) {
+          var col = 0;
+          [].forEach.call(r.cells, function (c) {
+            if (!c.hasAttribute('data-label')) c.setAttribute('data-label', c.colSpan > 1 ? '' : (heads[col] || ''));
+            col += c.colSpan || 1;
+          });
+        });
+      });
+      var wrap = t.parentElement;
+      if (wrap && wrap.classList.contains('table-responsive')) wrap.classList.add('tl-stack-wrap');
+    });
+  }
+  // Pages render after the shell, so label tables whenever the content changes.
+  function watchTables(main) {
+    if (!main || !global.MutationObserver) return;
+    var queued = false;
+    new MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      setTimeout(function () { queued = false; stackTables(main); }, 0);
+    }).observe(main, { childList: true, subtree: true });
+    stackTables(main);
+  }
+
   function shell(opts) {
     var session = getSession();
     var main = document.getElementById('main-content');
+    watchTables(main);
     var isStaff = opts.type === 'staff';
     var onDashboard = /dashboard\.html$/.test(location.pathname);
 

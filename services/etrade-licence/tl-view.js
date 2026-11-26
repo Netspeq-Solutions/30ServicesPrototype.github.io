@@ -108,13 +108,18 @@
       var list = F.fieldsFor(a, sec);
       if (!list.length) return;
       var rows = list.map(function (f) {
-        var changed = keys && keys.indexOf(f.key) !== -1;
-        var shown = esc(F.showValue(f, a.form[f.key]));
-        return '<dt' + (flagged.indexOf(f.key) !== -1 ? ' class="text-warning-emphasis"' : '') + '>' + esc(F.labelOf(f, type)) + (flagged.indexOf(f.key) !== -1 ? ' <span class="badge bg-warning text-dark">flagged</span>' : '') + '</dt><dd>' +
-          (changed ? '<span class="text-decoration-line-through text-muted fw-normal">' + esc(F.showValue(f, a.change.old[f.key])) + '</span> <i class="bi bi-arrow-right" aria-hidden="true"></i> <span class="text-success">' + shown + '</span>' : shown) + '</dd>';
+        var changed = keys && keys.indexOf(f.key) !== -1, isFlagged = flagged.indexOf(f.key) !== -1;
+        var v = a.form[f.key];
+        // Blank optional answers are left out to keep the page short.
+        if ((v === '' || v == null) && !changed && !isFlagged) return '';
+        var shown = esc(F.showValue(f, v));
+        var wide = f.type === 'textarea' || /address|Address/.test(f.key) || String(v).length > 34;
+        return '<div' + (wide ? ' class="tl-field-wide"' : '') + '><dt' + (flagged.indexOf(f.key) !== -1 ? ' class="text-warning-emphasis"' : '') + '>' + esc(F.labelOf(f, type)) + (flagged.indexOf(f.key) !== -1 ? ' <span class="badge bg-warning text-dark">flagged</span>' : '') + '</dt><dd>' +
+          (changed ? '<span class="text-decoration-line-through text-muted fw-normal">' + esc(F.showValue(f, a.change.old[f.key])) + '</span> <i class="bi bi-arrow-right" aria-hidden="true"></i> <span class="text-success">' + shown + '</span>' : shown) + '</dd></div>';
       }).join('');
+      if (!rows) return;
       var photo = sec === 'applicant' && a.docs && a.docs.photo ? '<div class="tl-details-photo">' + App.fileThumb(a.docs.photo.file, 'Photograph', F.docLabel('photo')) + '</div>' : '';
-      html += sectionHead(F.sectionLabel(sec, type)) + (photo ? '<div class="d-flex flex-column-reverse flex-sm-row gap-3 align-items-start"><dl class="tl-dl mb-3 flex-grow-1 min-w-0 w-100">' + rows + '</dl>' + photo + '</div>' : '<dl class="tl-dl mb-3">' + rows + '</dl>');
+      html += sectionHead(F.sectionLabel(sec, type)) + (photo ? '<div class="d-flex flex-row gap-3 align-items-start"><dl class="tl-fields mb-3 flex-grow-1 min-w-0">' + rows + '</dl>' + photo + '</div>' : '<dl class="tl-fields mb-3">' + rows + '</dl>');
     });
     return html;
   }
@@ -124,7 +129,7 @@
     Object.keys(a.docs || {}).forEach(function (k) { if (!list.some(function (d) { return d.key === k; })) list.push({ key: k, req: false }); });
     var flagged = a.correction ? a.correction.docs || [] : [];
     if (!list.length) return '<p class="small text-muted p-3 mb-0">No documents asked for.</p>';
-    return '<ul class="list-group list-group-flush">' + list.map(function (x) {
+    return '<ul class="list-group list-group-flush tl-doc-view">' + list.map(function (x) {
       var k = x.key, d = a.docs[k], many = d && d.files && d.files.length > 1;
       var thumbs = d ? (d.files || [d.file]).map(function (f) { return App.fileThumb(f, f, F.docLabel(k), 'Version ' + d.v + ' &bull; ' + App.fmtDate(d.on)); }).join('') : '';
       return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2' + (flagged.indexOf(k) !== -1 ? ' tl-flagged' : '') + '"><div class="min-w-0"><div class="small fw-semibold">' + esc(F.docLabel(k)) + (x.req ? '' : ' <span class="badge bg-light text-secondary border">optional</span>') + (flagged.indexOf(k) !== -1 ? ' <span class="badge bg-warning text-dark">flagged</span>' : '') + (many ? ' <span class="badge bg-light text-secondary border">' + d.files.length + ' files</span>' : '') + '</div>' +
@@ -255,16 +260,16 @@
 
   // ---------------- Instructions: documents and downloadable formats ----------------
   // Built from the document types and items masters, so the instructions always match what the form asks for.
-  function fmtBtn(key) {
-    var url = F.formatUrl(key);
+  function fmtBtn(key, type) {
+    var url = F.formatUrl(key, type);
     return url ? ' <a class="btn btn-sm btn-outline-primary py-0 ms-1 tl-fmt-btn" href="' + url + '" target="_blank" rel="noopener"><i class="bi bi-download me-1" aria-hidden="true"></i>Format<span class="visually-hidden"> for ' + esc(F.docLabel(key)) + ' (opens in a new tab)</span></a>' : '';
   }
-  function docLi(key, req) {
-    return '<li>' + esc(F.docLabel(key)) + (req ? '' : ' <span class="badge bg-light text-secondary border">optional</span>') + fmtBtn(key) + '</li>';
+  function docLi(key, req, type) {
+    return '<li>' + esc(F.docLabel(key)) + (req ? '' : ' <span class="badge bg-light text-secondary border">optional</span>') + fmtBtn(key, type) + '</li>';
   }
   // Documents asked of every applicant of this type (IND / COMP).
   function baseDocList(type) {
-    return '<ul class="tl-doc-list">' + F.docTypes().filter(function (d) { return d.base && d.base[type]; }).map(function (d) { return docLi(d.key, d.base[type] === 'M'); }).join('') + '</ul>';
+    return '<ul class="tl-doc-list">' + F.docTypes().filter(function (d) { return d.base && d.base[type]; }).map(function (d) { return docLi(d.key, d.base[type] === 'M', type); }).join('') + '</ul>';
   }
   function docNames(list) { return list.map(function (m) { return esc(F.docLabel(m.key)) + (m.req === 'O' ? ' <span class="text-muted">(optional)</span>' : ''); }).join('; '); }
   // Extra documents for particular items and sub-items: one row per item that has any.
@@ -298,7 +303,8 @@
   // Prescribed formats: download, fill, sign and upload.
   function formatList() {
     return '<ul class="list-group list-group-flush tl-format-list">' + Object.keys(F.FORMATS).map(function (f) {
-      var who = F.docTypes().filter(function (d) { return d.format === f; }).map(function (d) { return Object.keys(d.base || {}).map(function (t) { return F.TYPES[t].label + (d.base[t] === 'O' ? ' (optional)' : ''); }).join(', '); })[0];
+      // Applicant types that use this format (a company may have its own wording of a format).
+      var who = F.docTypes().filter(function (d) { return d.format; }).map(function (d) { return Object.keys(d.base || {}).filter(function (t) { return F.formatKey(d.key, t) === f; }).map(function (t) { return F.TYPES[t].label + (d.base[t] === 'O' ? ' (optional)' : ''); }).join(', '); }).filter(Boolean)[0];
       return '<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 px-0"><div class="min-w-0"><div class="small fw-semibold"><i class="bi bi-file-earmark-text text-primary me-1" aria-hidden="true"></i>' + esc(F.FORMATS[f]) + '</div>' + (who ? '<div class="small text-muted">For: ' + esc(who) + '</div>' : '') + '</div>' +
         '<a class="btn btn-sm btn-outline-primary" href="format.html?f=' + f + '" target="_blank" rel="noopener"><i class="bi bi-download me-1" aria-hidden="true"></i>Download<span class="visually-hidden"> ' + esc(F.FORMATS[f]) + ' (opens in a new tab)</span></a></li>';
     }).join('') + '</ul>';
