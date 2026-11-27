@@ -512,7 +512,7 @@
         document.getElementById('sidebarAvatar').textContent = distInfo.taName.split(' ').map(n => n[0]).join('').slice(0, 2);
         document.getElementById('sidebarOfficerName').textContent = distInfo.taName;
         document.getElementById('sidebarOfficeLabel').textContent = 'TA ' + activeOfficeContext + ' Circle';
-        document.getElementById('mainDeskTitle').textContent = 'District Scrutiny Desk &bull; ' + activeOfficeContext + ' Circle';
+        document.getElementById('mainDeskTitle').textContent = 'District Scrutiny Desk • ' + activeOfficeContext + ' Circle';
         document.getElementById('mainDeskSubtitle').textContent = 'Initial document verification for Guide Registration applications submitted from ' + activeOfficeContext + ' District';
         const reportsLink = document.getElementById('sidebarReportsLink');
         if (reportsLink) reportsLink.href = 'reports.html?role=dist-ta-' + encodeURIComponent(activeOfficeContext) + '&district=' + encodeURIComponent(activeOfficeContext);

@@ -1105,19 +1105,21 @@
         });
       } catch (e) {}
 
-      // If live applications exist, format and prepend them
+      // If live applications exist, format and prepend them preserving newest-first order
       if (liveApps.length > 0) {
-        liveApps.forEach(liveApp => {
+        liveApps.slice().reverse().forEach(liveApp => {
           const arn = liveApp.arn || liveApp.id || liveApp.refNo;
           const isGuide = (liveApp.type === 'guide-registration' || (arn && arn.includes('GR')));
           const fee = isGuide ? 500 : 1500;
           const isPaymentPending = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.PAYMENT_PENDING || liveApp.status === 'Payment Pending' || (liveApp.payment && liveApp.payment.activated && !liveApp.payment.paid));
           const isApproved = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.APPROVED || liveApp.status === 'Approved');
           const isReturned = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.RETURNED || liveApp.status === 'Returned for Correction');
+          const isRejected = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.REJECTED || liveApp.status === 'Rejected' || liveApp.status === 'REJECTED');
 
           let badgeClass = 'bg-info-subtle text-info border border-info-subtle';
           if (isPaymentPending) badgeClass = 'bg-warning text-dark';
           else if (isApproved) badgeClass = 'bg-success text-white';
+          else if (isRejected) badgeClass = 'bg-danger text-white';
           else if (isReturned) badgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
 
           const formatted = {
@@ -1147,9 +1149,15 @@
             })) : [
               { stage: 'Application Submitted Online', date: liveApp.submittedDate || 'Today', status: 'Completed', remarks: 'Initial filing recorded in department registry.', by: liveApp.applicantName || 'Citizen Applicant' }
             ],
-            nextExpectedStep: isPaymentPending 
-              ? 'Statutory fee of ₹' + fee + ' is due for payment.' 
-              : (isApproved ? 'Registration Certificate has been issued.' : 'Application dossier is currently under technical review at the ' + (isGuide && liveApp.district !== 'Gangtok' ? (liveApp.district + ' District') : 'HQ') + ' TO Desk.')
+            nextExpectedStep: isPaymentPending
+              ? 'Statutory fee of ₹' + fee + ' is due for payment.'
+              : (isApproved
+                ? 'Registration Certificate has been issued.'
+                : (isRejected
+                  ? 'Application has been rejected and closed with remarks.'
+                  : (isReturned
+                    ? 'Returned for correction — please update particulars/documents and resubmit.'
+                    : 'Application dossier is currently under technical review at the ' + (isGuide && liveApp.district !== 'Gangtok' ? (liveApp.district + ' District') : 'HQ') + ' TO Desk.')))
           };
 
           if (!scenario.applications.some(a => (a.refNo || a.arn) === arn)) {
@@ -1207,6 +1215,81 @@
       if (!scenario.applications || scenario.applications.length === 0) {
         renderNotifications(scenario.notifications);
         return;
+      }
+
+      // Quick Action Notification Banner (ONLY for the latest real-time departmental action: Return, Reject, Payment, Certificate)
+      let liveAlert = null;
+      try {
+        liveAlert = JSON.parse(localStorage.getItem('adv_citizen_live_alert_v1') || 'null');
+      } catch (e) {}
+
+      window.dismissQuickAlert = function () {
+        try {
+          localStorage.removeItem('adv_citizen_live_alert_v1');
+        } catch (e) {}
+        if (currentScenarioData) {
+          switchCitizenScenario(document.getElementById('citizenScenarioSelect') ? document.getElementById('citizenScenarioSelect').value : 'scenarioA');
+        }
+      };
+
+      if (liveAlert && liveAlert.arn) {
+        const targetApp = scenario.applications.find(a => (a.refNo || a.arn) === liveAlert.arn);
+        if (targetApp) {
+          const arn = targetApp.refNo || targetApp.arn;
+          const isGuide = (arn.includes('GR') || targetApp.type === 'guide-registration' || targetApp.category === 'guide-registration' || targetApp.typeId === 'guide-registration');
+          let b = null;
+
+          if (liveAlert.actionType === 'payment') {
+            const payAmt = liveAlert.fee ? Number(liveAlert.fee).toLocaleString('en-IN') : (isGuide ? '500' : '1,500');
+            b = {
+              border: '#f59e0b', bg: '#fffbeb', iconBg: '#d97706', icon: 'bi-credit-card-fill',
+              title: `Payment Activated for Application: ${arn}`,
+              sub: `${liveAlert.title} (${liveAlert.typeName || 'Registration'} • ${liveAlert.district || 'Sikkim'}) • Fee Due: ₹${payAmt}`,
+              btnHtml: `<button type="button" class="btn btn-sm btn-warning text-dark fw-semibold px-3 py-1.5 text-nowrap" onclick="dismissQuickAlert(); openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay Now (₹${payAmt})</button>`
+            };
+          } else if (liveAlert.actionType === 'returned') {
+            b = {
+              border: '#f59e0b', bg: '#fffbeb', iconBg: '#d97706', icon: 'bi-exclamation-triangle-fill',
+              title: `Action Required — Application Returned: ${arn}`,
+              sub: `${liveAlert.title} • ${liveAlert.remarks || 'Clarification / document update required.'}`,
+              btnHtml: `<a href="apply.html?ref=${encodeURIComponent(arn)}&type=${encodeURIComponent(targetApp.category || 'adventure-tour-operator')}" class="btn btn-sm btn-warning text-dark fw-semibold px-3 py-1.5 text-nowrap" onclick="dismissQuickAlert()"><i class="bi bi-pencil-square me-1"></i>Fix &amp; Resubmit</a>`
+            };
+          } else if (liveAlert.actionType === 'approved') {
+            b = {
+              border: '#198754', bg: '#f0fdf4', iconBg: '#198754', icon: 'bi-bell-fill',
+              title: `Certificate Approved &amp; Issued: ${arn}`,
+              sub: `${liveAlert.title} (${liveAlert.typeName || 'Registration'} • ${liveAlert.district || 'Sikkim'}) • Ready for download`,
+              btnHtml: `<a href="certificate.html?arn=${encodeURIComponent(arn)}" target="_blank" class="btn btn-sm btn-success fw-semibold px-3 py-1.5 text-nowrap" onclick="dismissQuickAlert()"><i class="bi bi-download me-1"></i>Download Certificate${isGuide ? ' &amp; ID Card' : ''}</a>`
+            };
+          } else if (liveAlert.actionType === 'rejected') {
+            b = {
+              border: '#dc3545', bg: '#fef2f2', iconBg: '#dc3545', icon: 'bi-x-octagon-fill',
+              title: `Application Rejected: ${arn}`,
+              sub: `${liveAlert.title} • ${liveAlert.remarks || 'View official rejection grounds.'}`,
+              btnHtml: `<button type="button" class="btn btn-sm btn-danger fw-semibold px-3 py-1.5 text-nowrap" onclick="dismissQuickAlert(); openTrackingModal('${arn}')"><i class="bi bi-eye me-1"></i>View Rejection Remarks</button>`
+            };
+          }
+
+          if (b) {
+            container.innerHTML += `
+              <div class="rounded-3 px-3 py-2.5 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 shadow-xs" style="border: 1px solid ${b.border}; background: ${b.bg};">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="width: 36px; height: 36px; background: ${b.iconBg};">
+                    <i class="bi ${b.icon}"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark small">${b.title}</div>
+                    <div class="text-muted" style="font-size: 0.78rem;">${b.sub}</div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                  ${b.btnHtml}
+                  <button type="button" class="btn-close btn-sm" aria-label="Dismiss notification" onclick="dismissQuickAlert()"></button>
+                </div>
+              </div>
+            `;
+          }
+        }
       }
 
       // Priority 1: Statutory Fee Payment Due Card
@@ -1343,10 +1426,18 @@
         return;
       }
 
-      apps.forEach(app => {
+      let liveAlertHighlight = null;
+      try {
+        liveAlertHighlight = JSON.parse(localStorage.getItem('adv_citizen_live_alert_v1') || 'null');
+      } catch (e) {}
+
+      apps.forEach((app, idx) => {
         const arn = app.refNo || app.arn;
         const stage = app.currentStage || app.stage || '';
         const status = app.status || '';
+        const isActionableHighlight = Boolean(liveAlertHighlight && liveAlertHighlight.arn === arn);
+        const rowStyle = isActionableHighlight ? 'background-color: #f0fdf4; box-shadow: inset 4px 0 0 #198754;' : '';
+        const activeTag = isActionableHighlight ? '<span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size: 0.65rem;">Active</span>' : '';
         const district = app.district || '';
         const isOtherGuide = district !== 'Gangtok' && (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || app.category === 'guide-registration');
 
@@ -1365,18 +1456,18 @@
         } else if (isPayPending) {
           const payAmt = (app.payment && app.payment.amount) ? Number(app.payment.amount).toLocaleString('en-IN') : (arn.includes('GR') ? '500' : '1,500');
           actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay Now (&#8377;${payAmt})</button>`;
-        } else if (stage.includes('Payment Received') || stage.includes('Payment Submitted') || stage.includes('DTO Approval') || (app.payment && app.payment.paid) || status === 'PAID') {
-          actionBtns += `<button class="btn btn-sm btn-outline-success py-1 px-2 text-nowrap shadow-xs me-1" onclick="showPaymentAcknowledgement('${arn}')" title="View Payment Acknowledgement Slip"><i class="bi bi-file-earmark-check me-1"></i>Slip</button>`;
         } else if (status === 'RETURNED' || status === 'Returned for Correction') {
-          actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'adventure-tour-operator'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
+          actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'guide-registration'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
+        } else if (status !== 'REJECTED' && status !== 'Rejected' && (stage.includes('Payment Received') || stage.includes('Payment Submitted') || stage.includes('DTO Approval') || (app.payment && app.payment.paid) || status === 'PAID')) {
+          actionBtns += `<button class="btn btn-sm btn-outline-success py-1 px-2 text-nowrap shadow-xs me-1" onclick="showPaymentAcknowledgement('${arn}')" title="View Payment Acknowledgement Slip"><i class="bi bi-file-earmark-check me-1"></i>Slip</button>`;
         }
         actionBtns += `<button class="btn btn-sm btn-outline-primary py-1 px-2 text-nowrap" onclick="openTrackingModal('${arn}')"><i class="bi bi-search me-1"></i>Track</button>`;
 
         // Table row
         tbody.innerHTML += `
-          <tr>
+          <tr style="${rowStyle}">
             <td>
-              <strong class="font-monospace text-primary">${arn}</strong>
+              <strong class="font-monospace text-primary">${arn}</strong>${activeTag}
             </td>
             <td>
               <div class="fw-semibold text-dark">${app.title || app.applicantName || app.enterpriseName}</div>

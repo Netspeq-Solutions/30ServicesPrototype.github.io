@@ -131,7 +131,7 @@
     },
     dto: {
       name: 'Pema Dorjee Sherpa',
-      designation: 'District Tourism Officer (Headquarters Licensing Authority)',
+      designation: 'District Tourism Officer (Gangtok Circle)',
       office: 'Paryatan Bhawan, Tadong, Gangtok',
       phone: '03592-209090 Ext 205'
     }
@@ -258,16 +258,16 @@
       return null;
     },
 
-    // Save/Update application
+    // Save/Update application (moves latest transaction to top of list)
     saveApplication: function (app) {
       if (!app || !app.arn) return null;
       const all = this.getAllApplications();
       const idx = all.findIndex(a => a.arn.toLowerCase() === app.arn.toLowerCase());
       if (idx !== -1) {
-        all[idx] = app;
-      } else {
-        all.unshift(app);
+        all.splice(idx, 1);
       }
+      app.updatedAtMs = Date.now();
+      all.unshift(app);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
       return app;
     },
@@ -414,18 +414,31 @@
 
       // Route back to the returning authority
       const returnedByStr = (app.returnedBy || '').toLowerCase();
+      const returnedFromRole = (app.returnedFromRole || '').toLowerCase();
+      const returnedFromStage = app.returnedFromStage || '';
+      const isDtoReturn = (returnedFromRole === 'dto-hq' || returnedFromRole === 'dist-dto' || returnedByStr.includes('dto'));
+      const isGangtok = ((app.district || 'Gangtok').toLowerCase() === 'gangtok');
       if (app.type === 'adventure-tour-operator') {
-        if (returnedByStr.includes('dto')) {
-          app.currentRole = (app.district === 'Gangtok') ? 'dto-hq' : 'dist-dto';
+        if (isDtoReturn && (returnedFromStage === STAGES.ATO_PAYMENT_SUBMITTED || (app.payment && app.payment.paid))) {
+          app.currentRole = isGangtok ? 'dto-hq' : 'dist-dto';
+          app.stage = STAGES.ATO_PAYMENT_SUBMITTED;
+        } else if (isDtoReturn) {
+          app.currentRole = isGangtok ? 'dto-hq' : 'dist-dto';
           app.stage = STAGES.ATO_AWAITING_DTO;
+        } else if (app.inspectionReport) {
+          app.currentRole = isGangtok ? 'ta-hq' : 'dist-ta';
+          app.stage = STAGES.ATO_REPORT_SUBMITTED;
         } else {
-          app.currentRole = (app.district === 'Gangtok') ? 'ta-hq' : 'dist-ta';
+          app.currentRole = isGangtok ? 'ta-hq' : 'dist-ta';
           app.stage = STAGES.ATO_AWAITING_TA;
         }
       } else {
         // Guide Registration
-        if (app.district === 'Gangtok') {
-          if (returnedByStr.includes('dto')) {
+        if (isGangtok) {
+          if (isDtoReturn && (returnedFromStage === STAGES.GR_HQ_PAYMENT_SUBMITTED || (app.payment && app.payment.paid))) {
+            app.currentRole = 'dto-hq';
+            app.stage = STAGES.GR_HQ_PAYMENT_SUBMITTED;
+          } else if (isDtoReturn) {
             app.currentRole = 'dto-hq';
             app.stage = STAGES.GR_HQ_AWAITING_DTO;
           } else {
@@ -434,7 +447,10 @@
           }
         } else {
           // Other District Guide
-          if (returnedByStr.includes('dto')) {
+          if (isDtoReturn && (returnedFromStage === STAGES.GR_DIST_PAYMENT_SUBMITTED || (app.payment && app.payment.paid))) {
+            app.currentRole = 'dist-dto';
+            app.stage = STAGES.GR_DIST_PAYMENT_SUBMITTED;
+          } else if (isDtoReturn) {
             app.currentRole = 'dist-dto';
             app.stage = STAGES.GR_DIST_AWAITING_DTO;
           } else {
@@ -455,8 +471,22 @@
 
       // Clear returned status flags
       app.returnRemarks = null;
+      app.returnedFromStage = null;
+      app.returnedFromRole = null;
 
       this.saveApplication(app);
+      try {
+        const cur = JSON.parse(localStorage.getItem('adv_citizen_live_alert_v1') || 'null');
+        if (cur && cur.arn === app.arn) localStorage.removeItem('adv_citizen_live_alert_v1');
+        if (app.currentRole === 'dto-hq' || app.currentRole === 'dist-dto') {
+          localStorage.setItem('adv_dto_live_alert_v1', JSON.stringify({
+            arn: app.arn,
+            stage: (app.payment && app.payment.paid) ? 'final' : 'initial',
+            district: app.district,
+            timestamp: Date.now()
+          }));
+        }
+      } catch (e) {}
       return app;
     },
 
@@ -487,6 +517,11 @@
       );
 
       this.saveApplication(app);
+      try {
+        localStorage.setItem('adv_io_live_alert_v1', JSON.stringify({
+          arn: app.arn, title: `New Inspection Assigned: ${app.arn}`, timestamp: Date.now()
+        }));
+      } catch (e) {}
       return app;
     },
 
@@ -561,12 +596,16 @@
       this._addHistory(
         app,
         `Inspection Report Submitted (${compliant ? 'Compliant' : 'Safety Deficiencies Flagged'})`,
-        'Inspecting Officer (IO)',
+        'Inspecting Authority (IA)',
         app.inspectionReport.officer,
         `Physical report attached: ${docName}. Outcome: ${statusStr}. ${reportRemarks ? 'Remarks: ' + reportRemarks : ''}`
       );
 
       this.saveApplication(app);
+      try {
+        const curIo = JSON.parse(localStorage.getItem('adv_io_live_alert_v1') || 'null');
+        if (curIo && curIo.arn === app.arn) localStorage.removeItem('adv_io_live_alert_v1');
+      } catch (e) {}
       return app;
     },
 
@@ -617,12 +656,17 @@
       this._addHistory(
         app,
         `Forwarded to ${targetRole === 'dist-dto' ? 'District DTO' : 'HQ DTO'}`,
-        officerRole || 'Assistant Director (HQ)',
-        officerName || 'Karma Lhamu Bhutia',
+        officerRole || 'Tourism Officer (TO)',
+        officerName || 'Tourism Officer',
         remarks || 'Forwarded for statutory review.'
       );
 
       this.saveApplication(app);
+      try {
+        localStorage.setItem('adv_dto_live_alert_v1', JSON.stringify({
+          arn: app.arn, stage: 'initial', district: app.district, timestamp: Date.now()
+        }));
+      } catch (e) {}
       return app;
     },
 
@@ -661,6 +705,14 @@
       );
 
       this.saveApplication(app);
+      try {
+        const curDto = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null');
+        if (curDto && curDto.arn === app.arn) localStorage.removeItem('adv_dto_live_alert_v1');
+        localStorage.setItem('adv_citizen_live_alert_v1', JSON.stringify({
+          arn: app.arn, actionType: 'payment', fee: fee, title: app.enterpriseName || app.applicantName,
+          typeName: app.typeName, district: app.district, remarks: `Fee of ₹${fee.toLocaleString('en-IN')} activated for payment.`, timestamp: Date.now()
+        }));
+      } catch (e) {}
       return app;
     },
 
@@ -686,10 +738,11 @@
 
       app.status = STATUSES.UNDER_REVIEW;
 
+      const isGangtok = ((app.district || 'Gangtok').toLowerCase() === 'gangtok');
       if (app.type === 'adventure-tour-operator') {
-        app.currentRole = 'dto-hq';
+        app.currentRole = isGangtok ? 'dto-hq' : 'dist-dto';
         app.stage = STAGES.ATO_PAYMENT_SUBMITTED;
-      } else if (app.district === 'Gangtok') {
+      } else if (isGangtok) {
         app.currentRole = 'dto-hq';
         app.stage = STAGES.GR_HQ_PAYMENT_SUBMITTED;
       } else {
@@ -706,14 +759,25 @@
       );
 
       this.saveApplication(app);
+      try {
+        localStorage.setItem('adv_dto_live_alert_v1', JSON.stringify({
+          arn: app.arn, stage: 'final', district: app.district, timestamp: Date.now()
+        }));
+      } catch (e) {}
+      try {
+        const cur = JSON.parse(localStorage.getItem('adv_citizen_live_alert_v1') || 'null');
+        if (cur && cur.arn === app.arn) localStorage.removeItem('adv_citizen_live_alert_v1');
+      } catch (e) {}
       return app;
     },
 
-    // Action 7: Return for Correction (TA, Asst. Dir., DTO)
+    // Action 7: Return for Correction (TO, DTO)
     returnForCorrection: function (arn, remarks, officerName, officerRole) {
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
 
+      app.returnedFromStage = app.stage;
+      app.returnedFromRole = app.currentRole;
       app.returnRemarks = remarks;
       app.returnedBy = `${officerName} (${officerRole})`;
       app.currentRole = 'citizen';
@@ -729,10 +793,18 @@
       );
 
       this.saveApplication(app);
+      try {
+        const curDto = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null');
+        if (curDto && curDto.arn === app.arn) localStorage.removeItem('adv_dto_live_alert_v1');
+        localStorage.setItem('adv_citizen_live_alert_v1', JSON.stringify({
+          arn: app.arn, actionType: 'returned', title: app.enterpriseName || app.applicantName,
+          typeName: app.typeName, district: app.district, remarks: remarks || 'Clarification required.', timestamp: Date.now()
+        }));
+      } catch (e) {}
       return app;
     },
 
-    // Action 8: Reject Application (TA, Asst. Dir., DTO)
+    // Action 8: Reject Application (DTO)
     rejectApplication: function (arn, remarks, officerName, officerRole) {
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
@@ -752,10 +824,18 @@
       );
 
       this.saveApplication(app);
+      try {
+        const curDto = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null');
+        if (curDto && curDto.arn === app.arn) localStorage.removeItem('adv_dto_live_alert_v1');
+        localStorage.setItem('adv_citizen_live_alert_v1', JSON.stringify({
+          arn: app.arn, actionType: 'rejected', title: app.enterpriseName || app.applicantName,
+          typeName: app.typeName, district: app.district, remarks: remarks || 'Rejected.', timestamp: Date.now()
+        }));
+      } catch (e) {}
       return app;
     },
 
-    // Action 9: Final Approval & Certificate Issuance (HQ DTO for ATO & Gangtok GR)
+    // Action 9: Final Approval & Certificate Issuance (DTO for ATO & Guide across all districts)
     approveAndIssueCertificate: function (arn, officerName) {
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
@@ -781,19 +861,30 @@
         app.idCardNo = `ID-SK-GR-2026-${randomDigits}`;
       }
 
+      const isGangtok = ((app.district || 'Gangtok').toLowerCase() === 'gangtok');
       app.currentRole = null;
       app.status = STATUSES.APPROVED;
-      app.stage = (app.type === 'adventure-tour-operator') ? STAGES.ATO_APPROVED : STAGES.GR_HQ_APPROVED;
+      app.stage = (app.type === 'adventure-tour-operator')
+        ? STAGES.ATO_APPROVED
+        : (isGangtok ? STAGES.GR_HQ_APPROVED : STAGES.GR_DIST_APPROVED);
 
       this._addHistory(
         app,
-        'Approved & Certificate Issued',
-        'DTO – Headquarters',
-        officerName || 'Pema Dorjee Sherpa',
-        `Registration Certificate ${certNo} issued digitally. Active till ${app.validTill}.`
+        isGuide ? 'Approved & Certificate + ID Card Issued' : 'Approved & Certificate Issued',
+        `DTO – ${isGangtok ? 'Gangtok' : app.district} Circle`,
+        officerName || 'District Tourism Officer',
+        `Registration Certificate ${certNo}${isGuide ? ' & Integrated Guide ID Card ' + app.idCardNo : ''} issued digitally. Active till ${app.validTill}.`
       );
 
       this.saveApplication(app);
+      try {
+        const curDto = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null');
+        if (curDto && curDto.arn === app.arn) localStorage.removeItem('adv_dto_live_alert_v1');
+        localStorage.setItem('adv_citizen_live_alert_v1', JSON.stringify({
+          arn: app.arn, actionType: 'approved', certNo: certNo, title: app.enterpriseName || app.applicantName,
+          typeName: app.typeName, district: app.district, remarks: `Certificate ${certNo} is ready for download.`, timestamp: Date.now()
+        }));
+      } catch (e) {}
       return app;
     },
 
@@ -877,17 +968,31 @@
       return lines.join('\r\n');
     },
 
-    // Return to Previous Department (TO post-inspection -> IA; DTO initial -> TO; DTO final -> TO)
+    // Return to Previous Department (IA -> TO Step 2; TO Post-Inspection -> IA Step 3; DTO -> TO)
     returnToPreviousDepartment: function (arn, officerRole, officerName, remarks) {
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
       const isGangtok = ((app.district || 'Gangtok').toLowerCase() === 'gangtok');
       const prevStage = app.stage || '';
 
-      if (app.type === 'adventure-tour-operator' && prevStage === STAGES.ATO_REPORT_SUBMITTED) {
-        // TO post-inspection returns to IA for report correction
-        app.currentRole = 'io-hq';
+      if (app.type === 'adventure-tour-operator' && (app.currentRole === 'io' || app.currentRole === 'io-hq')) {
+        // Step 3 Option A: IA returns to TO Initial Verification (Step 2)
+        app.currentRole = isGangtok ? 'ta-hq' : 'dist-ta';
+        app.stage = STAGES.ATO_AWAITING_TA;
+        app.assignedIO = null;
+        app.returnRemarks = remarks || 'Returned by Inspecting Authority (IA) to TO.';
+        try { localStorage.removeItem('adv_io_live_alert_v1'); } catch (e) {}
+      } else if (app.type === 'adventure-tour-operator' && prevStage === STAGES.ATO_REPORT_SUBMITTED) {
+        // Step 4 Option A: TO post-inspection returns to IA for report correction (Step 3)
+        app.currentRole = 'io';
         app.stage = STAGES.ATO_UNDER_INSPECTION;
+        app.inspectionReport = null;
+        app.returnRemarks = remarks || 'Inspection report returned by TO for re-verification.';
+        try {
+          localStorage.setItem('adv_io_live_alert_v1', JSON.stringify({
+            arn: app.arn, title: `Returned for Re-Inspection: ${app.arn}`, timestamp: Date.now()
+          }));
+        } catch (e) {}
       } else if (app.type === 'adventure-tour-operator') {
         // DTO returns to TO post-inspection
         app.currentRole = isGangtok ? 'ta-hq' : 'dist-ta';

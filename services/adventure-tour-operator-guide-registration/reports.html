@@ -156,12 +156,12 @@
           <label for="demoRoleSelect" class="small text-white-50 fw-semibold">Demonstration Role:</label>
           <select id="demoRoleSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 330px; font-size: 0.8rem;" onchange="handleRoleSwitch(this.value)">
             <optgroup label="Statewide Headquarters (Consolidated 6 Circles)">
-              <option value="dto-hq">DTO – Headquarters (Consolidated Statewide)</option>
               <option value="asst-dir">Assistant Director – HQ (Consolidated Statewide)</option>
               <option value="ta-hq">TA – Headquarters (Consolidated Statewide)</option>
               <option value="io">Inspecting Officer (Adventure Operators Only)</option>
             </optgroup>
             <optgroup label="District DTO Desks (Strict District Isolation)">
+              <option value="dist-dto-Gangtok" selected>District DTO &bull; Gangtok Circle (Assigned)</option>
               <option value="dist-dto-Namchi">District DTO &bull; Namchi Circle (Assigned)</option>
               <option value="dist-dto-Mangan">District DTO &bull; Mangan Circle (Assigned)</option>
               <option value="dist-dto-Gyalshing">District DTO &bull; Gyalshing Circle (Assigned)</option>
@@ -256,8 +256,8 @@
       <!-- Reporting Scope & Context Bar (No-Print) -->
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 no-print">
         <div class="d-flex align-items-center gap-2 flex-wrap">
-          <span class="badge bg-primary text-white px-2.5 py-1 fw-bold" id="badgeActiveRole">DTO – Headquarters</span>
-          <span class="badge bg-light text-dark border px-2.5 py-1" id="badgeAssignedDistrict"><i class="bi bi-geo-alt me-1"></i>All 6 Circles Consolidated</span>
+          <span class="badge bg-primary text-white px-2.5 py-1 fw-bold" id="badgeActiveRole">District DTO &bull; Gangtok</span>
+          <span class="badge bg-light text-dark border px-2.5 py-1" id="badgeAssignedDistrict"><i class="bi bi-geo-alt me-1"></i>Gangtok District (Locked Circle)</span>
           <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1" id="badgeDataSync"><i class="bi bi-check-circle-fill me-1"></i>Live Workflow Sync</span>
         </div>
         <div class="small text-muted">
@@ -580,10 +580,10 @@
       const SIKKIM_DISTRICTS = ['Gangtok', 'Mangan', 'Namchi', 'Gyalshing', 'Pakyong', 'Soreng'];
 
       // Active Role Configuration
-      // Default: dto-hq (Headquarters)
-      let activeRole = 'dto-hq'; 
+      // Default: District DTO (Gangtok Circle)
+      let activeRole = 'dist-dto'; 
       let activeDistrict = 'Gangtok'; // 'all' for HQ, or assigned circle name
-      let isHQRole = true;
+      let isHQRole = false;
 
       // Current Filter State
       let currentFilters = {
@@ -613,7 +613,11 @@
         const districtParam = urlParams.get('district') || urlParams.get('office');
 
         if (roleParam) {
-          if (roleParam.startsWith('dist-dto-')) {
+          if (roleParam === 'dto-hq') {
+            activeRole = 'dist-dto';
+            activeDistrict = (districtParam && SIKKIM_DISTRICTS.includes(districtParam)) ? districtParam : 'Gangtok';
+            document.getElementById('demoRoleSelect').value = `dist-dto-${activeDistrict}`;
+          } else if (roleParam.startsWith('dist-dto-')) {
             activeRole = 'dist-dto';
             activeDistrict = roleParam.replace('dist-dto-', '');
             document.getElementById('demoRoleSelect').value = roleParam;
@@ -635,7 +639,7 @@
         }
 
         // Determine if HQ
-        isHQRole = ['dto-hq', 'asst-dir', 'ta-hq', 'hq-all'].includes(activeRole);
+        isHQRole = ['asst-dir', 'ta-hq', 'hq-all'].includes(activeRole);
         if (isHQRole) {
           activeDistrict = 'all';
         }
@@ -662,7 +666,7 @@
         }
 
         // Reset filter values when switching roles
-        currentFilters.type = (activeRole === 'io') ? 'adventure-tour-operator' : (isHQRole ? 'all' : 'guide-registration');
+        currentFilters.type = (activeRole === 'io') ? 'adventure-tour-operator' : ((isHQRole || activeRole === 'dist-dto') ? 'all' : 'guide-registration');
         currentFilters.district = isHQRole ? 'all' : activeDistrict;
         currentFilters.status = 'all';
         currentFilters.stage = 'all';
@@ -795,8 +799,11 @@
           }
 
           // Rule 3: District DTO & District TO: STRICT DISTRICT ISOLATION
-          // Only view Guide Registration applications belonging to their assigned district
-          if (activeRole === 'dist-dto' || activeRole === 'dist-ta') {
+          // Respective District DTO handles all ATO & Guide applications for their district
+          if (activeRole === 'dist-dto') {
+            return ((app.district || 'Gangtok').toLowerCase() === activeDistrict.toLowerCase());
+          }
+          if (activeRole === 'dist-ta') {
             return (app.type === 'guide-registration' && app.district === activeDistrict);
           }
 
@@ -936,8 +943,7 @@
           officerName = distInfo.dtoName || 'District Tourism Officer';
           officerDesig = `District Tourism Officer (${activeDistrict} Circle)`;
           backUrl = `dashboard-dto.html?office=${encodeURIComponent(activeDistrict)}`;
-          typeSelect.value = 'guide-registration';
-          typeSelect.disabled = true; // District DTO only receives district Guide applications
+          typeSelect.disabled = false; // Respective District DTO handles both ATO and Guide applications for their district
         } else if (activeRole === 'dist-ta') {
           const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeDistrict] || {};
           roleLabel = `District TO &bull; ${activeDistrict}`;
