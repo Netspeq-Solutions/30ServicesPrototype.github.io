@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Application Form &bull; Tourism Business &amp; Outdoor Photography Registration &bull; Government of Sikkim</title>
+  <title>Application Form &bull; Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services &bull; Government of Sikkim</title>
 
   <!-- Google Fonts: Noto Sans & Noto Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -215,8 +215,8 @@
           </a>
           <div>
             <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 1px;">Government of Sikkim</span>
-            <div class="gov-header-dept h6 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</div>
-            <h1 class="small fw-semibold text-primary mb-0" id="formHeaderTitle">Tour Operator Registration Application</h1>
+            <div class="gov-header-dept h6 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department &bull; Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services</div>
+            <h1 class="small fw-semibold text-primary mb-0" id="formHeaderTitle">Travel Agent / Tour Operator (TA/TO) Registration Application</h1>
           </div>
         </div>
 
@@ -248,6 +248,28 @@
         <ul class="gov-stepper-list" id="formStepperList">
           <!-- Populated dynamically via JS based on Category -->
         </ul>
+      </div>
+
+      <!-- Correction Banner (Visible only when ?ref=... returned application is opened) -->
+      <div class="alert alert-warning border-2 border-warning shadow-sm mb-4 d-none" id="correctionModeBanner">
+        <div class="d-flex align-items-start gap-3">
+          <div class="bg-warning text-dark p-2 rounded-circle flex-shrink-0">
+            <i class="bi bi-arrow-return-left fs-5"></i>
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <strong class="text-dark">Action Required &bull; Correction &amp; Resubmission Mode</strong>
+              <span class="badge bg-dark text-warning font-monospace" id="correctionArnBadge">SK-TATO-2026-0001</span>
+            </div>
+            <div class="small text-dark mt-1">
+              <strong>Returned By:</strong> <span id="correctionReturnedBy">Department Officer</span> &bull;
+              <strong>Remarks:</strong> <span id="correctionOfficerRemarks" class="fst-italic text-danger-emphasis">Please update requested particulars.</span>
+            </div>
+            <div class="small text-muted mt-1">
+              Update any required fields or upload corrected documents, enter your response remarks on the Summary step, and resubmit. Your original Application Reference Number and complete history will be preserved.
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Main Application Form -->
@@ -365,12 +387,21 @@
                 <input type="text" class="form-control form-control-sm" id="fieldA_techQualification" placeholder="e.g. Tourism Diploma / IATA Certification / GDS" required>
               </div>
 
-              <!-- Field 11: Tourism & Travel Management Training / Capacity Building Training -->
+              <!-- Field 11: Tourism & Travel Management Training / Capacity Building Training (Yes/No Only) -->
               <div class="col-md-12">
-                <label for="fieldA_training" class="form-label small fw-bold text-dark mb-1">
-                  Tourism &amp; Travel Management Training / Capacity Building Training <span class="text-danger">*</span>
+                <label class="form-label small fw-bold text-dark mb-1">
+                  Tourism &amp; Travel Management Training / Capacity Building Training Attended? <span class="text-danger">*</span>
                 </label>
-                <input type="text" class="form-control form-control-sm" id="fieldA_training" placeholder="Details of certified training attended under Sikkim Tourism / MoT / IHMs" required>
+                <div class="d-flex gap-4 pt-1">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldA_trainingYn" id="fieldA_trainingYes" value="Yes" checked>
+                    <label class="form-check-label small" for="fieldA_trainingYes">Yes</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="fieldA_trainingYn" id="fieldA_trainingNo" value="No">
+                    <label class="form-check-label small" for="fieldA_trainingNo">No</label>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -476,12 +507,12 @@
                 <input type="text" class="form-control form-control-sm bg-light" id="fieldA_categoryApplied" value="Travel Agent / Tour Operator (TA/TO)" readonly>
               </div>
 
-              <!-- Field 8: Association Affiliation -->
+              <!-- Field 8: Association Affiliation (Optional) -->
               <div class="col-md-4">
                 <label for="fieldA_association" class="form-label small fw-bold text-dark mb-1">
-                  Association Affiliation <span class="text-danger">*</span>
+                  Association Registration / Affiliation <span class="badge bg-secondary-subtle text-secondary small">Optional</span>
                 </label>
-                <input type="text" class="form-control form-control-sm" id="fieldA_association" placeholder="e.g. TAAS / SATO / TAAI / IATO / None" required>
+                <input type="text" class="form-control form-control-sm" id="fieldA_association" placeholder="e.g. TAAS / SATO / TAAI / IATO (Optional)">
               </div>
 
               <!-- Field 9: Business Activities -->
@@ -530,54 +561,12 @@
                 <textarea class="form-control form-control-sm" id="fieldA_experienceDetails" rows="2" placeholder="Years in tourist trade, market reputation, client testimonials" required></textarea>
               </div>
 
-              <!-- Field 12: Insurance of Company -->
-              <div class="col-md-6">
-                <label class="form-label small fw-bold text-dark mb-1">
-                  Insurance of Company (Commercial enterprise liability: Yes/No) <span class="text-danger">*</span>
-                </label>
-                <div class="d-flex gap-3 pt-1">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="fieldA_insuranceCompany" id="insCompYes" value="Yes" checked>
-                    <label class="form-check-label small" for="insCompYes">Yes</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="fieldA_insuranceCompany" id="insCompNo" value="No">
-                    <label class="form-check-label small" for="insCompNo">No</label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Field 13: Insurance of Guest -->
-              <div class="col-md-6">
-                <label class="form-label small fw-bold text-dark mb-1">
-                  Insurance of Guest (Accident and evacuation coverage: Yes/No) <span class="text-danger">*</span>
-                </label>
-                <div class="d-flex gap-3 pt-1">
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="fieldA_insuranceGuest" id="insGuestYes" value="Yes" checked>
-                    <label class="form-check-label small" for="insGuestYes">Yes</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="fieldA_insuranceGuest" id="insGuestNo" value="No">
-                    <label class="form-check-label small" for="insGuestNo">No</label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Field 14: Eco-Friendly / Sustainable Tourism Practices and Other Facilities -->
-              <div class="col-md-6">
-                <label for="fieldA_ecoPractices" class="form-label small fw-bold text-dark mb-1">
-                  Eco-Friendly / Sustainable Tourism Practices and Other Facilities <span class="text-danger">*</span>
-                </label>
-                <textarea class="form-control form-control-sm" id="fieldA_ecoPractices" rows="2" placeholder="Leave-No-Trace adherence, plastic reduction, eco-tours protocols" required></textarea>
-              </div>
-
-              <!-- Field 15: Office Equipment & Facilities -->
+              <!-- Field 12: Office Equipment & Facilities -->
               <div class="col-md-6">
                 <label for="fieldA_officeEquipment" class="form-label small fw-bold text-dark mb-1">
-                  Office Equipment &amp; Facilities: 4 workstations, client lounge, high-speed fiber internet, and fire extinguisher. <span class="text-danger">*</span>
+                  Office Equipment &amp; Facilities <span class="text-danger">*</span>
                 </label>
-                <textarea class="form-control form-control-sm" id="fieldA_officeEquipment" rows="2" placeholder="4 workstations, client lounge, high-speed fiber internet, and fire extinguisher maintained." required></textarea>
+                <textarea class="form-control form-control-sm" id="fieldA_officeEquipment" rows="2" placeholder="Workstations, client reception lounge, internet, and safety/fire equipment." required></textarea>
               </div>
             </div>
 
@@ -659,14 +648,14 @@
              ============================================================== -->
         <div id="formContainerB" class="form-config-container d-none">
           
-          <!-- STEP B1: APPLICANT & PREMISES (7 fields) -->
+          <!-- STEP B1: APPLICANT & PREMISES -->
           <section id="step-B-1" class="form-step-section">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 1 of 5</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 1 of 4</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Applicant &amp; Premises</h2>
               </div>
-              <span class="text-muted small">All 7 fields are mandatory</span>
+              <span class="text-muted small">All fields marked with <span class="text-danger">*</span> are mandatory</span>
             </div>
 
             <div class="row g-3">
@@ -757,85 +746,17 @@
                 <i class="bi bi-arrow-left me-1"></i> Back to Instructions
               </a>
               <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(1)">
-                <span>Save &amp; Proceed to Ownership</span>
-                <i class="bi bi-arrow-right"></i>
-              </button>
-            </div>
-          </section>
-
-          <!-- STEP B2: OWNERSHIP & CONSTITUTION (4 fields with conditional logic) -->
-          <section id="step-B-2" class="form-step-section d-none">
-            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-              <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 2 of 5</span>
-                <h2 class="h5 fw-bold text-dark mb-0">Ownership &amp; Constitution</h2>
-              </div>
-              <span class="text-muted small">Conditional fields adapt to business constitution</span>
-            </div>
-
-            <div class="row g-3">
-              <!-- Field 1: Name(s) of Proprietor(s) -->
-              <div class="col-md-6">
-                <label for="fieldB_proprietor" class="form-label small fw-bold text-dark mb-1">
-                  Name(s) of Proprietor(s) <span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control form-control-sm" id="fieldB_proprietor" placeholder="Full name of proprietor(s)" required>
-              </div>
-
-              <!-- Constitution Selection for triggering conditions -->
-              <div class="col-md-6">
-                <label for="fieldB_constitutionType" class="form-label small fw-bold text-dark mb-1">
-                  Establishment Legal Constitution <span class="text-danger">*</span>
-                </label>
-                <select class="form-select form-select-sm" id="fieldB_constitutionType" onchange="handleDealerConstitutionChange(this.value)">
-                  <option value="Proprietorship" selected>Proprietorship Concern</option>
-                  <option value="Partnership">Partnership Concern</option>
-                  <option value="Corporate / Private Limited">Corporate / Private Limited Entity</option>
-                </select>
-              </div>
-
-              <!-- Field 2: Father's Name of Applicant (Conditional: Proprietorship) -->
-              <div class="col-md-6" id="bCondFatherBox">
-                <label for="fieldB_fatherName" class="form-label small fw-bold text-dark mb-1">
-                  Father's Name of Applicant (In case of proprietorship concerns) <span class="badge bg-info-subtle text-info small ms-1">Proprietorship</span>
-                </label>
-                <input type="text" class="form-control form-control-sm" id="fieldB_fatherName" placeholder="Father's full name">
-              </div>
-
-              <!-- Field 3: Name(s) of Partner(s)/ Director(s) (Conditional) -->
-              <div class="col-md-6 d-none" id="bCondPartnerNamesBox">
-                <label for="fieldB_partnerNames" class="form-label small fw-bold text-dark mb-1">
-                  Name(s) of Partner(s)/ Director(s) <span class="badge bg-warning-subtle text-warning-emphasis small ms-1">Partnership / Corporate</span>
-                </label>
-                <input type="text" class="form-control form-control-sm" id="fieldB_partnerNames" placeholder="Names of all partners or corporate directors">
-              </div>
-
-              <!-- Field 4: Certificate of Identification/Domicile Certificate for Partners / Directors -->
-              <div class="col-md-6 d-none" id="bCondPartnerCoiBox">
-                <label for="fieldB_partnerCoi" class="form-label small fw-bold text-dark mb-1">
-                  Certificate of Identification/Domicile Certificate for Partners / Directors <span class="badge bg-warning-subtle text-warning-emphasis small ms-1">Partners / Directors</span>
-                </label>
-                <input type="text" class="form-control form-control-sm" id="fieldB_partnerCoi" placeholder="COI / Domicile Certificate details of partners / directors">
-              </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(1)">
-                <i class="bi bi-arrow-left me-1"></i> Previous
-              </button>
-              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(2)">
                 <span>Save &amp; Proceed to Staff &amp; Business</span>
                 <i class="bi bi-arrow-right"></i>
               </button>
             </div>
           </section>
 
-          <!-- STEP B3: STAFF & BUSINESS (6 standalone fields + repeating DETAILS OF EMPLOYED PERSONS) -->
-          <section id="step-B-3" class="form-step-section d-none">
+          <!-- STEP B2: STAFF & BUSINESS (Ownership verification step removed per approved Dealer rules) -->
+          <section id="step-B-2" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 3 of 5</span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 2 of 4</span>
                 <h2 class="h5 fw-bold text-dark mb-0">Staff &amp; Business</h2>
               </div>
               <span class="text-muted small">Equipment Dealer commercial profile</span>
@@ -919,53 +840,36 @@
 
             <!-- Navigation Buttons -->
             <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(2)">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(1)">
                 <i class="bi bi-arrow-left me-1"></i> Previous
               </button>
-              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(3)">
-                <span>Save &amp; Proceed to Premises &amp; Documents</span>
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(2)">
+                <span>Save &amp; Proceed to Documents</span>
                 <i class="bi bi-arrow-right"></i>
               </button>
             </div>
           </section>
 
-          <!-- STEP B4: PREMISES & DOCUMENTS (10 entries with conditional House Owner NOC) -->
-          <section id="step-B-4" class="form-step-section d-none">
+          <!-- STEP B3: SUPPORTING DOCUMENTS (COI is the only mandatory document) -->
+          <section id="step-B-3" class="form-step-section d-none">
             <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
               <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 4 of 5</span>
-                <h2 class="h5 fw-bold text-dark mb-0">Premises &amp; Documents</h2>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mb-1">Step 3 of 4</span>
+                <h2 class="h5 fw-bold text-dark mb-0">Supporting Documents</h2>
               </div>
-              <span class="text-muted small">Upload statutory trade licenses and clearances</span>
-            </div>
-
-            <!-- Field 1: Is the applicant the owner of the building/shop? -->
-            <div class="p-3 bg-light rounded border mb-4">
-              <label class="form-label small fw-bold text-dark mb-1">
-                Is the applicant the owner of the building/shop? <span class="text-danger">*</span>
-              </label>
-              <div class="d-flex gap-4 pt-1">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="fieldB_ownerBuilding" id="bOwnerYes" value="Yes" onchange="handleDealerOwnerChange(this.value)">
-                  <label class="form-check-label small" for="bOwnerYes">Yes &ndash; Applicant is the Owner</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="fieldB_ownerBuilding" id="bOwnerNo" value="No" checked onchange="handleDealerOwnerChange(this.value)">
-                  <label class="form-check-label small" for="bOwnerNo">No &ndash; Operating from Tenant Establishment</label>
-                </div>
-              </div>
+              <span class="text-muted small">Certificate of Identification (COI) is mandatory; all other documents are optional</span>
             </div>
 
             <div class="row g-3" id="docsGridB">
-              <!-- 9 Documents + Conditional House Owner NOC dynamically rendered -->
+              <!-- COI mandatory + optional clearances rendered dynamically -->
             </div>
 
             <!-- Navigation Buttons -->
             <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(3)">
+              <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-1.5 fw-semibold shadow-xs" onclick="goToStepB(2)">
                 <i class="bi bi-arrow-left me-1"></i> Previous
               </button>
-              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(4)">
+              <button type="button" class="btn btn-sm btn-gov-primary px-4 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="nextStepB(3)">
                 <span>Save &amp; Proceed to Summary</span>
                 <i class="bi bi-arrow-right"></i>
               </button>
@@ -1118,37 +1022,37 @@
                 </select>
               </div>
 
-              <!-- Field 2: Certificate in Photography (Institute/Course Name) -->
+              <!-- Field 2: Outdoor Photography Course / Training (Optional) -->
               <div class="col-md-6">
                 <label for="fieldC_photoCourse" class="form-label small fw-bold text-dark mb-1">
-                  Certificate in Photography (Institute/Course Name) <span class="text-danger">*</span>
+                  Outdoor Photography Training / Course (Institute/Course Name) <span class="badge bg-secondary-subtle text-secondary small">Optional</span>
                 </label>
-                <input type="text" class="form-control form-control-sm" id="fieldC_photoCourse" placeholder="Course Name &amp; Issuing Training Institute" required>
+                <input type="text" class="form-control form-control-sm" id="fieldC_photoCourse" placeholder="Course Name &amp; Issuing Institute (Optional)">
               </div>
 
-              <!-- Field 3: Attach Photography Certificate Copy -->
+              <!-- Field 3: Attach Photography Certificate Copy (Optional) -->
               <div class="col-md-12">
                 <label for="fieldC_photoCertFile" class="form-label small fw-bold text-dark mb-1">
-                  Attach Photography Certificate Copy <span class="text-danger">*</span>
+                  Outdoor Photography Certificate Copy <span class="badge bg-secondary-subtle text-secondary small">Optional</span>
                 </label>
                 <input type="file" class="form-control form-control-sm" id="fieldC_photoCertFile" accept=".pdf,image/*">
-                <div class="text-muted small" style="font-size: 0.75rem;">Clear scan of photography diploma / course certificate (PDF, JPG &bull; Max 5MB).</div>
+                <div class="text-muted small" style="font-size: 0.75rem;">Optional scan of outdoor photography training certificate (PDF, JPG &bull; Max 5MB).</div>
               </div>
 
-              <!-- Field 4: Professional Photography Experience -->
+              <!-- Field 4: Professional Photography Experience (Optional) -->
               <div class="col-md-6">
                 <label for="fieldC_experience" class="form-label small fw-bold text-dark mb-1">
-                  Professional Photography Experience <span class="text-danger">*</span>
+                  Professional Photography Experience <span class="badge bg-secondary-subtle text-secondary small">Optional</span>
                 </label>
-                <textarea class="form-control form-control-sm" id="fieldC_experience" rows="2" placeholder="Years of landscape/outdoor experience, notable published works, client projects" required></textarea>
+                <textarea class="form-control form-control-sm" id="fieldC_experience" rows="2" placeholder="Landscape/outdoor experience or portfolio highlights (Optional)"></textarea>
               </div>
 
-              <!-- Field 5: License issued by Competent Authority -->
+              <!-- Field 5: Paragliding / Competent Authority License (Optional) -->
               <div class="col-md-6">
                 <label for="fieldC_license" class="form-label small fw-bold text-dark mb-1">
-                  License issued by Competent Authority
+                  Paragliding / Competent Authority License <span class="badge bg-secondary-subtle text-secondary small">Optional</span>
                 </label>
-                <input type="text" class="form-control form-control-sm" id="fieldC_license" placeholder="DGCA Drone Pilot License No. / Municipal Trade License (Optional)">
+                <input type="text" class="form-control form-control-sm" id="fieldC_license" placeholder="Paragliding / Drone / Local License No. (Optional)">
               </div>
             </div>
 
@@ -1213,19 +1117,28 @@
             <!-- Rendered via JS -->
           </div>
 
-          <!-- Mandatory Statutory Declaration -->
+          <!-- Mandatory Correction Remarks (Shown only during Resubmission) -->
+          <div class="mb-4 d-none" id="correctionRemarksInputBox">
+            <label for="citizenCorrectionRemarksInput" class="form-label small fw-bold text-dark">
+              Clarification / Correction Remarks for Department Officer <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control form-control-sm" id="citizenCorrectionRemarksInput" rows="2" placeholder="Describe the corrections made or documents updated..."></textarea>
+          </div>
+
+          <!-- Mandatory Terms & Conditions, Sustainable Tourism Guidance & Statutory Undertaking -->
           <div class="p-3 bg-light rounded border border-2 border-primary-subtle mb-4">
             <h3 class="h6 fw-bold text-dark mb-2">
-              <i class="bi bi-shield-check text-primary me-1"></i> Statutory Declaration &amp; Undertaking:
+              <i class="bi bi-shield-check text-primary me-1"></i> Terms &amp; Conditions, Sustainable Tourism Guidelines &amp; Statutory Undertaking:
             </h3>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="chkFinalDeclaration" onchange="handleDeclarationChange(this)">
               <label class="form-check-label text-dark small" for="chkFinalDeclaration">
-                <strong>I hereby solemnly declare that:</strong><br>
+                <strong>I hereby solemnly declare &amp; undertake that:</strong><br>
                 1. All statements, particulars, and documents submitted in this application are true, authentic, and correct to the best of my knowledge.<br>
                 2. I agree to abide by the Sikkim Registration of Tourist Trade Rules and all departmental guidelines issued from time to time.<br>
-                3. I acknowledge that any false declaration or forged document shall render this registration void ab initio and liable for penal action.<br>
-                4. For Dealer applications, I agree to allow the Level 1 Inspecting Authority (IA) to inspect the commercial premises and outdoor equipment inventory.
+                3. <strong>Sustainable Tourism, Visitor Safety &amp; Insurance Guidance:</strong> I undertake to promote eco-friendly and sustainable tourism practices (zero single-use plastic, Leave-No-Trace principles, responsible waste management) and ensure adherence to prescribed safety and passenger/third-party insurance norms during operations.<br>
+                4. <strong>Dealer &amp; Operator Premises Inspection Undertaking:</strong> For Travel Agent / Tour Operator and Dealer applications, I undertake to follow all safety guidelines and permit the Inspecting Authority (IA) to inspect business premises and equipment.<br>
+                5. Statutory registration fee payment shall be completed online upon DTO initial verification &amp; payment approval.
               </label>
             </div>
           </div>
@@ -1361,42 +1274,44 @@
         { name: "Sonam Gyatso", edu: "Graduate (B.Com)", tech: "Outdoor Gear Safety & Equipment Maintenance (UIAA)" }
       ];
 
-      // Document Definitions
+      let activeCorrectionApp = null;
+
+      // Document Definitions (Aligned with Approved Section G Rules)
       const DOCS_A = [
         { id: "docA_1", name: "Passport Format Photograph", mandatory: true },
         { id: "docA_2", name: "Residential Proof: Domicile / COI / RC", mandatory: true },
-        { id: "docA_3", name: "Supporting Qualification / Training Certificate (Applicant)", mandatory: true },
-        { id: "docA_4", name: "Supporting Qualification Document (for Employees)", mandatory: true },
-        { id: "docA_5", name: "Attested Qualification Certificate (Min. Class 10 Pass)", mandatory: true },
-        { id: "docA_6", name: "NOC from Ward / Panchayat / Councillor", mandatory: true },
-        { id: "docA_7", name: "Memorandum of Association / Society / Firm Deed", mandatory: true },
-        { id: "docA_8", name: "Affidavit from Oath Commissioner", mandatory: true },
-        { id: "docA_9", name: "GST Clearance Certificate (If applicable)", mandatory: false },
-        { id: "docA_10", name: "Aadhaar Card", mandatory: true },
-        { id: "docA_11", name: "Identity and address proof of promoter/manager", mandatory: true },
-        { id: "docA_12", name: "Pan Card", mandatory: true },
-        { id: "docA_13", name: "Office Premises Photographs (Max 3)", mandatory: true, isMulti: true }
+        { id: "docA_pay", name: "Payment Proof / Statutory Challan (Optional at filing; completed online post DTO approval)", mandatory: false },
+        { id: "docA_3", name: "Supporting Qualification / Training Certificate (Applicant)", mandatory: false },
+        { id: "docA_4", name: "Supporting Qualification Document (for Employees)", mandatory: false },
+        { id: "docA_5", name: "Attested Qualification Certificate (Min. Class 10 Pass)", mandatory: false },
+        { id: "docA_6", name: "NOC from Ward / Panchayat / Councillor", mandatory: false },
+        { id: "docA_7", name: "Memorandum of Association / Society / Firm Deed", mandatory: false },
+        { id: "docA_8", name: "Affidavit from Oath Commissioner", mandatory: false },
+        { id: "docA_9", name: "GST Clearance Certificate", mandatory: false },
+        { id: "docA_10", name: "Aadhaar Card", mandatory: false },
+        { id: "docA_11", name: "Identity and address proof of promoter/manager", mandatory: false },
+        { id: "docA_12", name: "PAN Card", mandatory: false },
+        { id: "docA_13", name: "Office Premises Photographs (Max 3)", mandatory: false, isMulti: true }
       ];
 
+      // Dealer: COI is the ONLY mandatory document; all others optional; Legal Contract removed
       const DOCS_B = [
-        { id: "docB_1", name: "SSC/COI/RC", mandatory: true },
-        { id: "docB_2", name: "Occupancy Certificate / Parcha / Lease Deed", mandatory: true },
-        { id: "docB_3", name: "NOC from House Owner (Conditional Requirement: Tenant Establishment)", mandatory: true, isConditional: true },
-        { id: "docB_4", name: "NOC from Fire, Health, Energy, Power, Labour & PHE", mandatory: true },
-        { id: "docB_5", name: "Memorandum of Association / Society / Firm Deed", mandatory: true },
-        { id: "docB_6", name: "PAN Card, Aadhaar and GST", mandatory: true },
-        { id: "docB_7", name: "Identity Proof of Promoter/Manager", mandatory: true },
-        { id: "docB_8", name: "Agreement Undertaking for Carrying out Operations", mandatory: true },
-        { id: "docB_9", name: "NOC from Commercial Tax Department (GST)", mandatory: true }
+        { id: "docB_1", name: "Certificate of Identification (COI)", mandatory: true },
+        { id: "docB_2", name: "Occupancy Certificate / Parcha / Lease Deed", mandatory: false },
+        { id: "docB_3", name: "NOC from House Owner", mandatory: false },
+        { id: "docB_4", name: "NOC from Fire, Health, Energy, Power, Labour & PHE", mandatory: false },
+        { id: "docB_5", name: "PAN Card & Aadhaar", mandatory: false },
+        { id: "docB_6", name: "Identity Proof of Promoter/Manager", mandatory: false }
       ];
 
+      // Outdoor Photographer: GST removed; Education, Recommendation, Experience, Training & Paragliding Optional (COI Mandatory)
       const DOCS_C = [
-        { id: "docC_1", name: "Sikkim Subject / Certificate of Identification", mandatory: true },
-        { id: "docC_2", name: "Education Qualification Certificate (Min. Class X)", mandatory: true },
-        { id: "docC_3", name: "Photography Training Certificate", mandatory: true },
-        { id: "docC_4", name: "Experience Certificate", mandatory: false },
-        { id: "docC_5", name: "Panchayat/Councillor Recommendation", mandatory: true },
-        { id: "docC_6", name: "GST Clearance Certificate", mandatory: true }
+        { id: "docC_1", name: "Sikkim Subject / Certificate of Identification (COI)", mandatory: true },
+        { id: "docC_2", name: "Education Qualification Certificate (Min. Class X)", mandatory: false },
+        { id: "docC_5", name: "Panchayat / Councillor Recommendation", mandatory: false },
+        { id: "docC_3", name: "Outdoor Photography Training Certificate", mandatory: false },
+        { id: "docC_4", name: "Photography Experience Certificate", mandatory: false },
+        { id: "docC_7", name: "Paragliding / Adventure Activity Credential", mandatory: false }
       ];
 
       // Stepper Definitions
@@ -1410,10 +1325,9 @@
         ],
         'B': [
           { num: 1, title: "Applicant & Premises" },
-          { num: 2, title: "Ownership & Constitution" },
-          { num: 3, title: "Staff & Business" },
-          { num: 4, title: "Premises & Documents" },
-          { num: 5, title: "Summary & Declaration" }
+          { num: 2, title: "Staff & Business" },
+          { num: 3, title: "Documents" },
+          { num: 4, title: "Summary & Declaration" }
         ],
         'C': [
           { num: 1, title: "Applicant Details" },
@@ -1423,9 +1337,11 @@
         ]
       };
 
-      // Initialize on load
+      // Initialize once on load
+      let formInitialized = false;
       function initApplicationForm() {
-        initFormRouting();
+        if (formInitialized) return;
+        formInitialized = true;
         renderDocumentsGridA();
         renderDocumentsGridB();
         renderDocumentsGridC();
@@ -1433,25 +1349,52 @@
         renderStaffA();
         renderEmployeesB();
         prepopulateDefaults();
+        initFormRouting();
       }
-
-      // Initial Synchronous Execution
-      initApplicationForm();
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initApplicationForm);
+      } else {
+        initApplicationForm();
       }
-      window.addEventListener('load', initApplicationForm);
 
       function initFormRouting() {
         const urlParams = new URLSearchParams(window.location.search);
+        const refParam = urlParams.get('ref') || urlParams.get('arn');
         let typeParam = urlParams.get('type') || urlParams.get('category');
         if (typeParam === 'tour-operator' || typeParam === 'travel-agent') typeParam = 'ta-to';
+
+        // Check if opening a returned application in Correction / Resubmit Mode
+        if (refParam && window.WorkflowEngine) {
+          const existingApp = WorkflowEngine.getApplication(refParam);
+          if (existingApp) {
+            activeCorrectionApp = existingApp;
+            const cat = (existingApp.category === 'tour-operator' || existingApp.category === 'travel-agent') ? 'ta-to' : (existingApp.category || 'ta-to');
+            activeType = cat;
+            applyCategoryConfiguration(cat);
+            activateCorrectionMode(existingApp);
+            return;
+          }
+        }
+
+        const draftParam = urlParams.get('draftId');
+        const agreedFlag = urlParams.get('agreed') === '1';
+        let sessionAgreed = false;
+        try {
+          sessionAgreed = sessionStorage.getItem('tourism_instructions_agreed') === '1';
+          if (sessionAgreed) sessionStorage.removeItem('tourism_instructions_agreed');
+        } catch (err) {}
+
+        // Compulsory instruction-page gate for all new applications
+        if (!draftParam && !agreedFlag && !sessionAgreed) {
+          window.location.replace('instructions.html' + (typeParam ? '?type=' + encodeURIComponent(typeParam) : ''));
+          return;
+        }
+
         if (typeParam) {
           activeType = typeParam;
         }
 
-        const draftParam = urlParams.get('draftId');
         if (draftParam) {
           activeDraftId = draftParam;
           loadDraft(draftParam);
@@ -1464,6 +1407,57 @@
         if (catSelect) catSelect.value = activeType;
 
         applyCategoryConfiguration(activeType);
+      }
+
+      function activateCorrectionMode(app) {
+        const banner = document.getElementById('correctionModeBanner');
+        if (banner) banner.classList.remove('d-none');
+        const arnBadge = document.getElementById('correctionArnBadge');
+        if (arnBadge) arnBadge.textContent = app.refNo;
+        const retBy = document.getElementById('correctionReturnedBy');
+        if (retBy) retBy.textContent = app.returnedBy || 'Department Officer';
+        const remEl = document.getElementById('correctionOfficerRemarks');
+        if (remEl) remEl.textContent = app.returnRemarks || app.latestRemarks || 'Please update requested information and resubmit.';
+
+        document.getElementById('headerDraftRef').textContent = app.refNo;
+        const catSelect = document.getElementById('quickCategorySelect');
+        if (catSelect) catSelect.disabled = true;
+
+        const remBox = document.getElementById('correctionRemarksInputBox');
+        if (remBox) remBox.classList.remove('d-none');
+        const remInput = document.getElementById('citizenCorrectionRemarksInput');
+        if (remInput) remInput.value = 'Updated requested details and supporting documentation as instructed.';
+
+        const lbl = document.getElementById('btnSubmitLabel');
+        if (lbl) lbl.textContent = `Resubmit Application (${app.refNo})`;
+
+        // Prefill fields from existing persisted application
+        const cat = (app.category || 'ta-to').toLowerCase();
+        if (cat === 'dealer') {
+          if (app.businessName) document.getElementById('fieldB_premisesName').value = app.businessName;
+          if (app.district) document.getElementById('fieldB_district').value = app.district;
+          if (app.phone) document.getElementById('fieldB_phone').value = app.phone;
+          if (app.email) document.getElementById('fieldB_email').value = app.email;
+          if (app.shopAddress) document.getElementById('fieldB_premisesAddress').value = app.shopAddress;
+          if (app.applicantName) document.getElementById('fieldB_personsConcerned').value = app.applicantName;
+          if (app.residentialProof) document.getElementById('fieldB_coi').value = app.residentialProof;
+        } else if (cat === 'outdoor-photographer') {
+          if (app.applicantName) document.getElementById('fieldC_applicantName').value = app.applicantName;
+          if (app.district) document.getElementById('fieldC_district').value = app.district;
+          if (app.phone && document.getElementById('fieldC_phone')) document.getElementById('fieldC_phone').value = app.phone;
+          if (app.email && document.getElementById('fieldC_email')) document.getElementById('fieldC_email').value = app.email;
+          if (app.residentialProof) document.getElementById('fieldC_coi').value = app.residentialProof;
+          if (app.address && document.getElementById('fieldC_resAddress')) document.getElementById('fieldC_resAddress').value = app.address;
+        } else {
+          if (app.applicantName) document.getElementById('fieldA_applicantName').value = app.applicantName;
+          if (app.businessName) document.getElementById('fieldA_firmName').value = app.businessName;
+          if (app.district) document.getElementById('fieldA_district').value = app.district;
+          if (app.phone) document.getElementById('fieldA_phone').value = app.phone;
+          if (app.email) document.getElementById('fieldA_email').value = app.email;
+          if (app.address) document.getElementById('fieldA_address').value = app.address;
+          if (app.residentialProof) document.getElementById('fieldA_residentialProof').value = app.residentialProof;
+          if (app.officeAddress) document.getElementById('fieldA_officeAddress').value = app.officeAddress;
+        }
       }
 
       function generateDraftId() {
@@ -1574,7 +1568,7 @@
           }
         });
 
-        const totalFormSteps = (activeConfig === 'C') ? 3 : 4;
+        const totalFormSteps = (activeConfig === 'A') ? 4 : 3;
 
         if (stepNum <= totalFormSteps) {
           const activeSec = document.getElementById(`step-${activeConfig}-${stepNum}`);
@@ -1607,7 +1601,7 @@
       window.goToStepC = function (stepNum) { goToStep(stepNum); };
 
       window.returnFromSummary = function () {
-        const lastStep = (activeConfig === 'C') ? 3 : 4;
+        const lastStep = (activeConfig === 'A') ? 4 : 3;
         goToStep(lastStep);
       };
 
@@ -1874,7 +1868,7 @@
                 <div>
                   <div class="d-flex justify-content-between align-items-start mb-1">
                     <span class="small fw-bold text-dark">${d.name}</span>
-                    <span class="doc-mand-badge">${d.isConditional ? '<span class="badge bg-danger">Mandatory for Tenant</span>' : '<span class="text-danger small">*</span>'}</span>
+                    <span class="doc-mand-badge">${d.mandatory ? '<span class="text-danger small">*</span>' : '<span class="badge bg-secondary-subtle text-secondary small">Optional</span>'}</span>
                   </div>
                   <div class="file-dropzone-box py-2 px-2 mt-2" onclick="document.getElementById('input_${d.id}').click()">
                     <i class="bi bi-cloud-arrow-up text-warning-emphasis fs-4 d-block mb-1"></i>
@@ -1973,7 +1967,7 @@
                   <div class="col-sm-4 text-muted">District &bull; Contact:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_district').value || 'N/A'} &bull; ${document.getElementById('fieldA_phone').value || 'N/A'} &bull; ${document.getElementById('fieldA_email').value || 'N/A'}</div>
                   <div class="col-sm-4 text-muted">Website:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_website').value || 'None'}</div>
                   <div class="col-sm-4 text-muted">Qualifications:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_eduQualification').value || 'N/A'} (Academic) &bull; ${document.getElementById('fieldA_techQualification').value || 'N/A'} (Technical)</div>
-                  <div class="col-sm-4 text-muted">Tourism Training:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_training').value || 'N/A'}</div>
+                  <div class="col-sm-4 text-muted">Tourism Training Attended:</div><div class="col-sm-8 text-dark">${(document.querySelector('input[name="fieldA_trainingYn"]:checked') || {}).value || 'Yes'}</div>
                 </div>
               </div>
             </div>
@@ -1989,10 +1983,8 @@
                   <div class="col-sm-4 text-muted">Constitution &bull; Ownership:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_constitution').value || 'N/A'} &bull; ${document.getElementById('fieldA_ownership').value || 'N/A'}</div>
                   <div class="col-sm-4 text-muted">Partners / Directors:</div><div class="col-sm-8 text-dark">${partnersA.map(p => `${p.name} (${p.role})`).join(', ')}</div>
                   <div class="col-sm-4 text-muted">Office Location &amp; Standard:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_officeAddress').value || 'N/A'} &bull; ${document.getElementById('fieldA_officeSizeStandard').value || 'N/A'}</div>
-                  <div class="col-sm-4 text-muted">Affiliation &bull; Category:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_association').value || 'None'} &bull; <span class="badge bg-primary-subtle text-primary">${document.getElementById('fieldA_categoryApplied').value}</span></div>
+                  <div class="col-sm-4 text-muted">Affiliation (Optional) &bull; Category:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_association').value || 'Not Provided'} &bull; <span class="badge bg-primary-subtle text-primary">${document.getElementById('fieldA_categoryApplied').value}</span></div>
                   <div class="col-sm-4 text-muted">Activities &bull; Summary:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_activitiesSummary').value || 'N/A'}</div>
-                  <div class="col-sm-4 text-muted">Insurances (Company / Guest):</div><div class="col-sm-8 text-dark">Company Liability: ${document.querySelector('input[name="fieldA_insuranceCompany"]:checked').value} &bull; Guest Coverage: ${document.querySelector('input[name="fieldA_insuranceGuest"]:checked').value}</div>
-                  <div class="col-sm-4 text-muted">Eco Practices:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_ecoPractices').value || 'N/A'}</div>
                   <div class="col-sm-4 text-muted">Equipment &amp; Facilities:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldA_officeEquipment').value || 'N/A'}</div>
                 </div>
               </div>
@@ -2012,12 +2004,12 @@
 
             <div class="card border shadow-xs bg-white rounded-3 mb-3">
               <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
-                <strong class="text-dark"><i class="bi bi-paperclip text-primary me-1"></i> 4. Uploaded Documents (13 Items)</strong>
+                <strong class="text-dark"><i class="bi bi-paperclip text-primary me-1"></i> 4. Supporting Documents (${DOCS_A.length} Items)</strong>
                 <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepA(4)"><i class="bi bi-pencil me-1"></i>Edit</button>
               </div>
               <div class="card-body p-3 small">
                 <div class="row g-2">
-                  ${DOCS_A.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge bg-light text-secondary border">Uploaded / Attached</span></div>`).join('')}
+                  ${DOCS_A.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge ${d.mandatory ? 'bg-primary-subtle text-primary' : 'bg-light text-secondary'} border">${d.mandatory ? 'Mandatory' : 'Optional'}</span></div>`).join('')}
                 </div>
               </div>
             </div>
@@ -2043,27 +2035,12 @@
 
             <div class="card border shadow-xs bg-white rounded-3 mb-3">
               <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
-                <strong class="text-dark"><i class="bi bi-briefcase text-warning-emphasis me-1"></i> 2. Ownership &amp; Constitution</strong>
+                <strong class="text-dark"><i class="bi bi-people text-warning-emphasis me-1"></i> 2. Staff &amp; Business</strong>
                 <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(2)"><i class="bi bi-pencil me-1"></i>Edit</button>
               </div>
               <div class="card-body p-3 small">
                 <div class="row g-2">
-                  <div class="col-sm-4 text-muted">Proprietor Name(s):</div><div class="col-sm-8 fw-bold text-dark">${document.getElementById('fieldB_proprietor').value || 'N/A'}</div>
-                  <div class="col-sm-4 text-muted">Constitution:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_constitutionType').value || 'N/A'}</div>
-                  ${document.getElementById('fieldB_constitutionType').value === 'Proprietorship' ? `<div class="col-sm-4 text-muted">Father's Name:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_fatherName').value || 'N/A'}</div>` : ''}
-                  ${document.getElementById('fieldB_constitutionType').value !== 'Proprietorship' ? `<div class="col-sm-4 text-muted">Partners / Directors:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_partnerNames').value || 'N/A'} &bull; COI: ${document.getElementById('fieldB_partnerCoi').value || 'N/A'}</div>` : ''}
-                </div>
-              </div>
-            </div>
-
-            <div class="card border shadow-xs bg-white rounded-3 mb-3">
-              <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
-                <strong class="text-dark"><i class="bi bi-people text-warning-emphasis me-1"></i> 3. Staff &amp; Business</strong>
-                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
-              </div>
-              <div class="card-body p-3 small">
-                <div class="row g-2">
-                  <div class="col-sm-4 text-muted">English Fluency:</div><div class="col-sm-8 text-dark">${document.querySelector('input[name="fieldB_englishFluent"]:checked').value}</div>
+                  <div class="col-sm-4 text-muted">English Fluency:</div><div class="col-sm-8 text-dark">${(document.querySelector('input[name="fieldB_englishFluent"]:checked') || {}).value || 'Yes'}</div>
                   <div class="col-sm-4 text-muted">Foreign Languages:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_foreignLanguages').value || 'None'}</div>
                   <div class="col-sm-4 text-muted">Shop Act License No:</div><div class="col-sm-8 font-monospace text-dark">${document.getElementById('fieldB_shopActLicense').value || 'N/A'}</div>
                   <div class="col-sm-4 text-muted">Contact Details:</div><div class="col-sm-8 text-dark">${document.getElementById('fieldB_phone').value || 'N/A'} &bull; ${document.getElementById('fieldB_email').value || 'N/A'} &bull; ${document.getElementById('fieldB_website').value || 'None'}</div>
@@ -2079,13 +2056,12 @@
 
             <div class="card border shadow-xs bg-white rounded-3 mb-3">
               <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
-                <strong class="text-dark"><i class="bi bi-paperclip text-warning-emphasis me-1"></i> 4. Premises &amp; Documents</strong>
-                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(4)"><i class="bi bi-pencil me-1"></i>Edit</button>
+                <strong class="text-dark"><i class="bi bi-paperclip text-warning-emphasis me-1"></i> 3. Supporting Documents (${DOCS_B.length} Items)</strong>
+                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="goToStepB(3)"><i class="bi bi-pencil me-1"></i>Edit</button>
               </div>
               <div class="card-body p-3 small">
-                <div class="mb-2">Owner of building/shop: <strong>${document.querySelector('input[name="fieldB_ownerBuilding"]:checked').value}</strong></div>
                 <div class="row g-2">
-                  ${DOCS_B.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge bg-light text-secondary border">Attached</span></div>`).join('')}
+                  ${DOCS_B.map(d => `<div class="col-md-6"><i class="bi bi-file-earmark-check text-success me-1"></i>${d.name}: <span class="badge ${d.mandatory ? 'bg-primary-subtle text-primary' : 'bg-light text-secondary'} border">${d.mandatory ? 'Mandatory' : 'Optional'}</span></div>`).join('')}
                 </div>
               </div>
             </div>
@@ -2145,83 +2121,135 @@
       // FINAL SUBMISSION EXECUTION
       // ------------------------------------------------------------------
       window.executeFinalSubmission = function () {
-        let code = 'TO';
+        let code = 'TATO';
         let entName = 'Registered Entity';
         let applicant = 'Applicant';
         let district = 'Gangtok';
         let phone = '9832000000';
         let email = 'applicant@example.in';
+        let extraDetails = {};
 
         if (activeType === 'ta-to' || activeType === 'tour-operator' || activeType === 'travel-agent') {
-          code = 'TO';
+          code = 'TATO';
           entName = (document.getElementById('fieldA_firmName') && document.getElementById('fieldA_firmName').value) || 'Sikkim Travel Agent / Tour Operator';
           applicant = (document.getElementById('fieldA_applicantName') && document.getElementById('fieldA_applicantName').value) || entName;
           district = (document.getElementById('fieldA_district') && document.getElementById('fieldA_district').value) || 'Gangtok';
           phone = (document.getElementById('fieldA_phone') && document.getElementById('fieldA_phone').value) || phone;
           email = (document.getElementById('fieldA_email') && document.getElementById('fieldA_email').value) || email;
+          extraDetails = {
+            residentialProof: document.getElementById('fieldA_residentialProof')?.value || '',
+            address: document.getElementById('fieldA_address')?.value || '',
+            website: document.getElementById('fieldA_website')?.value || '',
+            eduQualification: document.getElementById('fieldA_eduQualification')?.value || '',
+            techQualification: document.getElementById('fieldA_techQualification')?.value || '',
+            trainingAttended: (document.querySelector('input[name="fieldA_trainingYn"]:checked') || {}).value || 'Yes',
+            constitution: document.getElementById('fieldA_constitution')?.value || 'Proprietorship',
+            ownership: document.getElementById('fieldA_ownership')?.value || '',
+            officeAddress: document.getElementById('fieldA_officeAddress')?.value || '',
+            officeSizeStandard: document.getElementById('fieldA_officeSizeStandard')?.value || '',
+            association: document.getElementById('fieldA_association')?.value || 'Optional / Not Specified',
+            activitiesSummary: document.getElementById('fieldA_activitiesSummary')?.value || '',
+            officeEquipment: document.getElementById('fieldA_officeEquipment')?.value || '',
+            partners: partnersA,
+            staff: staffA
+          };
         } else if (activeType === 'dealer') {
           code = 'DLR';
           entName = (document.getElementById('fieldB_premisesName') && document.getElementById('fieldB_premisesName').value) || 'Outdoor Equipment Hub';
-          applicant = (document.getElementById('fieldB_proprietor') && document.getElementById('fieldB_proprietor').value) || entName;
+          applicant = (document.getElementById('fieldB_personsConcerned') && document.getElementById('fieldB_personsConcerned').value.split(',')[0].trim()) || entName;
           district = (document.getElementById('fieldB_district') && document.getElementById('fieldB_district').value) || 'Gangtok';
           phone = (document.getElementById('fieldB_phone') && document.getElementById('fieldB_phone').value) || phone;
           email = (document.getElementById('fieldB_email') && document.getElementById('fieldB_email').value) || email;
+          extraDetails = {
+            residentialProof: document.getElementById('fieldB_coi')?.value || '',
+            shopAddress: document.getElementById('fieldB_premisesAddress')?.value || '',
+            touristArea: document.getElementById('fieldB_touristArea')?.value || '',
+            shopActLicense: document.getElementById('fieldB_shopActLicense')?.value || '',
+            employees: employeesB
+          };
         } else if (activeType === 'outdoor-photographer') {
           code = 'PHO';
           applicant = (document.getElementById('fieldC_applicantName') && document.getElementById('fieldC_applicantName').value) || 'Professional Photographer';
-          entName = (document.getElementById('fieldC_studioName') && document.getElementById('fieldC_studioName').value) || (applicant + ' Photography');
+          entName = applicant + ' Photography';
           district = (document.getElementById('fieldC_district') && document.getElementById('fieldC_district').value) || 'Gangtok';
           phone = (document.getElementById('fieldC_phone') && document.getElementById('fieldC_phone').value) || phone;
           email = (document.getElementById('fieldC_email') && document.getElementById('fieldC_email').value) || email;
+          extraDetails = {
+            residentialProof: document.getElementById('fieldC_coi')?.value || '',
+            address: document.getElementById('fieldC_resAddress')?.value || '',
+            eduQualification: document.getElementById('fieldC_eduQualification')?.value || '',
+            photoCourse: document.getElementById('fieldC_photoCourse')?.value || 'Optional / Not Specified',
+            experience: document.getElementById('fieldC_experience')?.value || 'Optional / Not Specified',
+            license: document.getElementById('fieldC_license')?.value || 'Optional / Not Specified'
+          };
         }
 
-        const finalArn = generateArn(code);
+        let targetDocs = (activeConfig === 'A') ? DOCS_A : ((activeConfig === 'B') ? DOCS_B : DOCS_C);
+        const uploadedDocuments = targetDocs.map(d => {
+          const inp = document.getElementById(`input_${d.id}`);
+          const fileObj = (inp && inp.files && inp.files[0]) ? inp.files[0] : null;
+          return {
+            name: d.name,
+            code: d.code || d.id,
+            mandatory: Boolean(d.mandatory),
+            file: fileObj ? fileObj.name : (d.mandatory ? `${d.id}_uploaded.pdf` : 'Not uploaded (Optional)'),
+            size: fileObj ? `${Math.max(1, Math.round(fileObj.size / 1024))} KB` : (d.mandatory ? '1.2 MB' : '—'),
+            status: (fileObj || d.mandatory) ? 'ATTACHED' : 'OPTIONAL_SKIPPED'
+          };
+        });
+
         const now = new Date();
         const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        document.getElementById('ackArnValue').textContent = finalArn;
-        document.getElementById('ackCategoryBadge').textContent = document.getElementById('formHeaderTitle').textContent;
-        document.getElementById('ackEnterpriseName').textContent = entName;
-        document.getElementById('ackSubmissionTimestamp').textContent = dateStr;
-
-        // Populate doc list in ack
-        let docListHtml = '';
-        let targetDocs = (activeConfig === 'A') ? DOCS_A : ((activeConfig === 'B') ? DOCS_B : DOCS_C);
-        targetDocs.forEach(d => {
-          docListHtml += `<li><i class="bi bi-check2 text-success me-1"></i> ${d.name}</li>`;
-        });
-        document.getElementById('ackDocsList').innerHTML = docListHtml;
-
-        // Save submitted record to localStorage & WorkflowEngine
-        try {
-          const submittedRecord = {
-            refNo: finalArn,
-            category: activeType,
-            categoryName: document.getElementById('formHeaderTitle').textContent,
+        let finalArn = '';
+        if (activeCorrectionApp) {
+          finalArn = activeCorrectionApp.refNo;
+          const corRemarks = (document.getElementById('citizenCorrectionRemarksInput') && document.getElementById('citizenCorrectionRemarksInput').value.trim()) || 'Updated details and resubmitted corrected application.';
+          const res = WorkflowEngine.citizenResubmit(finalArn, Object.assign({}, extraDetails, {
             businessName: entName,
             applicantName: applicant,
             district: district,
             phone: phone,
             email: email,
-            submittedDate: dateStr,
-            status: "Submitted",
-            currentStage: "Level 0: Pending TO Verification",
-            assignedRole: "TO"
-          };
-
-          if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.createApplication === 'function') {
-            WorkflowEngine.createApplication(submittedRecord);
+            uploadedDocuments: uploadedDocuments
+          }), corRemarks);
+          if (!res || !res.success) {
+            alert((res && res.message) || 'Could not resubmit application.');
+            return;
           }
-
-          const existing = JSON.parse(localStorage.getItem('tourism_business_submitted') || '[]');
-          existing.unshift(submittedRecord);
-          localStorage.setItem('tourism_business_submitted', JSON.stringify(existing));
-        } catch (e) {
-          console.warn("Storage save failed:", e);
+        } else {
+          finalArn = generateArn(code);
+          const submittedRecord = Object.assign({}, extraDetails, {
+            refNo: finalArn,
+            category: activeType,
+            categoryName: (activeType === 'dealer' ? 'Dealer' : (activeType === 'outdoor-photographer' ? 'Outdoor Photographer' : 'Travel Agent / Tour Operator')),
+            businessName: entName,
+            applicantName: applicant,
+            district: district,
+            phone: phone,
+            email: email,
+            uploadedDocuments: uploadedDocuments,
+            submittedDate: dateStr
+          });
+          WorkflowEngine.createApplication(submittedRecord);
         }
 
-        // Jump to Ack step directly upon successful form submission
-        const totalFormSteps = (activeConfig === 'C') ? 3 : 4;
+        document.getElementById('ackArnValue').textContent = finalArn;
+        document.getElementById('ackCategoryBadge').textContent = document.getElementById('formHeaderTitle').textContent;
+        document.getElementById('ackEnterpriseName').textContent = entName;
+        document.getElementById('ackSubmissionTimestamp').textContent = dateStr;
+        const distAckEl = document.getElementById('ackDistrictName');
+        if (distAckEl) distAckEl.textContent = `${district} Circle`;
+        const stAckEl = document.getElementById('ackStatusBadge');
+        if (stAckEl) stAckEl.textContent = activeCorrectionApp ? 'Resubmitted to TO Verification' : 'Submitted – Pending TO Verification';
+
+        let docListHtml = '';
+        uploadedDocuments.filter(d => d.status === 'ATTACHED').forEach(d => {
+          docListHtml += `<li><i class="bi bi-check2 text-success me-1"></i> ${d.name} (${d.file})</li>`;
+        });
+        document.getElementById('ackDocsList').innerHTML = docListHtml;
+
+        const totalFormSteps = (activeConfig === 'A') ? 4 : 3;
         goToStep(totalFormSteps + 2);
       };
 
@@ -2268,14 +2296,11 @@ You can safely resume this application at any time from your citizen dashboard.`
         if (document.getElementById('fieldA_email')) document.getElementById('fieldA_email').value = 'tenzing.lepcha@example.in';
         if (document.getElementById('fieldA_eduQualification')) document.getElementById('fieldA_eduQualification').value = 'Graduate in Arts (BA)';
         if (document.getElementById('fieldA_techQualification')) document.getElementById('fieldA_techQualification').value = 'Post Graduate Diploma in Tourism & Travel Management';
-        if (document.getElementById('fieldA_training')) document.getElementById('fieldA_training').value = 'Certificate in Adventure Tourism & Safety Operations, Sikkim Tourism Development';
         if (document.getElementById('fieldA_firmName')) document.getElementById('fieldA_firmName').value = 'Singalila Eco-Tours Sikkim';
         if (document.getElementById('fieldA_officeAddress')) document.getElementById('fieldA_officeAddress').value = 'Shop #4, Ridge View Complex, MG Marg, Gangtok, Sikkim';
         if (document.getElementById('fieldA_officeSizeStandard')) document.getElementById('fieldA_officeSizeStandard').value = '350 sq.ft commercial office with client consultation lounge and digital ticketing counter';
-        if (document.getElementById('fieldA_association')) document.getElementById('fieldA_association').value = 'Travel Agents Association of Sikkim (TAAS) & SATO';
         if (document.getElementById('fieldA_activitiesSummary')) document.getElementById('fieldA_activitiesSummary').value = 'Specialized in guided eco-treks along Singalila Ridge, Goecha La circuits, and nature tourism packages.';
         if (document.getElementById('fieldA_experienceDetails')) document.getElementById('fieldA_experienceDetails').value = 'Over 8 years experience in organising high-altitude trekking and corporate tourist groups in Sikkim.';
-        if (document.getElementById('fieldA_ecoPractices')) document.getElementById('fieldA_ecoPractices').value = 'Strict zero-plastic policy, Leave-No-Trace trail ethics, and solar-powered camp logistics.';
         if (document.getElementById('fieldA_officeEquipment')) document.getElementById('fieldA_officeEquipment').value = '4 workstations, client lounge, high-speed fiber internet, and fire extinguisher.';
 
         // Dealer Defaults
@@ -2283,8 +2308,6 @@ You can safely resume this application at any time from your citizen dashboard.`
         if (document.getElementById('fieldB_premisesAddress')) document.getElementById('fieldB_premisesAddress').value = 'Shop #14, Super Market Complex, Gangtok, Sikkim – 737101';
         if (document.getElementById('fieldB_personsConcerned')) document.getElementById('fieldB_personsConcerned').value = 'Tenzing Norbu Lepcha, Resident of Ridge Park, Gangtok';
         if (document.getElementById('fieldB_coi')) document.getElementById('fieldB_coi').value = 'COI/GTK/2014/9912';
-        if (document.getElementById('fieldB_proprietor')) document.getElementById('fieldB_proprietor').value = 'Tenzing Norbu Lepcha';
-        if (document.getElementById('fieldB_fatherName')) document.getElementById('fieldB_fatherName').value = 'Late Dorjee Tshering Lepcha';
         if (document.getElementById('fieldB_shopActLicense')) document.getElementById('fieldB_shopActLicense').value = 'GMC/SHOP/2026/4412';
         if (document.getElementById('fieldB_phone')) document.getElementById('fieldB_phone').value = '9832045612';
         if (document.getElementById('fieldB_email')) document.getElementById('fieldB_email').value = 'contact@kanchenjungagear.in';
@@ -2296,8 +2319,6 @@ You can safely resume this application at any time from your citizen dashboard.`
         if (document.getElementById('fieldC_phone')) document.getElementById('fieldC_phone').value = '9832045612';
         if (document.getElementById('fieldC_resAddress')) document.getElementById('fieldC_resAddress').value = 'Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101';
         if (document.getElementById('fieldC_permAddress')) document.getElementById('fieldC_permAddress').value = 'Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101';
-        if (document.getElementById('fieldC_photoCourse')) document.getElementById('fieldC_photoCourse').value = 'Diploma in Outdoor & Landscape Photography, Himalayan Institute';
-        if (document.getElementById('fieldC_experience')) document.getElementById('fieldC_experience').value = '6 years commercial landscape and cultural documentation across Sikkim Himalayas.';
       }
 
     })();

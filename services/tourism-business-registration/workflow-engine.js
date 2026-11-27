@@ -1,14 +1,27 @@
 /**
- * WORKFLOW ENGINE & CENTRAL STATE CONTROLLER
- * Service: Tourism Business & Outdoor Photography Registration
+ * WORKFLOW ENGINE & CENTRAL SINGLE SOURCE OF TRUTH
+ * Service: Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services
  * Department: Tourism & Civil Aviation Department, Government of Sikkim
- * Baseline: Tourism Permission Architecture (Alpine Blue Theme)
- * 
- * Confirmed Workflow Routing:
- * Flow A (Tour Operator):        Citizen -> Level 0 TO -> Level 1 IA -> Level 0 TO -> Level 2 DTO
- * Flow B (Travel Agent):         Citizen -> Level 0 TO -> Level 1 IA -> Level 0 TO -> Level 2 DTO
- * Flow C (Dealer):               Citizen -> Level 0 TO -> Level 1 IA -> Level 0 TO -> Level 2 DTO
- * Flow D (Outdoor Photographer): Citizen -> Level 0 TO -> Level 2 DTO (Exempt from Physical Inspection)
+ * Architecture: Single Persisted Store (localStorage) + Real-Time Cross-Tab Sync (BroadcastChannel + storage)
+ *
+ * Enforced Workflows:
+ *   Workflow 1 (Inspection Required: Travel Agent / Tour Operator, Dealer):
+ *     Step 1: Citizen Apply -> TO (Level 0: Pending TO Verification)
+ *     Step 2: TO Initial Verification -> [Return to Applicant | Forward to IA]
+ *     Step 3: IA Inspection -> [Return to TO | Forward to TO (with Report)] (also Schedule Inspection)
+ *     Step 4: TO Post-Inspection Verification -> [Return to IA | Return to Applicant | Forward to DTO]
+ *     Step 5: DTO Initial Verification -> [Reject | Approve for Payment]
+ *     Step 6: Citizen Online Payment -> Auto-forward on success -> DTO Final Verification
+ *     Step 7: DTO Final Verification -> [Return to Applicant | Reject | Approve & Issue Certificate]
+ *     Step 8: Citizen Certificate Download & Completed
+ *
+ *   Workflow 2 (No Inspection: Outdoor Photographer):
+ *     Step 1: Citizen Apply -> TO (Level 0: Pending TO Verification)
+ *     Step 2: TO Verification -> [Return to Applicant | Forward to DTO]
+ *     Step 3: DTO Initial Verification -> [Return to Applicant | Reject | Approve for Payment]
+ *     Step 4: Citizen Online Payment -> Auto-forward on success -> DTO Final Verification
+ *     Step 5: DTO Final Verification -> [Return to Applicant | Reject | Approve & Issue Certificate]
+ *     Step 6: Citizen Certificate Download & Completed
  */
 
 (function (window) {
@@ -16,91 +29,97 @@
 
   const STORAGE_KEY = 'tourism_business_department_applications';
   const STORAGE_VERSION_KEY = 'tourism_business_dept_apps_version';
-  const CURRENT_SEED_VERSION = 'v15_safe_history_payment_2026';
+  const CURRENT_SEED_VERSION = 'v16_clean_truth_2026';
   const SUBMITTED_STORAGE_KEY = 'tourism_business_submitted';
+  const NOTIFICATIONS_KEY = 'tourism_business_notifications_v1';
+  const SYNC_PULSE_KEY = 'tourism_business_sync_pulse_v1';
+  const CHANNEL_NAME = 'sikkim_hospitality_workflow_v1';
 
-  // The 4 Official Statuses
+  const SERVICE_NAME = 'Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services';
+
   const STATUSES = {
-    SUBMITTED: 'Submitted',
-    UNDER_REVIEW: 'Under Verification',
-    APPROVED: 'Approved',
+    UNDER_REVIEW: 'Under Review',
+    UNDER_VERIFICATION: 'Under Verification',
+    RETURNED_BY_TO: 'Action Required – Returned by TO',
+    RETURNED_BY_DTO: 'Action Required – Returned by DTO',
+    PAYMENT_PENDING: 'Payment Pending',
     REJECTED: 'Rejected',
-    RETURNED: 'Returned for Clarification'
+    COMPLETED: 'Completed'
   };
 
-  // Workflow Stages
   const STAGES = {
-    STAGE_CITIZEN_SUBMITTED: 'Submitted – Awaiting Level 0 TO Verification',
-    STAGE_TO_PENDING: 'Level 0: Pending TO Verification',
-    STAGE_IA_ASSIGNED: 'Level 1: Assigned for IA Physical Inspection',
-    STAGE_IA_SCHEDULED: 'Level 1: Physical Inspection Scheduled',
-    STAGE_TO_REPORT_RECEIVED: 'Level 0: IA Report Received – Pending TO Review',
-    STAGE_DTO_PENDING: 'Level 2: Pending DTO Sanction',
-    STAGE_APPROVED: 'Approved – Certificate Issued',
-    STAGE_REJECTED: 'Rejected',
-    STAGE_RETURNED: 'Returned to Citizen for Clarification'
+    STAGE_TO_INITIAL: 'Level 0: Pending TO Verification',
+    STAGE_IA_ASSIGNED: 'Level 1: Assigned to IA',
+    STAGE_IA_SCHEDULED: 'Level 1: Inspection Scheduled',
+    STAGE_IA_RETURNED: 'Level 1: Returned by TO to IA',
+    STAGE_TO_POST_INSPECTION: 'Level 0: Post-Inspection Verification',
+    STAGE_DTO_INITIAL: 'Level 2: DTO Initial Verification',
+    STAGE_PAYMENT_PENDING: 'Payment Pending – Awaiting Citizen Payment',
+    STAGE_DTO_FINAL: 'Level 2: DTO Final Verification',
+    STAGE_RETURNED_CITIZEN: 'Returned to Applicant for Correction',
+    STAGE_REJECTED: 'Rejected & Closed',
+    STAGE_COMPLETED: 'Completed – Certificate Issued'
   };
 
-  // 6 District Tourism Circles & Officer Directory
   const DISTRICT_OFFICES = {
     'ALL': {
       district: 'All Circles',
-      circleTitle: 'Statewide Overview (All 6 Circles)',
+      circleTitle: 'All 6 District Circles',
       office: 'Directorate of Tourism, Paryatan Bhawan, Tadong, Gangtok – 737102',
       phone: '03592-209090 / 1800-345-3256',
       email: 'secy-tourism@sikkim.gov.in',
-      dtoName: 'Statewide District Tourism Officer Directorate',
-      toName: 'Headquarters Tourism Officers Pool',
-      iaName: 'Statewide Inspecting Authorities Pool'
+      dtoName: 'District Tourism Officers Directorate',
+      toName: 'Tourism Officers Directorate',
+      iaName: 'Inspecting Authorities Directorate'
     },
     'Gangtok': {
       district: 'Gangtok',
-      circleTitle: 'Gangtok District Circle (Capital)',
+      circleTitle: 'Gangtok District Circle',
       toName: 'Karma Lhendup Bhutia',
-      toDesignation: 'Tourism Officer (Level 0)',
+      toDesignation: 'Tourism Officer (TO)',
       iaName: 'Tashi Wangdi Lepcha',
-      iaDesignation: 'Inspecting Authority (Level 1)',
+      iaDesignation: 'Inspecting Authority (IA)',
       dtoName: 'Pema Dorjee Sherpa',
-      dtoDesignation: 'District Tourism Officer (Level 2)',
+      dtoDesignation: 'District Tourism Officer (DTO)',
       office: 'District Tourism Office, Paryatan Bhawan, Tadong, Gangtok – 737102',
       phone: '03592-209091',
       email: 'dto.gangtok@sikkim.gov.in'
     },
     'Namchi': {
       district: 'Namchi',
-      circleTitle: 'Namchi District Circle (South)',
+      circleTitle: 'Namchi District Circle',
       toName: 'Tshering Norbu Rai',
-      toDesignation: 'Tourism Officer (Level 0)',
+      toDesignation: 'Tourism Officer (TO)',
       iaName: 'Phurba Tamang',
-      iaDesignation: 'Inspecting Authority (Level 1)',
+      iaDesignation: 'Inspecting Authority (IA)',
       dtoName: 'Pempa Tshering Bhutia',
-      dtoDesignation: 'District Tourism Officer (Level 2)',
+      dtoDesignation: 'District Tourism Officer (DTO)',
       office: 'District Tourism Office, DAC Complex, Namchi – 737126',
       phone: '03595-263720',
       email: 'dto.namchi@sikkim.gov.in'
     },
     'Gyalshing': {
       district: 'Gyalshing',
-      circleTitle: 'Gyalshing District Circle (West)',
+      circleTitle: 'Gyalshing District Circle',
       toName: 'Lakpa Doma Subba',
-      toDesignation: 'Tourism Officer (Level 0)',
+      toDesignation: 'Tourism Officer (TO)',
       iaName: 'Sangay Chopel Bhutia',
-      iaDesignation: 'Inspecting Authority (Level 1)',
+      iaDesignation: 'Inspecting Authority (IA)',
       dtoName: 'Sonam Gyatso Lepcha',
-      dtoDesignation: 'District Tourism Officer (Level 2)',
+      dtoDesignation: 'District Tourism Officer (DTO)',
       office: 'District Tourism Office, DAC Complex, Gyalshing – 737111',
       phone: '03595-250810',
       email: 'dto.gyalshing@sikkim.gov.in'
     },
     'Mangan': {
       district: 'Mangan',
-      circleTitle: 'Mangan District Circle (North)',
+      circleTitle: 'Mangan District Circle',
       toName: 'Chewang Norbu Bhutia',
-      toDesignation: 'Tourism Officer (Level 0)',
+      toDesignation: 'Tourism Officer (TO)',
       iaName: 'Dawa Tshering Lepcha',
-      iaDesignation: 'Inspecting Authority (Level 1)',
+      iaDesignation: 'Inspecting Authority (IA)',
       dtoName: 'Rinzing Ongmu Bhutia',
-      dtoDesignation: 'District Tourism Officer (Level 2)',
+      dtoDesignation: 'District Tourism Officer (DTO)',
       office: 'District Tourism Office, DAC Complex, Mangan – 737116',
       phone: '03592-234205',
       email: 'dto.mangan@sikkim.gov.in'
@@ -109,11 +128,11 @@
       district: 'Pakyong',
       circleTitle: 'Pakyong District Circle',
       toName: 'Prashant Chettri',
-      toDesignation: 'Tourism Officer (Level 0)',
+      toDesignation: 'Tourism Officer (TO)',
       iaName: 'Bikash Sharma',
-      iaDesignation: 'Inspecting Authority (Level 1)',
+      iaDesignation: 'Inspecting Authority (IA)',
       dtoName: 'Nim Lhamu Lepcha',
-      dtoDesignation: 'District Tourism Officer (Level 2)',
+      dtoDesignation: 'District Tourism Officer (DTO)',
       office: 'District Tourism Office, DAC Complex, Pakyong – 737106',
       phone: '03592-258014',
       email: 'dto.pakyong@sikkim.gov.in'
@@ -122,63 +141,38 @@
       district: 'Soreng',
       circleTitle: 'Soreng District Circle',
       toName: 'Youraj Rai',
-      toDesignation: 'Tourism Officer (Level 0)',
+      toDesignation: 'Tourism Officer (TO)',
       iaName: 'Biren Gurung',
-      iaDesignation: 'Inspecting Authority (Level 1)',
+      iaDesignation: 'Inspecting Authority (IA)',
       dtoName: 'Norden Bhutia',
-      dtoDesignation: 'District Tourism Officer (Level 2)',
+      dtoDesignation: 'District Tourism Officer (DTO)',
       office: 'District Tourism Office, DAC Complex, Soreng – 737121',
       phone: '03595-257002',
       email: 'dto.soreng@sikkim.gov.in'
     }
   };
 
-  // Directory of Available Inspecting Authorities (IA Officers) by District Circle
   const IA_OFFICERS_BY_DISTRICT = {
     'ALL': [
       { name: 'Tashi Wangdi Lepcha', designation: 'Senior Inspecting Authority', circle: 'Gangtok Circle' },
       { name: 'Pema Tshering Bhutia', designation: 'Field Inspecting Officer', circle: 'Gangtok Circle' },
-      { name: 'Sonam Dorjee Lepcha', designation: 'Technical Inspecting Officer', circle: 'Gangtok Circle' },
       { name: 'Phurba Tamang', designation: 'Lead Inspecting Authority', circle: 'Namchi Circle' },
-      { name: 'Bikram Gurung', designation: 'Field Inspecting Officer', circle: 'Namchi Circle' },
       { name: 'Sangay Chopel Bhutia', designation: 'Lead Inspecting Authority', circle: 'Gyalshing Circle' },
-      { name: 'Dawa Subba', designation: 'Field Inspecting Officer', circle: 'Gyalshing Circle' },
       { name: 'Dawa Tshering Lepcha', designation: 'Lead Inspecting Authority', circle: 'Mangan Circle' },
-      { name: 'Passang Bhutia', designation: 'Field Inspecting Officer', circle: 'Mangan Circle' },
       { name: 'Bikash Sharma', designation: 'Lead Inspecting Authority', circle: 'Pakyong Circle' },
-      { name: 'Kipchu Lepcha', designation: 'Field Inspecting Officer', circle: 'Pakyong Circle' },
-      { name: 'Biren Gurung', designation: 'Lead Inspecting Authority', circle: 'Soreng Circle' },
-      { name: 'Rinchen Rai', designation: 'Field Inspecting Officer', circle: 'Soreng Circle' }
+      { name: 'Biren Gurung', designation: 'Lead Inspecting Authority', circle: 'Soreng Circle' }
     ],
     'Gangtok': [
       { name: 'Tashi Wangdi Lepcha', designation: 'Senior Inspecting Authority', circle: 'Gangtok Circle' },
-      { name: 'Pema Tshering Bhutia', designation: 'Field Inspecting Officer', circle: 'Gangtok Circle' },
-      { name: 'Sonam Dorjee Lepcha', designation: 'Technical Inspecting Officer', circle: 'Gangtok Circle' }
+      { name: 'Pema Tshering Bhutia', designation: 'Field Inspecting Officer', circle: 'Gangtok Circle' }
     ],
-    'Namchi': [
-      { name: 'Phurba Tamang', designation: 'Lead Inspecting Authority', circle: 'Namchi Circle' },
-      { name: 'Bikram Gurung', designation: 'Field Inspecting Officer', circle: 'Namchi Circle' }
-    ],
-    'Gyalshing': [
-      { name: 'Sangay Chopel Bhutia', designation: 'Lead Inspecting Authority', circle: 'Gyalshing Circle' },
-      { name: 'Dawa Subba', designation: 'Field Inspecting Officer', circle: 'Gyalshing Circle' }
-    ],
-    'Mangan': [
-      { name: 'Dawa Tshering Lepcha', designation: 'Lead Inspecting Authority', circle: 'Mangan Circle' },
-      { name: 'Passang Bhutia', designation: 'Field Inspecting Officer', circle: 'Mangan Circle' }
-    ],
-    'Pakyong': [
-      { name: 'Bikash Sharma', designation: 'Lead Inspecting Authority', circle: 'Pakyong Circle' },
-      { name: 'Kipchu Lepcha', designation: 'Field Inspecting Officer', circle: 'Pakyong Circle' }
-    ],
-    'Soreng': [
-      { name: 'Biren Gurung', designation: 'Lead Inspecting Authority', circle: 'Soreng Circle' },
-      { name: 'Rinchen Rai', designation: 'Field Inspecting Officer', circle: 'Soreng Circle' }
-    ]
+    'Namchi': [{ name: 'Phurba Tamang', designation: 'Lead Inspecting Authority', circle: 'Namchi Circle' }],
+    'Gyalshing': [{ name: 'Sangay Chopel Bhutia', designation: 'Lead Inspecting Authority', circle: 'Gyalshing Circle' }],
+    'Mangan': [{ name: 'Dawa Tshering Lepcha', designation: 'Lead Inspecting Authority', circle: 'Mangan Circle' }],
+    'Pakyong': [{ name: 'Bikash Sharma', designation: 'Lead Inspecting Authority', circle: 'Pakyong Circle' }],
+    'Soreng': [{ name: 'Biren Gurung', designation: 'Lead Inspecting Authority', circle: 'Soreng Circle' }]
   };
 
-  // Statutory Registration Fee Structure (The Sikkim Registration of Tourist Trade Rules)
-  // Travel Agent / Tour Operator (TA/TO) has grade-based fees; Dealer & Photographer have fixed fees
   const REGISTRATION_FEES = {
     'ta-to': {
       'Grade A': 20000,
@@ -219,2334 +213,102 @@
     }
   };
 
-  // Standard Document Manifests by Form Configuration
+  // Document Manifests updated per Section G approved modifications
   const DOC_MANIFESTS = {
     'A': [
-      { name: 'Passport Format Photograph', code: 'PHOTO', file: 'applicant_passport_photo.jpg', size: '420 KB', status: 'VERIFIED' },
-      { name: 'Residential Proof (COI / Domicile / RC)', code: 'RES_PROOF', file: 'coi_certificate_copy.pdf', size: '1.2 MB', status: 'VERIFIED' },
-      { name: 'Supporting Qualification / Training Certificate', code: 'QUAL_PROOF', file: 'tourism_diploma_certificate.pdf', size: '2.1 MB', status: 'VERIFIED' },
-      { name: 'Attested Qualification Certificate (Min Class 10)', code: 'EDU_PROOF', file: 'class_10_pass_certificate.pdf', size: '1.4 MB', status: 'VERIFIED' },
-      { name: 'Supporting Qualification Document for Employees', code: 'STAFF_QUAL', file: 'staff_mountaineering_hmi.pdf', size: '2.8 MB', status: 'VERIFIED' },
-      { name: 'NOC from Ward / Panchayat / Councillor', code: 'NOC_WARD', file: 'panchayat_noc_certified.pdf', size: '890 KB', status: 'VERIFIED' },
-      { name: 'Memorandum of Association / Society / Firm Deed', code: 'DEED', file: 'partnership_deed_registered.pdf', size: '3.4 MB', status: 'VERIFIED' },
-      { name: 'Affidavit from Oath Commissioner', code: 'AFFIDAVIT', file: 'oath_commissioner_affidavit.pdf', size: '1.1 MB', status: 'VERIFIED' },
-      { name: 'GST Clearance Certificate (if applicable)', code: 'GST', file: 'gst_clearance_cert_2026.pdf', size: '750 KB', status: 'VERIFIED' },
-      { name: 'Aadhaar Card', code: 'AADHAAR', file: 'aadhaar_card_masked.pdf', size: '920 KB', status: 'VERIFIED' },
-      { name: 'Identity & Address Proof of Promoter/Manager', code: 'ID_PROOF', file: 'promoter_voter_id_copy.pdf', size: '1.1 MB', status: 'VERIFIED' },
-      { name: 'PAN Card', code: 'PAN', file: 'pan_card_firm_attested.pdf', size: '640 KB', status: 'VERIFIED' },
-      { name: 'Office Premises Photographs (Max 3)', code: 'OFFICE_IMG', file: 'office_premises_photos_geo.pdf', size: '4.2 MB', status: 'VERIFIED' }
+      { name: 'Residential Proof: Domicile / COI / RC', code: 'RES_PROOF', file: 'coi_residential_proof.pdf', size: '1.2 MB', mandatory: true },
+      { name: 'Passport Format Photograph', code: 'PHOTO', file: 'applicant_passport_photo.jpg', size: '420 KB', mandatory: true },
+      { name: 'Supporting Qualification / Training Certificate (Applicant) (Optional)', code: 'QUAL_PROOF', file: 'training_qualification_cert.pdf', size: '1.8 MB', mandatory: false },
+      { name: 'Supporting Qualification Document for Employees (Optional)', code: 'STAFF_QUAL', file: 'employee_qualification.pdf', size: '1.4 MB', mandatory: false },
+      { name: 'Memorandum of Association / Society / Firm Deed (Optional)', code: 'DEED', file: 'moa_firm_deed.pdf', size: '2.4 MB', mandatory: false },
+      { name: 'Affidavit from Oath Commissioner (Optional)', code: 'AFFIDAVIT', file: 'oath_affidavit.pdf', size: '890 KB', mandatory: false },
+      { name: 'Other Supporting Documents (Optional)', code: 'OTHER', file: 'other_supporting_docs.pdf', size: '1.1 MB', mandatory: false }
     ],
     'B': [
-      { name: 'Proof of Ownership / Lease Agreement of Showroom', code: 'LEASE', file: 'showroom_lease_deed_registered.pdf', size: '2.6 MB', status: 'VERIFIED' },
-      { name: 'Certificate of Identification (COI) / Residential Proof', code: 'COI', file: 'applicant_coi_gazetted.pdf', size: '1.1 MB', status: 'VERIFIED' },
-      { name: 'Municipal / GPU Trade License (Shop Act)', code: 'TRADE_LIC', file: 'gmc_trade_license_2026.pdf', size: '1.4 MB', status: 'VERIFIED' },
-      { name: 'PAN Card of Firm / Enterprise', code: 'PAN', file: 'pan_card_enterprise.pdf', size: '580 KB', status: 'VERIFIED' },
-      { name: 'GST Registration Certificate', code: 'GST', file: 'gst_registration_cert_regular.pdf', size: '1.3 MB', status: 'VERIFIED' },
-      { name: 'Fire Safety Extinguisher Installation Proof', code: 'FIRE_NOC', file: 'fire_extinguisher_certificate.pdf', size: '890 KB', status: 'VERIFIED' },
-      { name: 'List of Outdoor Equipment & Safety Gear Stock', code: 'STOCK_INV', file: 'safety_gear_inventory_manifest.pdf', size: '1.8 MB', status: 'VERIFIED' },
-      { name: 'Photographs of Showroom & Display Area', code: 'SHOP_PICS', file: 'showroom_interior_exterior_photos.pdf', size: '3.9 MB', status: 'VERIFIED' }
+      { name: 'Certificate of Identification (COI)', code: 'COI', file: 'applicant_coi_certificate.pdf', size: '1.1 MB', mandatory: true },
+      { name: 'Occupancy Certificate / Parcha / Lease Deed (Optional)', code: 'OCCUPANCY', file: 'premises_occupancy_record.pdf', size: '1.8 MB', mandatory: false },
+      { name: 'NOC from Fire / Health / Municipal Authorities (Optional)', code: 'NOC', file: 'statutory_clearance_noc.pdf', size: '950 KB', mandatory: false },
+      { name: 'PAN Card / GST Certificate (Optional)', code: 'PAN_GST', file: 'pan_gst_copy.pdf', size: '720 KB', mandatory: false },
+      { name: 'List of Outdoor Equipment & Safety Gear Stock (Optional)', code: 'STOCK_INV', file: 'equipment_inventory_list.pdf', size: '1.5 MB', mandatory: false }
     ],
     'C': [
-      { name: 'Passport Size Photograph', code: 'PHOTO', file: 'photographer_formal_photo.jpg', size: '380 KB', status: 'VERIFIED' },
-      { name: 'Certificate of Identification (COI) / Domicile Certificate', code: 'COI', file: 'photographer_coi_certified.pdf', size: '1.2 MB', status: 'VERIFIED' },
-      { name: 'Minimum Class X Educational Pass Certificate', code: 'EDU_X', file: 'class_10_board_marksheet.pdf', size: '1.5 MB', status: 'VERIFIED' },
-      { name: 'Photography Course / Technical Training Certificate', code: 'PHOTO_COURSE', file: 'diploma_outdoor_photography.pdf', size: '2.4 MB', status: 'VERIFIED' },
-      { name: 'Portfolio of Sikkim Landscapes / Wildlife (Web/PDF)', code: 'PORTFOLIO', file: 'sikkim_landscape_portfolio.pdf', size: '6.8 MB', status: 'VERIFIED' },
-      { name: 'Recommendation Letter from Registered Media/Association', code: 'RECOM_LETTER', file: 'sikkim_press_club_recommendation.pdf', size: '920 KB', status: 'VERIFIED' },
-      { name: 'Aadhaar Card of Applicant', code: 'AADHAAR', file: 'aadhaar_card_masked.pdf', size: '880 KB', status: 'VERIFIED' },
-      { name: 'Equipment Manifest (Cameras, Lenses, Drone Permits)', code: 'EQUIP_LIST', file: 'camera_drone_inventory_dgca.pdf', size: '1.6 MB', status: 'VERIFIED' }
+      { name: 'Sikkim Subject / Certificate of Identification (COI)', code: 'COI', file: 'photographer_coi_certified.pdf', size: '1.2 MB', mandatory: true },
+      { name: 'Education Qualification Certificate (Min. Class X) (Optional)', code: 'EDU_X', file: 'class_10_board_marksheet.pdf', size: '1.5 MB', mandatory: false },
+      { name: 'Panchayat / Councillor Recommendation (Optional)', code: 'RECOM_LETTER', file: 'panchayat_recommendation.pdf', size: '920 KB', mandatory: false },
+      { name: 'Outdoor Photography Training Certificate (Optional)', code: 'PHOTO_COURSE', file: 'outdoor_photography_training.pdf', size: '1.8 MB', mandatory: false },
+      { name: 'Photography Experience Certificate (Optional)', code: 'EXP_CERT', file: 'photography_experience_record.pdf', size: '1.1 MB', mandatory: false },
+      { name: 'Paragliding / Adventure Activity Requirement Document (Optional)', code: 'PARAGLIDE_OPT', file: 'adventure_optional_credential.pdf', size: '980 KB', mandatory: false }
     ]
   };
 
-  // 20 Complete Dummy Seed Applications (5 per Category)
-    // 23 Comprehensive Master Seed Applications across all 4 categories and circles
-    // 23 Comprehensive Master Seed Applications across all 4 categories and circles
-  const SEED_APPLICATIONS = [
-  {
-    "refNo": "SK-TBR-2026-TO-00101",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Karma Lhendup Bhutia",
-    "gender": "Male",
-    "dob": "14 May 1988",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2012-984)",
-    "address": "Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101",
-    "phone": "9832101122",
-    "email": "karma.bhutia@himalayantrails.in",
-    "website": "www.himalayantrails.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.A. Tourism & Travel Management)",
-    "techQualification": "Post Graduate Diploma in Adventure Tourism & Operations",
-    "training": "State Tourism Facilitator Training (Sikkim Tourism Dept, 2023)",
-    "businessName": "Himalayan Trails & Expeditions",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "GMC/TL/2026/8841",
-    "pan": "AAHFH1234K",
-    "gstin": "11AAHFH1234K1Z8",
-    "officeAddress": "Shop #12, First Floor, Ridge View Complex, M.G. Marg, Gangtok – 737101",
-    "officeSizeStandard": "420 sq.ft commercial office with client consultation lounge and digital ticketing counter",
-    "association": "Travel Agents Association of Sikkim (TAAS) & SATO Member",
-    "activitiesSummary": "Specialized in customized Himalayan trek itineraries (Dzongri, Goecha La, Green Lake), monastery circuits and cultural village tours.",
-    "partners": [
-      {
-        "name": "Karma Lhendup Bhutia",
-        "role": "Managing Partner",
-        "phone": "9832101122",
-        "aadhaar": "XXXX-XXXX-4412",
-        "address": "Ridge Park, Gangtok"
-      },
-      {
-        "name": "Tshering Lhamu Lepcha",
-        "role": "Operations Partner",
-        "phone": "9832101123",
-        "aadhaar": "XXXX-XXXX-5521",
-        "address": "Tadong, Gangtok"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Dawa Tamang",
-        "role": "Senior Trek Leader",
-        "qualification": "Advanced Mountaineering Course (HMI Darjeeling)",
-        "training": "Wilderness First Aid (WFR Certified)"
-      },
-      {
-        "name": "Pempa Sherpa",
-        "role": "Logistics Manager",
-        "qualification": "B.A. Tourism",
-        "training": "Eco-Tourism Field Management (IHCAE Chemchey)"
-      }
-    ],
-    "ecoPractices": "Strict Leave-No-Trace trail ethics, zero single-use plastic, and solar-powered portable camp lighting.",
-    "officeEquipment": "4 workstations, client consultation lounge, high-speed fiber internet, digital billing and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedRole": "DTO",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
-    "submittedDate": "04 Nov 2026, 10:15 AM",
-    "lastUpdated": "04 Nov 2026, 10:15 AM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Karma Lhendup Bhutia)",
-        "date": "04 Nov 2026, 10:15 AM",
-        "remarks": "Application submitted via Sikkim Single Sign-On Portal. Statutory declaration accepted."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "04 Nov 2026, 10:15 AM",
-        "actorRole": "Citizen",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted via Single Sign-On. Statutory declaration accepted."
-      }
-    ],
-    "registrationGrade": "Grade A",
-    "selectedGrade": "Grade A",
-    "registrationFee": 20000,
-    "applicableFee": 20000,
-    "paymentActivated": false,
-    "paymentStatus": "Unpaid",
-    "inspectionFindings": "Verified commercial premises 420 sq.ft at M.G. Marg. Compliant with Grade A Tour Operator standards.",
-    "inspectionDocName": "IA_Field_Report_SK-TBR-2026-TO-00101.pdf"
-  },
-  {
-    "refNo": "SK-TBR-2026-TO-00102",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Passang Tshering Sherpa",
-    "gender": "Male",
-    "dob": "18 Aug 1990",
-    "residentialProof": "Certificate of Identification (COI #COI-NAM-2015-321)",
-    "address": "Development Area, Gangtok, Sikkim – 737101",
-    "phone": "9832223344",
-    "email": "passang.sherpa@alpinehorizon.in",
-    "website": "www.alpinehorizon.in",
-    "district": "Gangtok",
-    "eduQualification": "B.Com (Honours)",
-    "techQualification": "Certificate in High Altitude Mountain Guiding (NIM Uttarkashi)",
-    "training": "Disaster Management & First Aid in Alpine Terrains (Sikkim SDRF)",
-    "businessName": "Alpine Horizon Adventures",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "NMC/TL/2026/3412",
-    "pan": "BBTPS5432M",
-    "gstin": "11BBTPS5432M1Z2",
-    "officeAddress": "Suite 4, Second Floor, Star Cinema Complex, M.G. Marg, Gangtok – 737101",
-    "officeSizeStandard": "310 sq.ft ground-floor office with display counter and tour equipment storage room",
-    "association": "Sikkim Amateur Mountaineering Association (SAMA)",
-    "activitiesSummary": "Operates eco-trails in South and West Sikkim, Birdwatching itineraries in Maenam Wildlife Sanctuary, and village homestay bookings.",
-    "partners": [
-      {
-        "name": "Passang Tshering Sherpa",
-        "role": "Sole Proprietor",
-        "phone": "9832223344",
-        "aadhaar": "XXXX-XXXX-6612",
-        "address": "Namchi Bazaar"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Lakpa Doma Sherpa",
-        "role": "Trek Coordinator",
-        "qualification": "Basic Mountaineering Course (HMI)",
-        "training": "Hospitality & Guest Handling"
-      }
-    ],
-    "ecoPractices": "Partnership with local panchayats for waste collection along trekking trails.",
-    "officeEquipment": "3 workstations, VHF radio sets for trail emergencies, display racks and first aid kit.",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "IA",
-    "status": "Under Verification",
-    "currentStage": "Level 1: Assigned for IA Physical Inspection",
-    "inspectionStatus": "Scheduled for Physical Inspection",
-    "inspectingOfficer": "Phurba Tamang (Inspecting Authority, Namchi)",
-    "submittedDate": "03 Nov 2026, 02:30 PM",
-    "lastUpdated": "05 Nov 2026, 11:45 AM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Passang Tshering Sherpa)",
-        "date": "03 Nov 2026, 02:30 PM",
-        "remarks": "Application submitted with Trade License NMC/TL/2026/3412 and property tax proof."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Tshering Norbu Rai (Tourism Officer, Level 0)",
-        "date": "05 Nov 2026, 11:45 AM",
-        "remarks": "All statutory documents, COI, and municipal trade license verified in order. Assigned to Level 1 IA Phurba Tamang for on-site physical inspection."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "03 Nov 2026, 02:30 PM",
-        "actorRole": "Citizen",
-        "actorName": "Passang Tshering Sherpa",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted with complete credentials."
-      },
-      {
-        "timestamp": "05 Nov 2026, 11:45 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Tshering Norbu Rai",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Documents verified in order. Assigned for mandatory physical premises inspection."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-TO-00103",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Chungda Lepcha",
-    "gender": "Male",
-    "dob": "22 Sep 1985",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2010-441)",
-    "address": "Development Area, Gangtok, Sikkim – 737101",
-    "phone": "9832334455",
-    "email": "chungda.lepcha@kanchenjungaeco.in",
-    "website": "www.kanchenjungaeco.in",
-    "district": "Gangtok",
-    "eduQualification": "Master in Tourism Administration (MTA)",
-    "techQualification": "Advanced Mountain Search & Rescue Certification",
-    "training": "Wilderness Medical Society First Responder",
-    "businessName": "Kanchenjunga Eco-Treks",
-    "constitution": "Private Limited Company",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "GMC/TL/2025/1109",
-    "pan": "CCPLC9876P",
-    "gstin": "11CCPLC9876P1Z5",
-    "officeAddress": "Suite 4, Denzong Cinema Building, Lal Bazaar, Gangtok – 737101",
-    "officeSizeStandard": "480 sq.ft multi-room office suite with client briefing room",
-    "association": "Adventure Tour Operators Association of India (ATOAI)",
-    "activitiesSummary": "Mountaineering expeditions, high-altitude alpine passes, Goecha La & Singalila circuits.",
-    "partners": [
-      {
-        "name": "Chungda Lepcha",
-        "role": "Managing Director",
-        "phone": "9832334455",
-        "aadhaar": "XXXX-XXXX-7721",
-        "address": "Development Area, Gangtok"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Norbu Lepcha",
-        "role": "Operations Lead",
-        "qualification": "Graduate",
-        "training": "HMI Advanced Course"
-      }
-    ],
-    "ecoPractices": "Zero-emission cooking fuel used during all field expeditions.",
-    "officeEquipment": "5 PCs, client lounge, satellite communicators, and fire extinguishers.",
-    "requiresInspection": true,
-    "assignedRole": "TO",
-    "status": "Returned for Clarification",
-    "currentStage": "Returned to Citizen for Clarification",
-    "returnRemarks": "Commercial office lease deed expired on 30 Sep 2026. Please upload renewed registered lease agreement with landlord NOC and updated municipal trade license renewal receipt.",
-    "returnedBy": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-    "returnedDate": "06 Nov 2026, 03:20 PM",
-    "submittedDate": "02 Nov 2026, 11:00 AM",
-    "lastUpdated": "06 Nov 2026, 03:20 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Chungda Lepcha)",
-        "date": "02 Nov 2026, 11:00 AM",
-        "remarks": "Initial online submission."
-      },
-      {
-        "step": "Application Returned to Citizen for Clarification by TO",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "06 Nov 2026, 03:20 PM",
-        "remarks": "Clarification Required: Office lease deed expired on 30 Sep 2026. Please upload renewed registered lease agreement with landlord NOC and updated municipal trade license renewal receipt."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "02 Nov 2026, 11:00 AM",
-        "actorRole": "Citizen",
-        "actorName": "Chungda Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Initial online submission."
-      },
-      {
-        "timestamp": "06 Nov 2026, 03:20 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Returned Application to Citizen for Clarification",
-        "stage": "Returned to Citizen for Clarification",
-        "remarks": "Commercial office lease deed expired. Upload renewed registered lease agreement with landlord NOC."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-TO-00104",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Dawa Norbu Bhutia",
-    "gender": "Male",
-    "dob": "12 Dec 1989",
-    "residentialProof": "Certificate of Identification (COI #COI-GYL-2013-119)",
-    "address": "Tadong 6th Mile, Gangtok, Sikkim – 737102",
-    "phone": "9832445566",
-    "email": "dawa.bhutia@khangchendzonga.in",
-    "website": "www.khangchendzongatrailways.in",
-    "district": "Gangtok",
-    "eduQualification": "B.A. (History & Tourism)",
-    "techQualification": "Trek Leader Certification (IHCAE Chemchey)",
-    "training": "Wilderness Life Support & Camp Hygiene",
-    "businessName": "Khangchendzonga Trailways",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "GMC/TL/2026/7788",
-    "pan": "DDGNF8765L",
-    "gstin": "11DDGNF8765L1Z1",
-    "officeAddress": "Unit 301, 3rd Floor, Metro Point Building, Tadong, Gangtok – 737102",
-    "officeSizeStandard": "360 sq.ft dedicated tour booking counter with equipment briefing lounge",
-    "association": "Pelling Tourism Development Committee (PTDC)",
-    "activitiesSummary": "Heritage tours, Kanchenjunga viewpoint treks, monastery circuits, and rural eco-trails.",
-    "partners": [
-      {
-        "name": "Dawa Norbu Bhutia",
-        "role": "Managing Partner",
-        "phone": "9832445566",
-        "aadhaar": "XXXX-XXXX-8832",
-        "address": "Upper Pelling"
-      },
-      {
-        "name": "Sonam Doma Bhutia",
-        "role": "Partner",
-        "phone": "9832445567",
-        "aadhaar": "XXXX-XXXX-9943",
-        "address": "Upper Pelling"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Mingma Tamang",
-        "role": "Lead Guide",
-        "qualification": "Class 12",
-        "training": "HMI Basic Mountaineering"
-      }
-    ],
-    "ecoPractices": "Plastic-free trails, water refill stations in office, and biodegradable waste composting.",
-    "officeEquipment": "3 workstations, trail first aid kit, client consultation desks, and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "TO",
-    "status": "Under Verification",
-    "currentStage": "Level 0: IA Report Received – Pending TO Review",
-    "inspectionStatus": "Submitted to TO",
-    "inspectingOfficer": "Sangay Chopel Bhutia (Inspecting Authority, Gyalshing)",
-    "inspectionReportDate": "08 Nov 2026, 04:30 PM",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-TO-00104.pdf",
-    "inspectionDocSize": "1.9 MB",
-    "inspectionFindings": "Commercial premises inspected at Tadong Metro Point. Office measures 450 sq.ft, adequate client seating, high-speed fiber internet, compliant fire extinguishers and trained mountaineering staff verified. Recommended for Grade B Tour Operator Registration.",
-    "inspectionRemarks": "Premise fully compliant with Sikkim Registration of Tourist Trade Rules. Highly recommended for 1-Year statutory registration.",
-    "inspectionRecommendation": "RECOMMENDED_FOR_APPROVAL",
-    "submittedDate": "01 Nov 2026, 09:30 AM",
-    "lastUpdated": "08 Nov 2026, 04:30 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Dawa Norbu Bhutia)",
-        "date": "01 Nov 2026, 09:30 AM",
-        "remarks": "Application submitted with ownership documents and trade license."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Lakpa Doma Subba (Tourism Officer, Level 0)",
-        "date": "03 Nov 2026, 11:15 AM",
-        "remarks": "Level 0 scrutiny cleared. Forwarded to Level 1 IA Sangay Chopel Bhutia for physical on-site verification."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Report Submitted to TO",
-        "actor": "Sangay Chopel Bhutia (Inspecting Authority, Level 1)",
-        "date": "08 Nov 2026, 04:30 PM",
-        "remarks": "On-site physical inspection completed. Premises, fire safety norms, and staff manifests verified in order. Uploaded Physical_Inspection_Report_SK-TBR-2026-TO-00104.pdf and transmitted to Level 0 TO for review."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "01 Nov 2026, 09:30 AM",
-        "actorRole": "Citizen",
-        "actorName": "Dawa Norbu Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online with ownership proof."
-      },
-      {
-        "timestamp": "03 Nov 2026, 11:15 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Lakpa Doma Subba",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Statutory credentials verified. Assigned to Level 1 IA for on-site inspection."
-      },
-      {
-        "timestamp": "08 Nov 2026, 04:30 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Sangay Chopel Bhutia",
-        "action": "Submitted Physical Inspection Report to Level 0 TO",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Physical premises verified compliant. Uploaded report document and transmitted to TO."
-      }
-    ],
-    "inspectionDate": "03 Nov 2026, 02:00 PM"
-  },
-  {
-    "refNo": "SK-TBR-2026-TO-00105",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Tenzing Wangchuk Lepcha",
-    "gender": "Male",
-    "dob": "05 Jul 1987",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2011-872)",
-    "address": "Tadong, Below 5th Mile, Gangtok, Sikkim – 737102",
-    "phone": "9832556677",
-    "email": "tenzing.wangchuk@singalilatours.in",
-    "website": "www.singalilatours.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.Sc. Environmental Science)",
-    "techQualification": "Mountaineering & High Altitude Safety Course (HMI Darjeeling)",
-    "training": "First Aid & CPR Certified (Indian Red Cross)",
-    "businessName": "Singalila Ridge Expeditions",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "GMC/TL/2026/9021",
-    "pan": "EETWL7654K",
-    "gstin": "11EETWL7654K1Z9",
-    "officeAddress": "Shop #4, Ridge View Complex, MG Marg, Gangtok – 737101",
-    "officeSizeStandard": "350 sq.ft commercial office with client consultation lounge and digital ticketing counter",
-    "association": "Travel Agents Association of Sikkim (TAAS) & SATO Member",
-    "activitiesSummary": "Specialized in guided eco-treks along Singalila Ridge, Goecha La circuits, and nature tourism packages.",
-    "partners": [
-      {
-        "name": "Tenzing Wangchuk Lepcha",
-        "role": "Managing Partner",
-        "phone": "9832556677",
-        "aadhaar": "XXXX-XXXX-1122",
-        "address": "Tadong, Gangtok"
-      },
-      {
-        "name": "Phurba Lhamu Bhutia",
-        "role": "Partner",
-        "phone": "9832556678",
-        "aadhaar": "XXXX-XXXX-3344",
-        "address": "Tadong, Gangtok"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Dawa Sherpa",
-        "role": "Senior Guide",
-        "qualification": "Class 12",
-        "training": "HMI Advanced Course"
-      }
-    ],
-    "ecoPractices": "Strict zero-plastic policy, Leave-No-Trace trail ethics, and solar-powered camp logistics.",
-    "officeEquipment": "4 workstations, client lounge, high-speed fiber internet, and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "DTO",
-    "status": "Approved",
-    "currentStage": "Approved – Certificate Issued",
-    "certificateNo": "SK-TCD-REG-2026-TO-00105",
-    "validUntil": "10 Nov 2027",
-    "approvalDate": "10 Nov 2026",
-    "approvingOfficer": "Pema Dorjee Sherpa, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 1-Year Form 3 Registration Certificate issued.",
-    "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
-    "inspectionReportDate": "05 Nov 2026, 03:00 PM",
-    "inspectionDocName": "Physical_Inspection_Report_SK-TBR-2026-TO-00105.pdf",
-    "inspectionDocSize": "1.8 MB",
-    "inspectionFindings": "Commercial tour office at Ridge View Complex physically inspected. All fire safety extinguishers, equipment storage, and staff training credentials verified in top order.",
-    "inspectionRemarks": "Recommended for unconditional statutory approval.",
-    "toInspectionReviewRemarks": "Level 0 TO reviewed IA inspection report and verified all prerequisites. Endorsed and recommended for DTO approval.",
-    "submittedDate": "28 Oct 2026, 10:00 AM",
-    "lastUpdated": "10 Nov 2026, 04:00 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Tenzing Wangchuk Lepcha)",
-        "date": "28 Oct 2026, 10:00 AM",
-        "remarks": "Application submitted online with required documents."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "31 Oct 2026, 02:30 PM",
-        "remarks": "Documents and trade license verified in order. Assigned to Level 1 IA Tashi Wangdi Lepcha for physical inspection."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Report Submitted to TO",
-        "actor": "Tashi Wangdi Lepcha (Inspecting Authority, Level 1)",
-        "date": "05 Nov 2026, 03:00 PM",
-        "remarks": "Physical premises verified. Uploaded Physical_Inspection_Report_SK-TBR-2026-TO-00105.pdf and submitted to Level 0 TO."
-      },
-      {
-        "step": "Level 0 TO Reviewed IA Report & Forwarded to DTO",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "07 Nov 2026, 11:30 AM",
-        "remarks": "Level 0 TO reviewed IA physical inspection report. Endorsed and forwarded to DTO for final sanction."
-      },
-      {
-        "step": "Final Approval Granted & Certificate Issued",
-        "actor": "Pema Dorjee Sherpa (District Tourism Officer, Level 2)",
-        "date": "10 Nov 2026, 04:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TO-00105 generated with 1-year validity until 10 Nov 2027."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "28 Oct 2026, 10:00 AM",
-        "actorRole": "Citizen",
-        "actorName": "Tenzing Wangchuk Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "31 Oct 2026, 02:30 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Mandated IA on-site inspection."
-      },
-      {
-        "timestamp": "05 Nov 2026, 03:00 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Tashi Wangdi Lepcha",
-        "action": "Submitted Physical Inspection Report to Level 0 TO",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Physical inspection report uploaded and transmitted to TO."
-      },
-      {
-        "timestamp": "07 Nov 2026, 11:30 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Endorsed IA Physical Inspection Report & Forwarded to DTO for Statutory Sanction",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "TO endorsed IA inspection report. Forwarded to DTO."
-      },
-      {
-        "timestamp": "10 Nov 2026, 04:00 PM",
-        "actorRole": "Level 2 – District Tourism Officer (DTO)",
-        "actorName": "Pema Dorjee Sherpa",
-        "action": "Granted Statutory Approval & Issued Form 3 Certificate",
-        "stage": "Approved – Certificate Issued",
-        "remarks": "Registration approved. Form 3 Certificate generated."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-TA-00201",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Tshering Ongmu Bhutia",
-    "gender": "Female",
-    "dob": "20 Jan 1991",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2014-554)",
-    "address": "Deorali Bazaar, Gangtok, Sikkim – 737102",
-    "phone": "9832667788",
-    "email": "tshering.ongmu@sikkimbliss.in",
-    "website": "www.sikkimblisstravels.in",
-    "district": "Gangtok",
-    "eduQualification": "Master in Business Administration (Tourism & Hospitality)",
-    "techQualification": "IATA / UFTAA Certified Travel Consultant",
-    "training": "Digital Ticketing & GDS Operations (Amadeus/Galileo)",
-    "businessName": "Sikkim Bliss Travels & Tours",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "GMC/TL/2026/4102",
-    "pan": "FFTOB6543J",
-    "gstin": "11FFTOB6543J1Z4",
-    "officeAddress": "First Floor, Deorali Taxi Stand Complex, Gangtok – 737102",
-    "officeSizeStandard": "280 sq.ft commercial ticketing office with customer counter",
-    "association": "Travel Agents Association of Sikkim (TAAS)",
-    "activitiesSummary": "Air/rail ticketing, customized package tours, hotel reservations, and helicopter joy ride bookings.",
-    "partners": [
-      {
-        "name": "Tshering Ongmu Bhutia",
-        "role": "Sole Proprietor",
-        "phone": "9832667788",
-        "aadhaar": "XXXX-XXXX-4433",
-        "address": "Deorali Bazaar, Gangtok"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Bikram Chettri",
-        "role": "Ticketing Executive",
-        "qualification": "Graduate (B.Com)",
-        "training": "IATA Foundation"
-      }
-    ],
-    "ecoPractices": "100% digital e-tickets and paperless client itineraries.",
-    "officeEquipment": "3 desktop computers, multi-function laser printer, client chairs, and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedRole": "DTO",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
-    "submittedDate": "05 Nov 2026, 11:20 AM",
-    "lastUpdated": "05 Nov 2026, 11:20 AM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Tshering Ongmu Bhutia)",
-        "date": "05 Nov 2026, 11:20 AM",
-        "remarks": "Application submitted via Single Sign-On Portal."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "05 Nov 2026, 11:20 AM",
-        "actorRole": "Citizen",
-        "actorName": "Tshering Ongmu Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted via Single Sign-On Portal."
-      }
-    ],
-    "registrationGrade": "Grade C",
-    "selectedGrade": "Grade C",
-    "registrationFee": 5000,
-    "applicableFee": 5000,
-    "paymentActivated": false,
-    "paymentStatus": "Unpaid",
-    "inspectionFindings": "Deorali ticketing office 280 sq.ft inspected and verified suitable for Grade C Travel Agency.",
-    "inspectionDocName": "IA_Report_SK-TBR-2026-TA-00201.pdf"
-  },
-  {
-    "refNo": "SK-TBR-2026-TA-00202",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Mingma Norbu Sherpa",
-    "gender": "Male",
-    "dob": "15 Mar 1986",
-    "residentialProof": "Certificate of Identification (COI #COI-NAM-2012-781)",
-    "address": "Tadong 5th Mile, Gangtok, Sikkim – 737102",
-    "phone": "9832778899",
-    "email": "mingma.sherpa@southsikkimholidays.in",
-    "website": "www.southsikkimholidays.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.A. General)",
-    "techQualification": "Certificate in Travel Agency Operations (Sikkim Univ)",
-    "training": "Customer Relations Management (State Tourism Board)",
-    "businessName": "South Sikkim Holiday Planners",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "NMC/TL/2026/8921",
-    "pan": "GGMNS5432H",
-    "gstin": "11GGMNS5432H1Z6",
-    "officeAddress": "Shop #8, First Floor, Metro Point Complex, Tadong, Gangtok – 737102",
-    "officeSizeStandard": "300 sq.ft commercial office with front consultation desk",
-    "association": "Namchi Tour & Travel Operators Association",
-    "activitiesSummary": "Pilgrimage tours to Char Dham and Samdruptse, South Sikkim village excursions, and vehicle rentals.",
-    "partners": [
-      {
-        "name": "Mingma Norbu Sherpa",
-        "role": "Managing Partner",
-        "phone": "9832778899",
-        "aadhaar": "XXXX-XXXX-8822",
-        "address": "Namchi"
-      },
-      {
-        "name": "Pempa Doma Sherpa",
-        "role": "Partner",
-        "phone": "9832778890",
-        "aadhaar": "XXXX-XXXX-9911",
-        "address": "Namchi"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Rinchen Lepcha",
-        "role": "Booking Clerk",
-        "qualification": "Class 12",
-        "training": "Basic Ticketing"
-      }
-    ],
-    "ecoPractices": "Promotes local organic homestays and community cultural tours.",
-    "officeEquipment": "2 workstations, broadband internet, client sofas, and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "DTO",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
-    "inspectionStatus": "Visit Scheduled",
-    "inspectionDate": "08 Nov 2026, 11:00 AM",
-    "inspectingOfficer": "Phurba Tamang (Inspecting Authority, Namchi)",
-    "submittedDate": "03 Nov 2026, 03:45 PM",
-    "lastUpdated": "06 Nov 2026, 12:15 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Mingma Norbu Sherpa)",
-        "date": "03 Nov 2026, 03:45 PM",
-        "remarks": "Application submitted online with required proofs."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Tshering Norbu Rai (Tourism Officer, Level 0)",
-        "date": "05 Nov 2026, 10:30 AM",
-        "remarks": "Credentials checked in order. Assigned to Level 1 IA Phurba Tamang for physical inspection."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Visit Scheduled",
-        "actor": "Phurba Tamang (Inspecting Authority, Level 1)",
-        "date": "06 Nov 2026, 12:15 PM",
-        "remarks": "On-site commercial premise verification scheduled for 15 Nov 2026, 11:30 AM at Shop #8, District Shopping Centre."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "03 Nov 2026, 03:45 PM",
-        "actorRole": "Citizen",
-        "actorName": "Mingma Norbu Sherpa",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "05 Nov 2026, 10:30 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Tshering Norbu Rai",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Forwarded to IA."
-      },
-      {
-        "timestamp": "06 Nov 2026, 12:15 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Phurba Tamang",
-        "action": "Scheduled On-Site Physical Inspection Visit",
-        "stage": "Level 1: Physical Inspection Scheduled",
-        "remarks": "Inspection scheduled for 15 Nov 2026, 11:30 AM."
-      }
-    ],
-    "registrationGrade": "Grade D",
-    "selectedGrade": "Grade D",
-    "registrationFee": 1500,
-    "applicableFee": 1500,
-    "paymentActivated": false,
-    "paymentStatus": "Unpaid",
-    "inspectionFindings": "Tadong office inspected. Basic counter and booking facilities verified for Grade D.",
-    "inspectionDocName": "IA_Report_SK-TBR-2026-TA-00202.pdf"
-  },
-  {
-    "refNo": "SK-TBR-2026-TA-00203",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Sonam Palden Bhutia",
-    "gender": "Male",
-    "dob": "11 Nov 1984",
-    "residentialProof": "Certificate of Identification (COI #COI-NAM-2009-192)",
-    "address": "Damthang Road, Namchi, Sikkim – 737126",
-    "phone": "9832889900",
-    "email": "sonam.palden@namchiexpress.in",
-    "website": "www.namchiexpress.in",
-    "district": "Namchi",
-    "eduQualification": "B.A. (Pass)",
-    "techQualification": "Computer Application & Accounting Diploma",
-    "training": "Customer Service Orientation",
-    "businessName": "Namchi Express Travel Desk",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "NMC/TL/2025/2219",
-    "pan": "HHSPB4321G",
-    "gstin": "11HHSPB4321G1Z7",
-    "officeAddress": "Damthang Road, Near Helipad, Namchi – 737126",
-    "officeSizeStandard": "240 sq.ft booking booth",
-    "association": "Local Taxi & Travel Drivers Syndicate",
-    "activitiesSummary": "Point-to-point tourist vehicle arrangements and budget package bookings.",
-    "partners": [
-      {
-        "name": "Sonam Palden Bhutia",
-        "role": "Sole Proprietor",
-        "phone": "9832889900",
-        "aadhaar": "XXXX-XXXX-6655",
-        "address": "Damthang Road"
-      }
-    ],
-    "staff": [],
-    "ecoPractices": "Waste disposal bins at vehicle pickup bays.",
-    "officeEquipment": "1 desktop computer, internet connection, printer.",
-    "requiresInspection": true,
-    "assignedRole": "TO",
-    "status": "Returned for Clarification",
-    "currentStage": "Returned to Citizen for Clarification",
-    "returnRemarks": "Aadhaar Card uploaded does not match applicant name spelling in Certificate of Identification. Please upload official name correction deed or updated Aadhaar card copy.",
-    "returnedBy": "Tshering Norbu Rai (Tourism Officer, Level 0)",
-    "returnedDate": "05 Nov 2026, 04:10 PM",
-    "submittedDate": "01 Nov 2026, 02:00 PM",
-    "lastUpdated": "05 Nov 2026, 04:10 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Sonam Palden Bhutia)",
-        "date": "01 Nov 2026, 02:00 PM",
-        "remarks": "Initial online submission."
-      },
-      {
-        "step": "Application Returned to Citizen for Clarification by TO",
-        "actor": "Tshering Norbu Rai (Tourism Officer, Level 0)",
-        "date": "05 Nov 2026, 04:10 PM",
-        "remarks": "Clarification Required: Aadhaar Card uploaded does not match applicant name spelling in COI. Please re-upload updated Aadhaar copy."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "01 Nov 2026, 02:00 PM",
-        "actorRole": "Citizen",
-        "actorName": "Sonam Palden Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Initial online submission."
-      },
-      {
-        "timestamp": "05 Nov 2026, 04:10 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Tshering Norbu Rai",
-        "action": "Returned Application to Citizen for Clarification",
-        "stage": "Returned to Citizen for Clarification",
-        "remarks": "Aadhaar name spelling mismatch with COI."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-TA-00204",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Rinzing Wangdi Lepcha",
-    "gender": "Male",
-    "dob": "25 May 1988",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2013-882)",
-    "address": "Tadong, Below Sikkim University, Gangtok – 737102",
-    "phone": "9832990011",
-    "email": "rinzing.lepcha@sikkimgateway.in",
-    "website": "www.sikkimgateway.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.Sc. IT)",
-    "techQualification": "Diploma in Airline Ticketing & Tourism Management",
-    "training": "Advanced Sabre / Galileo Ticketing Certified",
-    "businessName": "Sikkim Gateway Holidays",
-    "constitution": "Private Limited Company",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "GMC/TL/2026/6633",
-    "pan": "IIRWL3210F",
-    "gstin": "11IIRWL3210F1Z8",
-    "officeAddress": "Unit 2, City Centre Mall, 5th Mile, Tadong, Gangtok – 737102",
-    "officeSizeStandard": "380 sq.ft fully furnished digital travel lounge",
-    "association": "Travel Agents Association of Sikkim (TAAS) & IATO",
-    "activitiesSummary": "Corporate conferences, luxury car rentals, customized North Sikkim tour permits, and flight bookings.",
-    "partners": [
-      {
-        "name": "Rinzing Wangdi Lepcha",
-        "role": "Managing Director",
-        "phone": "9832990011",
-        "aadhaar": "XXXX-XXXX-1199",
-        "address": "Tadong"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Pooja Sharma",
-        "role": "Senior Travel Consultant",
-        "qualification": "Graduate (B.A.)",
-        "training": "IATA Certified"
-      },
-      {
-        "name": "Sonam Tshering Lepcha",
-        "role": "Permits Officer",
-        "qualification": "Class 12",
-        "training": "Government Liaison"
-      }
-    ],
-    "ecoPractices": "Carbon-offset options integrated in travel packages; reusable metal water bottles provided to clients.",
-    "officeEquipment": "4 workstations, server, video conferencing screen, digital ticketing terminals, and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "DTO",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
-    "inspectionStatus": "Inspection Cleared & TO Endorsed",
-    "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
-    "inspectionReportDate": "07 Nov 2026, 02:45 PM",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-TA-00204.pdf",
-    "inspectionDocSize": "2.1 MB",
-    "inspectionFindings": "Physical premise inspected. Verified 300 sq.ft commercial ticketing office with digital reservation counter and fire extinguisher. Recommended for Grade B Travel Agent Registration.",
-    "inspectionRemarks": "Outstanding infrastructure and compliance. Highly recommended for statutory registration.",
-    "toInspectionReviewRemarks": "Level 0 TO reviewed IA physical inspection report. All prerequisites and trade credentials verified in order. Endorsed and forwarded to Level 2 DTO for final statutory sanction.",
-    "submittedDate": "29 Oct 2026, 11:15 AM",
-    "lastUpdated": "09 Nov 2026, 03:30 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Rinzing Wangdi Lepcha)",
-        "date": "29 Oct 2026, 11:15 AM",
-        "remarks": "Application submitted with complete corporate documents."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "02 Nov 2026, 10:00 AM",
-        "remarks": "Statutory credentials verified. Assigned to Level 1 IA Tashi Wangdi Lepcha for physical inspection."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Report Submitted to TO",
-        "actor": "Tashi Wangdi Lepcha (Inspecting Authority, Level 1)",
-        "date": "07 Nov 2026, 02:45 PM",
-        "remarks": "Physical premises verified compliant. Uploaded Physical_Inspection_Report_SK-TBR-2026-TA-00204.pdf and transmitted to Level 0 TO."
-      },
-      {
-        "step": "Level 0 TO Reviewed IA Report & Forwarded to DTO",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "09 Nov 2026, 03:30 PM",
-        "remarks": "Level 0 TO reviewed IA inspection report. Endorsed and forwarded to DTO for final sanction."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "29 Oct 2026, 11:15 AM",
-        "actorRole": "Citizen",
-        "actorName": "Rinzing Wangdi Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "02 Nov 2026, 10:00 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Forwarded to IA."
-      },
-      {
-        "timestamp": "07 Nov 2026, 02:45 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Tashi Wangdi Lepcha",
-        "action": "Submitted Physical Inspection Report to Level 0 TO",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Physical premises verified compliant. Uploaded report document and transmitted to TO."
-      },
-      {
-        "timestamp": "09 Nov 2026, 03:30 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Endorsed IA Physical Inspection Report & Forwarded to DTO for Statutory Sanction",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "TO endorsed IA inspection report. Forwarded to DTO."
-      }
-    ],
-    "gradeAssigned": "Grade B",
-    "registrationFee": 7000
-  },
-  {
-    "refNo": "SK-TBR-2026-TA-00205",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Nim Lhamu Bhutia",
-    "gender": "Female",
-    "dob": "14 Feb 1989",
-    "residentialProof": "Certificate of Identification (COI #COI-MNG-2012-321)",
-    "address": "Deorali, Gangtok, Sikkim – 737102",
-    "phone": "9832001122",
-    "email": "nim.lhamu@northsikkimhighlands.in",
-    "website": "www.northsikkimhighlands.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.A. Geography)",
-    "techQualification": "Certificate in Rural Tourism & Travel Management",
-    "training": "Disaster Preparedness & Landslide Safety Protocol",
-    "businessName": "North Sikkim Highland Travels",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "MNC/TL/2026/1029",
-    "pan": "JJNLB2109E",
-    "gstin": "11JJNLB2109E1Z9",
-    "officeAddress": "Shop #14, Deorali Motor Stand, Gangtok – 737102",
-    "officeSizeStandard": "260 sq.ft office with travel information center",
-    "association": "Mangan Travel Operators Union",
-    "activitiesSummary": "Permit facilitation for Gurudongmar Lake, Yumthang Valley, and high-altitude border circuits.",
-    "partners": [
-      {
-        "name": "Nim Lhamu Bhutia",
-        "role": "Sole Proprietor",
-        "phone": "9832001122",
-        "aadhaar": "XXXX-XXXX-9900",
-        "address": "Mangan Bazaar"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Kezang Lepcha",
-        "role": "Permit Agent",
-        "qualification": "Class 12",
-        "training": "Local Logistics"
-      }
-    ],
-    "ecoPractices": "Zero-plastic guidelines enforced for all tourist groups entering Lachung and Lachen.",
-    "officeEquipment": "2 computers, document scanner, emergency first aid kit, and fire extinguisher.",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Dawa Tshering Lepcha",
-    "assignedRole": "DTO",
-    "status": "Approved",
-    "currentStage": "Approved – Certificate Issued",
-    "certificateNo": "SK-TA-GTK-2026-0031",
-    "validUntil": "08 Nov 2027",
-    "approvalDate": "08 Nov 2026",
-    "approvingOfficer": "Rinzing Ongmu Bhutia, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Certificate issued with 1-year validity.",
-    "inspectingOfficer": "Dawa Tshering Lepcha (Inspecting Authority, Mangan)",
-    "inspectionReportDate": "03 Nov 2026, 01:15 PM",
-    "inspectionDocName": "Physical_Inspection_Report_SK-TBR-2026-TA-00205.pdf",
-    "inspectionDocSize": "1.7 MB",
-    "inspectionFindings": "Commercial travel agency office at Mangan Main Bazaar physically verified. All safety standards, municipal trade license, and permit advisory manuals verified in order.",
-    "toInspectionReviewRemarks": "Level 0 TO reviewed IA inspection report. Fully compliant. Forwarded to DTO for sanction.",
-    "submittedDate": "25 Oct 2026, 10:30 AM",
-    "lastUpdated": "08 Nov 2026, 02:00 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Nim Lhamu Bhutia)",
-        "date": "25 Oct 2026, 10:30 AM",
-        "remarks": "Application submitted online with required proofs."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Chewang Norbu Bhutia (Tourism Officer, Level 0)",
-        "date": "28 Oct 2026, 11:00 AM",
-        "remarks": "Verified credentials. Forwarded to Level 1 IA Dawa Tshering Lepcha for physical inspection."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Report Submitted to TO",
-        "actor": "Dawa Tshering Lepcha (Inspecting Authority, Level 1)",
-        "date": "03 Nov 2026, 01:15 PM",
-        "remarks": "Physical premises verified compliant. Uploaded report document and transmitted to Level 0 TO."
-      },
-      {
-        "step": "Level 0 TO Reviewed IA Report & Forwarded to DTO",
-        "actor": "Chewang Norbu Bhutia (Tourism Officer, Level 0)",
-        "date": "06 Nov 2026, 10:30 AM",
-        "remarks": "Level 0 TO reviewed IA inspection report. Endorsed and forwarded to DTO for final sanction."
-      },
-      {
-        "step": "Final Approval Granted & Certificate Issued",
-        "actor": "Rinzing Ongmu Bhutia (District Tourism Officer, Level 2)",
-        "date": "08 Nov 2026, 02:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-TA-00205 generated with 1-year validity until 08 Nov 2027."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "25 Oct 2026, 10:30 AM",
-        "actorRole": "Citizen",
-        "actorName": "Nim Lhamu Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "28 Oct 2026, 11:00 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Chewang Norbu Bhutia",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Mandated IA inspection."
-      },
-      {
-        "timestamp": "03 Nov 2026, 01:15 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Dawa Tshering Lepcha",
-        "action": "Submitted Physical Inspection Report to Level 0 TO",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Physical inspection report uploaded and transmitted to TO."
-      },
-      {
-        "timestamp": "06 Nov 2026, 10:30 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Chewang Norbu Bhutia",
-        "action": "Endorsed IA Physical Inspection Report & Forwarded to DTO for Statutory Sanction",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "TO endorsed IA inspection report. Forwarded to DTO."
-      },
-      {
-        "timestamp": "08 Nov 2026, 02:00 PM",
-        "actorRole": "Level 2 – District Tourism Officer (DTO)",
-        "actorName": "Rinzing Ongmu Bhutia",
-        "action": "Granted Statutory Approval & Issued Form 3 Certificate",
-        "stage": "Approved – Certificate Issued",
-        "remarks": "Registration approved. Form 3 Certificate generated."
-      }
-    ],
-    "paymentActivated": true,
-    "paymentStatus": "Paid",
-    "registrationFee": 7000,
-    "amountPaid": 7000
-  },
-  {
-    "refNo": "SK-TBR-2026-DLR-00301",
-    "formConfig": "B",
-    "category": "dealer",
-    "categoryName": "Equipment Dealer Registration",
-    "categoryCode": "DLR",
-    "applicantName": "Phurba Tshering Lepcha",
-    "fatherName": "Late Dorjee Lepcha",
-    "gender": "Male",
-    "dob": "16 Apr 1983",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2008-661)",
-    "coiNo": "COI-GTK-2008-661",
-    "address": "Syari, Below High Court, Gangtok, Sikkim – 737102",
-    "phone": "9832112233",
-    "email": "phurba.lepcha@sikkimmountaingear.in",
-    "district": "Gangtok",
-    "businessName": "Sikkim Mountain Gear & Trekking Supplies",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Rented Commercial Showroom",
-    "leaseValidUntil": "31 Mar 2029",
-    "tradeLicenseNo": "GMC/SHOP/2026/5541",
-    "pan": "KKPTL1098D",
-    "gstin": "11KKPTL1098D1Z3",
-    "officeAddress": "Shop #14, Super Market Complex, Gangtok – 737101",
-    "premisesArea": "290 sq.ft commercial showroom with safety equipment display",
-    "fireSafetyCert": "Certified ABC Dry Powder Extinguisher (Valid till Dec 2027)",
-    "firstAidAvailable": true,
-    "equipmentTypes": "Mountaineering Ropes (UIAA/CE), Harnesses, Carabiners, Sleeping Bags (-20C), Tents, Snow Crampons, Trekking Poles",
-    "inventoryValuation": "Rs. 18,50,000/- certified inventory stock",
-    "requiresInspection": true,
-    "assignedRole": "TO",
-    "status": "Submitted",
-    "currentStage": "Level 0: Pending TO Verification",
-    "submittedDate": "06 Nov 2026, 09:15 AM",
-    "lastUpdated": "06 Nov 2026, 09:15 AM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Phurba Tshering Lepcha)",
-        "date": "06 Nov 2026, 09:15 AM",
-        "remarks": "Application submitted with Shop Act license and gear stock manifest."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "06 Nov 2026, 09:15 AM",
-        "actorRole": "Citizen",
-        "actorName": "Phurba Tshering Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-DLR-00302",
-    "formConfig": "B",
-    "category": "dealer",
-    "categoryName": "Equipment Dealer Registration",
-    "categoryCode": "DLR",
-    "applicantName": "Karma Tshering Bhutia",
-    "fatherName": "Tashi Bhutia",
-    "gender": "Male",
-    "dob": "24 Aug 1985",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2010-883)",
-    "coiNo": "COI-GTK-2010-883",
-    "address": "Tibet Road, Gangtok, Sikkim – 737101",
-    "phone": "9832224455",
-    "email": "karma.bhutia@alpinehardware.in",
-    "district": "Gangtok",
-    "businessName": "Alpine Hardware & Climbing Equipments",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Rented Commercial Showroom",
-    "leaseValidUntil": "30 Jun 2028",
-    "tradeLicenseNo": "GMC/SHOP/2026/6672",
-    "pan": "LLKTB0987C",
-    "gstin": "11LLKTB0987C1Z2",
-    "officeAddress": "Shop #3, Kazi Road, Gangtok – 737101",
-    "premisesArea": "320 sq.ft commercial store with basement storage",
-    "fireSafetyCert": "Certified CO2 & ABC Extinguishers (Valid till Oct 2027)",
-    "firstAidAvailable": true,
-    "equipmentTypes": "Ice Axes, Crampons, Static & Dynamic Climbing Ropes, Helmets, Avalanche Beacons",
-    "inventoryValuation": "Rs. 24,00,000/- certified inventory stock",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "IA",
-    "status": "Under Verification",
-    "currentStage": "Level 1: Assigned for IA Physical Inspection",
-    "inspectionStatus": "Scheduled for Physical Inspection",
-    "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
-    "submittedDate": "04 Nov 2026, 02:15 PM",
-    "lastUpdated": "06 Nov 2026, 11:30 AM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Karma Tshering Bhutia)",
-        "date": "04 Nov 2026, 02:15 PM",
-        "remarks": "Application submitted online with registered lease deed and fire safety certificate."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "06 Nov 2026, 11:30 AM",
-        "remarks": "Verified statutory credentials and municipal trade license. Assigned to Level 1 IA Tashi Wangdi Lepcha for mandatory on-site physical inspection."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "04 Nov 2026, 02:15 PM",
-        "actorRole": "Citizen",
-        "actorName": "Karma Tshering Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "06 Nov 2026, 11:30 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Forwarded to IA."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-DLR-00303",
-    "formConfig": "B",
-    "category": "dealer",
-    "categoryName": "Equipment Dealer Registration",
-    "categoryCode": "DLR",
-    "applicantName": "Lobsang Dorjee Sherpa",
-    "fatherName": "Ang Tshering Sherpa",
-    "gender": "Male",
-    "dob": "19 Dec 1987",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2012-441)",
-    "coiNo": "COI-GTK-2012-441",
-    "address": "Arithang, Gangtok, Sikkim – 737101",
-    "phone": "9832335566",
-    "email": "lobsang.sherpa@kanchenjungaoutfitter.in",
-    "district": "Gangtok",
-    "businessName": "Kanchenjunga Outfitter & Retailers",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "GMC/SHOP/2026/7781",
-    "pan": "MMLDS9876B",
-    "gstin": "11MMLDS9876B1Z1",
-    "officeAddress": "Arithang Main Road, Near Old Bus Stand, Gangtok – 737101",
-    "premisesArea": "340 sq.ft retail store",
-    "fireSafetyCert": "Certified Fire Extinguisher & Smoke Detector (Valid till Jan 2028)",
-    "firstAidAvailable": true,
-    "equipmentTypes": "Trekking Boots, Down Jackets, Thermal Base Layers, Trekking Poles, Expedition Stoves",
-    "inventoryValuation": "Rs. 15,20,000/- stock",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "IA",
-    "status": "Under Verification",
-    "currentStage": "Level 1: Physical Inspection Scheduled",
-    "inspectionStatus": "Visit Scheduled",
-    "inspectionDate": "16 Nov 2026, 02:00 PM",
-    "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
-    "submittedDate": "02 Nov 2026, 04:00 PM",
-    "lastUpdated": "07 Nov 2026, 01:45 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Lobsang Dorjee Sherpa)",
-        "date": "02 Nov 2026, 04:00 PM",
-        "remarks": "Application submitted online with ownership deed."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "04 Nov 2026, 12:00 PM",
-        "remarks": "Level 0 verification completed. Assigned to Level 1 IA Tashi Wangdi Lepcha."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Visit Scheduled",
-        "actor": "Tashi Wangdi Lepcha (Inspecting Authority, Level 1)",
-        "date": "07 Nov 2026, 01:45 PM",
-        "remarks": "On-site physical inspection booked for 16 Nov 2026, 02:00 PM at Arithang retail premise."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "02 Nov 2026, 04:00 PM",
-        "actorRole": "Citizen",
-        "actorName": "Lobsang Dorjee Sherpa",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "04 Nov 2026, 12:00 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Credentials checked. Assigned to IA."
-      },
-      {
-        "timestamp": "07 Nov 2026, 01:45 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Tashi Wangdi Lepcha",
-        "action": "Scheduled On-Site Physical Inspection Visit",
-        "stage": "Level 1: Physical Inspection Scheduled",
-        "remarks": "Inspection scheduled for 16 Nov 2026, 02:00 PM."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-DLR-00304",
-    "formConfig": "B",
-    "category": "dealer",
-    "categoryName": "Equipment Dealer Registration",
-    "categoryCode": "DLR",
-    "applicantName": "Norden Tshering Bhutia",
-    "fatherName": "Sonam Bhutia",
-    "gender": "Male",
-    "dob": "08 Oct 1982",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2007-992)",
-    "coiNo": "COI-GTK-2007-992",
-    "address": "Ranipool Bazaar, Gangtok Circle, Sikkim – 737135",
-    "phone": "9832446677",
-    "email": "norden.bhutia@himalayanoutfitters.in",
-    "district": "Gangtok",
-    "businessName": "Himalayan Expedition Outfitters",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "GMC/SHOP/2026/8892",
-    "pan": "NNNTB8765A",
-    "gstin": "11NNNTB8765A1Z5",
-    "officeAddress": "NH-10 Highway Junction, Ranipool, Gangtok – 737135",
-    "premisesArea": "420 sq.ft showroom with gear maintenance workshop",
-    "fireSafetyCert": "Certified Dual ABC Extinguishers & Fire Blanket (Valid till Mar 2028)",
-    "firstAidAvailable": true,
-    "equipmentTypes": "High-Altitude Tents (North Face / Mountain Hardwear), Sleeping Bags, Safety Ropes, Oxygen Cylinders, VHF Radios",
-    "inventoryValuation": "Rs. 32,00,000/- certified gear stock",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "assignedRole": "TO",
-    "status": "Under Verification",
-    "currentStage": "Level 0: IA Report Received – Pending TO Review",
-    "inspectionStatus": "Submitted to TO",
-    "inspectingOfficer": "Tashi Wangdi Lepcha (Inspecting Authority, Gangtok)",
-    "inspectionReportDate": "08 Nov 2026, 05:15 PM",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00304.pdf",
-    "inspectionDocSize": "2.3 MB",
-    "inspectionFindings": "Showroom premise inspected. Adequate floor space of 420 sq.ft, fire safety extinguisher installed, climbing ropes and safety harnesses meet CE/UIAA safety standards. Recommended for Dealer Registration.",
-    "inspectionRemarks": "Stock inventory matches declared manifest. Highly recommended for statutory 1-year dealer registration.",
-    "inspectionRecommendation": "RECOMMENDED_FOR_APPROVAL",
-    "submittedDate": "01 Nov 2026, 10:00 AM",
-    "lastUpdated": "08 Nov 2026, 05:15 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Norden Tshering Bhutia)",
-        "date": "01 Nov 2026, 10:00 AM",
-        "remarks": "Application submitted online with ownership proof and inventory manifest."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "03 Nov 2026, 02:00 PM",
-        "remarks": "Level 0 verification completed. Assigned to Level 1 IA Tashi Wangdi Lepcha for physical inspection."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Report Submitted to TO",
-        "actor": "Tashi Wangdi Lepcha (Inspecting Authority, Level 1)",
-        "date": "08 Nov 2026, 05:15 PM",
-        "remarks": "On-site physical inspection completed. Premises, fire safety norms, and safety gear inventory verified in order. Uploaded Physical_Inspection_Report_SK-TBR-2026-DLR-00304.pdf and transmitted to Level 0 TO for review."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "01 Nov 2026, 10:00 AM",
-        "actorRole": "Citizen",
-        "actorName": "Norden Tshering Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "03 Nov 2026, 02:00 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Forwarded to IA."
-      },
-      {
-        "timestamp": "08 Nov 2026, 05:15 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Tashi Wangdi Lepcha",
-        "action": "Submitted Physical Inspection Report to Level 0 TO",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Physical premises verified compliant. Uploaded report document and transmitted to TO."
-      }
-    ],
-    "inspectionDate": "02 Nov 2026, 03:00 PM"
-  },
-  {
-    "refNo": "SK-TBR-2026-DLR-00305",
-    "formConfig": "B",
-    "category": "dealer",
-    "categoryName": "Equipment Dealer Registration",
-    "categoryCode": "DLR",
-    "applicantName": "Sonam Wangdi Lepcha",
-    "fatherName": "Dorjee Lepcha",
-    "gender": "Male",
-    "dob": "14 Jun 1980",
-    "residentialProof": "Certificate of Identification (COI #COI-GYL-2006-221)",
-    "coiNo": "COI-GYL-2006-221",
-    "address": "Yuksam Bazaar, Gyalshing District, Sikkim – 737113",
-    "phone": "9832557788",
-    "email": "sonam.wangdi@westadventuredepot.in",
-    "district": "Gangtok",
-    "businessName": "Western Sikkim Adventure Depot",
-    "constitution": "Sole Proprietorship",
-    "ownership": "Owned Commercial Premise",
-    "tradeLicenseNo": "GMC/SHOP/2026/1190",
-    "pan": "OOSWL7654Z",
-    "gstin": "11OOSWL7654Z1Z7",
-    "officeAddress": "Main Trailhead, Yuksam Bazaar – 737113",
-    "premisesArea": "310 sq.ft outfitter showroom",
-    "fireSafetyCert": "Certified Fire Extinguisher (Valid till Feb 2028)",
-    "firstAidAvailable": true,
-    "equipmentTypes": "Tents, Expedition Sleeping Bags, Climbing Ropes, Trekking Poles, Portable Camp Stoves",
-    "inventoryValuation": "Rs. 19,00,000/- certified stock",
-    "requiresInspection": true,
-    "assignedIaOfficer": "Sangay Chopel Bhutia",
-    "assignedRole": "DTO",
-    "status": "Approved",
-    "currentStage": "Approved – Certificate Issued",
-    "certificateNo": "SK-DLR-GTK-2026-0012",
-    "validUntil": "07 Nov 2027",
-    "approvalDate": "07 Nov 2026",
-    "approvingOfficer": "Sonam Gyatso Lepcha, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Dealer Registration Certificate issued with 1-year validity.",
-    "inspectingOfficer": "Sangay Chopel Bhutia (Inspecting Authority, Gyalshing)",
-    "inspectionReportDate": "02 Nov 2026, 03:30 PM",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00305.pdf",
-    "inspectionDocSize": "1.9 MB",
-    "inspectionFindings": "Physical inspection completed. Equipment showroom and certified stock warehouse verified. Meets statutory dealer standards.",
-    "toInspectionReviewRemarks": "Level 0 TO reviewed IA physical inspection report. All prerequisites and equipment safety verified in order. Endorsed and forwarded to DTO for sanction.",
-    "submittedDate": "26 Oct 2026, 09:30 AM",
-    "lastUpdated": "07 Nov 2026, 03:00 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Sonam Wangdi Lepcha)",
-        "date": "26 Oct 2026, 09:30 AM",
-        "remarks": "Application submitted online with required proofs."
-      },
-      {
-        "step": "Level 0 TO Verification Satisfactory & Assigned to IA",
-        "actor": "Lakpa Doma Subba (Tourism Officer, Level 0)",
-        "date": "29 Oct 2026, 11:30 AM",
-        "remarks": "Statutory credentials checked. Forwarded to Level 1 IA Sangay Chopel Bhutia for physical on-site inspection."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection Report Submitted to TO",
-        "actor": "Sangay Chopel Bhutia (Inspecting Authority, Level 1)",
-        "date": "02 Nov 2026, 03:30 PM",
-        "remarks": "Physical premises verified compliant. Uploaded report document and transmitted to Level 0 TO."
-      },
-      {
-        "step": "Level 0 TO Reviewed IA Report & Forwarded to DTO",
-        "actor": "Lakpa Doma Subba (Tourism Officer, Level 0)",
-        "date": "05 Nov 2026, 10:15 AM",
-        "remarks": "Level 0 TO reviewed IA inspection report. Endorsed and forwarded to DTO for final sanction."
-      },
-      {
-        "step": "Final Approval Granted & Certificate Issued",
-        "actor": "Sonam Gyatso Lepcha (District Tourism Officer, Level 2)",
-        "date": "07 Nov 2026, 03:00 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-DLR-00305 generated with 1-year validity until 07 Nov 2027."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "26 Oct 2026, 09:30 AM",
-        "actorRole": "Citizen",
-        "actorName": "Sonam Wangdi Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "29 Oct 2026, 11:30 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Lakpa Doma Subba",
-        "action": "Verified Statutory Credentials & Assigned to Level 1 IA for Physical Inspection",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Verified credentials. Forwarded to IA."
-      },
-      {
-        "timestamp": "02 Nov 2026, 03:30 PM",
-        "actorRole": "Level 1 – Inspecting Authority (IA)",
-        "actorName": "Sangay Chopel Bhutia",
-        "action": "Submitted Physical Inspection Report to Level 0 TO",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Physical premises verified compliant. Uploaded report document and transmitted to TO."
-      },
-      {
-        "timestamp": "05 Nov 2026, 10:15 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Lakpa Doma Subba",
-        "action": "Endorsed IA Physical Inspection Report & Forwarded to DTO for Statutory Sanction",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "TO endorsed IA inspection report. Forwarded to DTO."
-      },
-      {
-        "timestamp": "07 Nov 2026, 03:00 PM",
-        "actorRole": "Level 2 – District Tourism Officer (DTO)",
-        "actorName": "Sonam Gyatso Lepcha",
-        "action": "Granted Statutory Approval & Issued Form 3 Certificate",
-        "stage": "Approved – Certificate Issued",
-        "remarks": "Registration approved. Form 3 Certificate generated."
-      }
-    ],
-    "paymentActivated": true,
-    "paymentStatus": "Paid",
-    "registrationFee": 2000,
-    "amountPaid": 2000
-  },
-  {
-    "refNo": "SK-TBR-2026-PHO-00401",
-    "formConfig": "C",
-    "category": "outdoor-photographer",
-    "categoryName": "Outdoor Photographer Registration",
-    "categoryCode": "PHO",
-    "applicantName": "Tenzing Norbu Lepcha",
-    "fatherName": "Dorjee Tshering Lepcha",
-    "gender": "Male",
-    "dob": "14 May 1992",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2012-8841)",
-    "coiNo": "COI-GTK-2012-8841",
-    "address": "Near Ridge Park, Below Raj Bhawan, Gangtok, Sikkim – 737101",
-    "phone": "9832045612",
-    "email": "tenzing.norbu@kanchenjungaframes.in",
-    "district": "Gangtok",
-    "businessName": "Kanchenjunga Frames Photography",
-    "tradeLicenseNo": "GMC/SHOP/2026/4412",
-    "pan": "PPTNL6543Y",
-    "gstin": "11PPTNL6543Y1Z8",
-    "officeAddress": "Near Ridge Park, Gangtok – 737101",
-    "photoCourse": "Diploma in Outdoor & Landscape Photography, Himalayan Institute",
-    "portfolioLink": "www.kanchenjungaframes.in/portfolio",
-    "experienceYears": "6 years commercial landscape and cultural documentation across Sikkim Himalayas",
-    "recomOrg": "Sikkim Press Club & Photographers Guild",
-    "equipmentList": "Nikon Z8 Mirrorless, 24-70mm f/2.8, 70-200mm f/2.8, DJI Mavic 3 Pro (DGCA Registered)",
-    "droneRegistered": true,
-    "droneUin": "UIN-2026-SK-88124",
-    "requiresInspection": false,
-    "assignedRole": "TO",
-    "status": "Submitted",
-    "currentStage": "Level 0: Pending TO Verification",
-    "submittedDate": "05 Nov 2026, 12:45 PM",
-    "lastUpdated": "05 Nov 2026, 12:45 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Tenzing Norbu Lepcha)",
-        "date": "05 Nov 2026, 12:45 PM",
-        "remarks": "Application submitted online with photography portfolio and technical training diploma."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "05 Nov 2026, 12:45 PM",
-        "actorRole": "Citizen",
-        "actorName": "Tenzing Norbu Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-PHO-00402",
-    "formConfig": "C",
-    "category": "outdoor-photographer",
-    "categoryName": "Outdoor Photographer Registration",
-    "categoryCode": "PHO",
-    "applicantName": "Pemba Tshering Sherpa",
-    "fatherName": "Passang Sherpa",
-    "gender": "Male",
-    "dob": "28 Jul 1994",
-    "residentialProof": "Certificate of Identification (COI #COI-NAM-2016-339)",
-    "coiNo": "COI-NAM-2016-339",
-    "address": "Bhanu Saligram Ward, Namchi, Sikkim – 737126",
-    "phone": "9832113355",
-    "email": "pemba.sherpa@alpineglowstudio.in",
-    "district": "Namchi",
-    "businessName": "Alpine Glow Wildlife & Landscape Studio",
-    "tradeLicenseNo": "NMC/TL/2026/1944",
-    "pan": "QQPTS5432X",
-    "gstin": "11QQPTS5432X1Z9",
-    "officeAddress": "Main Market, Namchi – 737126",
-    "photoCourse": "Certificate in High-Altitude Wildlife Photography, WII Dehradun",
-    "portfolioLink": "www.alpineglowstudio.in/wildlife",
-    "experienceYears": "5 years Red Panda and Himalayan Avian Documentation in Maenam & Barsey Sanctuaries",
-    "recomOrg": "Sikkim Birding & Wildlife Photographers Union",
-    "equipmentList": "Sony A7 IV, 200-600mm f/5.6-6.3, 16-35mm f/2.8, Carbon Fiber Tripods",
-    "droneRegistered": false,
-    "requiresInspection": false,
-    "assignedRole": "TO",
-    "status": "Under Verification",
-    "currentStage": "Level 0: Pending TO Verification",
-    "submittedDate": "04 Nov 2026, 03:00 PM",
-    "lastUpdated": "04 Nov 2026, 03:00 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Pemba Tshering Sherpa)",
-        "date": "04 Nov 2026, 03:00 PM",
-        "remarks": "Application submitted online with wildlife photo portfolio."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "04 Nov 2026, 03:00 PM",
-        "actorRole": "Citizen",
-        "actorName": "Pemba Tshering Sherpa",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-PHO-00403",
-    "formConfig": "C",
-    "category": "outdoor-photographer",
-    "categoryName": "Outdoor Photographer Registration",
-    "categoryCode": "PHO",
-    "applicantName": "Dechen Ongmu Bhutia",
-    "fatherName": "Karma Bhutia",
-    "gender": "Female",
-    "dob": "17 Sep 1995",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2015-772)",
-    "coiNo": "COI-GTK-2015-772",
-    "address": "Tadong, Below Sikkim Manipal Hospital, Gangtok – 737102",
-    "phone": "9832224466",
-    "email": "dechen.bhutia@sikkimskies.in",
-    "district": "Gangtok",
-    "businessName": "Sikkim Skies Aerial Cinematography",
-    "tradeLicenseNo": "GMC/SHOP/2026/2219",
-    "pan": "RRDOB4321W",
-    "gstin": "11RRDOB4321W1Z0",
-    "officeAddress": "Tadong 5th Mile, Gangtok – 737102",
-    "photoCourse": "Commercial Drone Pilot Certification (DGCA Remote Pilot License)",
-    "portfolioLink": "www.sikkimskies.in/aerials",
-    "experienceYears": "4 years commercial drone cinematography for travel documentaries",
-    "recomOrg": "Sikkim Cine Association",
-    "equipmentList": "DJI Inspire 3, DJI Mavic 3 Enterprise, Sony FX3 Cinema Camera",
-    "droneRegistered": true,
-    "droneUin": "UIN-2026-SK-99120",
-    "requiresInspection": false,
-    "assignedRole": "TO",
-    "status": "Returned for Clarification",
-    "currentStage": "Returned to Citizen for Clarification",
-    "returnRemarks": "DGCA Remote Pilot Certificate upload is blurred and expiry date cannot be authenticated. Please re-upload clear digital copy of valid DGCA Pilot Certificate with QR code.",
-    "returnedBy": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-    "returnedDate": "05 Nov 2026, 02:30 PM",
-    "submittedDate": "02 Nov 2026, 01:15 PM",
-    "lastUpdated": "05 Nov 2026, 02:30 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Dechen Ongmu Bhutia)",
-        "date": "02 Nov 2026, 01:15 PM",
-        "remarks": "Application submitted online with drone portfolio."
-      },
-      {
-        "step": "Application Returned to Citizen for Clarification by TO",
-        "actor": "Karma Lhendup Bhutia (Tourism Officer, Level 0)",
-        "date": "05 Nov 2026, 02:30 PM",
-        "remarks": "Clarification Required: DGCA Remote Pilot Certificate upload is blurred. Please re-upload clear digital copy."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "02 Nov 2026, 01:15 PM",
-        "actorRole": "Citizen",
-        "actorName": "Dechen Ongmu Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "05 Nov 2026, 02:30 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Returned Application to Citizen for Clarification",
-        "stage": "Returned to Citizen for Clarification",
-        "remarks": "DGCA drone certificate blurred. Re-upload requested."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-PHO-00404",
-    "formConfig": "C",
-    "category": "outdoor-photographer",
-    "categoryName": "Outdoor Photographer Registration",
-    "categoryCode": "PHO",
-    "applicantName": "Passang Doma Lepcha",
-    "fatherName": "Tashi Lepcha",
-    "gender": "Female",
-    "dob": "11 Mar 1993",
-    "residentialProof": "Certificate of Identification (COI #COI-GYL-2014-991)",
-    "coiNo": "COI-GYL-2014-991",
-    "address": "Upper Pelling, Gyalshing District, Sikkim – 737113",
-    "phone": "9832335577",
-    "email": "passang.lepcha@rhododendronvalley.in",
-    "district": "Gyalshing",
-    "businessName": "Rhododendron Valley Photography",
-    "tradeLicenseNo": "GMC/SHOP/2026/8812",
-    "pan": "SSPDL3210V",
-    "gstin": "11SSPDL3210V1Z1",
-    "officeAddress": "Upper Pelling Main Road – 737113",
-    "photoCourse": "Advance Diploma in Nature Photography (Sikkim Alpine Academy)",
-    "portfolioLink": "www.rhododendronvalley.in/gallery",
-    "experienceYears": "7 years botanical and landscape documentation in Kanchenjunga Biosphere Reserve",
-    "recomOrg": "Sikkim Nature Conservation & Photography Society",
-    "equipmentList": "Canon EOS R5, RF 15-35mm f/2.8, RF 100-500mm f/4.5-7.1, Macro Ring Flash",
-    "droneRegistered": false,
-    "requiresInspection": false,
-    "assignedRole": "DTO",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
-    "inspectionStatus": "Exempt (Direct Route)",
-    "toRemarks": "Level 0 TO verified educational credentials, COI, and nature photography portfolio. Outdoor Photographer category is exempt from physical inspection. Forwarded directly to Level 2 DTO for final sanction.",
-    "submittedDate": "30 Oct 2026, 11:00 AM",
-    "lastUpdated": "04 Nov 2026, 04:15 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Passang Doma Lepcha)",
-        "date": "30 Oct 2026, 11:00 AM",
-        "remarks": "Application submitted online with complete credentials."
-      },
-      {
-        "step": "Level 0 TO Verification Completed & Forwarded to DTO",
-        "actor": "Lakpa Doma Subba (Tourism Officer, Level 0)",
-        "date": "04 Nov 2026, 04:15 PM",
-        "remarks": "Level 0 TO verified all statutory documents, COI, and high-altitude photography portfolio. Category exempt from physical inspection. Forwarded directly to Level 2 DTO Sonam Gyatso Lepcha for final sanction."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "30 Oct 2026, 11:00 AM",
-        "actorRole": "Citizen",
-        "actorName": "Passang Doma Lepcha",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "04 Nov 2026, 04:15 PM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Lakpa Doma Subba",
-        "action": "Verified Statutory Credentials & Forwarded Directly to Level 2 DTO (Physical Inspection Exempt)",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "Verified credentials. Category exempt from physical inspection. Forwarded directly to DTO."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-PHO-00405",
-    "formConfig": "C",
-    "category": "outdoor-photographer",
-    "categoryName": "Outdoor Photographer Registration",
-    "categoryCode": "PHO",
-    "applicantName": "Rinzing Tshering Bhutia",
-    "fatherName": "Sonam Tshering Bhutia",
-    "gender": "Male",
-    "dob": "04 Feb 1990",
-    "residentialProof": "Certificate of Identification (COI #COI-PAK-2012-108)",
-    "coiNo": "COI-PAK-2012-108",
-    "address": "Pakyong Bazaar, Near Airport Road, Pakyong – 737106",
-    "phone": "9832446688",
-    "email": "rinzing.bhutia@easthimalayanvisuals.in",
-    "district": "Gangtok",
-    "businessName": "Eastern Himalayan Visuals",
-    "tradeLicenseNo": "PMC/TL/2026/3321",
-    "pan": "TTRTB2109U",
-    "gstin": "11TTRTB2109U1Z2",
-    "officeAddress": "Airport Road, Pakyong – 737106",
-    "photoCourse": "Bachelor of Fine Arts (Photography), Calcutta University",
-    "portfolioLink": "www.easthimalayanvisuals.in/works",
-    "experienceYears": "8 years professional landscape, aerial, and travel magazine feature photography",
-    "recomOrg": "All Sikkim Professional Photographers Guild",
-    "equipmentList": "Fujifilm GFX 100 II Medium Format, GF 32-64mm, GF 110mm f/2, DJI Mavic 3 Cine",
-    "droneRegistered": true,
-    "droneUin": "UIN-2026-SK-77341",
-    "requiresInspection": false,
-    "assignedRole": "Citizen",
-    "status": "Approved",
-    "currentStage": "Approved – Certificate Issued",
-    "certificateNo": "SK-TR-CERT-2026-PHO-0042",
-    "validUntil": "14 Nov 2027",
-    "approvalDate": "06 Nov 2026",
-    "approvingOfficer": "Nim Lhamu Lepcha, District Tourism Officer (DTO)",
-    "dtoRemarks": "Statutory sanction granted. Form 3 Outdoor Photographer Registration Certificate issued with 1-year validity.",
-    "inspectionStatus": "Exempt (Direct Route)",
-    "toRemarks": "Level 0 verification completed in order. Exempt from physical inspection. Forwarded to DTO for sanction.",
-    "submittedDate": "27 Oct 2026, 02:00 PM",
-    "lastUpdated": "06 Nov 2026, 03:30 PM",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Rinzing Tshering Bhutia)",
-        "date": "27 Oct 2026, 02:00 PM",
-        "remarks": "Application submitted online with BFA degree and aerial drone license."
-      },
-      {
-        "step": "Level 0 TO Verification Completed & Forwarded to DTO",
-        "actor": "Prashant Chettri (Tourism Officer, Level 0)",
-        "date": "30 Oct 2026, 11:30 AM",
-        "remarks": "Level 0 TO verified all statutory credentials, DGCA drone certificate, and BFA degree. Exempt from physical inspection. Forwarded directly to Level 2 DTO."
-      },
-      {
-        "step": "Final Approval Granted & Certificate Issued",
-        "actor": "Nim Lhamu Lepcha (District Tourism Officer, Level 2)",
-        "date": "06 Nov 2026, 03:30 PM",
-        "remarks": "Statutory sanction granted. Registration Certificate #SK-TCD-REG-2026-PHO-00405 generated with 1-year validity until 06 Nov 2027."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "27 Oct 2026, 02:00 PM",
-        "actorRole": "Citizen",
-        "actorName": "Rinzing Tshering Bhutia",
-        "action": "Application Submitted Online",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted online."
-      },
-      {
-        "timestamp": "30 Oct 2026, 11:30 AM",
-        "actorRole": "Level 0 – Tourism Officer (TO)",
-        "actorName": "Prashant Chettri",
-        "action": "Verified Statutory Credentials & Forwarded Directly to Level 2 DTO (Physical Inspection Exempt)",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "Verified credentials. Category exempt from physical inspection. Forwarded directly to DTO."
-      },
-      {
-        "timestamp": "06 Nov 2026, 03:30 PM",
-        "actorRole": "Level 2 – District Tourism Officer (DTO)",
-        "actorName": "Nim Lhamu Lepcha",
-        "action": "Granted Statutory Approval & Issued Form 3 Certificate",
-        "stage": "Approved – Certificate Issued",
-        "remarks": "Registration approved. Form 3 Certificate generated."
-      }
-    ],
-    "paymentActivated": true,
-    "paymentStatus": "Paid",
-    "registrationFee": 1500,
-    "amountPaid": 1500,
-    "registrationGrade": "Not Applicable",
-    "selectedGrade": "Not Applicable",
-    "applicableFee": 1500,
-    "paymentTxnId": "TXN-SK-TBR-2026-773105",
-    "paymentReceiptNo": "RCPT-SK-TCD-2026-00405"
-  },
-  {
-    "refNo": "SK-TBR-2026-TO-00107",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Norbu Wangdi Bhutia",
-    "gender": "Male",
-    "dob": "08 Sep 1987",
-    "residentialProof": "Sikkim Certificate of Identification (COI #COI-GTK-2011-551)",
-    "address": "Development Area, Gangtok, Sikkim – 737101",
-    "phone": "9832101129",
-    "email": "norbu.bhutia@sikkimholidays.in",
-    "website": "www.sikkimholidays.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.A. Tourism)",
-    "techQualification": "Expedition Management (HMI Darjeeling)",
-    "training": "Wilderness Safety Protocol (Sikkim Tourism 2023)",
-    "businessName": "Sikkim Panoramic Expeditions",
-    "constitution": "Proprietorship",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "GMC/TL/2026/8991",
-    "pan": "ABNWB6654Q",
-    "gstin": "11ABNWB6654Q1Z3",
-    "officeAddress": "Unit 12, Second Floor, Paljor Stadium Road, Gangtok – 737101",
-    "officeSizeStandard": "410 sq.ft commercial space with client lounge and digital ticketing desk",
-    "association": "TAAS Member",
-    "activitiesSummary": "North Sikkim high plateau tours, Dzongri trekking circuits, and monastery tours.",
-    "partners": [
-      {
-        "name": "Norbu Wangdi Bhutia",
-        "role": "Proprietor",
-        "phone": "9832101129",
-        "aadhaar": "XXXX-XXXX-7781",
-        "address": "Development Area, Gangtok"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Kunzang Lepcha",
-        "role": "Trek Leader",
-        "qualification": "Basic Mountaineering Course",
-        "training": "First Aid Certified"
-      }
-    ],
-    "ecoPractices": "Leave-No-Trace trail ethics, zero plastic policy.",
-    "officeEquipment": "3 workstations, fire extinguisher, guest consultation zone.",
-    "requiresInspection": true,
-    "assignedRole": "Citizen",
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "status": "Payment Pending",
-    "currentStage": "Payment Pending – Awaiting Citizen Fee Deposit",
-    "submittedDate": "28 Oct 2026, 10:30 AM",
-    "lastUpdated": "04 Nov 2026, 04:00 PM",
-    "inspectionDate": "02 Nov 2026, 03:00 PM",
-    "inspectionFindings": "Premises inspected by IA Tashi Wangdi Lepcha. Office meets commercial standards with 410 sq.ft carpet area. Fire safety equipment and qualified guide staff verified. Recommended for Grade B Tour Operator Registration.",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-TO-00107.pdf",
-    "toRemarks": "IA report reviewed and endorsed. Forwarded to Level 2 DTO for fee activation and final statutory sanction.",
-    "gradeAssigned": "Grade B",
-    "registrationFee": 7000,
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Norbu Wangdi Bhutia)",
-        "date": "28 Oct 2026, 10:30 AM",
-        "remarks": "Application submitted."
-      },
-      {
-        "step": "Level 0 TO Verification",
-        "actor": "Tourism Officer (Karma Lhendup Bhutia)",
-        "date": "30 Oct 2026, 11:00 AM",
-        "remarks": "Trade license verified. Assigned to IA Tashi Wangdi Lepcha."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection",
-        "actor": "Inspecting Authority (Tashi Wangdi Lepcha)",
-        "date": "02 Nov 2026, 03:00 PM",
-        "remarks": "Inspection completed. Premise compliant."
-      },
-      {
-        "step": "Level 0 TO Endorsement",
-        "actor": "Tourism Officer (Karma Lhendup Bhutia)",
-        "date": "04 Nov 2026, 04:00 PM",
-        "remarks": "IA report endorsed. Forwarded to Level 2 DTO for sanction."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "28 Oct 2026, 10:30 AM",
-        "actorRole": "Citizen",
-        "actorName": "Norbu Wangdi Bhutia",
-        "action": "Submitted Application",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted."
-      },
-      {
-        "timestamp": "30 Oct 2026, 11:00 AM",
-        "actorRole": "TO",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Assigned to IA",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Assigned to IA."
-      },
-      {
-        "timestamp": "02 Nov 2026, 03:00 PM",
-        "actorRole": "IA",
-        "actorName": "Tashi Wangdi Lepcha",
-        "action": "Physical Inspection Conducted",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Recommended for Grade B."
-      },
-      {
-        "timestamp": "04 Nov 2026, 04:00 PM",
-        "actorRole": "TO",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Endorsed to Level 2 DTO",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "Forwarded to DTO for sanction."
-      }
-    ],
-    "registrationGrade": "Grade B",
-    "selectedGrade": "Grade B",
-    "applicableFee": 7000,
-    "paymentActivated": true,
-    "paymentStatus": "Payment Pending",
-    "paymentActivatedDate": "15 Nov 2026, 11:30 AM",
-    "paymentActivatedBy": "Pema Dorjee Sherpa (District Tourism Officer, Level 2)"
-  },
-  {
-    "refNo": "SK-TBR-2026-DLR-00306",
-    "formConfig": "B",
-    "category": "dealer",
-    "categoryName": "Equipment Dealer Registration",
-    "categoryCode": "DLR",
-    "applicantName": "Phurba Wangdi Sherpa",
-    "gender": "Male",
-    "dob": "15 Mar 1988",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2012-701)",
-    "address": "Development Area, Gangtok, Sikkim – 737101",
-    "phone": "9832101130",
-    "email": "phurba.sherpa@sikkimgear.in",
-    "website": "www.sikkimgear.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.Com)",
-    "techQualification": "UIAA Certified Equipment Inspection & Testing",
-    "training": "Adventure Gear Safety Standards (IMF 2023)",
-    "businessName": "Himalayan Technical Gear & Outfitters",
-    "constitution": "Registered Partnership Firm",
-    "ownership": "Rented Commercial Showroom",
-    "tradeLicenseNo": "GMC/TL/2026/8944",
-    "pan": "AALPS8891B",
-    "gstin": "11AALPS8891B1Z3",
-    "officeAddress": "Unit 102, Ground Floor, Paljor Stadium Road, Gangtok – 737101",
-    "officeSizeStandard": "480 sq.ft commercial showroom with specialized mountaineering gear storage and testing rig",
-    "association": "Sikkim Adventure Gear Association (SAGA)",
-    "activitiesSummary": "Retail sales, technical rental, and mandatory annual inspection of mountaineering safety equipment, dynamic ropes, carabiners, crampons and harnesses.",
-    "equipmentBrands": "Petzl, Black Diamond, Mammut, Camp, Grivel (UIAA / CE certified)",
-    "requiresInspection": true,
-    "assignedRole": "DTO",
-    "assignedIaOfficer": "Tashi Wangdi Lepcha",
-    "status": "Under Verification",
-    "currentStage": "Payment Successful – Awaiting DTO Final Review",
-    "submittedDate": "29 Oct 2026, 11:00 AM",
-    "lastUpdated": "04 Nov 2026, 04:30 PM",
-    "inspectionDate": "02 Nov 2026, 02:30 PM",
-    "inspectionFindings": "Showroom and testing workshop inspected by IA Tashi Wangdi Lepcha. Showroom measures 480 sq.ft, compliant fire safety, equipment calibration register maintained, and genuine UIAA/CE certificates verified for all climbing hardware. Recommended for statutory Dealer Registration.",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-DLR-00306.pdf",
-    "toRemarks": "Physical inspection report verified and endorsed. Statutory compliance established. Forwarded to Level 2 DTO for fee activation and final sanction.",
-    "registrationFee": 2000,
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Phurba Wangdi Sherpa)",
-        "date": "29 Oct 2026, 11:00 AM",
-        "remarks": "Application submitted via Sikkim Single Sign-On."
-      },
-      {
-        "step": "Level 0 TO Document Verification",
-        "actor": "Tourism Officer (Karma Lhendup Bhutia)",
-        "date": "31 Oct 2026, 10:30 AM",
-        "remarks": "Municipal trade license and equipment dealership agreements verified. Assigned to IA Tashi Wangdi Lepcha."
-      },
-      {
-        "step": "Level 1 IA Physical Inspection",
-        "actor": "Inspecting Authority (Tashi Wangdi Lepcha)",
-        "date": "02 Nov 2026, 02:30 PM",
-        "remarks": "Showroom premise, gear testing rig, and stock manifests verified on-site."
-      },
-      {
-        "step": "Level 0 TO Endorsement",
-        "actor": "Tourism Officer (Karma Lhendup Bhutia)",
-        "date": "04 Nov 2026, 04:30 PM",
-        "remarks": "IA Report endorsed. Forwarded to Level 2 DTO for statutory sanction."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "29 Oct 2026, 11:00 AM",
-        "actorRole": "Citizen",
-        "actorName": "Phurba Wangdi Sherpa",
-        "action": "Submitted Application",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted."
-      },
-      {
-        "timestamp": "31 Oct 2026, 10:30 AM",
-        "actorRole": "TO",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Assigned to IA",
-        "stage": "Level 1: Assigned for IA Physical Inspection",
-        "remarks": "Assigned to IA Tashi Wangdi Lepcha."
-      },
-      {
-        "timestamp": "02 Nov 2026, 02:30 PM",
-        "actorRole": "IA",
-        "actorName": "Tashi Wangdi Lepcha",
-        "action": "Physical Inspection Conducted",
-        "stage": "Level 0: IA Report Received – Pending TO Review",
-        "remarks": "Recommended for dealer registration."
-      },
-      {
-        "timestamp": "04 Nov 2026, 04:30 PM",
-        "actorRole": "TO",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Endorsed to Level 2 DTO",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "Forwarded to DTO for sanction."
-      }
-    ],
-    "registrationGrade": "Not Applicable",
-    "selectedGrade": "Not Applicable",
-    "applicableFee": 2000,
-    "amountPaid": 2000,
-    "paymentActivated": true,
-    "paymentStatus": "Paid",
-    "paymentTxnId": "TXN-SK-TBR-2026-889102",
-    "paymentReceiptNo": "RCPT-SK-TCD-2026-00306",
-    "paymentDate": "15 Nov 2026, 10:15 AM",
-    "paymentMethod": "Online Payment (SBI e-Pay Single Window Gateway)"
-  },
-  {
-    "refNo": "SK-TBR-2026-PHO-00406",
-    "formConfig": "C",
-    "category": "outdoor-photographer",
-    "categoryName": "Outdoor Photographer Registration",
-    "categoryCode": "PHO",
-    "applicantName": "Tshering Doma Bhutia",
-    "gender": "Female",
-    "dob": "24 Nov 1993",
-    "residentialProof": "Certificate of Identification (COI #COI-GTK-2016-892)",
-    "address": "Tadong 6th Mile, Gangtok, Sikkim – 737102",
-    "phone": "9832101131",
-    "email": "tshering.doma@sikkimlenses.in",
-    "website": "www.sikkimlenses.in",
-    "district": "Gangtok",
-    "eduQualification": "Graduate (B.A. Mass Communication & Journalism)",
-    "techQualification": "Diploma in Professional Landscape & Wildlife Photography (IIP)",
-    "training": "Advanced Drone & High Altitude Cinematography (DGCA Certified)",
-    "businessName": "Sikkim Lenses Outdoor Media",
-    "constitution": "Proprietorship",
-    "ownership": "Owned Studio",
-    "tradeLicenseNo": "GMC/TL/2026/9110",
-    "pan": "AALPD4412R",
-    "gstin": "11AALPD4412R1Z6",
-    "officeAddress": "Studio 2, Green View Building, Tadong, Gangtok – 737102",
-    "officeSizeStandard": "280 sq.ft editing studio with professional post-production suites and camera equipment vault",
-    "association": "Sikkim Photographers Association (SPA)",
-    "activitiesSummary": "Commercial outdoor landscape photography, tourist photo tours, high-altitude drone cinematography, and biodiversity documentation.",
-    "camerasOwned": "Sony A7R V, Canon EOS R5, DJI Mavic 3 Pro Cine, Sony FX3",
-    "requiresInspection": false,
-    "assignedRole": "DTO",
-    "status": "Under Verification",
-    "currentStage": "Level 2: Pending DTO Sanction",
-    "submittedDate": "30 Oct 2026, 02:00 PM",
-    "lastUpdated": "04 Nov 2026, 05:00 PM",
-    "toRemarks": "Outdoor photographer direct route: DGCA drone pilot remote certification and professional equipment invoices verified. Exempt from IA physical inspection. Recommended for Level 2 DTO statutory sanction.",
-    "registrationFee": 1500,
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Tshering Doma Bhutia)",
-        "date": "30 Oct 2026, 02:00 PM",
-        "remarks": "Application submitted via Sikkim Single Sign-On."
-      },
-      {
-        "step": "Level 0 TO Document Verification",
-        "actor": "Tourism Officer (Karma Lhendup Bhutia)",
-        "date": "02 Nov 2026, 11:00 AM",
-        "remarks": "Photographer credentials and drone license verified. Forwarded directly to Level 2 DTO."
-      },
-      {
-        "step": "Level 0 TO Endorsement",
-        "actor": "Tourism Officer (Karma Lhendup Bhutia)",
-        "date": "04 Nov 2026, 05:00 PM",
-        "remarks": "Endorsed for DTO sanction (Physical inspection exempt)."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "30 Oct 2026, 02:00 PM",
-        "actorRole": "Citizen",
-        "actorName": "Tshering Doma Bhutia",
-        "action": "Submitted Application",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Application submitted."
-      },
-      {
-        "timestamp": "02 Nov 2026, 11:00 AM",
-        "actorRole": "TO",
-        "actorName": "Karma Lhendup Bhutia",
-        "action": "Verified Credentials (Direct Route)",
-        "stage": "Level 2: Pending DTO Sanction",
-        "remarks": "Direct route TO-to-DTO endorsement."
-      }
-    ]
-  },
-  {
-    "refNo": "SK-TBR-2026-TA-00206",
-    "formConfig": "A",
-    "category": "ta-to",
-    "categoryName": "Travel Agent / Tour Operator (TA/TO)",
-    "categoryCode": "TA/TO",
-    "applicantName": "Karma Sonam Lepcha",
-    "gender": "Male",
-    "dob": "14 Apr 1991",
-    "residentialProof": "Certificate of Identification (COI #COI-MNG-2015-104)",
-    "address": "Mangan Bazaar, North Sikkim – 737116",
-    "phone": "9832101132",
-    "email": "karma.lepcha@northsikkimtravel.in",
-    "website": "www.northsikkimtravel.in",
-    "district": "Mangan",
-    "eduQualification": "Graduate (B.A.)",
-    "techQualification": "Travel Operations & Itinerary Design",
-    "training": "State Tourism Facilitator (Sikkim Tourism 2022)",
-    "businessName": "North Sikkim High Plateau Travels",
-    "constitution": "Proprietorship",
-    "ownership": "Rented Commercial Office",
-    "tradeLicenseNo": "MDC/TL/2026/1109",
-    "pan": "AALPK9912C",
-    "gstin": "11AALPK9912C1Z4",
-    "officeAddress": "Unit 4, Main Market, Mangan – 737116",
-    "officeSizeStandard": "310 sq.ft commercial ticketing office",
-    "association": "TAAS Member",
-    "activitiesSummary": "Permit facilitation, local taxi fleet operations, and Yumthang-Gurudongmar travel packages.",
-    "partners": [
-      {
-        "name": "Karma Sonam Lepcha",
-        "role": "Proprietor",
-        "phone": "9832101132",
-        "aadhaar": "XXXX-XXXX-9901",
-        "address": "Mangan Bazaar"
-      }
-    ],
-    "staff": [
-      {
-        "name": "Tshering Lepcha",
-        "role": "Ticketing Agent",
-        "qualification": "Higher Secondary",
-        "training": "Digital Reservations"
-      }
-    ],
-    "ecoPractices": "Plastic-free travel briefings, eco-dustbin supply to tourist cabs.",
-    "officeEquipment": "2 workstations, high-speed fiber internet, fire extinguisher.",
-    "requiresInspection": true,
-    "assignedRole": "DTO",
-    "assignedIaOfficer": "Passang Gyatso Bhutia",
-    "status": "Approved",
-    "currentStage": "Approved – Certificate Issued",
-    "submittedDate": "10 Oct 2026, 10:00 AM",
-    "lastUpdated": "25 Oct 2026, 03:00 PM",
-    "inspectionDate": "15 Oct 2026, 01:00 PM",
-    "inspectionFindings": "Commercial premise in Mangan Market inspected. Office measures 310 sq.ft, compliant fire safety, digital reservation system verified. Recommended for Grade B Travel Agent Registration.",
-    "inspectionDocName": "Inspection_Report_SK-TBR-2026-TA-00206.pdf",
-    "certificateNo": "SK-TA-MNG-2026-0005",
-    "certificateIssueDate": "25 Oct 2026",
-    "certificateExpiryDate": "24 Oct 2027",
-    "paymentActivated": true,
-    "paymentStatus": "Paid",
-    "gradeAssigned": "Grade B",
-    "registrationFee": 7000,
-    "amountPaid": 7000,
-    "transactionId": "TXN-SK-TBR-2026-1109",
-    "receiptNo": "RCPT-SK-TCD-2026-00206",
-    "history": [
-      {
-        "step": "Application Submitted Online",
-        "actor": "Citizen (Karma Sonam Lepcha)",
-        "date": "10 Oct 2026, 10:00 AM",
-        "remarks": "Application submitted."
-      },
-      {
-        "step": "Statutory Approval & Certificate Issued",
-        "actor": "District Tourism Officer (Mangan DTO)",
-        "date": "25 Oct 2026, 03:00 PM",
-        "remarks": "Approved. Form 3 Certificate issued."
-      }
-    ],
-    "auditHistory": [
-      {
-        "timestamp": "10 Oct 2026, 10:00 AM",
-        "actorRole": "Citizen",
-        "actorName": "Karma Sonam Lepcha",
-        "action": "Submitted Application",
-        "stage": "Level 0: Pending TO Verification",
-        "remarks": "Online application submitted."
-      },
-      {
-        "timestamp": "25 Oct 2026, 03:00 PM",
-        "actorRole": "DTO",
-        "actorName": "Mangan DTO",
-        "action": "Statutory Approval Granted",
-        "stage": "Approved – Certificate Issued",
-        "remarks": "Certificate #SK-TA-MNG-2026-0005 generated."
-      }
-    ]
-  }
-];
+  // Clean environment by default (Zero fabricated sample records)
+  const SEED_APPLICATIONS = [];
 
-  // WorkflowEngine API Object
+  // BroadcastChannel for instant real-time cross-tab synchronization
+  let bc = null;
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      bc = new BroadcastChannel(CHANNEL_NAME);
+    }
+  } catch (e) {}
+
+  function formatNow() {
+    return new Date().toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  function formatIdDate(dateObj) {
+    return (dateObj || new Date()).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  function isInspectionRequired(app) {
+    if (!app) return true;
+    return (app.category || '').toLowerCase() !== 'outdoor-photographer';
+  }
+
+  function getCategoryDisplayName(category) {
+    const c = (category || '').toLowerCase();
+    if (c === 'dealer') return 'Dealer';
+    if (c === 'outdoor-photographer') return 'Outdoor Photographer';
+    return 'Travel Agent / Tour Operator';
+  }
+
+  function getCategoryCode(category) {
+    const c = (category || '').toLowerCase();
+    if (c === 'dealer') return 'DLR';
+    if (c === 'outdoor-photographer') return 'PHO';
+    return 'TATO';
+  }
+
+  function getResponsibleDepartmentLabel(role) {
+    const r = (role || '').toUpperCase();
+    if (r === 'TO') return 'Tourist Officer (TO)';
+    if (r === 'IA') return 'Inspecting Authority (IA)';
+    if (r === 'DTO') return 'District Tourism Officer (DTO)';
+    if (r === 'CITIZEN') return 'Applicant / Citizen';
+    return 'Closed / None';
+  }
+
   const WorkflowEngine = {
+    SERVICE_NAME: SERVICE_NAME,
     STATUSES: STATUSES,
     STAGES: STAGES,
     DISTRICT_OFFICES: DISTRICT_OFFICES,
+    CHANNEL_NAME: CHANNEL_NAME,
 
-    // Initializer with guaranteed self-healing
     init: function () {
       try {
+        if (typeof localStorage === 'undefined') return;
         const storedVersion = localStorage.getItem(STORAGE_VERSION_KEY);
         const storedData = localStorage.getItem(STORAGE_KEY);
         let parsed = null;
@@ -2554,103 +316,47 @@
           try { parsed = JSON.parse(storedData); } catch (e) {}
         }
 
-        if (!parsed || !Array.isArray(parsed) || parsed.length < 20 || storedVersion !== CURRENT_SEED_VERSION) {
-          this.resetToSeedData();
-        } else {
-          this.syncCitizenSubmissions();
+        if (!Array.isArray(parsed) || storedVersion !== CURRENT_SEED_VERSION) {
+          // Clean slate initialization (retains valid submitted records if any from same session format, otherwise clean [])
+          localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+          localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_SEED_VERSION);
+          localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify([]));
+          localStorage.removeItem(SUBMITTED_STORAGE_KEY);
         }
       } catch (e) {
         console.error('WorkflowEngine init error:', e);
-        this.resetToSeedData();
       }
 
-      // Synchronize TourismBusinessData.allApplications if present
+      this._syncLegacyGlobal();
+    },
+
+    _syncLegacyGlobal: function () {
       if (typeof window !== 'undefined' && window.TourismBusinessData) {
         window.TourismBusinessData.allApplications = this.getAllApplications();
       }
     },
 
-    resetToSeedData: function () {
+    resetToCleanState: function () {
       try {
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_APPLICATIONS));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
           localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_SEED_VERSION);
+          localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify([]));
+          localStorage.removeItem(SUBMITTED_STORAGE_KEY);
         }
       } catch (e) {}
-      this.syncCitizenSubmissions();
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const currentRaw = localStorage.getItem(STORAGE_KEY);
-          if (currentRaw) {
-            const parsed = JSON.parse(currentRaw);
-            if (Array.isArray(parsed) && parsed.length >= 20) {
-              return parsed;
-            }
-          }
-        }
-      } catch (e) {}
-      return [...SEED_APPLICATIONS];
+      this._syncLegacyGlobal();
+      this._broadcastUpdate('SYSTEM_RESET', null, 'ALL');
+      return [];
     },
 
-    syncCitizenSubmissions: function () {
-      try {
-        if (typeof localStorage === 'undefined') return;
-        const citizenRaw = localStorage.getItem(SUBMITTED_STORAGE_KEY);
-        if (!citizenRaw) return;
-        const citizenApps = JSON.parse(citizenRaw);
-        if (!Array.isArray(citizenApps) || citizenApps.length === 0) return;
-
-        const currentDeptApps = this.getAllApplications();
-        citizenApps.forEach(cApp => {
-          const exists = currentDeptApps.some(d => d.refNo === cApp.refNo);
-          if (!exists) {
-            const mapped = {
-              refNo: cApp.refNo,
-              formConfig: (cApp.category === 'dealer' ? 'B' : (cApp.category === 'outdoor-photographer' ? 'C' : 'A')),
-              category: cApp.category,
-              categoryName: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'Travel Agent / Tour Operator (TA/TO)' : (cApp.categoryName || 'Tourism Registration')),
-              categoryCode: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'TA/TO' : (cApp.category === 'dealer' ? 'DLR' : 'PHO')),
-              applicantName: cApp.applicantName || 'Citizen Applicant',
-              businessName: cApp.businessName || 'Tourism Enterprise',
-              district: cApp.district || 'Gangtok',
-              phone: '9832000000',
-              email: 'applicant@example.in',
-              requiresInspection: (cApp.category !== 'outdoor-photographer'),
-              assignedRole: 'TO',
-              status: 'Submitted',
-              currentStage: 'Level 0: Pending TO Verification',
-              submittedDate: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
-              lastUpdated: new Date().toLocaleDateString('en-GB'),
-              history: [
-                {
-                  step: 'Application Submitted Online',
-                  actor: 'Citizen (' + (cApp.applicantName || 'Applicant') + ')',
-                  date: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
-                  remarks: 'Application submitted via Sikkim Single Sign-On portal.'
-                }
-              ],
-              auditHistory: [
-                {
-                  timestamp: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
-                  actorRole: 'Citizen',
-                  actorName: cApp.applicantName || 'Applicant',
-                  action: 'Application Submitted Online',
-                  stage: 'Level 0: Pending TO Verification',
-                  remarks: 'Application submitted via Single Sign-On.'
-                }
-              ]
-            };
-            currentDeptApps.unshift(mapped);
-          }
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentDeptApps));
-      } catch (e) {
-        console.warn('Error syncing citizen submission:', e);
-      }
+    // Kept as safe alias for older reset buttons across UI -> resets cleanly to empty single source of truth
+    resetToSeedData: function () {
+      return this.resetToCleanState();
     },
 
-            getFeeStructure: function (category) {
-      return REGISTRATION_FEES[category] || REGISTRATION_FEES['ta-to'] || REGISTRATION_FEES['tour-operator'];
+    getFeeStructure: function (category) {
+      return REGISTRATION_FEES[category] || REGISTRATION_FEES['ta-to'];
     },
 
     calculateFee: function (category, grade) {
@@ -2667,816 +373,1411 @@
 
     getAllApplications: function () {
       try {
-        const hasStorage = (typeof localStorage !== 'undefined');
-        const storedVersion = hasStorage ? localStorage.getItem(STORAGE_VERSION_KEY) : null;
-        const raw = hasStorage ? localStorage.getItem(STORAGE_KEY) : null;
-        
-        // Auto-heal if version mismatch, missing storage, or corrupted records
-        if (!raw || storedVersion !== CURRENT_SEED_VERSION) {
-          return this.resetToSeedData();
+        if (typeof localStorage === 'undefined') return [];
+        const storedVersion = localStorage.getItem(STORAGE_VERSION_KEY);
+        if (storedVersion !== CURRENT_SEED_VERSION) {
+          this.init();
         }
-
-        let parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed) || parsed.length < 20) {
-          return this.resetToSeedData();
-        }
-
-        // Validate that items have refNo, district, category, and assignedRole
-        const sampleValid = parsed.slice(0, 10).every(a => a && a.refNo && a.district && a.category && a.assignedRole);
-        if (!sampleValid) {
-          return this.resetToSeedData();
-        }
-
-        // Ensure newly submitted applications from citizen storage are synced into the list
-        if (hasStorage) {
-          const citizenRaw = localStorage.getItem(SUBMITTED_STORAGE_KEY);
-          if (citizenRaw) {
-            try {
-              const citizenApps = JSON.parse(citizenRaw);
-              if (Array.isArray(citizenApps) && citizenApps.length > 0) {
-                let mergedAny = false;
-                citizenApps.forEach(cApp => {
-                  if (cApp && cApp.refNo && !parsed.some(d => d.refNo === cApp.refNo)) {
-                    parsed.unshift({
-                      refNo: cApp.refNo,
-                      formConfig: (cApp.category === 'dealer' ? 'B' : (cApp.category === 'outdoor-photographer' ? 'C' : 'A')),
-                      category: cApp.category,
-                      categoryName: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'Travel Agent / Tour Operator (TA/TO)' : (cApp.categoryName || 'Tourism Registration')),
-                      categoryCode: (['ta-to', 'tour-operator', 'travel-agent'].includes(cApp.category) ? 'TA/TO' : (cApp.category === 'dealer' ? 'DLR' : 'PHO')),
-                      applicantName: cApp.applicantName || 'Citizen Applicant',
-                      businessName: cApp.businessName || 'Tourism Enterprise',
-                      district: cApp.district || 'Gangtok',
-                      phone: cApp.phone || '9832000000',
-                      email: cApp.email || 'applicant@example.in',
-                      requiresInspection: (cApp.category !== 'outdoor-photographer'),
-                      assignedRole: cApp.assignedRole || 'TO',
-                      status: cApp.status || 'Submitted',
-                      currentStage: cApp.currentStage || 'Level 0: Pending TO Verification',
-                      submittedDate: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
-                      lastUpdated: new Date().toLocaleDateString('en-GB'),
-                      history: cApp.history || [
-                        {
-                          step: 'Application Submitted Online',
-                          actor: 'Citizen (' + (cApp.applicantName || 'Applicant') + ')',
-                          date: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
-                          remarks: 'Application submitted via Sikkim Single Sign-On portal.'
-                        }
-                      ],
-                      auditHistory: cApp.auditHistory || [
-                        {
-                          timestamp: cApp.submittedDate || new Date().toLocaleDateString('en-GB'),
-                          actorRole: 'Citizen',
-                          actorName: cApp.applicantName || 'Applicant',
-                          action: 'Application Submitted Online',
-                          stage: 'Level 0: Pending TO Verification',
-                          remarks: 'Application submitted via Single Sign-On.'
-                        }
-                      ]
-                    });
-                    mergedAny = true;
-                  }
-                });
-                if (mergedAny) {
-                  localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-                }
-              }
-            } catch (err) {}
-          }
-        }
-
-        return parsed;
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
-        console.error('Error loading applications:', e);
-        return this.resetToSeedData();
+        return [];
       }
-    },
-
-    createApplication: function (appData) {
-      if (!appData || !appData.refNo) return null;
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const isPhotographer = (appData.category === 'outdoor-photographer');
-      const catCode = isPhotographer ? 'PHO' : (appData.category === 'dealer' ? 'DLR' : 'TA/TO');
-      const catName = isPhotographer ? 'Outdoor Photographer Registration' : (appData.category === 'dealer' ? 'Dealer Registration' : 'Travel Agent / Tour Operator (TA/TO)');
-
-      const app = {
-        refNo: appData.refNo,
-        formConfig: (appData.category === 'dealer' ? 'B' : (isPhotographer ? 'C' : 'A')),
-        category: appData.category,
-        categoryName: appData.categoryName || catName,
-        categoryCode: catCode,
-        applicantName: appData.applicantName || 'Citizen Applicant',
-        businessName: appData.businessName || appData.applicantName || 'Tourism Enterprise',
-        district: appData.district || 'Gangtok',
-        phone: appData.phone || '9832000000',
-        email: appData.email || 'applicant@example.in',
-        requiresInspection: !isPhotographer,
-        assignedRole: 'TO',
-        status: 'Submitted',
-        currentStage: 'Level 0: Pending TO Verification',
-        submittedDate: appData.submittedDate || now,
-        lastUpdated: now,
-        history: [
-          {
-            step: 'Application Submitted Online',
-            actor: (appData.applicantName || 'Citizen Applicant') + ' (Citizen)',
-            date: appData.submittedDate || now,
-            remarks: 'Application submitted via Sikkim Single Sign-On portal.'
-          }
-        ],
-        auditHistory: [
-          {
-            timestamp: appData.submittedDate || now,
-            actorRole: 'Citizen',
-            actorName: appData.applicantName || 'Citizen Applicant',
-            action: 'Application Submitted Online',
-            stage: 'Level 0: Pending TO Verification',
-            remarks: 'Application submitted via Single Sign-On.'
-          }
-        ]
-      };
-      this.saveApplication(app);
-      return app;
     },
 
     getApplication: function (refNo) {
       if (!refNo) return null;
+      const clean = String(refNo).trim().toLowerCase();
       const all = this.getAllApplications();
-      let result = all.find(a => a && a.refNo === refNo);
-      if (!result && typeof TourismBusinessData !== 'undefined' && typeof TourismBusinessData.getApplication === 'function') {
-        result = TourismBusinessData.getApplication(refNo);
-      }
+      const result = all.find(a => a && a.refNo && a.refNo.toLowerCase() === clean) || null;
       if (result) {
         if (!Array.isArray(result.history)) result.history = [];
         if (!Array.isArray(result.auditHistory)) result.auditHistory = [];
+        if (!Array.isArray(result.inspectionHistory)) result.inspectionHistory = [];
+        if (!Array.isArray(result.paymentHistory)) result.paymentHistory = [];
       }
-      return result || null;
+      return result;
     },
 
-    saveApplication: function (app) {
-      if (!app || !app.refNo) return;
+    saveApplication: function (app, eventMeta) {
+      if (!app || !app.refNo) return null;
       if (!Array.isArray(app.history)) app.history = [];
       if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
+      if (!Array.isArray(app.inspectionHistory)) app.inspectionHistory = [];
+      if (!Array.isArray(app.paymentHistory)) app.paymentHistory = [];
+
+      app.updatedAtMs = Date.now();
+      app.responsibleDepartment = getResponsibleDepartmentLabel(app.assignedRole);
+
       const all = this.getAllApplications();
       const idx = all.findIndex(a => a && a.refNo === app.refNo);
       if (idx >= 0) {
-        all[idx] = app;
-      } else {
-        all.unshift(app);
+        all.splice(idx, 1);
       }
+      // Put latest updated transaction at the top of queues
+      all.unshift(app);
+
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+        localStorage.setItem(SUBMITTED_STORAGE_KEY, JSON.stringify(all));
       } catch (e) {}
 
-      // Keep citizen submitted storage in sync
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const raw = localStorage.getItem(SUBMITTED_STORAGE_KEY);
-          if (raw) {
-            let list = JSON.parse(raw);
-            if (Array.isArray(list)) {
-              const sIdx = list.findIndex(s => s && s.refNo === app.refNo);
-              if (sIdx >= 0) {
-                list[sIdx] = Object.assign({}, list[sIdx], app);
-                localStorage.setItem(SUBMITTED_STORAGE_KEY, JSON.stringify(list));
-              }
-            }
-          }
-        }
-      } catch (e) {}
+      this._syncLegacyGlobal();
 
-      // Sync in-memory TourismBusinessData scenarios if present
-      try {
-        if (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.scenarios) {
-          for (let sKey in TourismBusinessData.scenarios) {
-            const sc = TourismBusinessData.scenarios[sKey];
-            if (sc && Array.isArray(sc.applications)) {
-              const scIdx = sc.applications.findIndex(a => a && a.refNo === app.refNo);
-              if (scIdx >= 0) {
-                Object.assign(sc.applications[scIdx], app);
-              }
-            }
-          }
-        }
-      } catch (e) {}
+      if (eventMeta) {
+        this._broadcastUpdate(eventMeta.action || 'WORKFLOW_UPDATE', app, eventMeta.destinationRole || app.assignedRole);
+      }
+      return app;
     },
 
     getDocumentsForApplication: function (app) {
       if (!app) return [];
+      if (Array.isArray(app.uploadedDocuments) && app.uploadedDocuments.length > 0) {
+        return app.uploadedDocuments;
+      }
       const config = app.formConfig || (app.category === 'dealer' ? 'B' : (app.category === 'outdoor-photographer' ? 'C' : 'A'));
       return DOC_MANIFESTS[config] || DOC_MANIFESTS['A'];
     },
 
-    // ------------------------------------------------------------
-    // LEVEL 0: TO Initial Verification Actions
-    // ------------------------------------------------------------
-        toVerifyAndForward: function (refNo, checklist, remarks, targetRole, assignedIaOfficer) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
+    // ------------------------------------------------------------------------
+    // NOTIFICATION & REAL-TIME EVENT SYSTEM
+    // ------------------------------------------------------------------------
+    getNotifications: function (roleFilter, districtFilter) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        let list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) list = [];
 
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-
-      // Outdoor Photographer is EXEMPT from physical inspection (Direct TO -> DTO route)
-      // Tour Operator, Travel Agent, and Dealer MUST go through Level 1 IA
-      const requiresInspection = app.category !== 'outdoor-photographer';
-
-      if (requiresInspection) {
-        const designatedIa = assignedIaOfficer || app.assignedIaOfficer || (distOffice.iaName || 'Tashi Wangdi Lepcha');
-        app.status = 'Under Verification';
-        app.currentStage = 'Level 1: Assigned for IA Physical Inspection';
-        app.assignedRole = 'IA';
-        app.assignedIaOfficer = designatedIa;
-        app.inspectionStatus = 'Scheduled for Physical Inspection';
-        app.toRemarks = remarks || 'Level 0 verification completed. Assigned to ' + designatedIa + ' for mandatory on-site physical inspection.';
-        app.lastUpdated = now;
-
-        if (!Array.isArray(app.history)) app.history = [];
-        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-        app.history.push({
-          step: 'Level 0 TO Verification Completed & Assigned to IA ' + designatedIa,
-          actor: (distOffice.toName || 'Karma Lhendup Bhutia') + ' (Tourism Officer, Level 0)',
-          date: now,
-          remarks: app.toRemarks
-        });
-        if (!app.auditHistory) app.auditHistory = [];
-        app.auditHistory.push({
-          timestamp: now,
-          actorRole: 'Level 0 – Tourism Officer (TO)',
-          actorName: distOffice.toName || 'Karma Lhendup Bhutia',
-          action: 'Verified Statutory Credentials & Assigned to IA ' + designatedIa + ' for Physical Inspection',
-          stage: 'Level 1: Assigned for IA Physical Inspection',
-          remarks: app.toRemarks
-        });
-
-        this.saveApplication(app);
-        return { success: true, message: 'Application ' + refNo + ' verified and assigned to Inspecting Authority ' + designatedIa + ' for mandatory physical inspection.' };
-      } else {
-        // Direct TO -> DTO route for Outdoor Photographer
-        app.status = 'Under Verification';
-        app.currentStage = 'Level 2: Pending DTO Sanction';
-        app.assignedRole = 'DTO';
-        app.inspectionStatus = 'Exempt (Direct Route)';
-        app.toRemarks = remarks || 'Level 0 verification satisfactory. Category exempt from physical inspection. Recommended for DTO approval.';
-        app.lastUpdated = now;
-
-        if (!Array.isArray(app.history)) app.history = [];
-        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-        app.history.push({
-          step: 'Level 0 TO Verification Completed & Forwarded to DTO',
-          actor: (distOffice.toName || 'Karma Lhendup Bhutia') + ' (Tourism Officer, Level 0)',
-          date: now,
-          remarks: app.toRemarks
-        });
-        if (!app.auditHistory) app.auditHistory = [];
-        app.auditHistory.push({
-          timestamp: now,
-          actorRole: 'Level 0 – Tourism Officer (TO)',
-          actorName: distOffice.toName || 'Karma Lhendup Bhutia',
-          action: 'Verified Statutory Credentials & Forwarded Directly to Level 2 DTO (Physical Inspection Exempt)',
-          stage: 'Level 2: Pending DTO Sanction',
-          remarks: app.toRemarks
-        });
-
-        this.saveApplication(app);
-        return { success: true, message: 'Application ' + refNo + ' verified and forwarded directly to Level 2 DTO for final sanction.' };
+        if (roleFilter) {
+          const rf = String(roleFilter).toUpperCase();
+          list = list.filter(n => (n.targetRole || '').toUpperCase() === rf);
+        }
+        if (districtFilter && String(districtFilter).toUpperCase() !== 'ALL') {
+          const df = String(districtFilter).toLowerCase();
+          list = list.filter(n => !n.district || n.district.toLowerCase() === df);
+        }
+        return list;
+      } catch (e) {
+        return [];
       }
     },
 
-    // ------------------------------------------------------------
-    // LEVEL 1: IA Physical Inspection Submission (Submits to TO!)
-    // ------------------------------------------------------------
-        iaSubmitInspectionReport: function (refNo, inspectionData, iaOfficerName) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
+    markNotificationRead: function (notifId) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const updated = list.map(n => n.id === notifId ? Object.assign({}, n, { read: true }) : n);
+        localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+        this._broadcastUpdate('NOTIFICATION_READ', null, null);
+      } catch (e) {}
+    },
 
-      if (!inspectionData || !inspectionData.docName) {
-        return { success: false, message: 'Inspection Report Document is mandatory for submission.' };
+    markAllNotificationsRead: function (targetRole, districtFilter) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const rf = targetRole ? String(targetRole).toUpperCase() : null;
+        const df = (districtFilter && String(districtFilter).toUpperCase() !== 'ALL') ? String(districtFilter).toLowerCase() : null;
+
+        const updated = list.map(n => {
+          const roleOk = !rf || (n.targetRole || '').toUpperCase() === rf;
+          const distOk = !df || !n.district || n.district.toLowerCase() === df;
+          return (roleOk && distOk) ? Object.assign({}, n, { read: true }) : n;
+        });
+        localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+        this._broadcastUpdate('NOTIFICATION_READ', null, null);
+      } catch (e) {}
+    },
+
+    _pushNotification: function (notif) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        let list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) list = [];
+
+        // Prevent duplicate active unread notification for exact same event/ref/role
+        const dedupeKey = `${notif.refNo || ''}_${notif.targetRole || ''}_${notif.eventKey || notif.title}`;
+        list = list.filter(n => n.dedupeKey !== dedupeKey || n.read);
+
+        list.unshift({
+          id: 'NTF-' + Date.now() + '-' + Math.floor(100 + Math.random() * 900),
+          dedupeKey: dedupeKey,
+          refNo: notif.refNo,
+          targetRole: notif.targetRole,
+          district: notif.district || 'Gangtok',
+          title: notif.title,
+          message: notif.message,
+          type: notif.type || 'info',
+          actionLabel: notif.actionLabel || 'View Application',
+          targetUrl: notif.targetUrl || '',
+          timestamp: formatNow(),
+          read: false
+        });
+
+        // Keep notification store bounded cleanly
+        if (list.length > 80) list = list.slice(0, 80);
+        localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(list));
+      } catch (e) {}
+    },
+
+    _broadcastUpdate: function (action, app, destinationRole) {
+      const payload = {
+        action: action,
+        refNo: app ? app.refNo : null,
+        stage: app ? app.currentStage : null,
+        status: app ? app.status : null,
+        destinationRole: destinationRole || (app ? app.assignedRole : null),
+        district: app ? app.district : null,
+        ts: Date.now()
+      };
+      try {
+        if (bc) bc.postMessage(payload);
+      } catch (e) {}
+      try {
+        localStorage.setItem(SYNC_PULSE_KEY, JSON.stringify(payload));
+      } catch (e) {}
+      try {
+        if (typeof window !== 'undefined' && typeof CustomEvent !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('workflowStateChanged', { detail: payload }));
+        }
+      } catch (e) {}
+    },
+
+    subscribeRealtime: function (onUpdate) {
+      if (typeof onUpdate !== 'function') return function () {};
+      let lastTs = 0;
+      const invokeSafe = (detail) => {
+        const ts = (detail && detail.ts) ? detail.ts : Date.now();
+        if (ts && ts === lastTs) return;
+        lastTs = ts;
+        onUpdate(detail || {});
+      };
+
+      const handleStorage = (e) => {
+        if (e.key === STORAGE_KEY || e.key === NOTIFICATIONS_KEY || e.key === SYNC_PULSE_KEY) {
+          invokeSafe({ source: 'storage', ts: Date.now() });
+        }
+      };
+      const handleBc = (e) => {
+        invokeSafe(Object.assign({ source: 'broadcast' }, e.data || {}));
+      };
+      const handleCustom = (e) => {
+        invokeSafe(Object.assign({ source: 'event' }, e.detail || {}));
+      };
+      const handleVisibility = () => {
+        if (typeof document === 'undefined' || document.visibilityState === 'visible') {
+          invokeSafe({ source: 'visibility', ts: Date.now() });
+        }
+      };
+      const handleFocus = () => {
+        invokeSafe({ source: 'focus', ts: Date.now() });
+      };
+
+      if (typeof window !== 'undefined') {
+        window.addEventListener('storage', handleStorage);
+        window.addEventListener('workflowStateChanged', handleCustom);
+        window.addEventListener('focus', handleFocus);
       }
+      if (typeof document !== 'undefined') {
+        document.addEventListener('visibilitychange', handleVisibility);
+      }
+      if (bc) {
+        bc.addEventListener('message', handleBc);
+      }
+      // Reliable fallback reconciliation timer (5s) in case BroadcastChannel/storage is throttled
+      const timerId = (typeof setInterval !== 'undefined')
+        ? setInterval(() => invokeSafe({ source: 'reconcile', ts: Date.now() }), 5000)
+        : null;
 
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const effectiveIaOfficer = iaOfficerName || app.assignedIaOfficer || (distOffice.iaName || 'Tashi Wangdi Lepcha');
+      return function unsubscribe() {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('storage', handleStorage);
+          window.removeEventListener('workflowStateChanged', handleCustom);
+          window.removeEventListener('focus', handleFocus);
+        }
+        if (typeof document !== 'undefined') {
+          document.removeEventListener('visibilitychange', handleVisibility);
+        }
+        if (bc) {
+          bc.removeEventListener('message', handleBc);
+        }
+        if (timerId !== null && typeof clearInterval !== 'undefined') {
+          clearInterval(timerId);
+        }
+      };
+    },
 
-      app.inspectionReportDate = now;
-      app.assignedIaOfficer = effectiveIaOfficer;
-      app.inspectingOfficer = effectiveIaOfficer + ' (Inspecting Authority, Level 1)';
-      app.inspectionStatus = 'Inspection Report Submitted to TO';
-      app.inspectionDocName = inspectionData.docName;
-      app.inspectionDocSize = inspectionData.docSize || '1.8 MB';
-      app.inspectionRemarks = (inspectionData.remarks || '').trim();
-      app.inspectionFindings = inspectionData.findings || 'On-site physical inspection completed. Commercial premises, trade license, and safety standards verified in order.';
-      app.inspectionRecommendation = 'RECOMMENDED_FOR_APPROVAL';
-
-      // Crucial: Returns to Level 0 TO for review!
-      app.status = 'Under Verification';
-      app.currentStage = 'Level 0: IA Report Received – Pending TO Review';
-      app.assignedRole = 'TO';
+    _appendEvent: function (app, actorRole, actorName, action, stage, destinationRole, remarks, outcome) {
+      const now = formatNow();
       app.lastUpdated = now;
-
-      const remarksSummary = app.inspectionRemarks ? (' Remarks: "' + app.inspectionRemarks + '".') : ' No additional remarks provided.';
-
       if (!Array.isArray(app.history)) app.history = [];
       if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Level 1 IA Physical Inspection Report Submitted to TO',
-        actor: effectiveIaOfficer + ' (Inspecting Authority, Level 1)',
-        date: now,
-        remarks: 'Physical Inspection Completed. Uploaded: ' + app.inspectionDocName + '.' + remarksSummary + ' Transmitted to Level 0 TO for review.'
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: 'Level 1 – Inspecting Authority (IA)',
-        actorName: effectiveIaOfficer,
-        action: 'Submitted Physical Inspection Report to Level 0 TO',
-        stage: 'Level 0: IA Report Received – Pending TO Review',
-        remarks: 'Uploaded: ' + app.inspectionDocName + '.' + remarksSummary
-      });
 
-      this.saveApplication(app);
-      return { success: true, message: 'Inspection report for ' + refNo + ' submitted successfully and transmitted to Level 0 TO for review.' };
+      const eventRecord = {
+        timestamp: now,
+        date: now,
+        actorRole: actorRole,
+        actor: `${actorName} (${actorRole})`,
+        actorName: actorName,
+        step: action,
+        action: action,
+        stage: stage,
+        destinationRole: destinationRole,
+        outcome: outcome || stage,
+        remarks: remarks || ''
+      };
+
+      app.history.push(eventRecord);
+      app.auditHistory.push(eventRecord);
     },
 
-    // ------------------------------------------------------------
-    // LEVEL 0: TO Review of IA Inspection Report -> Forward to DTO
-    // ------------------------------------------------------------
-    toForwardIaReportToDto: function (refNo, remarks) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
-
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const toOfficerName = distOffice.toName || 'Karma Lhendup Bhutia';
-
-      app.status = 'Under Verification';
-      app.currentStage = 'Level 2: Pending DTO Sanction';
-      app.assignedRole = 'DTO';
-      app.toInspectionReviewRemarks = remarks || 'Level 0 TO reviewed IA Physical Inspection Report. Endorsed and forwarded to DTO for final statutory sanction.';
-      app.lastUpdated = now;
-
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Level 0 TO Reviewed IA Report & Forwarded to DTO',
-        actor: toOfficerName + ' (Tourism Officer, Level 0)',
-        date: now,
-        remarks: app.toInspectionReviewRemarks
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: 'Level 0 – Tourism Officer (TO)',
-        actorName: toOfficerName,
-        action: 'Endorsed IA Physical Inspection Report & Forwarded to DTO for Statutory Sanction',
-        stage: 'Level 2: Pending DTO Sanction',
-        remarks: app.toInspectionReviewRemarks
-      });
-
-      this.saveApplication(app);
-      return { success: true, message: 'Application ' + refNo + ' with IA Inspection Report endorsed and forwarded to Level 2 DTO for final sanction.' };
+    // ------------------------------------------------------------------------
+    // PHASE 1: CITIZEN SUBMISSION (STEP 1)
+    // ------------------------------------------------------------------------
+    generateRefNo: function (category) {
+      const code = getCategoryCode(category);
+      const existing = this.getAllApplications();
+      const seq = String(existing.length + 1).padStart(4, '0');
+      const rand = Math.floor(10 + Math.random() * 90);
+      return `SK-${code}-2026-${seq}${rand}`;
     },
 
-    // ------------------------------------------------------------
-    // LEVEL 2: DTO Final Statutory Approval & Form 3 Issuance
-    // ------------------------------------------------------------
-        // ------------------------------------------------------------
-    // LEVEL 0: TO Request Re-inspection by IA (Option 2)
-    // ------------------------------------------------------------
-    toRequestReinspection: function (refNo, instructions, assignedIaOfficer) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
+    createApplication: function (appData) {
+      if (!appData) return null;
+      const category = (appData.category || 'ta-to').toLowerCase();
+      const isPhotographer = (category === 'outdoor-photographer');
+      const refNo = appData.refNo || this.generateRefNo(category);
 
-      if (!instructions || !instructions.trim()) {
-        return { success: false, message: 'Re-inspection instructions are mandatory.' };
+      if (this.getApplication(refNo)) {
+        return { success: false, message: `Application ${refNo} already exists.` };
       }
 
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const toOfficerName = distOffice.toName || 'Karma Lhendup Bhutia';
-      const targetIaOfficer = assignedIaOfficer || app.assignedIaOfficer || (distOffice.iaName || 'Tashi Wangdi Lepcha');
+      const now = formatNow();
+      const district = appData.district || 'Gangtok';
+      const grade = (category === 'dealer' || isPhotographer) ? 'Not Applicable' : (appData.registrationGrade || 'Grade B');
+      const fee = this.calculateFee(category, grade);
 
-      // Preserve existing inspection report in history archive
-      if (!app.inspectionHistory) app.inspectionHistory = [];
-      if (app.inspectionDocName) {
+      const app = Object.assign({}, appData, {
+        refNo: refNo,
+        formConfig: category === 'dealer' ? 'B' : (isPhotographer ? 'C' : 'A'),
+        category: category,
+        categoryName: appData.categoryName || getCategoryDisplayName(category),
+        categoryCode: getCategoryCode(category),
+        applicantName: appData.applicantName || 'Citizen Applicant',
+        businessName: appData.businessName || appData.applicantName || 'Hospitality Enterprise',
+        district: district,
+        phone: appData.phone || '',
+        email: appData.email || '',
+        registrationGrade: grade,
+        registrationFee: fee,
+        requiresInspection: !isPhotographer,
+        assignedRole: 'TO',
+        status: STATUSES.UNDER_REVIEW,
+        currentStage: STAGES.STAGE_TO_INITIAL,
+        pendingCitizenAction: null,
+        latestRemarks: 'Application submitted online. Pending initial verification by Tourist Officer (TO).',
+        paymentActivated: false,
+        paymentStatus: 'Unpaid',
+        paymentHistory: [],
+        inspectionStatus: isPhotographer ? 'Exempt (No Inspection Required)' : 'Pending TO Initial Verification',
+        inspectionHistory: [],
+        certificateStatus: 'Not Issued',
+        submittedDate: appData.submittedDate || now,
+        lastUpdated: now,
+        history: [],
+        auditHistory: []
+      });
+
+      this._appendEvent(
+        app,
+        'Citizen Applicant',
+        app.applicantName,
+        'Application Submitted Online',
+        STAGES.STAGE_TO_INITIAL,
+        'Tourist Officer (TO)',
+        'Application and supporting documents submitted online via Citizen Portal.',
+        'Routed to TO Initial Verification'
+      );
+
+      this.saveApplication(app, { action: 'APPLICATION_SUBMITTED', destinationRole: 'TO' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'TO',
+        district: app.district,
+        eventKey: 'TO_NEW_' + app.history.length,
+        title: `New Application Submitted: ${app.refNo}`,
+        message: `${app.businessName} (${app.categoryName} • ${app.district}) requires TO initial verification.`,
+        type: 'primary',
+        actionLabel: 'Verify Application',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=to&district=${encodeURIComponent(app.district)}`
+      });
+
+      return app;
+    },
+
+    // ------------------------------------------------------------------------
+    // PHASE 2 (STEP 2 / STEP 4): TOURIST OFFICER (TO) ACTIONS
+    // ------------------------------------------------------------------------
+
+    /**
+     * Explicit TO action: Return to Applicant (Citizen)
+     * Permitted ONLY at: TO Initial Verification OR TO Post-Inspection Verification
+     */
+    toReturnToApplicant: function (refNo, remarks, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'TO' || (app.currentStage !== STAGES.STAGE_TO_INITIAL && app.currentStage !== STAGES.STAGE_TO_POST_INSPECTION)) {
+        return { success: false, message: 'Action not permitted: Application is not pending TO verification.' };
+      }
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory return remarks are required.' };
+      }
+
+      const cleanRemarks = remarks.trim();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const actorName = customOfficerName || distOffice.toName || 'Tourist Officer';
+      const returnSourceStage = app.currentStage;
+
+      app.status = STATUSES.RETURNED_BY_TO;
+      app.currentStage = STAGES.STAGE_RETURNED_CITIZEN;
+      app.assignedRole = 'Citizen';
+      app.pendingCitizenAction = 'EDIT_AND_RESUBMIT';
+      app.returnRemarks = cleanRemarks;
+      app.returnedBy = `TO (${actorName})`;
+      app.returnedByRole = 'TO';
+      app.returnedFromStage = returnSourceStage;
+      app.returnedDate = formatNow();
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'Tourist Officer (TO)',
+        actorName,
+        'Return to Applicant',
+        STAGES.STAGE_RETURNED_CITIZEN,
+        'Applicant / Citizen',
+        cleanRemarks,
+        `Returned from ${returnSourceStage} to Citizen`
+      );
+
+      this.saveApplication(app, { action: 'TO_RETURN_APPLICANT', destinationRole: 'Citizen' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_RET_' + app.history.length,
+        title: `Action Required – Returned by TO: ${app.refNo}`,
+        message: `Remarks: "${cleanRemarks}". Please update and resubmit using the same Reference Number.`,
+        type: 'warning',
+        actionLabel: 'Fix & Resubmit',
+        targetUrl: `apply.html?ref=${encodeURIComponent(app.refNo)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Applicant / Citizen',
+        message: `Application ${app.refNo} returned to Applicant for correction.`
+      };
+    },
+
+    /**
+     * Explicit TO action: Forward to IA (Initial Verification -> Inspection)
+     * Permitted ONLY for Travel Agent / Tour Operator & Dealer at Level 0: Pending TO Verification
+     */
+    toForwardToIA: function (refNo, assignedIaOfficer, remarks, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (!isInspectionRequired(app)) {
+        return { success: false, message: 'Action not permitted: Outdoor Photographer is exempt from IA inspection.' };
+      }
+      if (app.assignedRole !== 'TO' || app.currentStage !== STAGES.STAGE_TO_INITIAL) {
+        return { success: false, message: 'Action not permitted: Application is not in TO Initial Verification stage.' };
+      }
+
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const actorName = customOfficerName || distOffice.toName || 'Tourist Officer';
+      const targetIa = assignedIaOfficer || app.assignedIaOfficer || distOffice.iaName || 'Inspecting Authority';
+      const cleanRemarks = (remarks && remarks.trim()) ? remarks.trim() : `Initial documents verified. Forwarded to IA (${targetIa}) for on-site inspection.`;
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = STAGES.STAGE_IA_ASSIGNED;
+      app.assignedRole = 'IA';
+      app.assignedIaOfficer = targetIa;
+      app.inspectionStatus = 'Pending IA Inspection';
+      app.toRemarks = cleanRemarks;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'Tourist Officer (TO)',
+        actorName,
+        'Forward to IA',
+        STAGES.STAGE_IA_ASSIGNED,
+        `Inspecting Authority (${targetIa})`,
+        cleanRemarks,
+        'Forwarded for On-Site Inspection'
+      );
+
+      this.saveApplication(app, { action: 'TO_FORWARD_IA', destinationRole: 'IA' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'IA',
+        district: app.district,
+        eventKey: 'IA_ASSIGN_' + app.history.length,
+        title: `New Inspection Assigned: ${app.refNo}`,
+        message: `${app.businessName} (${app.categoryName} • ${app.district}) forwarded by TO for physical inspection.`,
+        type: 'warning',
+        actionLabel: 'Inspect & Upload Report',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=ia&district=${encodeURIComponent(app.district)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: `Inspecting Authority (${targetIa})`,
+        message: `Application ${app.refNo} forwarded to IA (${targetIa}) for inspection.`
+      };
+    },
+
+    /**
+     * Explicit TO action: Return to IA (Post-Inspection Verification -> IA Correction / Re-inspection)
+     * Permitted ONLY at Level 0: Post-Inspection Verification
+     */
+    toReturnToIA: function (refNo, remarks, assignedIaOfficer, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (!isInspectionRequired(app)) {
+        return { success: false, message: 'Action not permitted for Outdoor Photographer.' };
+      }
+      if (app.assignedRole !== 'TO' || app.currentStage !== STAGES.STAGE_TO_POST_INSPECTION) {
+        return { success: false, message: 'Action not permitted: Return to IA is only allowed during TO Post-Inspection Verification.' };
+      }
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory remarks explaining required inspection corrections are required.' };
+      }
+
+      const cleanRemarks = remarks.trim();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const actorName = customOfficerName || distOffice.toName || 'Tourist Officer';
+      const targetIa = assignedIaOfficer || app.assignedIaOfficer || distOffice.iaName || 'Inspecting Authority';
+
+      // Archive previous inspection report cleanly before clearing active report fields
+      if (app.inspectionDocName || app.inspectionFindings) {
         app.inspectionHistory.push({
           iteration: app.inspectionHistory.length + 1,
-          docName: app.inspectionDocName,
+          docName: app.inspectionDocName || 'Inspection_Report.pdf',
           docSize: app.inspectionDocSize || '1.8 MB',
-          remarks: app.inspectionRemarks || 'No additional remarks provided.',
-          inspectingOfficer: app.inspectingOfficer || app.assignedIaOfficer,
-          submissionDate: app.inspectionReportDate || now,
-          toInstructions: instructions.trim()
+          findings: app.inspectionFindings || '',
+          remarks: app.inspectionRemarks || '',
+          inspectingOfficer: app.inspectingOfficer || targetIa,
+          submissionDate: app.inspectionReportDate || formatNow(),
+          returnedByToRemarks: cleanRemarks
         });
       }
 
-      // Clear active report fields so IA can upload fresh report
       app.previousInspectionDocName = app.inspectionDocName;
       app.previousInspectionRemarks = app.inspectionRemarks;
       delete app.inspectionDocName;
       delete app.inspectionDocSize;
+      delete app.inspectionFindings;
       delete app.inspectionRemarks;
 
-      app.status = 'Under Verification';
-      app.currentStage = 'Level 1: Re-inspection Required';
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = STAGES.STAGE_IA_RETURNED;
       app.assignedRole = 'IA';
-      app.assignedIaOfficer = targetIaOfficer;
-      app.inspectionStatus = 'Re-inspection Required by TO';
-      app.reinspectionInstructions = instructions.trim();
-      app.reinspectionRequestedDate = now;
-      app.lastUpdated = now;
+      app.assignedIaOfficer = targetIa;
+      app.inspectionStatus = 'Returned by TO for Further Inspection / Report Correction';
+      app.reinspectionInstructions = cleanRemarks;
+      app.latestRemarks = cleanRemarks;
 
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Level 0 TO Requested Physical Re-inspection',
-        actor: toOfficerName + ' (Tourism Officer, Level 0)',
-        date: now,
-        remarks: 'Re-inspection Instructions: "' + instructions.trim() + '". Reassigned to IA: ' + targetIaOfficer + '.'
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: 'Level 0 – Tourism Officer (TO)',
-        actorName: toOfficerName,
-        action: 'Requested Physical Re-inspection & Reassigned to IA ' + targetIaOfficer,
-        stage: 'Level 1: Re-inspection Required',
-        remarks: instructions.trim()
+      this._appendEvent(
+        app,
+        'Tourist Officer (TO)',
+        actorName,
+        'Return to IA',
+        STAGES.STAGE_IA_RETURNED,
+        `Inspecting Authority (${targetIa})`,
+        cleanRemarks,
+        'Returned to IA for Further Inspection'
+      );
+
+      this.saveApplication(app, { action: 'TO_RETURN_IA', destinationRole: 'IA' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'IA',
+        district: app.district,
+        eventKey: 'IA_RET_' + app.history.length,
+        title: `Returned by TO for Inspection Correction: ${app.refNo}`,
+        message: `TO Remarks: "${cleanRemarks}". Please re-inspect / submit updated report.`,
+        type: 'warning',
+        actionLabel: 'Review & Re-submit Report',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=ia&district=${encodeURIComponent(app.district)}`
       });
 
-      this.saveApplication(app);
-      return { success: true, message: 'Application ' + refNo + ' reassigned to IA ' + targetIaOfficer + ' for re-inspection.' };
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: `Inspecting Authority (${targetIa})`,
+        message: `Application ${app.refNo} returned to IA (${targetIa}) with mandatory remarks.`
+      };
     },
 
-        // ------------------------------------------------------------
-    // LEVEL 2: DTO Activate Registration Payment (Stage 05)
-    // ------------------------------------------------------------
-    dtoActivatePayment: function (refNo, grade, dtoOfficerNameOverride) {
+    /**
+     * Explicit TO action: Forward to DTO
+     * Permitted at:
+     *   - TO Initial Verification (ONLY Outdoor Photographer)
+     *   - TO Post-Inspection Verification (TA/TO & Dealer with Inspection Report submitted)
+     */
+    toForwardToDTO: function (refNo, remarks, customOfficerName) {
       const app = this.getApplication(refNo);
       if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'TO') {
+        return { success: false, message: 'Action not permitted: Application is not in TO queue.' };
+      }
 
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+      const inspReq = isInspectionRequired(app);
+      if (inspReq) {
+        if (app.currentStage !== STAGES.STAGE_TO_POST_INSPECTION && !app.inspectionDocName && !app.inspectionFindings) {
+          return { success: false, message: 'Action not permitted: Physical inspection by IA must be completed before forwarding to DTO.' };
+        }
+      } else {
+        if (app.currentStage !== STAGES.STAGE_TO_INITIAL) {
+          return { success: false, message: 'Action not permitted at current stage.' };
+        }
+      }
+
       const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const dtoName = dtoOfficerNameOverride || distOffice.dtoName || 'Pema Dorjee Sherpa';
+      const actorName = customOfficerName || distOffice.toName || 'Tourist Officer';
+      const cleanRemarks = (remarks && remarks.trim())
+        ? remarks.trim()
+        : (inspReq
+            ? 'Post-inspection verification completed and IA inspection report reviewed. Forwarded to DTO.'
+            : 'TO verification completed (No-Inspection Category). Forwarded to DTO.');
 
-      const feeStruct = REGISTRATION_FEES[app.category] || REGISTRATION_FEES['ta-to'] || REGISTRATION_FEES['tour-operator'];
+      // Preserve Final Verification queue if payment was already completed prior to an earlier Citizen return
+      const alreadyPaid = (app.paymentStatus === 'Paid');
+      const nextStage = alreadyPaid ? STAGES.STAGE_DTO_FINAL : STAGES.STAGE_DTO_INITIAL;
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = nextStage;
+      app.assignedRole = 'DTO';
+      app.toInspectionReviewRemarks = cleanRemarks;
+      app.toRemarks = cleanRemarks;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'Tourist Officer (TO)',
+        actorName,
+        'Forward to DTO',
+        nextStage,
+        `District Tourism Officer (${app.district})`,
+        cleanRemarks,
+        alreadyPaid ? 'Forwarded to DTO Final Verification (Fee Already Paid)' : 'Forwarded to DTO Initial Verification'
+      );
+
+      this.saveApplication(app, { action: 'TO_FORWARD_DTO', destinationRole: 'DTO' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'DTO',
+        district: app.district,
+        eventKey: 'DTO_FWD_' + app.history.length,
+        title: alreadyPaid ? `Ready for DTO Final Verification: ${app.refNo}` : `Forwarded to DTO Initial Verification: ${app.refNo}`,
+        message: `${app.businessName} (${app.categoryName} • ${app.district}) forwarded by TO.`,
+        type: 'primary',
+        actionLabel: 'Verify Application',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=dto&district=${encodeURIComponent(app.district)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: `District Tourism Officer (${app.district})`,
+        message: `Application ${app.refNo} forwarded to DTO (${app.district} Circle).`
+      };
+    },
+
+    // Backward-compatible wrapper mapping cleanly to explicit TO methods
+    toVerifyAndForward: function (refNo, checklist, remarks, targetRole, assignedIaOfficer) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      return isInspectionRequired(app)
+        ? this.toForwardToIA(refNo, assignedIaOfficer, remarks)
+        : this.toForwardToDTO(refNo, remarks);
+    },
+    toForwardIaReportToDto: function (refNo, remarks) {
+      return this.toForwardToDTO(refNo, remarks);
+    },
+    toRequestReinspection: function (refNo, instructions, assignedIaOfficer) {
+      return this.toReturnToIA(refNo, instructions, assignedIaOfficer);
+    },
+
+    // ------------------------------------------------------------------------
+    // PHASE 2 (STEP 3): INSPECTING AUTHORITY (IA) ACTIONS
+    // ------------------------------------------------------------------------
+
+    /**
+     * IA Action: Schedule Physical Inspection (Notifies Citizen with date & details per Section G)
+     */
+    iaScheduleInspection: function (refNo, inspectionDate, timeSlot, notes, iaOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (!isInspectionRequired(app) || app.assignedRole !== 'IA') {
+        return { success: false, message: 'Action not permitted: Only assigned inspection-category applications in IA queue can be scheduled.' };
+      }
+      if (!inspectionDate) {
+        return { success: false, message: 'Inspection date is required.' };
+      }
+
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const effectiveIa = iaOfficerName || app.assignedIaOfficer || distOffice.iaName || 'Inspecting Authority';
+      const cleanNotes = (notes && notes.trim()) ? notes.trim() : 'Applicant must keep original documents and premises ready for inspection.';
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = STAGES.STAGE_IA_SCHEDULED;
+      app.assignedRole = 'IA';
+      app.assignedIaOfficer = effectiveIa;
+      app.inspectionDate = inspectionDate;
+      app.inspectionTimeSlot = timeSlot || '11:00 AM – 01:00 PM';
+      app.inspectionScheduleNotes = cleanNotes;
+      app.inspectionStatus = `Inspection Scheduled for ${inspectionDate} (${app.inspectionTimeSlot})`;
+      app.latestRemarks = `Inspection scheduled on ${inspectionDate} (${app.inspectionTimeSlot}). ${cleanNotes}`;
+
+      this._appendEvent(
+        app,
+        'Inspecting Authority (IA)',
+        effectiveIa,
+        'Inspection Scheduled',
+        STAGES.STAGE_IA_SCHEDULED,
+        'Inspecting Authority (IA) & Applicant Notified',
+        app.latestRemarks,
+        `Inspection scheduled on ${inspectionDate}`
+      );
+
+      this.saveApplication(app, { action: 'IA_SCHEDULED', destinationRole: 'IA' });
+
+      // Section G mandatory rule: Notify citizen when inspection is scheduled
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_INSP_SCHED_' + app.history.length,
+        title: `Physical Inspection Scheduled: ${app.refNo}`,
+        message: `Inspecting Authority (${effectiveIa}) scheduled your inspection on ${inspectionDate} (${app.inspectionTimeSlot}). ${cleanNotes}`,
+        type: 'info',
+        actionLabel: 'Track Application',
+        targetUrl: `dashboard.html?arn=${encodeURIComponent(app.refNo)}&view=tracking`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Inspecting Authority (IA) / Applicant Notified',
+        message: `Inspection scheduled for ${inspectionDate} (${app.inspectionTimeSlot}). Applicant has been notified.`
+      };
+    },
+
+    /**
+     * Explicit IA Action: Return to TO (with mandatory remarks)
+     * Routes ONLY to Tourist Officer (TO)
+     */
+    iaReturnToTO: function (refNo, remarks, iaOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (!isInspectionRequired(app) || app.assignedRole !== 'IA') {
+        return { success: false, message: 'Action not permitted: Application is not currently in IA inspection queue.' };
+      }
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory return remarks are required when returning to TO.' };
+      }
+
+      const cleanRemarks = remarks.trim();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const effectiveIa = iaOfficerName || app.assignedIaOfficer || distOffice.iaName || 'Inspecting Authority';
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = STAGES.STAGE_TO_INITIAL;
+      app.assignedRole = 'TO';
+      app.inspectionStatus = 'Returned by IA to TO';
+      app.iaReturnRemarks = cleanRemarks;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'Inspecting Authority (IA)',
+        effectiveIa,
+        'Return to TO',
+        STAGES.STAGE_TO_INITIAL,
+        'Tourist Officer (TO)',
+        cleanRemarks,
+        'Returned to TO Initial Verification'
+      );
+
+      this.saveApplication(app, { action: 'IA_RETURN_TO', destinationRole: 'TO' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'TO',
+        district: app.district,
+        eventKey: 'TO_RET_IA_' + app.history.length,
+        title: `Returned by IA to TO: ${app.refNo}`,
+        message: `IA Remarks: "${cleanRemarks}". Application requires TO re-verification.`,
+        type: 'warning',
+        actionLabel: 'Verify Application',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=to&district=${encodeURIComponent(app.district)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Tourist Officer (TO)',
+        message: `Application ${app.refNo} returned to Tourist Officer (TO) with remarks.`
+      };
+    },
+
+    /**
+     * Explicit IA Action: Submit Inspection Report & Forward to TO (Post-Inspection Verification)
+     */
+    iaSubmitInspectionReport: function (refNo, inspectionData, iaOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (!isInspectionRequired(app) || app.assignedRole !== 'IA') {
+        return { success: false, message: 'Action not permitted: Application is not in IA inspection queue.' };
+      }
+      if (!inspectionData || !inspectionData.docName) {
+        return { success: false, message: 'Uploading the signed Inspection Report document is mandatory.' };
+      }
+
+      const now = formatNow();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const effectiveIa = iaOfficerName || app.assignedIaOfficer || distOffice.iaName || 'Inspecting Authority';
+      const findings = (inspectionData.findings || '').trim() || 'On-site premises and safety facilities inspected and documented.';
+      const remarks = (inspectionData.remarks || '').trim();
+
+      app.inspectionReportDate = now;
+      app.assignedIaOfficer = effectiveIa;
+      app.inspectingOfficer = `${effectiveIa} (IA)`;
+      app.inspectionStatus = 'Inspection Report Submitted to TO';
+      app.inspectionDocName = inspectionData.docName;
+      app.inspectionDocSize = inspectionData.docSize || '1.8 MB';
+      app.inspectionFindings = findings;
+      app.inspectionRemarks = remarks || findings;
+      app.inspectionRecommendation = inspectionData.recommendation || 'RECOMMENDED';
+      app.reinspectionInstructions = null;
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = STAGES.STAGE_TO_POST_INSPECTION;
+      app.assignedRole = 'TO';
+      app.latestRemarks = `Inspection report uploaded (${app.inspectionDocName}). Findings: ${findings}`;
+
+      this._appendEvent(
+        app,
+        'Inspecting Authority (IA)',
+        effectiveIa,
+        'Forward to TO (Inspection Report Submitted)',
+        STAGES.STAGE_TO_POST_INSPECTION,
+        'Tourist Officer (TO)',
+        app.latestRemarks,
+        'Submitted to TO Post-Inspection Verification'
+      );
+
+      this.saveApplication(app, { action: 'IA_SUBMIT_REPORT', destinationRole: 'TO' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'TO',
+        district: app.district,
+        eventKey: 'TO_INSP_REP_' + app.history.length,
+        title: `Inspection Report Submitted: ${app.refNo}`,
+        message: `IA (${effectiveIa}) submitted Inspection Report (${app.inspectionDocName}). Ready for Post-Inspection Verification.`,
+        type: 'success',
+        actionLabel: 'View Inspection Report',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=to&district=${encodeURIComponent(app.district)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Tourist Officer (TO) – Post-Inspection Verification',
+        message: `Inspection report for ${app.refNo} submitted to TO for post-inspection verification.`
+      };
+    },
+
+    // ------------------------------------------------------------------------
+    // PHASE 3 & PHASE 5: DISTRICT TOURISM OFFICER (DTO) ACTIONS
+    // ------------------------------------------------------------------------
+
+    /**
+     * Explicit DTO Action (Initial Verification): Approve for Payment
+     * Blocked before DTO Initial Verification or if already activated/paid.
+     */
+    dtoApproveForPayment: function (refNo, grade, remarks, dtoOfficerNameOverride) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'DTO' || app.currentStage !== STAGES.STAGE_DTO_INITIAL) {
+        return { success: false, message: 'Action not permitted: Payment can only be activated during DTO Initial Verification.' };
+      }
+      if (app.paymentActivated && app.paymentStatus !== 'Payment Failed') {
+        return { success: false, message: 'Statutory payment is already activated for this application.' };
+      }
+
+      const now = formatNow();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const dtoName = dtoOfficerNameOverride || distOffice.dtoName || 'District Tourism Officer';
+      const feeStruct = REGISTRATION_FEES[app.category] || REGISTRATION_FEES['ta-to'];
+
       let selectedGrade = 'Not Applicable';
-      let calculatedFee = 0;
-
+      let calculatedFee = feeStruct.defaultFee || 2000;
       if (feeStruct.hasGrades) {
         selectedGrade = grade || app.registrationGrade || feeStruct.defaultGrade;
         calculatedFee = feeStruct[selectedGrade] || feeStruct.defaultFee;
       } else {
-        selectedGrade = 'Not Applicable';
         calculatedFee = feeStruct.fixedFee;
       }
 
       app.registrationGrade = selectedGrade;
       app.registrationFee = calculatedFee;
+      app.paymentRequestId = 'PRQ-' + app.refNo + '-' + Math.floor(100 + Math.random() * 900);
       app.paymentActivated = true;
       app.paymentStatus = 'Payment Pending';
-      app.status = 'Payment Pending';
-      app.currentStage = 'Payment Pending – Awaiting Citizen Fee Deposit';
-      app.assignedRole = 'Citizen';
       app.paymentActivatedDate = now;
-      app.paymentActivatedBy = dtoName + ' (District Tourism Officer, Level 2)';
-      app.lastUpdated = now;
+      app.paymentActivatedBy = `${dtoName} (DTO)`;
 
-      const gradeInfo = (selectedGrade !== 'Not Applicable') ? (' (' + selectedGrade + ')') : '';
-      const stepRemarks = 'Statutory fee payment activated. Category: ' + (app.categoryName || app.category) + gradeInfo + '. Applicable Registration Fee: ₹' + calculatedFee.toLocaleString('en-IN') + '. Transmitted to applicant for online fee deposit.';
+      app.status = STATUSES.PAYMENT_PENDING;
+      app.currentStage = STAGES.STAGE_PAYMENT_PENDING;
+      app.assignedRole = 'Citizen';
+      app.pendingCitizenAction = 'PAY_ONLINE';
 
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Registration Fee Payment Activated by Level 2 DTO',
-        actor: dtoName + ' (District Tourism Officer, Level 2)',
-        date: now,
-        remarks: stepRemarks
+      const gradeInfo = (selectedGrade !== 'Not Applicable') ? ` (${selectedGrade})` : '';
+      const cleanRemarks = (remarks && remarks.trim())
+        ? remarks.trim()
+        : `Approved for payment. Applicable statutory fee: ₹${calculatedFee.toLocaleString('en-IN')}${gradeInfo}.`;
+      app.dtoRemarks = cleanRemarks;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'District Tourism Officer (DTO)',
+        dtoName,
+        'Approve for Payment',
+        STAGES.STAGE_PAYMENT_PENDING,
+        'Applicant / Citizen',
+        cleanRemarks,
+        `Payment Activated (₹${calculatedFee.toLocaleString('en-IN')}${gradeInfo})`
+      );
+
+      this.saveApplication(app, { action: 'DTO_APPROVE_PAYMENT', destinationRole: 'Citizen' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_PAY_DUE_' + app.history.length,
+        title: `Payment Pending – Pay Now: ${app.refNo}`,
+        message: `Your application is approved for payment. Applicable fee: ₹${calculatedFee.toLocaleString('en-IN')}${gradeInfo}.`,
+        type: 'warning',
+        actionLabel: 'Pay Now',
+        targetUrl: `dashboard.html?arn=${encodeURIComponent(app.refNo)}&pay=1`
       });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: 'Level 2 – District Tourism Officer (DTO)',
-        actorName: dtoName,
-        action: 'Activated Statutory Registration Fee Payment',
-        stage: 'Payment Pending – Awaiting Citizen Fee Deposit',
-        remarks: stepRemarks
-      });
 
-      this.saveApplication(app);
       return {
         success: true,
+        refNo: app.refNo,
         fee: calculatedFee,
         grade: selectedGrade,
-        message: 'Statutory registration fee of ₹' + calculatedFee.toLocaleString('en-IN') + gradeInfo + ' activated successfully. Applicant notified for online payment.'
+        newStage: app.currentStage,
+        destinationRole: 'Applicant / Citizen (Payment Pending)',
+        message: `Statutory fee of ₹${calculatedFee.toLocaleString('en-IN')}${gradeInfo} activated. Applicant notified.`
       };
     },
 
-    // ------------------------------------------------------------
-    // CITIZEN: Process Registration Fee Payment (Stage 05)
-    // ------------------------------------------------------------
+    dtoActivatePayment: function (refNo, grade, dtoOfficerNameOverride, remarks) {
+      return this.dtoApproveForPayment(refNo, grade, remarks, dtoOfficerNameOverride);
+    },
+
+    /**
+     * Explicit DTO Action: Return to Applicant
+     * Rules:
+     *   - At DTO Initial Verification: Permitted ONLY for Outdoor Photographer (NOT TA/TO or Dealer!)
+     *   - At DTO Final Verification: Permitted for ALL categories
+     */
+    dtoReturnToApplicant: function (refNo, remarks, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'DTO') {
+        return { success: false, message: 'Action not permitted: Application is not in DTO queue.' };
+      }
+
+      const isFinalStage = (app.currentStage === STAGES.STAGE_DTO_FINAL);
+      const isInitialOp = (app.currentStage === STAGES.STAGE_DTO_INITIAL && !isInspectionRequired(app));
+
+      if (!isFinalStage && !isInitialOp) {
+        return {
+          success: false,
+          message: 'Action not permitted: For inspection-based categories (TA/TO & Dealer), DTO Initial Verification only permits Reject or Approve for Payment.'
+        };
+      }
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory return remarks are required.' };
+      }
+
+      const cleanRemarks = remarks.trim();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const dtoName = customOfficerName || distOffice.dtoName || 'District Tourism Officer';
+      const returnSourceStage = app.currentStage;
+
+      app.status = STATUSES.RETURNED_BY_DTO;
+      app.currentStage = STAGES.STAGE_RETURNED_CITIZEN;
+      app.assignedRole = 'Citizen';
+      app.pendingCitizenAction = 'EDIT_AND_RESUBMIT';
+      app.returnRemarks = cleanRemarks;
+      app.returnedBy = `DTO (${dtoName})`;
+      app.returnedByRole = 'DTO';
+      app.returnedFromStage = returnSourceStage;
+      app.returnedDate = formatNow();
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'District Tourism Officer (DTO)',
+        dtoName,
+        'Return to Applicant',
+        STAGES.STAGE_RETURNED_CITIZEN,
+        'Applicant / Citizen',
+        cleanRemarks,
+        `Returned from ${returnSourceStage} to Citizen`
+      );
+
+      this.saveApplication(app, { action: 'DTO_RETURN_APPLICANT', destinationRole: 'Citizen' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_RET_DTO_' + app.history.length,
+        title: `Action Required – Returned by DTO: ${app.refNo}`,
+        message: `Remarks: "${cleanRemarks}". Please review and resubmit your application.`,
+        type: 'warning',
+        actionLabel: 'Fix & Resubmit',
+        targetUrl: `apply.html?ref=${encodeURIComponent(app.refNo)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Applicant / Citizen',
+        message: `Application ${app.refNo} returned to Applicant with mandatory remarks.`
+      };
+    },
+
+    /**
+     * Explicit DTO Action: Reject & Close
+     * Permitted ONLY at DTO Initial Verification OR DTO Final Verification
+     */
+    dtoReject: function (refNo, remarks, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'DTO' || (app.currentStage !== STAGES.STAGE_DTO_INITIAL && app.currentStage !== STAGES.STAGE_DTO_FINAL)) {
+        return { success: false, message: 'Action not permitted: Rejection can only be performed by DTO during Initial or Final Verification.' };
+      }
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory remarks specifying grounds for rejection are required.' };
+      }
+
+      const cleanRemarks = remarks.trim();
+      const now = formatNow();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const dtoName = customOfficerName || distOffice.dtoName || 'District Tourism Officer';
+      const rejectedFromStage = app.currentStage;
+
+      app.status = STATUSES.REJECTED;
+      app.currentStage = STAGES.STAGE_REJECTED;
+      app.assignedRole = 'None';
+      app.pendingCitizenAction = null;
+      app.rejectionGrounds = cleanRemarks;
+      app.rejectedBy = `${dtoName} (DTO)`;
+      app.rejectedDate = now;
+      app.rejectedFromStage = rejectedFromStage;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'District Tourism Officer (DTO)',
+        dtoName,
+        'Reject',
+        STAGES.STAGE_REJECTED,
+        'Closed',
+        cleanRemarks,
+        `Rejected & Closed at ${rejectedFromStage}`
+      );
+
+      this.saveApplication(app, { action: 'DTO_REJECTED', destinationRole: 'Citizen' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_REJ_' + app.history.length,
+        title: `Application Rejected: ${app.refNo}`,
+        message: `Rejected by DTO at ${rejectedFromStage}. Remarks: "${cleanRemarks}".`,
+        type: 'danger',
+        actionLabel: 'View Remarks',
+        targetUrl: `dashboard.html?arn=${encodeURIComponent(app.refNo)}&view=tracking`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Closed',
+        message: `Application ${app.refNo} has been rejected and closed with remarks.`
+      };
+    },
+
+    /**
+     * Explicit DTO Action (Final Verification): Approve & Issue Certificate
+     * Requires paymentStatus === 'Paid' and stage === STAGE_DTO_FINAL
+     */
+    dtoApproveAndIssueCertificate: function (refNo, remarks, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'DTO' || app.currentStage !== STAGES.STAGE_DTO_FINAL) {
+        return { success: false, message: 'Action not permitted: Final approval is only allowed in DTO Final Verification stage.' };
+      }
+      if (!app.paymentActivated || app.paymentStatus !== 'Paid') {
+        return {
+          success: false,
+          message: `Cannot issue certificate before payment confirmation (Fee: ₹${(app.registrationFee || 0).toLocaleString('en-IN')}).`
+        };
+      }
+
+      const now = formatNow();
+      const datePart = now.split(',')[0];
+      const certSuffix = app.refNo.replace(/[^A-Z0-9]/gi, '').slice(-8);
+      const certNo = `SK-TCD-REG-2026-${certSuffix}`;
+      const d = new Date();
+      d.setFullYear(d.getFullYear() + 1);
+      const validUntil = formatIdDate(d);
+
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const dtoOfficerName = customOfficerName || distOffice.dtoName || 'District Tourism Officer';
+      const cleanRemarks = (remarks && remarks.trim())
+        ? remarks.trim()
+        : `Final approval granted. Registration Certificate #${certNo} generated with validity until ${validUntil}.`;
+
+      app.status = STATUSES.COMPLETED;
+      app.currentStage = STAGES.STAGE_COMPLETED;
+      app.assignedRole = 'None';
+      app.pendingCitizenAction = 'DOWNLOAD_CERTIFICATE';
+      app.certificateStatus = 'Issued';
+      app.certificateNo = certNo;
+      app.approvalDate = datePart;
+      app.validUntil = validUntil;
+      app.dtoRemarks = cleanRemarks;
+      app.approvingOfficer = `${dtoOfficerName}, District Tourism Officer (DTO)`;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'District Tourism Officer (DTO)',
+        dtoOfficerName,
+        'Approve & Issue Certificate',
+        STAGES.STAGE_COMPLETED,
+        'Applicant / Citizen',
+        cleanRemarks,
+        `Completed – Certificate #${certNo} Issued`
+      );
+
+      this.saveApplication(app, { action: 'CERTIFICATE_ISSUED', destinationRole: 'Citizen' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_CERT_' + certNo,
+        title: `Certificate Issued – Ready for Download: ${app.refNo}`,
+        message: `Certificate #${certNo} issued (valid until ${validUntil}). Download your official Form 3 Registration Certificate.`,
+        type: 'success',
+        actionLabel: 'Download Certificate',
+        targetUrl: `certificate.html?arn=${encodeURIComponent(app.refNo)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        certificateNo: certNo,
+        newStage: app.currentStage,
+        destinationRole: 'Applicant / Citizen (Completed)',
+        message: `Certificate #${certNo} generated and application ${app.refNo} marked Completed.`
+      };
+    },
+
+    dtoApprove: function (refNo, remarks, officerName) {
+      return this.dtoApproveAndIssueCertificate(refNo, remarks, officerName);
+    },
+
+    // Explicit role-validated return router (never generic previous-dept return)
+    returnToCitizen: function (refNo, remarks, role, customOfficerName) {
+      const r = (role || '').toLowerCase();
+      if (r === 'to') return this.toReturnToApplicant(refNo, remarks, customOfficerName);
+      if (r === 'dto') return this.dtoReturnToApplicant(refNo, remarks, customOfficerName);
+      return { success: false, message: 'Return to Applicant is only permitted for TO or authorized DTO stages.' };
+    },
+
+    rejectApplication: function (refNo, remarks, role, customOfficerName) {
+      const r = (role || '').toLowerCase();
+      if (r !== 'dto') {
+        return { success: false, message: 'Action not permitted: Only DTO may reject applications during DTO Initial or Final Verification.' };
+      }
+      return this.dtoReject(refNo, remarks, customOfficerName);
+    },
+
+    // ------------------------------------------------------------------------
+    // CITIZEN PAYMENT & RESUBMISSION ACTIONS
+    // ------------------------------------------------------------------------
+
+    /**
+     * Step 6 (TA/TO & Dealer) / Step 4 (Outdoor Photographer): Process Citizen Payment
+     * Auto-forwards ONLY on confirmed success; retains Payment Pending on failed/cancelled.
+     * Prevents duplicate payment once Paid.
+     */
     processCitizenPayment: function (refNo, paymentDetails) {
       const app = this.getApplication(refNo);
       if (!app) return { success: false, message: 'Application not found.' };
-
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const details = paymentDetails || {};
-
-      if (details.simulateFail) {
-        app.paymentStatus = 'Payment Failed';
-        app.lastPaymentError = details.error || 'Transaction declined by bank / payment gateway timeout.';
-        app.lastUpdated = now;
-
-        if (!Array.isArray(app.history)) app.history = [];
-        if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-        app.history.push({
-          step: 'Online Payment Transaction Failed',
-          actor: app.applicantName + ' (Citizen Applicant)',
-          date: now,
-          remarks: 'Payment attempt failed: ' + app.lastPaymentError + '. Application remains in Payment Pending status.'
-        });
-        if (!app.auditHistory) app.auditHistory = [];
-        app.auditHistory.push({
-          timestamp: now,
-          actorRole: 'Citizen Applicant',
-          actorName: app.applicantName,
-          action: 'Online Payment Attempt Failed',
-          stage: app.currentStage,
-          remarks: app.lastPaymentError
-        });
-
-        this.saveApplication(app);
-        return { success: false, message: 'Payment transaction failed: ' + app.lastPaymentError + '. Please retry payment.' };
+      if (!app.paymentActivated) {
+        return { success: false, message: 'Action blocked: Payment has not been activated by DTO Initial Verification.' };
+      }
+      if (app.paymentStatus === 'Paid') {
+        return { success: false, message: 'Duplicate payment blocked: Statutory fee is already paid for this application.' };
+      }
+      if (app.assignedRole !== 'Citizen' || app.currentStage !== STAGES.STAGE_PAYMENT_PENDING) {
+        return { success: false, message: 'Application is not currently in Payment Pending stage.' };
       }
 
-      // Successful Payment Flow
+      const now = formatNow();
+      const details = paymentDetails || {};
+      const amount = details.amount || app.registrationFee || 7000;
+
+      if (details.simulateFail || details.simulateCancel) {
+        const isCancel = Boolean(details.simulateCancel);
+        const failStatus = isCancel ? 'Payment Cancelled' : 'Payment Failed';
+        const failReason = details.error || (isCancel
+          ? 'Payment cancelled by applicant before gateway confirmation.'
+          : 'Transaction declined by bank / payment gateway timeout.');
+
+        app.paymentStatus = failStatus;
+        app.lastPaymentError = failReason;
+        app.status = STATUSES.PAYMENT_PENDING;
+        app.currentStage = STAGES.STAGE_PAYMENT_PENDING;
+        app.assignedRole = 'Citizen';
+        app.latestRemarks = failReason;
+        app.paymentHistory.push({
+          timestamp: now,
+          status: failStatus,
+          amount: amount,
+          method: details.method || 'Online Gateway',
+          remarks: failReason
+        });
+
+        this._appendEvent(
+          app,
+          'Citizen Applicant',
+          app.applicantName,
+          failStatus,
+          STAGES.STAGE_PAYMENT_PENDING,
+          'Applicant / Citizen (Payment Retained)',
+          `${failReason} Application retained in Payment Pending stage.`,
+          failStatus
+        );
+
+        this.saveApplication(app, { action: 'CITIZEN_PAYMENT_UNSUCCESSFUL', destinationRole: 'Citizen' });
+        return {
+          success: false,
+          paymentStatus: failStatus,
+          message: `${failStatus}: ${failReason} Application remains in Payment Pending stage.`
+        };
+      }
+
+      // Confirmed Successful Payment -> Automatically forward to DTO Final Verification
       const txnSuffix = Math.floor(100000 + Math.random() * 900000);
-      const txnId = details.txnId || ('TXN-SK-TBR-2026-' + txnSuffix);
-      const receiptNo = 'RCPT-SK-TCD-2026-' + (app.refNo.slice(-5));
+      const txnId = details.txnId || `TXN-SK-HSP-2026-${txnSuffix}`;
+      const receiptNo = `RCPT-SK-TCD-2026-${app.refNo.slice(-4)}${Math.floor(10 + Math.random() * 90)}`;
       const method = details.method || 'Online Payment (Sikkim State Portal - SBI e-Pay)';
-      const amountPaid = details.amount || app.registrationFee || 7000;
 
       app.paymentStatus = 'Paid';
       app.paymentTxnId = txnId;
       app.paymentReceiptNo = receiptNo;
       app.paymentDate = now;
       app.paymentMethod = method;
-      app.amountPaid = amountPaid;
+      app.amountPaid = amount;
       delete app.lastPaymentError;
 
-      // CRITICAL WORKFLOW REQUIREMENT:
-      // After payment confirmation, application returns DIRECTLY to Level 2 DTO!
-      app.status = 'Under Verification';
-      app.currentStage = 'Payment Successful – Awaiting DTO Final Review';
-      app.assignedRole = 'DTO';
-      app.lastUpdated = now;
-
-      const gradeInfo = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? (' (' + app.registrationGrade + ')') : '';
-      const payRemarks = 'Paid ₹' + amountPaid.toLocaleString('en-IN') + gradeInfo + ' via ' + method + '. Transaction Ref: #' + txnId + ', Receipt #' + receiptNo + '. Application returned directly to Level 2 DTO for final review and statutory sanction.';
-
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Registration Fee Payment Completed by Citizen',
-        actor: app.applicantName + ' (Citizen Applicant)',
-        date: now,
-        remarks: payRemarks
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
+      app.paymentHistory.push({
         timestamp: now,
-        actorRole: 'Citizen Applicant',
-        actorName: app.applicantName,
-        action: 'Completed Statutory Registration Fee Payment Online',
-        stage: 'Payment Successful – Awaiting DTO Final Review',
-        remarks: payRemarks
-      });
-
-      this.saveApplication(app);
-      return {
-        success: true,
+        status: 'Paid',
+        amount: amount,
         txnId: txnId,
         receiptNo: receiptNo,
-        amount: amountPaid,
-        message: 'Payment of ₹' + amountPaid.toLocaleString('en-IN') + ' completed successfully. Application returned directly to Level 2 DTO for final review.'
+        method: method
+      });
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = STAGES.STAGE_DTO_FINAL;
+      app.assignedRole = 'DTO';
+      app.pendingCitizenAction = null;
+
+      const gradeInfo = (app.registrationGrade && app.registrationGrade !== 'Not Applicable') ? ` (${app.registrationGrade})` : '';
+      const payRemarks = `Payment Completed: ₹${amount.toLocaleString('en-IN')}${gradeInfo} via ${method}. Transaction Ref #${txnId}, Receipt #${receiptNo}. Automatically routed to DTO Final Verification.`;
+      app.latestRemarks = payRemarks;
+
+      this._appendEvent(
+        app,
+        'Citizen Applicant',
+        app.applicantName,
+        'Payment Completed',
+        STAGES.STAGE_DTO_FINAL,
+        `District Tourism Officer (${app.district})`,
+        payRemarks,
+        'Auto-forwarded to DTO Final Verification'
+      );
+
+      this.saveApplication(app, { action: 'PAYMENT_COMPLETED', destinationRole: 'DTO' });
+
+      // Notify BOTH DTO and Citizen
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'DTO',
+        district: app.district,
+        eventKey: 'DTO_FINAL_' + txnId,
+        title: `Payment Completed – Final Verification Required: ${app.refNo}`,
+        message: `${app.businessName} (${app.categoryName} • ${app.district}) paid ₹${amount.toLocaleString('en-IN')} (#${txnId}). Awaiting DTO final verification.`,
+        type: 'success',
+        actionLabel: 'Final Verification',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=dto&district=${encodeURIComponent(app.district)}`
+      });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'Citizen',
+        district: app.district,
+        eventKey: 'CIT_PAID_' + txnId,
+        title: `Payment Completed: ${app.refNo}`,
+        message: `Paid ₹${amount.toLocaleString('en-IN')} (#${txnId}). Automatically forwarded to DTO (${app.district}) for final verification.`,
+        type: 'info',
+        actionLabel: 'Track Application',
+        targetUrl: `dashboard.html?arn=${encodeURIComponent(app.refNo)}&view=tracking`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        txnId: txnId,
+        receiptNo: receiptNo,
+        amount: amount,
+        newStage: app.currentStage,
+        destinationRole: `District Tourism Officer (${app.district})`,
+        message: `Payment of ₹${amount.toLocaleString('en-IN')} confirmed (#${txnId}). Automatically forwarded to DTO Final Verification.`
       };
     },
 
-    dtoApprove: function (refNo, remarks) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
-
-      // Mandatory statutory check: If payment was activated, verify it has been completed
-      if (app.paymentActivated && app.paymentStatus !== 'Paid') {
-        return {
-          success: false,
-          message: 'Cannot grant final statutory approval: Registration fee payment of ₹' + (app.registrationFee || 0).toLocaleString('en-IN') + ' is pending.'
-        };
-      }
-
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const datePart = now.split(',')[0];
-      const certSuffix = refNo.substring(refNo.length - 8);
-      const certNo = 'SK-TCD-REG-2026-' + certSuffix;
-
-      const d = new Date();
-      d.setFullYear(d.getFullYear() + 1);
-      const validUntil = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const dtoOfficerName = distOffice.dtoName || 'Pema Dorjee Sherpa';
-
-      app.status = 'Approved';
-      app.currentStage = 'Approved – Certificate Issued';
-      app.assignedRole = 'DTO';
-      app.approvalDate = datePart;
-      app.certificateNo = certNo;
-      app.validUntil = validUntil;
-      app.dtoRemarks = remarks || 'Statutory approval granted under The Sikkim Registration of Tourist Trade Rules. 1-Year Registration Certificate issued.';
-      app.approvingOfficer = dtoOfficerName + ', District Tourism Officer (DTO)';
-      app.lastUpdated = now;
-
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Final Approval Granted & Certificate Issued',
-        actor: dtoOfficerName + ' (District Tourism Officer, Level 2)',
-        date: now,
-        remarks: 'Statutory sanction granted. Registration Certificate #' + certNo + ' generated with 1-year validity until ' + validUntil + '.'
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: 'Level 2 – District Tourism Officer (DTO)',
-        actorName: dtoOfficerName,
-        action: 'Granted Statutory Approval & Issued Form 3 Certificate',
-        stage: 'Approved – Certificate Issued',
-        remarks: 'Statutory approval granted. Certificate #' + certNo + ' valid until ' + validUntil + '.'
-      });
-
-      this.saveApplication(app);
-      return { success: true, message: 'Application ' + refNo + ' has been granted statutory approval and Certificate #' + certNo + ' has been generated.' };
-    },
-
-    // Return to Citizen for Clarification
-    returnToCitizen: function (refNo, remarks, role) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
-
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const actorName = (role === 'dto')
-        ? (distOffice.dtoName + ' (District Tourism Officer, Level 2)')
-        : ((role === 'ia')
-          ? (distOffice.iaName + ' (Inspecting Authority, Level 1)')
-          : (distOffice.toName + ' (Tourism Officer, Level 0)'));
-
-      app.status = 'Returned for Clarification';
-      app.currentStage = 'Returned to Citizen for Clarification';
-      app.assignedRole = 'Citizen';
-      app.returnRemarks = remarks;
-      app.returnedBy = actorName;
-      app.returnedDate = now;
-      app.lastUpdated = now;
-
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: 'Application Returned to Citizen for Clarification by ' + (role ? role.toUpperCase() : 'Department'),
-        actor: actorName,
-        date: now,
-        remarks: 'Clarification Required: "' + remarks + '"'
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: role ? role.toUpperCase() : 'Department',
-        actorName: actorName,
-        action: 'Returned Application to Citizen for Clarification',
-        stage: 'Returned to Citizen for Clarification',
-        remarks: remarks
-      });
-
-      this.saveApplication(app);
-      return { success: true, message: 'Application ' + refNo + ' has been returned to the citizen with clarification instructions.' };
-    },
-
-    // Citizen Resubmits Corrected Application
+    /**
+     * Citizen Resubmission after Return
+     * Retains exact Reference Number, preserves prior documents & payment state,
+     * routes back to Tourist Officer (TO Initial Verification) per Example 3.
+     */
     citizenResubmit: function (refNo, updatedData, citizenRemarks) {
       const app = this.getApplication(refNo);
       if (!app) return { success: false, message: 'Application not found.' };
-
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-
-      // Determine return target officer
-      const returnedByStr = (app.returnedBy || '').toUpperCase();
-      let targetStage = 'Level 0: Pending TO Verification';
-      let targetRole = 'TO';
-
-      if (returnedByStr.includes('DTO') || returnedByStr.includes('LEVEL 2')) {
-        targetStage = 'Level 2: Pending DTO Sanction';
-        targetRole = 'DTO';
-      } else if (returnedByStr.includes('IA') || returnedByStr.includes('LEVEL 1')) {
-        targetStage = 'Level 1: Assigned for IA Physical Inspection';
-        targetRole = 'IA';
+      if (app.assignedRole !== 'Citizen' || app.currentStage !== STAGES.STAGE_RETURNED_CITIZEN) {
+        return { success: false, message: 'Action not permitted: Application is not returned to citizen for correction.' };
       }
 
-      app.status = 'Under Verification';
+      const now = formatNow();
+      const targetStage = STAGES.STAGE_TO_INITIAL;
+      const targetRole = 'TO';
+      const cleanRemarks = (citizenRemarks && citizenRemarks.trim())
+        ? citizenRemarks.trim()
+        : 'Applicant updated requested details/documents and resubmitted.';
+
+      // Update editable particulars while preserving refNo, payment, inspection, and history records
+      if (updatedData && typeof updatedData === 'object') {
+        const protectedKeys = new Set([
+          'refNo', 'history', 'auditHistory', 'inspectionHistory', 'paymentHistory',
+          'paymentActivated', 'paymentStatus', 'paymentTxnId', 'paymentReceiptNo', 'paymentDate', 'amountPaid',
+          'certificateNo', 'approvalDate', 'validUntil'
+        ]);
+        Object.keys(updatedData).forEach(k => {
+          if (k === 'newDoc' && updatedData.newDoc) {
+            if (!Array.isArray(app.uploadedDocuments)) {
+              app.uploadedDocuments = [...this.getDocumentsForApplication(app)];
+            }
+            app.uploadedDocuments.push(updatedData.newDoc);
+          } else if (!protectedKeys.has(k) && updatedData[k] !== undefined) {
+            app[k] = updatedData[k];
+          }
+        });
+      }
+
+      app.status = STATUSES.UNDER_REVIEW;
       app.currentStage = targetStage;
       app.assignedRole = targetRole;
-      app.citizenRemarks = citizenRemarks || 'Requested corrections made and additional supporting documents attached.';
+      app.pendingCitizenAction = null;
+      app.citizenRemarks = cleanRemarks;
       app.resubmittedDate = now;
-      app.lastUpdated = now;
+      app.returnRemarks = null;
+      app.latestRemarks = cleanRemarks;
 
-      if (updatedData) {
-        if (updatedData.newDoc) {
-          if (!Array.isArray(app.documents)) app.documents = [];
-          app.documents.push(updatedData.newDoc);
-        }
-        if (updatedData.businessName) app.businessName = updatedData.businessName;
-      }
+      this._appendEvent(
+        app,
+        'Citizen Applicant',
+        app.applicantName,
+        'Resubmitted After Correction',
+        targetStage,
+        `Tourist Officer (${app.district})`,
+        cleanRemarks,
+        'Resubmitted to TO Verification'
+      );
 
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
+      this.saveApplication(app, { action: 'CITIZEN_RESUBMITTED', destinationRole: 'TO' });
 
-      const resubmitNote = 'Applicant resubmitted application with clarifications: "' + (citizenRemarks || 'Updated documents uploaded.') + '". Resumed at ' + targetStage + '.';
-      app.history.push({
-        step: 'Clarification Resubmitted by Citizen',
-        actor: (app.applicantName || 'Citizen Applicant') + ' (Citizen)',
-        date: now,
-        remarks: resubmitNote
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'TO',
+        district: app.district,
+        eventKey: 'TO_RESUB_' + app.history.length,
+        title: `Corrected Application Resubmitted: ${app.refNo}`,
+        message: `${app.businessName} (${app.categoryName}) resubmitted corrections: "${cleanRemarks}".`,
+        type: 'primary',
+        actionLabel: 'Verify Application',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=to&district=${encodeURIComponent(app.district)}`
       });
 
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: 'Citizen Applicant',
-        actorName: app.applicantName || 'Citizen Applicant',
-        action: 'Resubmitted Application with Requested Clarifications',
-        stage: targetStage,
-        remarks: resubmitNote
-      });
-
-      this.saveApplication(app);
       return {
         success: true,
-        message: 'Application ' + refNo + ' has been resubmitted successfully and returned to ' + targetRole + ' queue for review.',
-        stage: targetStage,
-        role: targetRole
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Tourist Officer (TO)',
+        message: `Application ${app.refNo} resubmitted successfully and routed to TO (${app.district}).`
       };
-    },
-
-    // Reject Application
-        rejectApplication: function (refNo, remarks, role) {
-      const app = this.getApplication(refNo);
-      if (!app) return { success: false, message: 'Application not found.' };
-
-      if (!remarks || !remarks.trim()) {
-        return { success: false, message: 'Statutory grounds for rejection are mandatory.' };
-      }
-
-      const now = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
-      const isTo = (role === 'to');
-      const actorName = isTo
-        ? ((distOffice.toName || 'Karma Lhendup Bhutia') + ' (Tourism Officer, Level 0)')
-        : ((role === 'dto') ? ((distOffice.dtoName || 'Pema Dorjee Sherpa') + ' (District Tourism Officer, Level 2)') : 'Department Approving Authority');
-      const actorRoleName = isTo ? 'Level 0 – Tourism Officer (TO)' : 'Level 2 – District Tourism Officer (DTO)';
-
-      app.status = 'Rejected';
-      app.currentStage = 'Rejected';
-      app.assignedRole = 'None';
-      app.rejectionGrounds = remarks.trim();
-      app.rejectedBy = actorName;
-      app.rejectedDate = now;
-      app.lastUpdated = now;
-
-      if (!Array.isArray(app.history)) app.history = [];
-      if (!Array.isArray(app.auditHistory)) app.auditHistory = [];
-      app.history.push({
-        step: isTo ? 'Level 0 TO Rejected Application' : 'Application Rejected',
-        actor: actorName,
-        date: now,
-        remarks: 'Departmental Grounds for Rejection: "' + remarks.trim() + '"'
-      });
-      if (!app.auditHistory) app.auditHistory = [];
-      app.auditHistory.push({
-        timestamp: now,
-        actorRole: actorRoleName,
-        actorName: actorName,
-        action: 'Rejected Application on Statutory Grounds',
-        stage: 'Rejected',
-        remarks: remarks.trim()
-      });
-
-      this.saveApplication(app);
-      return { success: true, message: 'Application ' + refNo + ' has been officially rejected with recorded statutory grounds.' };
     }
   };
 
-  // Initialize engine immediately
   WorkflowEngine.init();
-
   window.WorkflowEngine = WorkflowEngine;
 
 })(typeof window !== 'undefined' ? window : this);
