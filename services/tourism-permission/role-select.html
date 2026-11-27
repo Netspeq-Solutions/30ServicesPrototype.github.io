@@ -5,19 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Role Selection &bull; Tourism Permission Service &bull; Government of Sikkim</title>
 
-  <!-- Google Fonts: Noto Sans & Noto Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap 5.3 CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <!-- Bootstrap Icons CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <!-- Shared Framework CSS -->
   <link rel="stylesheet" href="../../common/css/gigw-template.css">
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
@@ -29,8 +23,6 @@
       border-radius: 12px;
       transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
       background: #ffffff;
-      position: relative;
-      overflow: hidden;
     }
     .role-selection-card:hover {
       border-color: #094738;
@@ -38,76 +30,59 @@
       box-shadow: 0 12px 28px rgba(9, 71, 56, 0.14);
     }
     .role-icon-circle {
-      width: 72px;
-      height: 72px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      margin-bottom: 1.25rem;
-      transition: all 0.25s ease;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
     }
-    .role-card-citizen .role-icon-circle {
-      background-color: #e8f5e9;
-      color: #1b5e20;
-    }
-    .role-card-dto .role-icon-circle {
-      background-color: #fff3e0;
-      color: #e65100;
-    }
-    .role-card-hq .role-icon-circle {
-      background-color: #e3f2fd;
-      color: #0d47a1;
-    }
-    .role-selection-card:hover .role-icon-circle {
-      transform: scale(1.08);
-    }
+    .role-card-citizen .role-icon-circle { background-color: #e8f5e9; color: #1b5e20; }
+    .role-card-to .role-icon-circle { background-color: #e0f2fe; color: #0369a1; }
+    .role-card-dto .role-icon-circle { background-color: #fff3e0; color: #e65100; }
+    .role-card-hq .role-icon-circle { background-color: #ede9fe; color: #5b21b6; }
+    .role-card-admin .role-icon-circle { background-color: #f1f5f9; color: #334155; }
     .role-badge {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      letter-spacing: 0.5px;
-      padding: 0.35rem 0.65rem;
+      padding: 0.3rem 0.65rem;
       border-radius: 50rem;
     }
   </style>
 </head>
 <body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
 
-  <!-- Skip Link for Accessibility -->
   <a class="gov-skip-link" href="#main-role-content">Skip to Main Content</a>
-
-  <!-- Top Tricolor Stripe -->
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
-  <!-- Accessibility Toolbar -->
   <aside class="gov-utility-bar" aria-label="Accessibility Toolbar">
     <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2">
         <span class="badge bg-warning text-dark fw-bold px-2 py-1">
-          <i class="bi bi-flask-fill me-1"></i> PROTOTYPE STAGE 02
+          <i class="bi bi-flask-fill me-1"></i> PROTOTYPE GATEWAY
         </span>
-        <span class="small text-white-50 d-none d-sm-inline">Demonstration Environment &bull; Role Selection</span>
+        <span class="small text-white-50 d-none d-sm-inline">Role-Based Access Control &bull; 5 Approved Roles</span>
       </div>
       <div class="d-flex align-items-center gap-2">
         <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
-          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="decrease" title="Decrease font size">A-</button>
-          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="reset" title="Reset font size">A</button>
-          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="increase" title="Increase font size">A+</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="decrease">A-</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="reset">A</button>
+          <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" data-font-action="increase">A+</button>
         </div>
-        <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast">
+        <button type="button" class="btn btn-outline-light py-0 px-2 btn-sm" id="btn-contrast-toggle">
           <i class="bi bi-circle-half me-1"></i>Contrast
         </button>
       </div>
     </div>
   </aside>
 
-  <!-- Government Branding Header -->
-  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs" role="banner">
     <div class="container-xl">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
-          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 58px; width: auto;">
+          <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 56px; width: auto;">
           <div>
             <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="letter-spacing: 1px;">Government of Sikkim</span>
             <h1 class="h5 fw-bold text-dark mb-0">Tourism &amp; Civil Aviation Department</h1>
@@ -124,196 +99,163 @@
     </div>
   </header>
 
-  <!-- Main Content Area -->
   <main id="main-role-content" class="flex-grow-1 py-5">
     <div class="container-xl">
-      
-      <!-- Screen Heading & Introductory Guidance -->
-      <div class="text-center max-w-700 mx-auto mb-4" style="max-width: 760px;">
+
+      <div class="text-center mx-auto mb-4" style="max-width: 780px;">
         <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-bold text-uppercase mb-2">
-          <i class="bi bi-shield-check me-1"></i> Access Gateway
+          <i class="bi bi-shield-check me-1"></i> Role Access Gateway
         </span>
         <h2 class="h2 fw-bold text-dark mb-2">Select Your Access Role</h2>
         <p class="text-muted fs-6 mb-3">
-          Welcome to the Tourism Permission prototype demonstration. Please select which role workspace you wish to evaluate. Each role provides a tailored dashboard, action queues, and workflow tracking.
+          Select any role below to evaluate the complete Tourism Permission workflow across Citizen, Tourism Officer (TO), DTO, HQ Officer, and Department Admin desks.
         </p>
-
-        <!-- Demonstration Notice Banner -->
-        <div class="alert alert-info border-0 shadow-xs d-flex align-items-center justify-content-center gap-2 py-2 px-3 text-start mb-4 rounded-3">
-          <i class="bi bi-info-circle-fill text-primary fs-5 flex-shrink-0"></i>
-          <span class="small text-dark">
-            <strong>Prototype Demonstration Note:</strong> Actual authentication via Sikkim GO (SSO) or e-Office is not required for this prototype. Select any role below to proceed directly into its dedicated dashboard. You can switch roles at any time.
-          </span>
-        </div>
       </div>
 
-      <!-- 3 Role Options Grid -->
-      <div class="row g-4 justify-content-center" style="max-width: 1100px; margin: 0 auto;">
-        
-        <!-- OPTION 1: CITIZEN -->
+      <!-- 5 Role Options Grid -->
+      <div class="row g-4 justify-content-center" style="max-width: 1200px; margin: 0 auto;">
+
+        <!-- 1. CITIZEN -->
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 role-selection-card role-card-citizen p-4 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-success-subtle text-success border border-success-subtle">
-                  Citizen Gateway
-                </span>
+                <span class="role-badge bg-success-subtle text-success border border-success-subtle">Role 1 &bull; Citizen</span>
               </div>
-              <div class="role-icon-circle mx-auto">
-                <i class="bi bi-person-fill"></i>
-              </div>
-              <h3 class="h4 fw-bold text-dark mb-2">Citizen</h3>
-              <p class="text-muted small mb-4">
-                Access citizen services, apply for Tourism Permission and track submitted applications.
+              <div class="role-icon-circle mx-auto"><i class="bi bi-person-fill"></i></div>
+              <h3 class="h5 fw-bold text-dark mb-2">Citizen / Applicant</h3>
+              <p class="text-muted small mb-3">
+                Submit applications across 9 categories, track progress, pay activated fees, request extensions, and download Approval Sheets &amp; Certificates.
               </p>
-              
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>Action-oriented next-step guidance</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>Mandatory Application Instructions</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>7-Stage visual workflow tracking</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>6 Distinct citizen scenario switcher</span>
-                </li>
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-success me-1"></i> Submit &amp; respond to returned remarks</li>
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-success me-1"></i> Complete post-approval payment</li>
+                <li><i class="bi bi-check-circle-fill text-success me-1"></i> Request extensions (Drone &amp; Event/Mela/Fair/Rallies/Marathons)</li>
               </ul>
             </div>
-
             <div>
-              <div class="text-center mt-3"><a href="dashboard.html" class="btn btn-sm btn-success px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
-                <span>Continue as Citizen</span>
-                <i class="bi bi-arrow-right"></i>
-              </a></div>
+              <a href="dashboard.html" class="btn btn-sm btn-success px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
+                <span>Continue as Citizen</span><i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- OPTION 2: DTO ADMIN -->
+        <!-- 2. TOURISM OFFICER (TO) -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 role-selection-card role-card-to p-4 text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-end mb-2">
+                <span class="role-badge bg-info-subtle text-info-emphasis border border-info-subtle">Role 2 &bull; Tourism Officer (TO)</span>
+              </div>
+              <div class="role-icon-circle mx-auto"><i class="bi bi-clipboard2-check-fill"></i></div>
+              <h3 class="h5 fw-bold text-dark mb-2">Tourism Officer (TO)</h3>
+              <p class="text-muted small mb-3">
+                Conduct initial review, return applications with remarks, redirect miscategorised filings, update Drone flight parameters, and forward to DTO/HQ.
+              </p>
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-info me-1"></i> Update Drone Period, Altitude (AGL) &amp; Area</li>
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-info me-1"></i> Redirect miscategorised applications</li>
+                <li><i class="bi bi-check-circle-fill text-info me-1"></i> Forward to DTO or HQ Officer</li>
+              </ul>
+            </div>
+            <div>
+              <a href="dashboard-to.html" class="btn btn-sm btn-info text-white px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
+                <span>Continue as TO</span><i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. DISTRICT TOURISM OFFICER (DTO) -->
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 role-selection-card role-card-dto p-4 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
-                  District Officer
-                </span>
+                <span class="role-badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Role 3 &bull; District DTO</span>
               </div>
-              <div class="role-icon-circle mx-auto">
-                <i class="bi bi-building"></i>
-              </div>
-              <h3 class="h4 fw-bold text-dark mb-2">DTO Admin</h3>
-              <p class="text-muted small mb-4">
-                Access district-level application verification and forwarding activities.
+              <div class="role-icon-circle mx-auto"><i class="bi bi-building"></i></div>
+              <h3 class="h5 fw-bold text-dark mb-2">District Tourism Officer (DTO)</h3>
+              <p class="text-muted small mb-3">
+                Process DTO-level applications, activate payment, issue DTO final approval, forward Drone/Expedition to HQ, and decide extension requests.
               </p>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>District Tourism Office (Gangtok Circle)</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>Pending verification &amp; review queue</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>Forward to Headquarters desk</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>Returned clarification tracking</span>
-                </li>
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-warning-emphasis me-1"></i> Activate payment &amp; grant DTO final approval</li>
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-warning-emphasis me-1"></i> Forward HQ-level apps to HQ Officer</li>
+                <li><i class="bi bi-check-circle-fill text-warning-emphasis me-1"></i> Decide Extensions (incl. Drone Permission)</li>
               </ul>
             </div>
-
             <div>
-              <div class="text-center mt-3"><a href="dashboard-dto.html" class="btn btn-sm btn-warning px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
-                <span>Continue as DTO Admin</span>
-                <i class="bi bi-arrow-right"></i>
-              </a></div>
+              <a href="dashboard-dto.html" class="btn btn-sm btn-warning px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
+                <span>Continue as DTO</span><i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- OPTION 3: HQ ADMIN -->
+        <!-- 4. HQ OFFICER -->
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 role-selection-card role-card-hq p-4 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-primary-subtle text-primary border border-primary-subtle">
-                  State Headquarters
-                </span>
+                <span class="role-badge bg-primary-subtle text-primary border border-primary-subtle">Role 4 &bull; HQ Officer</span>
               </div>
-              <div class="role-icon-circle mx-auto">
-                <i class="bi bi-shield-check"></i>
-              </div>
-              <h3 class="h4 fw-bold text-dark mb-2">HQ Admin</h3>
-              <p class="text-muted small mb-4">
-                Access headquarters-level application review and processing activities.
+              <div class="role-icon-circle mx-auto"><i class="bi bi-shield-check"></i></div>
+              <h3 class="h5 fw-bold text-dark mb-2">HQ Officer</h3>
+              <p class="text-muted small mb-3">
+                Single HQ Officer handling both initial review (approve for payment / reject / return) and final approval (Approval Sheet upload + Certificate) for Drone &amp; Expedition.
               </p>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>Tourism &amp; Civil Aviation HQ (Paryatan Bhawan)</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>Applications received across 6 districts</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>Inter-departmental clearance review</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>Forward for final sanction &amp; issuance</span>
-                </li>
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-primary me-1"></i> Initial review &amp; payment activation</li>
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-primary me-1"></i> Receives app back after citizen payment</li>
+                <li><i class="bi bi-check-circle-fill text-primary me-1"></i> Upload Approval Sheet &amp; complete final approval</li>
               </ul>
             </div>
-
             <div>
-              <div class="text-center mt-3"><a href="dashboard-hq.html" class="btn btn-sm btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
-                <span>Continue as HQ Admin</span>
-                <i class="bi bi-arrow-right"></i>
-              </a></div>
+              <a href="dashboard-hq.html" class="btn btn-sm btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
+                <span>Continue as HQ Officer</span><i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
 
-      </div>
+        <!-- 5. DEPARTMENT ADMIN -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 role-selection-card role-card-admin p-4 text-center d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-end mb-2">
+                <span class="role-badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">Role 5 &bull; Dept Admin</span>
+              </div>
+              <div class="role-icon-circle mx-auto"><i class="bi bi-person-lines-fill"></i></div>
+              <h3 class="h5 fw-bold text-dark mb-2">Department Admin</h3>
+              <p class="text-muted small mb-3">
+                Maintain the official Liaison Officer (LO) directory—add, edit, and update LO names, contact details, addresses, and phone numbers.
+              </p>
+              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-3">
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-secondary me-1"></i> Add &amp; edit Liaison Officers</li>
+                <li class="mb-1.5"><i class="bi bi-check-circle-fill text-secondary me-1"></i> Update phone, email &amp; address details</li>
+                <li><i class="bi bi-check-circle-fill text-secondary me-1"></i> Live sync to Citizen Guidelines &amp; Forms</li>
+              </ul>
+            </div>
+            <div>
+              <a href="dashboard-admin.html" class="btn btn-sm btn-dark px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
+                <span>Continue as Dept Admin</span><i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
 
-      <!-- Quick Helper Footer Card -->
-      <div class="mt-5 text-center text-muted small">
-        <p class="mb-1">
-          <i class="bi bi-info-circle me-1"></i> You can switch roles or change citizen scenarios from within any dashboard using the top navigation bar.
-        </p>
-        <p class="mb-0 text-secondary">
-          Government Services Prototype Framework &bull; Stage 02 Implementation &bull; Government of Sikkim
-        </p>
       </div>
 
     </div>
   </main>
 
-  <!-- Standard Government Footer -->
-  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto" role="contentinfo">
     <div class="container-xl">
       <div class="row align-items-center g-3 small">
         <div class="col-md-8">
-          <p class="mb-1 text-white-50">
-            Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.
-          </p>
-          <p class="mb-0 text-white-50">
-            Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.
-          </p>
+          <p class="mb-1 text-white-50">Content owned, maintained &amp; updated by <strong>Tourism &amp; Civil Aviation Department</strong>, Government of Sikkim.</p>
+          <p class="mb-0 text-white-50">Designed, Developed and Hosted by <strong>DITEC / NIC Sikkim State Centre</strong>.</p>
         </div>
         <div class="col-md-4 text-md-end text-white-50">
           <span>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</span>
@@ -322,35 +264,22 @@
     </div>
   </footer>
 
-  <!-- Bootstrap 5.3 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Accessibility Toolbar Controller -->
   <script>
     (function () {
-      'use strict';
-      var html = document.documentElement;
-      var body = document.body;
-
-      // Font Resizer
+      var html = document.documentElement, body = document.body;
       document.querySelectorAll('[data-font-action]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          var action = this.getAttribute('data-font-action');
-          if (action === 'increase') html.setAttribute('data-font-size', 'large');
-          else if (action === 'decrease') html.setAttribute('data-font-size', 'small');
-          else html.setAttribute('data-font-size', 'normal');
+          var a = this.getAttribute('data-font-action');
+          html.setAttribute('data-font-size', a === 'increase' ? 'large' : (a === 'decrease' ? 'small' : 'normal'));
         });
       });
-
-      // High Contrast
-      var contrastBtn = document.getElementById('btn-contrast-toggle');
-      if (contrastBtn) {
-        contrastBtn.addEventListener('click', function () {
-          var isHc = html.classList.toggle('high-contrast');
-          body.classList.toggle('high-contrast', isHc);
-        });
-      }
+      var cBtn = document.getElementById('btn-contrast-toggle');
+      if (cBtn) cBtn.addEventListener('click', function () {
+        var hc = html.classList.toggle('high-contrast');
+        body.classList.toggle('high-contrast', hc);
+      });
     })();
   </script>
 </body>
 </html>
-

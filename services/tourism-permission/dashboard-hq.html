@@ -524,32 +524,32 @@
       // Compute and update HQ 5 KPI metrics
       function updateHqMetrics() {
         const allApps = WorkflowEngine.getAllApplications();
-        // HQ relevant applications are strictly Drone and Events requiring HQ approval
-        const hqRelevantApps = allApps.filter(app => 
-          WorkflowEngine.isHqApprovalRequired(app.category) && app.requiresHqVerification
+        // HQ relevant applications: Drone Permission and Expedition Permission
+        const hqRelevantApps = allApps.filter(app =>
+          WorkflowEngine.isHqApprovalRequired(app.categoryKey || app.category)
         );
 
-        const totalReceived = hqRelevantApps.filter(app => 
-          app.currentStage !== WorkflowEngine.STAGES.STAGE_2 && app.currentStage !== WorkflowEngine.STAGES.STAGE_1 && app.currentStage !== WorkflowEngine.STAGES.STAGE_7
+        const totalReceived = hqRelevantApps.filter(app =>
+          ![WorkflowEngine.STAGES.STAGE_1, WorkflowEngine.STAGES.STAGE_2, WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_5B, WorkflowEngine.STAGES.STAGE_7].includes(app.currentStage)
         ).length;
 
-        const awaitingReview = hqRelevantApps.filter(app => 
-          app.currentStage === WorkflowEngine.STAGES.STAGE_3 || app.currentStage === WorkflowEngine.STAGES.STAGE_8
+        const awaitingReview = hqRelevantApps.filter(app =>
+          app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq'
         ).length;
 
-        const underReview = hqRelevantApps.filter(app => 
-          app.currentStage === WorkflowEngine.STAGES.STAGE_4
+        const underReview = hqRelevantApps.filter(app =>
+          app.currentStage === WorkflowEngine.STAGES.STAGE_8
         ).length;
 
-        const awaitingApprovalSheet = hqRelevantApps.filter(app => 
-          app.currentStage === WorkflowEngine.STAGES.STAGE_9
+        const awaitingApprovalSheet = hqRelevantApps.filter(app =>
+          (app.currentStage === WorkflowEngine.STAGES.STAGE_9 || app.currentStage === WorkflowEngine.STAGES.STAGE_10) && app.assignedRole === 'hq'
         ).length;
 
-        const forwardedBackToDto = hqRelevantApps.filter(app => 
-          app.currentStage === WorkflowEngine.STAGES.STAGE_10 || app.currentStage === WorkflowEngine.STAGES.STAGE_11 || (app.status === WorkflowEngine.STATUSES.APPROVED && app.approvalSheet)
+        const forwardedBackToDto = hqRelevantApps.filter(app =>
+          app.status === WorkflowEngine.STATUSES.APPROVED || app.currentStage === WorkflowEngine.STAGES.STAGE_12
         ).length;
 
-        const returnedToDto = hqRelevantApps.filter(app => 
+        const returnedToDto = hqRelevantApps.filter(app =>
           app.currentStage === WorkflowEngine.STAGES.STAGE_5
         ).length;
 
@@ -577,35 +577,35 @@
       // Get applications for the active tab
       function getActiveTabApplications() {
         const allApps = WorkflowEngine.getAllApplications();
-        const hqRelevantApps = allApps.filter(app => 
-          WorkflowEngine.isHqApprovalRequired(app.category) && app.requiresHqVerification
+        const hqRelevantApps = allApps.filter(app =>
+          WorkflowEngine.isHqApprovalRequired(app.categoryKey || app.category)
         );
 
         switch (currentHqTab) {
           case 'review':
-            return hqRelevantApps.filter(app => 
-              app.currentStage === WorkflowEngine.STAGES.STAGE_3 || app.currentStage === WorkflowEngine.STAGES.STAGE_8
+            return hqRelevantApps.filter(app =>
+              app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq'
             );
           case 'underReview':
-            return hqRelevantApps.filter(app => 
-              app.currentStage === WorkflowEngine.STAGES.STAGE_4
+            return hqRelevantApps.filter(app =>
+              app.currentStage === WorkflowEngine.STAGES.STAGE_8
             );
           case 'approvalSheet':
-            return hqRelevantApps.filter(app => 
-              app.currentStage === WorkflowEngine.STAGES.STAGE_9
+            return hqRelevantApps.filter(app =>
+              (app.currentStage === WorkflowEngine.STAGES.STAGE_9 || app.currentStage === WorkflowEngine.STAGES.STAGE_10) && app.assignedRole === 'hq'
             );
           case 'forwardedFinal':
-            return hqRelevantApps.filter(app => 
-              app.currentStage === WorkflowEngine.STAGES.STAGE_10 || app.currentStage === WorkflowEngine.STAGES.STAGE_11 || (app.status === WorkflowEngine.STATUSES.APPROVED && app.approvalSheet)
+            return hqRelevantApps.filter(app =>
+              app.status === WorkflowEngine.STATUSES.APPROVED || app.currentStage === WorkflowEngine.STAGES.STAGE_12
             );
           case 'returnedDto':
-            return hqRelevantApps.filter(app => 
+            return hqRelevantApps.filter(app =>
               app.currentStage === WorkflowEngine.STAGES.STAGE_5
             );
           case 'allHq':
           default:
-            return hqRelevantApps.filter(app => 
-              app.currentStage !== WorkflowEngine.STAGES.STAGE_2 && app.currentStage !== WorkflowEngine.STAGES.STAGE_1 && app.currentStage !== WorkflowEngine.STAGES.STAGE_7
+            return hqRelevantApps.filter(app =>
+              ![WorkflowEngine.STAGES.STAGE_1, WorkflowEngine.STAGES.STAGE_2, WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_5B, WorkflowEngine.STAGES.STAGE_7].includes(app.currentStage)
             );
         }
       }
@@ -658,21 +658,17 @@
           let mobileActionLabel = 'Review';
           let mobileActionClass = 'btn-primary';
 
-          if (app.currentStage === WorkflowEngine.STAGES.STAGE_3 || app.currentStage === WorkflowEngine.STAGES.STAGE_8) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-play-circle me-1"></i> Start Review</a>`;
-            mobileActionLabel = 'Start HQ Review';
+          if (app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq') {
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-check2-circle me-1"></i> Review &amp; Activate Payment</a>`;
+            mobileActionLabel = 'Review & Activate Payment';
             mobileActionClass = 'btn-primary';
-          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_4) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-laptop me-1"></i> e-Office</a>`;
-            mobileActionLabel = 'Record e-Office Concurrence';
-            mobileActionClass = 'btn-primary';
-          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_9) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-warning text-dark py-1 px-3 fw-bold shadow-xs"><i class="bi bi-upload me-1"></i> Upload Sheet</a>`;
-            mobileActionLabel = 'Upload Approval Sheet';
-            mobileActionClass = 'btn-warning text-dark';
-          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_10) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check me-1"></i> Approve HQ</a>`;
-            mobileActionLabel = 'Approve at HQ Level';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_8) {
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-hourglass-split me-1"></i> Awaiting Payment</a>`;
+            mobileActionLabel = 'Awaiting Citizen Payment';
+            mobileActionClass = 'btn-outline-warning text-dark';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_9 || app.currentStage === WorkflowEngine.STAGES.STAGE_10) {
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-upload me-1"></i> Upload Sheet &amp; Final Approve</a>`;
+            mobileActionLabel = 'Upload Sheet & Final Approve';
             mobileActionClass = 'btn-success';
           } else {
             hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-secondary py-1 px-3"><i class="bi bi-eye me-1"></i> View</a>`;

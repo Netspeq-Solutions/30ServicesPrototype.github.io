@@ -44,11 +44,12 @@
       font-weight: 700;
       font-size: 0.9rem;
       margin-right: 0.75rem;
+      flex-shrink: 0;
     }
     .fee-badge {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      padding: 0.35rem 0.75rem;
+      padding: 0.25rem 0.65rem;
       border-radius: 4px;
     }
     .agreement-container {
@@ -65,10 +66,7 @@
 </head>
 <body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
 
-  <!-- Skip Link for Accessibility -->
   <a class="gov-skip-link" href="#main-instructions-content">Skip to Main Content</a>
-
-  <!-- Top Tricolor Stripe -->
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
   <!-- Accessibility Toolbar -->
@@ -78,7 +76,7 @@
         <span class="badge bg-success text-white fw-bold px-2 py-1">
           <i class="bi bi-shield-lock-fill me-1"></i> Citizen Workspace
         </span>
-        <span class="small text-white-50 d-none d-sm-inline">Mandatory Pre-Application Instructions</span>
+        <span class="small text-white-50 d-none d-sm-inline">Mandatory Pre-Application Guidelines &amp; Terms</span>
       </div>
       <div class="d-flex align-items-center gap-2">
         <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
@@ -94,7 +92,7 @@
   </aside>
 
   <!-- Government Branding Header -->
-  <header class="gov-header py-3 bg-white border-bottom shadow-xs">
+  <header class="gov-header py-3 bg-white border-bottom shadow-xs" role="banner">
     <div class="container-xl">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
@@ -117,13 +115,12 @@
 
   <!-- Main Instructions Content -->
   <main id="main-instructions-content" class="flex-grow-1 py-4">
-    <div class="container-xl" style="max-width: 960px;">
+    <div class="container-xl" style="max-width: 980px;">
 
-      <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb small">
           <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Citizen Dashboard</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Application Instructions</li>
+          <li class="breadcrumb-item active" aria-current="page">Guidelines, Terms &amp; Instructions</li>
         </ol>
       </nav>
 
@@ -137,240 +134,189 @@
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold px-2 py-1 mb-2">
               Mandatory Step Before Applying
             </span>
-            <h2 class="h3 fw-bold text-dark mb-1">Instructions for Tourism Permission Application</h2>
+            <h2 class="h3 fw-bold text-dark mb-1">Guidelines, Terms &amp; Application Instructions</h2>
             <p class="text-muted mb-0">
-              Please read the following instructions carefully before proceeding with your application.
+              Please review the permission categories, document requirements, fee rules, and Liaison Officer directory carefully before submitting an application.
             </p>
           </div>
         </div>
       </div>
 
-      <!-- Instructions Section A -->
+      <!-- Section 1: Consolidated Categories, Fees, Validity & Highlighted Required Documents -->
       <div class="instruction-card">
-        <div class="d-flex align-items-center mb-3">
-          <span class="instruction-step-num">A</span>
-          <h3 class="h5 fw-bold text-dark mb-0">Select the Correct Application Category</h3>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num">1</span>
+            <div>
+              <h3 class="h5 fw-bold text-dark mb-0">Permission Categories &amp; Required Documents</h3>
+              <p class="text-muted small mb-0">Each category below lists its applicable fee, validity, and highlighted mandatory documents (Max 5MB PDF/JPG per file).</p>
+            </div>
+          </div>
         </div>
-        <p class="text-muted small mb-3">
-          The applicant must select the category that matches the proposed tourism activity. Ensure you apply under the appropriate category to avoid delays or returned applications.
-        </p>
-        <div class="row row-cols-1 row-cols-md-2 g-2">
+
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          <!-- 1. Drone Permission -->
           <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-person-walking text-success fs-5"></i>
+            <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-xs">
               <div>
-                <strong>Trekking</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">Permit for high-altitude trekking routes &amp; trails</div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-camera-video text-danger me-1"></i> Drone Permission</h4>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Free</span>
+                </div>
+                <div class="small text-muted mb-2.5">
+                  <i class="bi bi-clock me-1"></i><strong>Validity:</strong> 15 Days &bull; <strong>Extension:</strong> Up to 15 days
+                </div>
+                <div class="p-2.5 rounded-2 bg-light border-start border-3 border-primary">
+                  <div class="small fw-bold text-dark mb-1"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i> Required Documents</div>
+                  <ul class="small text-dark mb-0 ps-3">
+                    <li>Drone UIN &amp; Remote Pilot Certificate <span class="text-danger fw-bold">*</span></li>
+                    <li>Flight Area Map &amp; Coordinates Sheet <span class="text-danger fw-bold">*</span></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- 2. Expedition Permission -->
           <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-snow text-primary fs-5"></i>
+            <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-xs">
               <div>
-                <strong>Expedition</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">Mountaineering peaks &amp; restricted alpine zones (Requires Liaison Officer)</div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-snow text-primary me-1"></i> Expedition Permission</h4>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle">₹100 / person</span>
+                </div>
+                <div class="small text-muted mb-2.5">
+                  <i class="bi bi-clock me-1"></i><strong>Validity:</strong> Requested Duration &bull; <span class="text-danger">No Extension</span>
+                </div>
+                <div class="p-2.5 rounded-2 bg-light border-start border-3 border-primary">
+                  <div class="small fw-bold text-dark mb-1"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i> Required Documents</div>
+                  <ul class="small text-dark mb-1 ps-3">
+                    <li>Expedition Route Plan &amp; Peak Clearance Dossier <span class="text-danger fw-bold">*</span></li>
+                  </ul>
+                  <div class="text-muted" style="font-size: 0.76rem;">
+                    <strong>Optional:</strong> Medical Fitness, Insurance, Guide Details, Clients Sheets &bull; <em>LO confirmation required (see Section 2)</em>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- 3. Trekking -->
           <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-calendar-event text-warning fs-5"></i>
+            <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-xs">
               <div>
-                <strong>Events, Fairs, Melas, Rallies &amp; Marathons</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">Public gatherings, cultural rallies, marathon events</div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-person-walking text-success me-1"></i> Trekking</h4>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle">₹100 / person</span>
+                </div>
+                <div class="small text-muted mb-2.5">
+                  <i class="bi bi-clock me-1"></i><strong>Validity:</strong> 10 Days (Max 10 pax, Min 2 porters) &bull; <span class="text-danger">No Extension</span>
+                </div>
+                <div class="p-2.5 rounded-2 bg-light border-start border-3 border-primary">
+                  <div class="small fw-bold text-dark mb-1"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i> Required Documents</div>
+                  <ul class="small text-dark mb-1 ps-3">
+                    <li>Passport <span class="text-danger fw-bold">*</span> &amp; Visa <em>(if foreign national)</em></li>
+                    <li>Medical Insurance <span class="text-danger fw-bold">*</span></li>
+                    <li>Photograph of Each Trekker &amp; Tour Operator <span class="text-danger fw-bold">*</span></li>
+                  </ul>
+                  <div class="text-muted" style="font-size: 0.76rem;">
+                    <strong>Optional:</strong> Medical Fitness, Additional Insurance, Guide Details, Clients Sheets
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- 4. Event / Mela / Fair / Rallies / Marathons -->
           <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-camera-video text-danger fs-5"></i>
+            <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-xs">
               <div>
-                <strong>Drone</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">Aerial filming, videography &amp; drone operations</div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-calendar-event text-warning me-1"></i> Event / Mela / Fair / Rallies / Marathons</h4>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Free</span>
+                </div>
+                <div class="small text-muted mb-2.5">
+                  <i class="bi bi-clock me-1"></i><strong>Validity:</strong> 1 Week (7 Days) &bull; <strong>Extension:</strong> Up to 1 week
+                </div>
+                <div class="p-2.5 rounded-2 bg-light border-start border-3 border-primary">
+                  <div class="small fw-bold text-dark mb-1"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i> Required Documents</div>
+                  <ul class="small text-dark mb-0 ps-3">
+                    <li>Fire NOC <span class="text-danger fw-bold">*</span></li>
+                    <li>Police NOC <span class="text-danger fw-bold">*</span></li>
+                    <li>Councillor / Panchayat NOC <span class="text-danger fw-bold">*</span></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- 5. Satellite Phone Permission -->
           <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-water text-info fs-5"></i>
+            <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-xs">
               <div>
-                <strong>Adventure Activities</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">River rafting, paragliding, rock climbing, mountain biking</div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-broadcast-pin text-info me-1"></i> Satellite Phone Permission</h4>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Free</span>
+                </div>
+                <div class="small text-muted mb-2.5">
+                  <i class="bi bi-clock me-1"></i><strong>Validity:</strong> As Approved &bull; Extension: Not Applicable
+                </div>
+                <div class="p-2.5 rounded-2 bg-light border-start border-3 border-primary">
+                  <div class="small fw-bold text-dark mb-1"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i> Required Document</div>
+                  <ul class="small text-dark mb-0 ps-3">
+                    <li>Letter of Recommendation issued by IMF <span class="text-danger fw-bold">*</span> <em>(only required document)</em></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- 6. Other Permissions -->
           <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-three-dots text-secondary fs-5"></i>
+            <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between shadow-xs">
               <div>
-                <strong>Any Other</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">Other tourism permissions requiring departmental clearance</div>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="p-2 border rounded bg-light small d-flex align-items-center gap-2">
-              <i class="bi bi-broadcast-pin text-primary fs-5"></i>
-              <div>
-                <strong>Satellite Phone Usage Permission</strong>
-                <div class="text-muted" style="font-size: 0.75rem;">Statutory telecommunication clearance in high altitude / remote zones</div>
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <h4 class="h6 fw-bold text-dark mb-0"><i class="bi bi-three-dots text-secondary me-1"></i> Other Permissions</h4>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Free</span>
+                </div>
+                <div class="small text-muted mb-2.5">
+                  <i class="bi bi-clock me-1"></i><strong>Validity:</strong> As Approved &bull; Extension: Not Applicable
+                </div>
+                <div class="p-2.5 rounded-2 bg-light border-start border-3 border-secondary">
+                  <div class="small fw-bold text-dark mb-1"><i class="bi bi-file-earmark-text text-secondary me-1"></i> Supporting Document</div>
+                  <ul class="small text-muted mb-0 ps-3">
+                    <li>Activity Supporting Document / Clearance <em>(optional, as applicable)</em></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Instructions Section B -->
-      <div class="instruction-card">
-        <div class="d-flex align-items-center mb-3">
-          <span class="instruction-step-num">B</span>
-          <h3 class="h5 fw-bold text-dark mb-0">Provide Correct Applicant Information</h3>
-        </div>
-        <p class="text-muted small mb-0">
-          Applicants should provide accurate personal and contact information. Your full name, mobile number, email address, residential address, and identity proof must correspond with official government records. All official notifications and permission status updates will be communicated through these credentials.
-        </p>
-      </div>
-
-      <!-- Instructions Section C -->
-      <div class="instruction-card">
-        <div class="d-flex align-items-center mb-3">
-          <span class="instruction-step-num">C</span>
-          <h3 class="h5 fw-bold text-dark mb-0">Provide Activity Details</h3>
-        </div>
-        <p class="text-muted small mb-0">
-          Applicants should provide clear details about the proposed activity, including its purpose and relevant information. This includes dates of activity, proposed itinerary or venue, route details, number of participants, guide or tour operator details, and safety arrangements.
-        </p>
-      </div>
-
-      <!-- Instructions Section D -->
-      <div class="instruction-card">
-        <div class="d-flex align-items-center mb-3">
-          <span class="instruction-step-num">D</span>
-          <h3 class="h5 fw-bold text-dark mb-0">Supporting Documents</h3>
-        </div>
-        <p class="text-muted small mb-3">
-          The application may require supporting documents depending on the activity nature and venue:
-        </p>
-        <div class="row g-2 mb-3">
-          <div class="col-sm-6 col-md-3">
-            <div class="p-2 border rounded bg-light text-center small">
-              <i class="bi bi-fire text-danger d-block fs-4 mb-1"></i>
-              <strong>Fire NOC</strong>
-            </div>
+      <!-- Section 2: Liaison Officer Directory (Managed by Department Admin) -->
+      <div class="instruction-card border-primary-subtle" style="background: #f8fafc;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <div class="d-flex align-items-center">
+            <span class="instruction-step-num bg-primary">2</span>
+            <h3 class="h5 fw-bold text-dark mb-0">Liaison Officer (LO) Directory &amp; Pre-Submission Requirement</h3>
           </div>
-          <div class="col-sm-6 col-md-3">
-            <div class="p-2 border rounded bg-light text-center small">
-              <i class="bi bi-tree text-success d-block fs-4 mb-1"></i>
-              <strong>Environment NOC</strong>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3">
-            <div class="p-2 border rounded bg-light text-center small">
-              <i class="bi bi-geo-alt text-warning-emphasis d-block fs-4 mb-1"></i>
-              <strong>Land NOC</strong>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3">
-            <div class="p-2 border rounded bg-light text-center small">
-              <i class="bi bi-file-earmark-check text-primary d-block fs-4 mb-1"></i>
-              <strong>Any Other NOC</strong>
-            </div>
-          </div>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Managed by Department Admin</span>
         </div>
-        <div class="alert alert-warning border-0 small py-2 px-3 mb-0 d-flex align-items-start gap-2">
-          <i class="bi bi-exclamation-triangle-fill text-warning flex-shrink-0 mt-1"></i>
+        <div class="alert alert-warning border-warning-subtle small py-2.5 px-3 mb-3 d-flex align-items-start gap-2">
+          <i class="bi bi-telephone-outbound-fill text-warning-emphasis fs-5 flex-shrink-0 mt-0.5"></i>
           <div>
-            <strong>Important Note on Documents:</strong> The exact document requirements depend on the application category and applicable departmental guidelines. <em>Not all documents are mandatory for every category.</em> Clear guidance will be provided during the category-specific form submission.
+            <strong>Mandatory for Expeditions:</strong> Applicants must <strong>contact a Departmental Liaison Officer from the directory and confirm availability before submitting an application</strong>.
           </div>
         </div>
-      </div>
-
-      <!-- Instructions Section E -->
-      <div class="instruction-card">
-        <div class="d-flex align-items-center mb-3">
-          <span class="instruction-step-num">E</span>
-          <h3 class="h5 fw-bold text-dark mb-0">Application Fee Structure</h3>
-        </div>
-        <p class="text-muted small mb-3">
-          The statutory fee applicable for each Tourism Permission category is as follows:
-        </p>
-        <div class="table-responsive">
-          <table class="table table-bordered table-sm align-middle small mb-2">
-            <thead class="table-light">
-              <tr>
-                <th scope="col" style="width: 50%;">Application Category</th>
-                <th scope="col" class="text-end" style="width: 25%;">Applicable Fee</th>
-                <th scope="col" style="width: 25%;">Special Requirement</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="fw-semibold">Trekking</td>
-                <td class="text-end"><span class="fee-badge bg-primary-subtle text-primary">₹100</span></td>
-                <td class="text-muted">Standard trail permit</td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">Expedition</td>
-                <td class="text-end"><span class="fee-badge bg-primary-subtle text-primary">₹100</span></td>
-                <td class="text-dark fw-semibold"><i class="bi bi-person-badge text-warning me-1"></i> Requires Liaison Officer</td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">Events, Fairs, Melas, Rallies and Marathons</td>
-                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
-                <td class="text-muted">NOC verification</td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">Drone</td>
-                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
-                <td class="text-muted">Airspace security clearance</td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">Adventure Activities</td>
-                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
-                <td class="text-muted">Safety audit check</td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">Any Other</td>
-                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
-                <td class="text-muted">General assessment</td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">Satellite Phone Usage Permission</td>
-                <td class="text-end"><span class="fee-badge bg-success-subtle text-success">Free</span></td>
-                <td class="text-muted">Provisional free fee (Prototype)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="text-muted small mb-0 fst-italic">
-          *Note: Only <strong>Expedition</strong> requires Departmental Liaison Officer selection during the application process.
-        </p>
-      </div>
-
-      <!-- Instructions Section F & G -->
-      <div class="row g-3 mb-4">
-        <div class="col-md-6">
-          <div class="instruction-card h-100 mb-0">
-            <div class="d-flex align-items-center mb-2">
-              <span class="instruction-step-num">F</span>
-              <h3 class="h6 fw-bold text-dark mb-0">Application Review</h3>
-            </div>
-            <p class="text-muted small mb-0">
-              Applications will be processed through the concerned departmental authorities (District DTO verification and Headquarters review). Applicants should track their application status regularly using the online tracker.
-            </p>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-3 bg-white border rounded-3">
+          <div class="small">
+            <strong class="text-dark d-block"><i class="bi bi-people-fill text-primary me-1"></i> <span id="loTotalCountBadge">40</span> Authorized Liaison Officers Registered</strong>
+            <span class="text-muted">Search by officer name, filter by district/alphabet, and view contact details in the directory popup.</span>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="instruction-card h-100 mb-0">
-            <div class="d-flex align-items-center mb-2">
-              <span class="instruction-step-num">G</span>
-              <h3 class="h6 fw-bold text-dark mb-0">Communication</h3>
-            </div>
-            <p class="text-muted small mb-0">
-              Applicants should provide valid contact information to receive application-related communication, clarification queries, or verification remarks.
-            </p>
-          </div>
+          <button type="button" class="btn btn-sm btn-primary fw-semibold px-3 py-2" data-bs-toggle="modal" data-bs-target="#loDirectoryModal">
+            <i class="bi bi-search me-1"></i> Search &amp; View LO Directory (<span id="loButtonCount">40</span>)
+          </button>
         </div>
       </div>
 
@@ -379,7 +325,7 @@
         <div class="form-check d-flex align-items-start gap-2 mb-0">
           <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="chkAgreement" style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
           <label class="form-check-label text-dark fw-semibold" for="chkAgreement" style="cursor: pointer; line-height: 1.5;">
-            I have read and understood the instructions for submitting a Tourism Permission application. I agree to provide accurate information and the applicable supporting documents.
+            I have read and understood the guidelines, category requirements, and Liaison Officer instructions for submitting a Tourism Permission application.
           </label>
         </div>
       </div>
@@ -398,40 +344,8 @@
     </div>
   </main>
 
-  <!-- Stage 03 Placeholder Modal -->
-  <div class="modal fade" id="stage3Modal" tabindex="-1" aria-labelledby="stage3ModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
-        <div class="modal-header bg-success text-white py-3">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-info-circle-fill fs-5"></i>
-            <h5 class="modal-title fw-bold text-white mb-0" id="stage3ModalLabel">Application Submission – Stage 03</h5>
-          </div>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4 text-center">
-          <div class="p-3 bg-light rounded-circle d-inline-flex mb-3 text-success">
-            <i class="bi bi-check-circle-fill" style="font-size: 3rem;"></i>
-          </div>
-          <h4 class="h5 fw-bold text-dark mb-2">Instructions Acknowledged</h4>
-          <p class="text-muted small mb-3">
-            The application submission process will be available in the next implementation stage.
-          </p>
-          <div class="alert alert-info border-0 small text-start py-2 px-3 mb-0">
-            <i class="bi bi-gear-wide-connected me-1"></i>
-            <strong>Implementation Boundary:</strong> In accordance with the Stage 02 Master Workflow, the multi-step application form with dynamic validations and document uploads belongs to <strong>Stage 03</strong>.
-          </div>
-        </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-          <a href="dashboard.html" class="btn btn-success btn-sm px-3">Return to Dashboard</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Standard Government Footer -->
-  <footer class="gov-footer py-4 bg-dark text-white mt-auto">
+  <footer class="gov-footer py-4 bg-dark text-white mt-auto" role="contentinfo">
     <div class="container-xl">
       <div class="row align-items-center g-3 small">
         <div class="col-md-8">
@@ -449,12 +363,191 @@
     </div>
   </footer>
 
-  <!-- Bootstrap 5.3 JS Bundle -->
+  <!-- Liaison Officer (LO) Search & Directory Modal (Designed for 40+ LOs) -->
+  <div class="modal fade" id="loDirectoryModal" tabindex="-1" aria-labelledby="loDirectoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white py-2.5">
+          <div>
+            <h5 class="modal-title fs-6 fw-bold mb-0" id="loDirectoryModalLabel">
+              <i class="bi bi-person-lines-fill me-2"></i>Departmental Liaison Officer (LO) Directory
+            </h5>
+            <div class="small text-white-50" style="font-size: 0.78rem;">Search by Liaison Officer name or filter by district to confirm availability before applying</div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-3">
+          <!-- Search & Filter Controls -->
+          <div class="row g-2 align-items-center mb-3">
+            <div class="col-md-6">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="loModalSearchInput" placeholder="Search Liaison Officer by name (e.g. Tashi, Roshni, Sherpa)..." oninput="filterLoDirectory(1)">
+                <button type="button" class="btn btn-outline-secondary d-none" id="loClearSearchBtn" onclick="clearLoSearch()">Clear</button>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select form-select-sm" id="loModalDistrictFilter" onchange="filterLoDirectory(1)">
+                <option value="all">All Districts / Offices</option>
+                <option value="Gangtok">Gangtok</option>
+                <option value="Gyalshing">Gyalshing (West)</option>
+                <option value="Mangan">Mangan (North)</option>
+                <option value="Namchi">Namchi (South)</option>
+                <option value="Pakyong">Pakyong</option>
+                <option value="Soreng">Soreng</option>
+              </select>
+            </div>
+            <div class="col-md-3 text-md-end small text-muted" id="loModalCountText">
+              Showing 0 of 0 officers
+            </div>
+          </div>
+
+          <!-- A-Z Quick Jump Pills -->
+          <div class="d-flex flex-wrap gap-1 mb-3" id="loAlphaFilterBar">
+            <button type="button" class="btn btn-sm btn-primary py-0 px-2" data-alpha="all" onclick="setLoAlpha('all', this)">All</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" data-alpha="A-E" onclick="setLoAlpha('A-E', this)">A–E</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" data-alpha="F-J" onclick="setLoAlpha('F-J', this)">F–J</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" data-alpha="K-O" onclick="setLoAlpha('K-O', this)">K–O</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" data-alpha="P-T" onclick="setLoAlpha('P-T', this)">P–T</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" data-alpha="U-Z" onclick="setLoAlpha('U-Z', this)">U–Z</button>
+          </div>
+
+          <!-- Scrollable Results Table -->
+          <div class="table-responsive border rounded bg-white" style="max-height: 380px;">
+            <table class="table table-sm table-hover align-middle mb-0 small">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th style="width: 50px;">#</th>
+                  <th>Liaison Officer Name</th>
+                  <th>Phone Number</th>
+                  <th>Contact Details</th>
+                  <th>Office / Address</th>
+                </tr>
+              </thead>
+              <tbody id="loDirectoryTableBody">
+                <!-- Populated dynamically from WorkflowEngine.getLiaisonOfficers() -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div id="loPaginationControls" class="d-flex align-items-center gap-1"></div>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Interactive Controller -->
+  <script src="workflow-engine.js"></script>
   <script>
     (function () {
       'use strict';
+
+      const PAGE_SIZE = 10;
+      let currentLoPage = 1;
+      let activeAlphaGroup = 'all';
+
+      function getAllActiveLos() {
+        if (!window.WorkflowEngine) return [];
+        return WorkflowEngine.getLiaisonOfficers().filter(o => o.active !== false);
+      }
+
+      function matchesAlpha(name, group) {
+        if (group === 'all') return true;
+        const ch = (name || '').trim().charAt(0).toUpperCase();
+        const [start, end] = group.split('-');
+        return ch >= start && ch <= end;
+      }
+
+      window.setLoAlpha = function (group, btn) {
+        activeAlphaGroup = group;
+        document.querySelectorAll('#loAlphaFilterBar button').forEach(b => {
+          b.className = b === btn ? 'btn btn-sm btn-primary py-0 px-2' : 'btn btn-sm btn-outline-secondary py-0 px-2';
+        });
+        window.filterLoDirectory(1);
+      };
+
+      window.clearLoSearch = function () {
+        const inp = document.getElementById('loModalSearchInput');
+        if (inp) inp.value = '';
+        window.filterLoDirectory(1);
+      };
+
+      window.filterLoDirectory = function (page) {
+        currentLoPage = page || 1;
+        const all = getAllActiveLos();
+        const q = (document.getElementById('loModalSearchInput')?.value || '').trim().toLowerCase();
+        const dist = document.getElementById('loModalDistrictFilter')?.value || 'all';
+        const clearBtn = document.getElementById('loClearSearchBtn');
+        if (clearBtn) clearBtn.classList.toggle('d-none', !q);
+
+        const filtered = all.filter(lo => {
+          const matchName = !q || (lo.name || '').toLowerCase().includes(q) || (lo.phone || '').toLowerCase().includes(q) || (lo.address || '').toLowerCase().includes(q);
+          const matchDist = dist === 'all' || (lo.address || '').toLowerCase().includes(dist.toLowerCase());
+          const matchAlpha = matchesAlpha(lo.name, activeAlphaGroup);
+          return matchName && matchDist && matchAlpha;
+        });
+
+        const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        if (currentLoPage > totalPages) currentLoPage = totalPages;
+        const startIdx = (currentLoPage - 1) * PAGE_SIZE;
+        const pageItems = filtered.slice(startIdx, startIdx + PAGE_SIZE);
+
+        const countEl = document.getElementById('loModalCountText');
+        if (countEl) {
+          countEl.textContent = filtered.length === 0
+            ? '0 matching officers'
+            : `Showing ${startIdx + 1}–${startIdx + pageItems.length} of ${filtered.length} officer(s)`;
+        }
+
+        const tbody = document.getElementById('loDirectoryTableBody');
+        if (tbody) {
+          if (pageItems.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No Liaison Officers match your search criteria.</td></tr>';
+          } else {
+            tbody.innerHTML = pageItems.map((lo, idx) => `
+              <tr>
+                <td class="text-muted">${startIdx + idx + 1}</td>
+                <td class="fw-bold text-dark"><i class="bi bi-person-badge text-primary me-1"></i>${lo.name}</td>
+                <td class="font-monospace"><a href="tel:${(lo.phone || '').replace(/\s+/g, '')}" class="text-decoration-none">${lo.phone}</a></td>
+                <td>${lo.contactDetails}</td>
+                <td class="text-muted">${lo.address}</td>
+              </tr>
+            `).join('');
+          }
+        }
+
+        const pag = document.getElementById('loPaginationControls');
+        if (pag) {
+          if (totalPages <= 1) {
+            pag.innerHTML = '';
+          } else {
+            let btns = `<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" ${currentLoPage <= 1 ? 'disabled' : ''} onclick="filterLoDirectory(${currentLoPage - 1})">Prev</button>`;
+            for (let p = 1; p <= totalPages; p++) {
+              btns += `<button type="button" class="btn btn-sm ${p === currentLoPage ? 'btn-primary' : 'btn-outline-secondary'} py-0 px-2" onclick="filterLoDirectory(${p})">${p}</button>`;
+            }
+            btns += `<button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" ${currentLoPage >= totalPages ? 'disabled' : ''} onclick="filterLoDirectory(${currentLoPage + 1})">Next</button>`;
+            pag.innerHTML = btns;
+          }
+        }
+      };
+
+      const totalActive = getAllActiveLos().length;
+      const totalBadge = document.getElementById('loTotalCountBadge');
+      const btnCount = document.getElementById('loButtonCount');
+      if (totalBadge) totalBadge.textContent = totalActive;
+      if (btnCount) btnCount.textContent = totalActive;
+      window.filterLoDirectory(1);
+
+      const loModalEl = document.getElementById('loDirectoryModal');
+      if (loModalEl) {
+        loModalEl.addEventListener('shown.bs.modal', function () {
+          const inp = document.getElementById('loModalSearchInput');
+          if (inp) inp.focus();
+        });
+      }
+
       var chkAgreement = document.getElementById('chkAgreement');
       var btnAgreeProceed = document.getElementById('btnAgreeProceed');
       var agreementBox = document.getElementById('agreementBox');
@@ -493,4 +586,3 @@
   </script>
 </body>
 </html>
-

@@ -417,14 +417,14 @@
                 <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
                 <input type="text" id="dtoSearchInput" class="form-control form-control-sm border-start-0" placeholder="Search ID or Name...">
               </div>
-              <select id="dtoCatFilter" class="form-select form-select-sm" style="max-width: 170px;">
+              <select id="dtoCatFilter" class="form-select form-select-sm" style="max-width: 190px;">
                 <option value="all">All Categories</option>
+                <option value="Drone">Drone Permission</option>
+                <option value="Expedition">Expedition Permission</option>
+                <option value="Satellite Phone">Satellite Phone</option>
+                <option value="Event / Mela / Fair / Rallies / Marathons">Event / Mela / Fair / Rallies / Marathons</option>
                 <option value="Trekking">Trekking</option>
-                <option value="Expedition">Expedition</option>
-                <option value="Events">Events &amp; Fairs</option>
-                <option value="Drone">Drone</option>
-                <option value="Adventure">Adventure</option>
-                <option value="Any Other">Any Other</option>
+                <option value="Other">Other Permissions</option>
               </select>
             </div>
           </div>
@@ -613,25 +613,26 @@
         const districtApps = (currentDistrict === 'all') ? allApps : allApps.filter(app => (app.district || '').toLowerCase() === currentDistrict.toLowerCase());
 
         const totalReceived = districtApps.length;
-        const pendingVerification = districtApps.filter(app => 
-          (app.currentStage === WorkflowEngine.STAGES.STAGE_2 || app.currentStage === WorkflowEngine.STAGES.STAGE_7) && app.assignedRole === 'dto'
+        const pendingVerification = districtApps.filter(app =>
+          app.currentStage === WorkflowEngine.STAGES.STAGE_3 && app.assignedRole === 'dto'
         ).length;
-        const forwardedToHq = districtApps.filter(app => 
-          [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(app.currentStage)
+        const forwardedToHq = districtApps.filter(app =>
+          app.requiresHqVerification && [WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(app.currentStage)
         ).length;
-        const returnedByHq = districtApps.filter(app => 
+        const returnedByHq = districtApps.filter(app =>
           app.currentStage === WorkflowEngine.STAGES.STAGE_5 && app.assignedRole === 'dto'
         ).length;
-        const finalApproval = districtApps.filter(app => 
-          app.currentStage === WorkflowEngine.STAGES.STAGE_11 && app.assignedRole === 'dto'
+        const finalApproval = districtApps.filter(app =>
+          (app.currentStage === WorkflowEngine.STAGES.STAGE_11 && app.assignedRole === 'dto') ||
+          (app.extensionRequest && app.extensionRequest.status === 'Pending DTO Decision')
         ).length;
-        const returnedCitizen = districtApps.filter(app => 
+        const returnedCitizen = districtApps.filter(app =>
           app.status === WorkflowEngine.STATUSES.RETURNED || app.currentStage === WorkflowEngine.STAGES.STAGE_6
         ).length;
-        const approved = districtApps.filter(app => 
+        const approved = districtApps.filter(app =>
           app.status === WorkflowEngine.STATUSES.APPROVED || app.currentStage === WorkflowEngine.STAGES.STAGE_12
         ).length;
-        const rejected = districtApps.filter(app => 
+        const rejected = districtApps.filter(app =>
           app.status === WorkflowEngine.STATUSES.REJECTED || app.currentStage === WorkflowEngine.STAGES.STAGE_13
         ).length;
 
@@ -668,20 +669,21 @@
 
         switch (currentTab) {
           case 'verification':
-            return districtApps.filter(app => 
-              (app.currentStage === WorkflowEngine.STAGES.STAGE_2 || app.currentStage === WorkflowEngine.STAGES.STAGE_7) && app.assignedRole === 'dto'
+            return districtApps.filter(app =>
+              app.currentStage === WorkflowEngine.STAGES.STAGE_3 && app.assignedRole === 'dto'
             );
           case 'forwarded':
-            return districtApps.filter(app => 
-              [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(app.currentStage)
+            return districtApps.filter(app =>
+              app.requiresHqVerification && [WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(app.currentStage)
             );
           case 'returnedHq':
-            return districtApps.filter(app => 
+            return districtApps.filter(app =>
               app.currentStage === WorkflowEngine.STAGES.STAGE_5 && app.assignedRole === 'dto'
             );
           case 'finalApproval':
-            return districtApps.filter(app => 
-              app.currentStage === WorkflowEngine.STAGES.STAGE_11 && app.assignedRole === 'dto'
+            return districtApps.filter(app =>
+              (app.currentStage === WorkflowEngine.STAGES.STAGE_11 && app.assignedRole === 'dto') ||
+              (app.extensionRequest && app.extensionRequest.status === 'Pending DTO Decision')
             );
           case 'returnedCitizen':
             return districtApps.filter(app => 
@@ -781,42 +783,33 @@
           let mobileActionLabel = 'View Details';
           let mobileActionClass = 'btn-outline-primary';
 
-          if (app.currentStage === WorkflowEngine.STAGES.STAGE_2) {
-            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.category);
+          if (app.currentStage === WorkflowEngine.STAGES.STAGE_3) {
+            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.categoryKey || app.category);
             actionBtnHtml = isHqFlow
-              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-send-check me-1"></i> Verify &amp; Forward</a>`
-              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Review &amp; Approve</a>`;
-            mobileActionLabel = isHqFlow ? 'Verify & Forward' : 'Review & Approve';
-            mobileActionClass = isHqFlow ? 'btn-primary' : 'btn-success';
-          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_7) {
-            const isHqFlow = WorkflowEngine.isHqApprovalRequired(app.category);
-            actionBtnHtml = isHqFlow
-              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-arrow-repeat me-1"></i> Reverify &amp; Forward</a>`
-              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-check-circle me-1"></i> Reverify &amp; Approve</a>`;
-            mobileActionLabel = 'Reverify Application';
+              ? `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-send-check me-1"></i> Verify &amp; Forward HQ</a>`
+              : `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-semibold"><i class="bi bi-credit-card me-1"></i> Review &amp; Activate Payment</a>`;
+            mobileActionLabel = isHqFlow ? 'Verify & Forward HQ' : 'Review & Activate Payment';
             mobileActionClass = isHqFlow ? 'btn-primary' : 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_5) {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-danger py-1 px-3 fw-bold shadow-xs"><i class="bi bi-exclamation-triangle me-1"></i> Action Return</a>`;
             mobileActionLabel = 'Process HQ Return';
             mobileActionClass = 'btn-danger';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11) {
-            actionBtnHtml = `
-              <div class="d-inline-flex gap-1.5 align-items-center">
-                <a href="approval-sheet.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" title="View HQ Approval Sheet">
-                  <i class="bi bi-file-earmark-text"></i> HQ Sheet
-                </a>
-                <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs">
-                  <i class="bi bi-patch-check me-1"></i> Final Approval
-                </a>
-              </div>`;
+            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-patch-check me-1"></i> Final Approval</a>`;
             mobileActionLabel = 'Final Approval & Issue Letter';
             mobileActionClass = 'btn-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_12) {
+            const hasExtPending = app.extensionRequest && app.extensionRequest.status === 'Pending DTO Decision';
             actionBtnHtml = `
               <div class="d-inline-flex gap-1.5 align-items-center">
+                ${hasExtPending ? `
+                  <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-warning text-dark py-1 px-2.5 fw-bold" title="Extension Request Pending">
+                    <i class="bi bi-clock-history me-1"></i> Decide Extension
+                  </a>
+                ` : ''}
                 ${app.approvalSheet ? `
                   <a href="approval-sheet.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold" title="View HQ Approval Sheet">
-                    <i class="bi bi-file-earmark-text"></i> HQ Sheet
+                    <i class="bi bi-file-earmark-text"></i> Sheet
                   </a>
                 ` : ''}
                 <a href="permission-letter.html?arn=${encodeURIComponent(app.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2.5 fw-semibold" title="View Permission Letter">
@@ -826,8 +819,8 @@
                   <i class="bi bi-folder2-open"></i>
                 </a>
               </div>`;
-            mobileActionLabel = 'View Permission Letter';
-            mobileActionClass = 'btn-outline-success';
+            mobileActionLabel = hasExtPending ? 'Decide Extension' : 'View Permission Letter';
+            mobileActionClass = hasExtPending ? 'btn-warning text-dark' : 'btn-outline-success';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_13) {
             actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="btn btn-sm btn-outline-danger py-1 px-3 fw-semibold"><i class="bi bi-x-circle me-1"></i> Grounds</a>`;
             mobileActionLabel = 'View Rejection Grounds';

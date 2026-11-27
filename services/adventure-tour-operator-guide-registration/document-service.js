@@ -73,7 +73,7 @@
           refNo: app.cardReference || app.idCardNo || `133/DoT&CAv/${(app.district || 'GTK').substring(0,3).toUpperCase()}/23/TG`,
           issueDate: app.issueDate || '04.09.2023',
           validTill: app.validTill || '03.09.2024',
-          url: `guide-id-card.html?arn=${encodeURIComponent(app.arn)}`
+          url: `certificate.html?arn=${encodeURIComponent(app.arn)}`
         }
       };
     },
@@ -91,14 +91,14 @@
      */
     openGuideIdCard: function (arn, role) {
       const r = role || 'citizen';
-      window.open(`guide-id-card.html?arn=${encodeURIComponent(arn)}&role=${encodeURIComponent(r)}`, '_blank');
+      window.open(`certificate.html?arn=${encodeURIComponent(arn)}&role=${encodeURIComponent(r)}`, '_blank');
     },
 
     /**
-     * Tourism Officer (TO) dedicated Print Action for Guide ID Card
+     * Tourism Officer (TO) dedicated Print Action for Guide Certificate & ID Card
      */
     printGuideIdCard: function (arn) {
-      window.open(`guide-id-card.html?arn=${encodeURIComponent(arn)}&role=dto&print=true`, '_blank');
+      window.open(`certificate.html?arn=${encodeURIComponent(arn)}&role=dto&print=true`, '_blank');
     },
 
     /**
@@ -122,23 +122,21 @@
 
       let html = '<div class="row g-3">';
 
-      // 1. Certificate Card (Both ATO and Guide)
+      // Single Combined Certificate Card (ATO Certificate, or Guide Registration Certificate + Integrated ID Card)
+      const isGuideCombined = status.guideIdCard.applicable;
       html += `
-        <div class="${status.guideIdCard.applicable ? 'col-md-6' : 'col-12'}">
+        <div class="col-12">
           <div class="card h-100 border rounded-3 p-3 bg-white shadow-xs" style="border-top: 4px solid #1e3a8a !important;">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-bold">${status.certificate.annexure}</span>
               <span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i>Issued</span>
             </div>
-            <h5 class="h6 fw-bold text-dark mb-1">${status.certificate.title}</h5>
+            <h5 class="h6 fw-bold text-dark mb-1">${isGuideCombined ? 'Guide Registration Certificate &amp; Cut-Out ID Card' : status.certificate.title}</h5>
             <div class="small text-muted mb-2 font-monospace">Reg. No: <strong>${status.certificate.refNo}</strong></div>
-            <div class="small text-muted mb-3">Statutory certificate issued under Sikkim Registration of Tourist Trade Rules, 2025.</div>
+            <div class="small text-muted mb-3">${isGuideCombined ? 'Combined print-ready certificate with the Official Tour Guide ID Card integrated at the bottom (cut along dotted line).' : 'Statutory certificate issued under Sikkim Registration of Tourist Trade Rules, 2025.'}</div>
             <div class="mt-auto d-flex gap-2 flex-wrap pt-2 border-top">
               <a href="${status.certificate.url}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 text-nowrap fw-semibold">
-                <i class="bi bi-eye me-1"></i>View Certificate
-              </a>
-              <a href="${status.certificate.url}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2.5 text-nowrap">
-                <i class="bi bi-download me-1"></i>Download PDF
+                <i class="bi bi-download me-1"></i>${isGuideCombined ? 'Download Certificate &amp; ID Card' : 'Download Certificate'}
               </a>
               <a href="${status.certificate.url}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2.5 text-nowrap">
                 <i class="bi bi-printer me-1"></i>Print
@@ -147,34 +145,6 @@
           </div>
         </div>
       `;
-
-      // 2. Guide ID Card (Strictly ONLY for Guide Registration)
-      if (status.guideIdCard.applicable) {
-        html += `
-          <div class="col-md-6">
-            <div class="card h-100 border rounded-3 p-3 bg-white shadow-xs" style="border-top: 4px solid #0e3768 !important;">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle small fw-bold">Official Credential</span>
-                <span class="badge bg-success text-white small"><i class="bi bi-check-circle-fill me-1"></i>Active</span>
-              </div>
-              <h5 class="h6 fw-bold text-dark mb-1">${status.guideIdCard.title}</h5>
-              <div class="small text-muted mb-2 font-monospace">Card Ref: <strong>${status.guideIdCard.refNo}</strong></div>
-              <div class="small text-muted mb-3">Two-sided landscape ID card with verified specialization categories and security watermark.</div>
-              <div class="mt-auto d-flex gap-2 flex-wrap pt-2 border-top">
-                <a href="${status.guideIdCard.url}" target="_blank" class="btn btn-sm btn-primary py-1 px-2.5 text-nowrap fw-semibold">
-                  <i class="bi bi-person-badge me-1"></i>View ID Card
-                </a>
-                <a href="${status.guideIdCard.url}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2.5 text-nowrap">
-                  <i class="bi bi-download me-1"></i>Download
-                </a>
-                <a href="${status.guideIdCard.url}" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-2.5 text-nowrap">
-                  <i class="bi bi-printer me-1"></i>Print ID Card
-                </a>
-              </div>
-            </div>
-          </div>
-        `;
-      }
 
       html += '</div>';
       containerEl.innerHTML = html;

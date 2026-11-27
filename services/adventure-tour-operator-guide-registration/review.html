@@ -87,8 +87,8 @@
           <option value="ta-hq">TA – Headquarters</option>
           <option value="io">Inspecting Officer (IO)</option>
           <option value="asst-dir-hq">Assistant Director – HQ</option>
-          <option value="dto-hq">DTO – Headquarters</option>
-          <option value="dist-ta">District TA (Circle)</option>
+          <option value="dto-hq">District DTO – Gangtok</option>
+          <option value="dist-ta">District TO (Circle)</option>
           <option value="dist-dto">District DTO (Circle)</option>
         </select>
 
@@ -135,7 +135,7 @@
         <div class="d-flex align-items-center gap-3">
           <div class="text-end d-none d-sm-block">
             <div class="fw-bold text-dark small" id="reviewOfficerName">Tashi Namgyal Bhutia</div>
-            <div class="text-muted" style="font-size: 0.75rem;" id="reviewOfficerDesignation">Technical Assistant (Headquarters Scrutiny)</div>
+            <div class="text-muted" style="font-size: 0.75rem;" id="reviewOfficerDesignation">Tourism Officer (Headquarters Scrutiny)</div>
           </div>
           <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
             <i class="bi bi-box-arrow-right"></i>
@@ -165,7 +165,7 @@
               <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span class="fs-5 fw-bold font-monospace text-primary" id="headerArn">SK-ATO-2026-0042</span>
                 <span class="badge bg-primary px-2 py-1" id="headerStatusBadge">Under Review</span>
-                <span class="badge bg-light text-dark border px-2 py-1" id="headerStageBadge">Stage 1: Awaiting TA Review</span>
+                <span class="badge bg-light text-dark border px-2 py-1" id="headerStageBadge">Stage 1: Awaiting TO Review</span>
                 <span class="badge bg-secondary text-white" id="headerTypeBadge">Adventure Tour Operator</span>
                 <span class="badge bg-light text-dark border" id="headerDistrictBadge">Gangtok District</span>
               </div>
@@ -199,6 +199,13 @@
            LEFT COLUMN: CLEAN TABBED INFORMATION WORKSPACE (8 cols)
            ============================================================== -->
       <div class="col-lg-8">
+        <!-- Prominent Inspection Report Highlight (Visible at top for TO & DTO) -->
+        <div class="card border-2 shadow-sm mb-3 d-none" id="inspectionTopHighlightCard" style="border-color: #16a34a; background-color: #f0fdf4;">
+          <div class="card-body p-3" id="inspectionTopHighlightBody">
+            <!-- Populated dynamically via renderSupportingDocs() when inspectionReport exists -->
+          </div>
+        </div>
+
         <div class="card border-0 shadow-sm bg-white mb-4">
           
           <!-- Modern Tab Navigation Header (Matching Tourism Permission) -->
@@ -314,6 +321,17 @@
               <!-- TAB 2: SUPPORTING DOCUMENTS & CLEARANCES -->
               <div class="tab-pane fade" id="tab-documents" role="tabpanel">
                 
+                <!-- Physical Gear Inspection Record Box (Highlighted at top for Adventure Tour Operators) -->
+                <div class="card border mb-4" id="inspectionSectionCard">
+                  <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center border-bottom">
+                    <strong class="small text-dark"><i class="bi bi-shield-check text-primary me-1"></i> Physical On-Site Gear &amp; Safety Equipment Inspection</strong>
+                    <span class="badge bg-secondary" id="inspectionStatusBadge">Inspection Record</span>
+                  </div>
+                  <div class="card-body p-3" id="inspectionDossierBody">
+                    <!-- Populated dynamically based on ATO inspection state -->
+                  </div>
+                </div>
+
                 <!-- Supporting Attachments Table -->
                 <div class="mb-4">
                   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -340,17 +358,6 @@
                         <!-- Populated dynamically via JS -->
                       </tbody>
                     </table>
-                  </div>
-                </div>
-
-                <!-- Physical Gear Inspection Record Box (for Adventure Tour Operators) -->
-                <div class="card border bg-light mt-4" id="inspectionSectionCard">
-                  <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center border-bottom">
-                    <strong class="small text-dark"><i class="bi bi-shield-check text-primary me-1"></i> Physical On-Site Gear &amp; Safety Equipment Inspection</strong>
-                    <span class="badge bg-secondary" id="inspectionStatusBadge">Inspection Record</span>
-                  </div>
-                  <div class="card-body p-3" id="inspectionDossierBody">
-                    <!-- Populated dynamically based on ATO inspection state -->
                   </div>
                 </div>
 
@@ -396,7 +403,7 @@
             <h3 class="h6 fw-bold mb-0 text-dark">
               <i class="bi bi-lightning-charge-fill text-warning me-2"></i> Workflow Action Desk
             </h3>
-            <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="activeRoleIndicator">TA Desk</span>
+            <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="activeRoleIndicator">TO Desk</span>
           </div>
 
           <!-- Current Processing Stage Callout -->
@@ -404,7 +411,7 @@
             <span class="text-muted small d-block mb-1">Current Stage:</span>
             <div class="p-2 bg-light rounded border fw-bold text-primary small d-flex align-items-center gap-2" id="currentStageDisplay">
               <i class="bi bi-hourglass-split"></i>
-              <span id="currentStageText">Awaiting HQ TA Review</span>
+              <span id="currentStageText">Awaiting TO Review</span>
             </div>
           </div>
 
@@ -567,7 +574,7 @@
         <div class="modal-footer bg-light py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-success btn-sm px-3 fw-semibold" onclick="confirmSubmitReport()">
-            <i class="bi bi-send-check me-1"></i> Submit Inspection Report to Tourism Authority (TA)
+            <i class="bi bi-send-check me-1"></i> Submit Inspection Report to Tourism Authority (TO)
           </button>
         </div>
       </div>
@@ -742,6 +749,8 @@
         // Set role in dropdown
         const roleSel = document.getElementById('roleViewSelect');
         if (roleSel) roleSel.value = activeRole;
+        const distSel = document.getElementById('districtFilterSelect');
+        if (distSel && activeDistrict) distSel.value = activeDistrict;
 
         updateDistrictSelectVisibility();
         loadApplicationReview(currentArn);
@@ -829,7 +838,7 @@
         if (backBtn && backLabel) {
           if (activeRole === 'ta-hq') {
             backBtn.href = 'dashboard-ta.html';
-            backLabel.textContent = 'Back to HQ TA Queue';
+            backLabel.textContent = 'Back to TO Queue';
           } else if (activeRole === 'io') {
             backBtn.href = 'dashboard-io.html';
             backLabel.textContent = 'Back to IO Queue';
@@ -894,7 +903,7 @@
         if (role === 'ta-hq') return 'HQ Scrutiny Desk';
         if (role === 'io') return 'HQ Field Inspection Desk';
         if (role === 'asst-dir-hq') return 'HQ Concurrence Desk';
-        if (role === 'dto-hq') return 'HQ Licensing Authority';
+        if (role === 'dto-hq') return 'District DTO (Gangtok)';
         return `${app.district} District Desk`;
       }
 
@@ -1006,14 +1015,18 @@
           { name: 'First_Aid_CPR_Compliance.pdf', type: 'Emergency Wilderness First Aid Certificate', size: '980 KB' }
         ];
 
-        // If physical inspection report exists and not already listed, display it in the documents table
-        if (app.inspectionReport && !docs.some(d => (d.type && d.type.includes('Inspection')) || (d.name && d.name.toLowerCase().includes('inspection')))) {
-          docs.push({
-            name: app.inspectionReport.docName || 'OnSite_Gear_Safety_Inspection_Report.pdf',
-            type: 'On-Site Physical Inspection Report (IO Signed)',
-            size: app.inspectionReport.docSize || '2.4 MB',
-            verified: true
-          });
+        // If physical inspection report exists, ensure it appears at the TOP of the documents table
+        const existingInspIdx = docs.findIndex(d => (d.type && d.type.includes('Inspection')) || (d.name && d.name.toLowerCase().includes('inspection')));
+        if (app.inspectionReport) {
+          const inspDocObj = existingInspIdx !== -1
+            ? docs.splice(existingInspIdx, 1)[0]
+            : {
+                name: app.inspectionReport.docName || 'OnSite_Gear_Safety_Inspection_Report.pdf',
+                type: 'On-Site Physical Inspection Report (IO Signed)',
+                size: app.inspectionReport.docSize || '2.4 MB',
+                verified: true
+              };
+          docs.unshift(inspDocObj);
         }
 
         badge.textContent = docs.length;
@@ -1021,21 +1034,28 @@
         docs.forEach((doc, idx) => {
           const tr = document.createElement('tr');
           const isInspReport = (doc.type && doc.type.includes('Inspection'));
+          if (isInspReport) {
+            tr.style.backgroundColor = '#f0fdf4';
+            tr.style.boxShadow = 'inset 3px 0 0 #16a34a';
+          }
+          const safeDocName = String(doc.name || '').replace(/'/g, "\\'");
+          const safeDocType = String(doc.type || '').replace(/'/g, "\\'");
           tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>
               <div class="fw-semibold text-dark text-truncate" style="max-width: 260px;">
                 <i class="bi ${isInspReport ? 'bi-file-earmark-check-fill text-success' : 'bi-file-earmark-pdf-fill text-danger'} me-1"></i>${doc.name}
+                ${isInspReport ? '<span class="badge bg-success ms-1" style="font-size: 0.65rem;">IO Report</span>' : ''}
               </div>
             </td>
             <td><span class="badge ${isInspReport ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-light text-secondary border'}">${doc.type}</span></td>
             <td class="text-muted small">${doc.size || '1.2 MB'}</td>
             <td class="text-end">
               <div class="d-inline-flex gap-1.5">
-                <button type="button" class="btn btn-sm btn-outline-primary py-0.5 px-2" onclick="showDocPreviewModal('${doc.name}', '${doc.type}')" title="Preview Document">
+                <button type="button" class="btn btn-sm btn-outline-primary py-0.5 px-2" onclick="showDocPreviewModal('${safeDocName}', '${safeDocType}')" title="Preview Document">
                   <i class="bi bi-eye"></i> View
                 </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" onclick="simulateDocDownload('${doc.name}')" title="Download Document">
+                <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" onclick="simulateDocDownload('${safeDocName}')" title="Download Document">
                   <i class="bi bi-download"></i>
                 </button>
               </div>
@@ -1044,24 +1064,31 @@
           tbody.appendChild(tr);
         });
 
-        // Physical Inspection Section (ATO only)
+        // Physical Inspection Section (ATO only) + Prominent Top Highlight Card
+        const topHighlightCard = document.getElementById('inspectionTopHighlightCard');
+        const topHighlightBody = document.getElementById('inspectionTopHighlightBody');
         const inspCard = document.getElementById('inspectionSectionCard');
         const inspBody = document.getElementById('inspectionDossierBody');
         const inspBadge = document.getElementById('inspectionStatusBadge');
 
         if (app.type !== 'adventure-tour-operator') {
           inspCard.classList.add('d-none');
+          if (topHighlightCard) topHighlightCard.classList.add('d-none');
         } else {
           inspCard.classList.remove('d-none');
           if (!app.assignedIO && !app.inspectionReport) {
+            if (topHighlightCard) topHighlightCard.classList.add('d-none');
+            inspCard.className = 'card border bg-light mb-4';
             inspBadge.className = 'badge bg-secondary';
             inspBadge.textContent = 'Pending Assignment';
             inspBody.innerHTML = `
               <div class="text-muted small py-2">
-                <i class="bi bi-clock me-1"></i>No Inspecting Officer assigned yet. Technical Assistant (Headquarters) will assign an IO for physical on-site gear and safety infrastructure inspection.
+                <i class="bi bi-clock me-1"></i>No Inspecting Officer assigned yet. Tourism Officer (Headquarters) will assign an IO for physical on-site gear and safety infrastructure inspection.
               </div>
             `;
           } else if (app.assignedIO && !app.inspectionReport) {
+            if (topHighlightCard) topHighlightCard.classList.add('d-none');
+            inspCard.className = 'card border border-warning bg-light mb-4';
             inspBadge.className = 'badge bg-warning text-dark';
             inspBadge.textContent = 'Inspection Mandated';
             const ioName = (typeof app.assignedIO === 'object') ? (app.assignedIO.name || 'Tashi Wangdi Lepcha') : app.assignedIO;
@@ -1085,14 +1112,17 @@
             `;
           } else if (app.inspectionReport) {
             const isComp = (app.inspectionReport.status || '').includes('Compliant');
+            inspCard.className = `card border-2 ${isComp ? 'border-success' : 'border-danger'} mb-4 shadow-xs`;
+            inspCard.style.backgroundColor = isComp ? '#f0fdf4' : '#fef2f2';
             inspBadge.className = isComp ? 'badge bg-success' : 'badge bg-danger';
             inspBadge.textContent = isComp ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged';
             const ioName = (typeof app.assignedIO === 'object') ? (app.assignedIO.name || 'Tashi Wangdi Lepcha') : (app.assignedIO || app.inspectionReport.officer || 'Tashi Wangdi Lepcha (IO)');
             const reportDocName = app.inspectionReport.docName || 'OnSite_Gear_Safety_Inspection_Report.pdf';
             const reportDocSize = app.inspectionReport.docSize || '2.4 MB';
             const reportRemarks = app.inspectionReport.remarks || '';
+            const safeRepDocName = String(reportDocName).replace(/'/g, "\\'");
 
-            inspBody.innerHTML = `
+            const inspectionCardInnerHtml = `
               <div class="row g-2 small">
                 <div class="col-sm-6">
                   <span class="text-muted d-block">Inspecting Officer (IO):</span>
@@ -1116,10 +1146,10 @@
                       </div>
                     </div>
                     <div class="d-flex gap-1.5">
-                      <button type="button" class="btn btn-sm btn-outline-primary py-0.5 px-2" onclick="showDocPreviewModal('${reportDocName}', 'On-Site Physical Inspection Report')">
-                        <i class="bi bi-eye"></i> View Report
+                      <button type="button" class="btn btn-sm ${isComp ? 'btn-success' : 'btn-danger'} fw-semibold py-1 px-2.5" onclick="showDocPreviewModal('${safeRepDocName}', 'On-Site Physical Inspection Report')">
+                        <i class="bi bi-eye me-1"></i> View Report
                       </button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" onclick="simulateDocDownload('${reportDocName}')">
+                      <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" onclick="simulateDocDownload('${safeRepDocName}')" title="Download Report">
                         <i class="bi bi-download"></i>
                       </button>
                     </div>
@@ -1128,16 +1158,38 @@
                 ${reportRemarks ? `
                   <div class="col-12 mt-1">
                     <span class="text-muted d-block">Inspecting Officer Remarks / Observations:</span>
-                    <div class="p-2 bg-light rounded text-dark">${reportRemarks}</div>
+                    <div class="p-2 bg-white border rounded text-dark">${reportRemarks}</div>
                   </div>
                 ` : `
                   <div class="col-12 mt-1">
                     <span class="text-muted d-block">Inspection Findings:</span>
-                    <div class="p-2 bg-light rounded text-secondary">${app.inspectionReport.summary || 'On-site physical inspection of adventure equipment, safety gear, and operational standards completed. Verified compliant.'}</div>
+                    <div class="p-2 bg-white border rounded text-secondary">${app.inspectionReport.summary || 'On-site physical inspection of adventure equipment, safety gear, and operational standards completed. Verified compliant.'}</div>
                   </div>
                 `}
               </div>
             `;
+
+            inspBody.innerHTML = inspectionCardInnerHtml;
+
+            if (topHighlightCard && topHighlightBody) {
+              topHighlightCard.style.borderColor = isComp ? '#16a34a' : '#dc3545';
+              topHighlightCard.style.backgroundColor = isComp ? '#f0fdf4' : '#fef2f2';
+              topHighlightBody.innerHTML = `
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pb-2 mb-2 border-bottom" style="border-color: ${isComp ? '#bbf7d0' : '#fecaca'} !important;">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="rounded-circle d-inline-flex align-items-center justify-content-center text-white flex-shrink-0" style="width: 28px; height: 28px; background: ${isComp ? '#16a34a' : '#dc3545'};">
+                      <i class="bi bi-clipboard2-check-fill" style="font-size: 0.85rem;"></i>
+                    </span>
+                    <strong class="small text-dark">Physical On-Site Gear &amp; Safety Inspection Report</strong>
+                  </div>
+                  <span class="badge ${isComp ? 'bg-success' : 'bg-danger'}">
+                    <i class="bi bi-shield-check me-1"></i>${isComp ? 'Compliant & Recommended' : 'Safety Deficiencies Flagged'}
+                  </span>
+                </div>
+                ${inspectionCardInnerHtml}
+              `;
+              topHighlightCard.classList.remove('d-none');
+            }
           }
         }
 
@@ -1217,7 +1269,7 @@
 
         // Set Officer Identity
         if (role === 'ta-hq') {
-          roleIndicator.textContent = 'HQ TA Desk';
+          roleIndicator.textContent = 'TO Desk';
           offNameEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
           offDesigEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.designation;
           offTitleEl.textContent = 'Tourism & Civil Aviation Department • Headquarters Scrutiny Desk';
@@ -1232,15 +1284,15 @@
           offDesigEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.asstDir.designation;
           offTitleEl.textContent = 'Tourism & Civil Aviation Department • Adventure Concurrence Desk';
         } else if (role === 'dto-hq') {
-          roleIndicator.textContent = 'HQ DTO Desk';
+          roleIndicator.textContent = 'Gangtok DTO Desk';
           offNameEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.dto.name;
           offDesigEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.dto.designation;
-          offTitleEl.textContent = 'District Tourism Office, Gangtok Circle • State Licensing Authority';
+          offTitleEl.textContent = 'District Tourism Office, Gangtok Circle';
         } else if (role === 'dist-ta') {
           const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeDistrict] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
-          roleIndicator.textContent = `${activeDistrict} TA Desk`;
+          roleIndicator.textContent = `${activeDistrict} TO Desk`;
           offNameEl.textContent = distInfo.taName;
-          offDesigEl.textContent = `Technical Assistant (${activeDistrict} District Circle)`;
+          offDesigEl.textContent = `Tourism Officer (${activeDistrict} District Circle)`;
           offTitleEl.textContent = `District Tourism Office, ${activeDistrict} Circle`;
         } else if (role === 'dist-dto') {
           const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeDistrict] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
@@ -1254,17 +1306,12 @@
 
         // TERMINAL STATUS 1: Approved
         if (app.status === AdventureWorkflowEngine.STATUSES.APPROVED) {
-          const isGuide = (app.type === 'guide-registration');
+          const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
           instructions.innerHTML = `<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Sanction Approved &bull; Credentials Issued</span>`;
           container.innerHTML = `
             <a href="certificate.html?arn=${encodeURIComponent(app.arn)}&role=review" target="_blank" class="btn btn-sm btn-success fw-semibold shadow-xs">
-              <i class="bi bi-printer me-1"></i> View / Print Official Certificate
+              <i class="bi bi-printer me-1"></i> ${isGuide ? 'View / Print Certificate &amp; ID Card' : 'View / Print Official Certificate'}
             </a>
-            ${isGuide ? `
-              <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" onclick="AdventureDocumentService.printGuideIdCard('${app.arn}')">
-                <i class="bi bi-person-badge me-1"></i> Print Guide ID Card
-              </button>
-            ` : ''}
           `;
           return;
         }
@@ -1292,68 +1339,90 @@
         }
 
         // AUTHORITATIVE WORKFLOW ACTION BUTTONS
-        // 1. TA – Headquarters Actions
-        if (role === 'ta-hq') {
-          instructions.textContent = 'Verify credentials, mandate on-site IO safety gear inspection or forward to Assistant Director.';
+        // 1. TO – Initial & Post-Inspection Actions (Gangtok & District TO)
+        if (role === 'ta-hq' || role === 'dist-ta') {
+          instructions.textContent = (app.type === 'adventure-tour-operator')
+            ? 'Step 2/4: Verify details and forward to IA (initial), or review IA report and forward to DTO / return.'
+            : 'Step 2: Verify applicant dossier and forward to DTO, or return to applicant with remarks.';
+          if (app.currentRole !== role && !(role === 'ta-hq' && app.currentRole === 'ta-hq')) {
+            container.innerHTML += `<div class="alert alert-info small p-2 mb-0"><i class="bi bi-info-circle me-1"></i>Currently at: <strong>${app.stage}</strong>. No pending TO action.</div>`;
+            return;
+          }
+          const dtoTargetRole = ((app.district || 'Gangtok').toLowerCase() === 'gangtok') ? 'dto-hq' : 'dist-dto';
+          const dtoTargetLabel = `District Tourism Officer (${app.district || 'Gangtok'})`;
+
           if (app.type === 'adventure-tour-operator') {
-            if (!app.assignedIO) {
+            if (!app.assignedIO && !app.inspectionReport) {
+              // Step 2: TO Initial Verification -> Option B (Forward to IA) & Option A (Return to Applicant)
               container.innerHTML += `
                 <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" onclick="openAssignIoModal()">
-                  <i class="bi bi-person-plus-fill me-1"></i> Assign Inspecting Officer (IO)
+                  <i class="bi bi-person-plus-fill me-1"></i> Assign &amp; Forward to IA
                 </button>
+                <div class="d-flex gap-2 pt-2 border-top">
+                  <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                  </button>
+                </div>
               `;
             } else if (app.inspectionReport) {
+              // Step 4: TO Post-Inspection Verification -> Option C (Forward to DTO), Option A (Return to IA), Option B (Return to Applicant)
               container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('asst-dir-hq', 'HQ Assistant Director')">
-                  <i class="bi bi-send-fill me-1"></i> Forward to Assistant Director
+                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('${dtoTargetRole}', '${dtoTargetLabel}')">
+                  <i class="bi bi-send-fill me-1"></i> Forward to DTO
                 </button>
+                <div class="d-flex gap-2 pt-2 border-top flex-wrap">
+                  <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1 fw-semibold" onclick="executeReturnToPreviousDept('Inspecting Authority (IA)')">
+                    <i class="bi bi-arrow-left me-1"></i> Return to IA
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                  </button>
+                </div>
               `;
             } else {
               container.innerHTML += `
                 <div class="badge bg-light text-secondary border p-2 small">
-                  <i class="bi bi-clock me-1"></i>Assigned to ${app.assignedIO.name} &bull; Awaiting Report
+                  <i class="bi bi-clock me-1"></i>Assigned to ${app.assignedIO.name} &bull; Awaiting IA Report
                 </div>
               `;
             }
-          } else if (app.type === 'guide-registration' && app.district === 'Gangtok') {
-            container.innerHTML += `
-              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('asst-dir-hq', 'HQ Assistant Director')">
-                <i class="bi bi-send-fill me-1"></i> Forward to Assistant Director
-              </button>
-            `;
           } else {
-            container.innerHTML += `<div class="text-muted small">Application belongs to District Circle Queue.</div>`;
+            // Guide Registration: Forward directly to DTO or Return to Applicant
+            container.innerHTML += `
+              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('${dtoTargetRole}', '${dtoTargetLabel}')">
+                <i class="bi bi-send-fill me-1"></i> Forward to DTO
+              </button>
+              <div class="d-flex gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
+                  <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                </button>
+              </div>
+            `;
           }
-
-          container.innerHTML += `
-            <div class="d-flex gap-2 pt-2 border-top">
-              <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
-                <i class="bi bi-arrow-return-left me-1"></i> Return
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
-                <i class="bi bi-x-circle me-1"></i> Reject
-              </button>
-            </div>
-          `;
         }
 
-        // 2. Inspecting Officer (IO) Actions (ATO Only)
-        else if (role === 'io') {
-          instructions.textContent = 'Inspect on-site safety gear, safety equipment, and UIAA/CE certifications.';
-          if (app.type === 'adventure-tour-operator' && app.assignedIO && !app.inspectionReport) {
+        // 2. Inspecting Authority (IA) Actions (ATO Only)
+        else if (role === 'io' || role === 'io-hq') {
+          instructions.textContent = 'Step 3: Inspect safety gear & equipment, upload Inspection Report to TO, or Return to TO with remarks.';
+          if (app.type === 'adventure-tour-operator' && (app.currentRole === 'io' || app.currentRole === 'io-hq')) {
             container.innerHTML += `
               <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openSubmitReportModal()">
-                <i class="bi bi-clipboard2-check-fill me-1"></i> Enter &amp; Submit Inspection Report
+                <i class="bi bi-clipboard2-check-fill me-1"></i> Submit Inspection Report (Forward to TO)
               </button>
+              <div class="d-flex gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="executeReturnToPreviousDept('Tourism Officer (TO)')">
+                  <i class="bi bi-arrow-return-left me-1"></i> Return to TO
+                </button>
+              </div>
             `;
           } else if (app.inspectionReport) {
             container.innerHTML += `
               <div class="badge bg-success-subtle text-success border p-2 small">
-                <i class="bi bi-check-circle-fill me-1"></i>Report Submitted &bull; Returned to TA
+                <i class="bi bi-check-circle-fill me-1"></i>Report Submitted &bull; Forwarded to TO
               </div>
             `;
           } else {
-            container.innerHTML += `<div class="text-muted small">Application not currently pending IO inspection.</div>`;
+            container.innerHTML += `<div class="text-muted small">Application not currently pending IA inspection.</div>`;
           }
         }
 
@@ -1361,8 +1430,8 @@
         else if (role === 'asst-dir-hq') {
           instructions.textContent = 'Review TA endorsements, inspect clearance dossiers, and recommend sanction to DTO.';
           container.innerHTML += `
-            <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('dto-hq', 'Headquarters DTO')">
-              <i class="bi bi-send-fill me-1"></i> Recommend &amp; Forward to HQ DTO
+            <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('dto-hq', 'District DTO (Gangtok)')">
+              <i class="bi bi-send-fill me-1"></i> Recommend &amp; Forward to Gangtok DTO
             </button>
             <div class="d-flex gap-2 pt-2 border-top">
               <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
@@ -1375,112 +1444,68 @@
           `;
         }
 
-        // 4. HQ DTO Actions
-        else if (role === 'dto-hq') {
-          instructions.textContent = 'Activate statutory registration fee of ₹1,500 or grant final statutory approval.';
-          if (app.type === 'adventure-tour-operator' || (app.type === 'guide-registration' && app.district === 'Gangtok')) {
-            if (!app.payment || !app.payment.activated) {
+        // 4. DTO – Gangtok / District DTO Actions
+        else if (role === 'dto-hq' || role === 'dist-dto') {
+          const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
+          const feeLabel = isGuide ? '₹500' : '₹1,500';
+          instructions.textContent = isGuide
+            ? `Step 3/5: Verify credentials and approve for payment (${feeLabel}), return/reject (initial), or grant final approval & issue certificate.`
+            : `Step 5/7: Approve for payment (${feeLabel}) or grant final approval & issue certificate.`;
+          if (app.currentRole !== 'dto-hq' && app.currentRole !== 'dist-dto') {
+            container.innerHTML += `<div class="alert alert-info small p-2 mb-0"><i class="bi bi-info-circle me-1"></i>Currently at: <strong>${app.stage}</strong>. No pending DTO action.</div>`;
+            return;
+          }
+          if (!app.payment || !app.payment.activated) {
+            if (isGuide) {
+              // Guide Step 3: DTO Initial Verification -> Option C (Approve for Payment), Option A (Return to Applicant), Option B (Reject)
               container.innerHTML += `
                 <button type="button" class="btn btn-sm btn-warning fw-bold text-dark shadow-xs" onclick="activateStatutoryPayment()">
-                  <i class="bi bi-currency-rupee me-1"></i> Activate Fee Payment (₹1,500)
+                  <i class="bi bi-currency-rupee me-1"></i> Approve for Payment (${feeLabel})
                 </button>
-              `;
-            } else if (app.payment.activated && !app.payment.paid) {
-              container.innerHTML += `
-                <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
-                  <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
+                <div class="d-flex gap-2 pt-2 border-top">
+                  <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
+                    <i class="bi bi-x-circle me-1"></i> Reject
+                  </button>
                 </div>
               `;
-            } else if (app.payment.paid) {
-              container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="approveAndIssueCertificate()">
-                  <i class="bi bi-patch-check-fill me-1"></i> Approve &amp; Issue Registration Certificate
-                </button>
-              `;
-            }
-          } else {
-            // Other-district Guide: HQ DTO issues digital ID Card & manual Logbook!
-            container.innerHTML += `
-              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="issueDigitalIdAndLogbook()">
-                <i class="bi bi-person-badge-fill me-1"></i> Issue Digital ID Card &amp; Record Logbook
-              </button>
-            `;
-          }
-
-          container.innerHTML += `
-            <div class="d-flex gap-2 pt-2 border-top">
-              <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
-                <i class="bi bi-arrow-return-left me-1"></i> Return
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
-                <i class="bi bi-x-circle me-1"></i> Reject
-              </button>
-            </div>
-          `;
-        }
-
-        // 5. District TA Actions (Other-District Guide)
-        else if (role === 'dist-ta') {
-          instructions.textContent = 'Scrutinize local circle documents and forward to District Tourism Officer.';
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            container.innerHTML += `
-              <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" onclick="openForwardModal('dist-dto', 'District DTO (${app.district})')">
-                <i class="bi bi-send-fill me-1"></i> Forward to District DTO
-              </button>
-            `;
-          } else {
-            container.innerHTML += `<div class="text-muted small">Application handled by HQ TA Desk.</div>`;
-          }
-
-          container.innerHTML += `
-            <div class="d-flex gap-2 pt-2 border-top">
-              <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
-                <i class="bi bi-arrow-return-left me-1"></i> Return
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
-                <i class="bi bi-x-circle me-1"></i> Reject
-              </button>
-            </div>
-          `;
-        }
-
-        // 6. District DTO Actions (Other-District Guide)
-        else if (role === 'dist-dto') {
-          instructions.textContent = 'Activate local fee deposit and forward verified file to HQ Assistant Director.';
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            if (!app.payment || !app.payment.activated) {
+            } else {
+              // ATO Step 5: DTO Initial Verification -> Option B (Approve for Payment) & Option A (Reject)
               container.innerHTML += `
                 <button type="button" class="btn btn-sm btn-warning fw-bold text-dark shadow-xs" onclick="activateStatutoryPayment()">
-                  <i class="bi bi-currency-rupee me-1"></i> Activate Fee Payment (₹1,500)
+                  <i class="bi bi-currency-rupee me-1"></i> Approve for Payment (${feeLabel})
                 </button>
-              `;
-            } else if (app.payment.activated && !app.payment.paid) {
-              container.innerHTML += `
-                <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
-                  <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
+                <div class="d-flex gap-2 pt-2 border-top">
+                  <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
+                    <i class="bi bi-x-circle me-1"></i> Reject Application
+                  </button>
                 </div>
               `;
-            } else if (app.payment.paid) {
-              container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('asst-dir-hq', 'HQ Assistant Director')">
-                  <i class="bi bi-send-fill me-1"></i> Forward to HQ Assistant Director
-                </button>
-              `;
             }
-          } else {
-            container.innerHTML += `<div class="text-muted small">Application handled by HQ DTO Desk.</div>`;
+          } else if (app.payment.activated && !app.payment.paid) {
+            container.innerHTML += `
+              <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
+                <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
+              </div>
+            `;
+          } else if (app.payment.paid) {
+            // Guide Step 5 / ATO Step 7: DTO Final Verification -> Approve & Issue, Return to Applicant, Reject
+            container.innerHTML += `
+              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="approveAndIssueCertificate()">
+                <i class="bi bi-patch-check-fill me-1"></i> Final Approve &amp; Issue ${isGuide ? 'Certificate &amp; ID Card' : 'Certificate'}
+              </button>
+              <div class="d-flex gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
+                  <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
+                  <i class="bi bi-x-circle me-1"></i> Reject
+                </button>
+              </div>
+            `;
           }
-
-          container.innerHTML += `
-            <div class="d-flex gap-2 pt-2 border-top">
-              <button type="button" class="btn btn-sm btn-outline-warning flex-grow-1 fw-semibold" onclick="openReturnCorrectionModal()">
-                <i class="bi bi-arrow-return-left me-1"></i> Return
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1 fw-semibold" onclick="openRejectModal()">
-                <i class="bi bi-x-circle me-1"></i> Reject
-              </button>
-            </div>
-          `;
         }
       }
 
@@ -1604,7 +1629,7 @@
         if (modal) modal.hide();
 
         loadApplicationReview(currentArn);
-        showToastAlert('On-Site Gear & Safety Inspection Report submitted successfully to Tourism Authority (TA).', 'success');
+        showToastAlert('On-Site Gear & Safety Inspection Report submitted successfully to Tourism Authority (TO).', 'success');
       };
 
       window.openForwardModal = function (targetRole, targetTitle) {
@@ -1632,21 +1657,26 @@
       };
 
       window.activateStatutoryPayment = function () {
-        if (confirm('Activate statutory registration fee of ₹1,500 for this applicant?')) {
+        const isGuide = currentApp && (currentApp.type === 'guide-registration' || (currentApp.arn && currentApp.arn.includes('GR')));
+        const feeLabel = isGuide ? '₹500' : '₹1,500';
+        if (confirm(`Activate statutory registration fee of ${feeLabel} for this applicant?`)) {
           const officer = document.getElementById('reviewOfficerName').textContent;
           const roleName = document.getElementById('activeRoleIndicator').textContent;
           AdventureWorkflowEngine.activatePayment(currentArn, officer, roleName);
           loadApplicationReview(currentArn);
-          showToastAlert('Statutory registration fee of ₹1,500 activated. Notification dispatched to citizen dashboard.', 'success');
+          showToastAlert(`Statutory registration fee of ${feeLabel} activated. Notification dispatched to citizen dashboard.`, 'success');
         }
       };
 
       window.approveAndIssueCertificate = function () {
+        const isGuide = currentApp && (currentApp.type === 'guide-registration' || (currentApp.arn && currentApp.arn.includes('GR')));
         if (confirm('Grant statutory approval and issue official Registration Certificate for this verified application?')) {
           const officer = document.getElementById('reviewOfficerName').textContent;
           AdventureWorkflowEngine.approveAndIssueCertificate(currentArn, officer);
           loadApplicationReview(currentArn);
-          showToastAlert('Statutory sanction granted! 1-Year Registration Certificate issued.', 'success');
+          showToastAlert(isGuide
+            ? 'Statutory sanction granted! 1-Year Guide Registration Certificate & Integrated ID Card issued.'
+            : 'Statutory sanction granted! Registration Certificate issued.', 'success');
         }
       };
 
@@ -1657,6 +1687,19 @@
           loadApplicationReview(currentArn);
           showToastAlert('Digital Tour Guide ID Card issued and manual Logbook recorded in State Register.', 'success');
         }
+      };
+
+      window.executeReturnToPreviousDept = function (targetDeptLabel) {
+        const remarks = prompt(`Enter return remarks for ${targetDeptLabel}:`);
+        if (!remarks || !remarks.trim()) {
+          alert('Return remarks are mandatory.');
+          return;
+        }
+        const officer = document.getElementById('reviewOfficerName').textContent;
+        const roleName = document.getElementById('activeRoleIndicator').textContent;
+        AdventureWorkflowEngine.returnToPreviousDepartment(currentArn, roleName, officer, remarks.trim());
+        loadApplicationReview(currentArn);
+        showToastAlert(`Application returned to ${targetDeptLabel} with remarks.`, 'warning');
       };
 
       window.openReturnCorrectionModal = function () {

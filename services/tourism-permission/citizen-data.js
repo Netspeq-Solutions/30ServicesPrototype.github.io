@@ -14,15 +14,14 @@ const TourismCitizenData = {
   helpline: "03592-209090 / 1800-345-3256",
   email: "secy-tourism@sikkim.gov.in",
 
-  // 7 Confirmed Application Categories & Fees (Stage 03)
+  // 9 Approved Application Categories & Fees
   categories: [
-    { id: "trekking", name: "Trekking", fee: "₹100", feeAmount: 100, badge: "Permit", icon: "bi-person-walking", isPaid: true },
-    { id: "expedition", name: "Expedition", fee: "₹100", feeAmount: 100, badge: "High Altitude", icon: "bi-snow", isPaid: true, requiresLO: true },
-    { id: "events", name: "Events, Fairs, Melas, Rallies and Marathons", fee: "Free", feeAmount: 0, badge: "Public Gathering", icon: "bi-calendar-event", isPaid: false },
-    { id: "drone", name: "Drone", fee: "Free", feeAmount: 0, badge: "Aerial Filming", icon: "bi-camera-video", isPaid: false },
-    { id: "adventure", name: "Adventure Activities", fee: "Free", feeAmount: 0, badge: "Sports & Eco", icon: "bi-water", isPaid: false },
-    { id: "other", name: "Any Other", fee: "Free", feeAmount: 0, badge: "General Activity", icon: "bi-three-dots", isPaid: false },
-    { id: "satellite-phone", name: "Satellite Phone Usage Permission", fee: "Free", feeAmount: 0, badge: "Communication", icon: "bi-broadcast-pin", isPaid: false }
+    { id: "drone", name: "Drone Permission", fee: "Free", feeAmount: 0, badge: "HQ Level", icon: "bi-camera-video", isPaid: false },
+    { id: "expedition", name: "Expedition Permission", fee: "₹100 / person", feeAmount: 100, badge: "HQ Level", icon: "bi-snow", isPaid: true, requiresLO: true },
+    { id: "satellite-phone", name: "Satellite Phone Permission", fee: "Free", feeAmount: 0, badge: "DTO Level", icon: "bi-broadcast-pin", isPaid: false },
+    { id: "events-fairs", name: "Event / Mela / Fair / Rallies / Marathons", fee: "Free", feeAmount: 0, badge: "DTO Level", icon: "bi-calendar-event", isPaid: false },
+    { id: "trekking", name: "Trekking", fee: "₹100 / person", feeAmount: 100, badge: "DTO Level", icon: "bi-person-walking", isPaid: true },
+    { id: "other", name: "Other Permissions", fee: "Free", feeAmount: 0, badge: "DTO Level", icon: "bi-three-dots", isPaid: false }
   ],
 
   // Departmental Liaison Officers (Expedition Category Specific)
@@ -205,20 +204,20 @@ const TourismCitizenData = {
           actions: ["track", "details"]
         },
         {
-          refNo: "SK-TP-2026-APP-00390",
-          category: "Adventure Activities",
-          categoryName: "Adventure Activities",
-          activityTitle: "Commercial White Water Rafting Season Clearance – Teesta River Zone",
+          refNo: "SK-TP-2026-APP-00710",
+          category: "Event / Mela / Fair / Rallies / Marathons",
+          categoryName: "Event / Mela / Fair / Rallies / Marathons",
+          activityTitle: "Sikkim Clean Mountain Awareness Cycle Rally",
           district: "Gangtok",
-          submissionDate: "25 Oct 2026",
-          lastUpdated: "02 Nov 2026, 02:40 PM",
-          status: "UNDER_REVIEW",
-          statusLabel: "Headquarters Review",
+          submissionDate: "15 Nov 2026",
+          lastUpdated: "18 Nov 2026, 03:30 PM",
+          status: "PAYMENT_PENDING",
+          statusLabel: "Payment Activated",
           statusClass: "gov-badge-review",
           fee: "Free",
           currentStage: 4,
-          handlingOfficer: "Joint Director (Tourism), Paryatan Bhawan, Gangtok",
-          remarks: "Safety equipment audit certificate and river guide certifications forwarded for state-level clearance.",
+          handlingOfficer: "DTO Gangtok",
+          remarks: "Initial DTO review approved; payment/clearance confirmation activated.",
           actions: ["track", "details"]
         },
         {

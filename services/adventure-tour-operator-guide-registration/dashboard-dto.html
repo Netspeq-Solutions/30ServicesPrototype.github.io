@@ -171,7 +171,7 @@
       <div class="d-flex align-items-center gap-3">
         <div class="d-none d-md-block text-end">
           <div class="fw-bold small text-dark" id="headerOfficerName">Pema Dorjee Sherpa</div>
-          <span class="small text-muted" id="headerOfficerDesignation">District Tourism Officer (Headquarters Licensing Authority)</span>
+          <span class="small text-muted" id="headerOfficerDesignation">District Tourism Officer (Gangtok Circle)</span>
         </div>
         <a href="role-select.html" class="btn btn-sm btn-outline-secondary" title="Switch Demonstration Role">
           <i class="bi bi-arrow-left-right me-1"></i>Switch Role
@@ -186,13 +186,12 @@
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <span class="small fw-bold text-dark"><i class="bi bi-building-gear text-primary me-1"></i>DTO Office Jurisdiction:</span>
         <select class="form-select form-select-sm w-auto fw-bold text-primary" id="dtoOfficeSelect" onchange="onDtoOfficeChange(this.value)">
-          <option value="hq" selected>DTO – Headquarters (State Licensing &amp; Dual Issuance)</option>
+          <option value="Gangtok" selected>District DTO &bull; Gangtok Circle</option>
           <option value="Mangan">District DTO &bull; Mangan Circle</option>
           <option value="Namchi">District DTO &bull; Namchi Circle</option>
           <option value="Gyalshing">District DTO &bull; Gyalshing Circle</option>
           <option value="Pakyong">District DTO &bull; Pakyong Circle</option>
           <option value="Soreng">District DTO &bull; Soreng Circle</option>
-          <option value="Gangtok">District DTO &bull; Gangtok Circle</option>
         </select>
       </div>
       <div class="text-muted small">
@@ -215,7 +214,7 @@
             </div>
             <div class="overflow-hidden">
               <div class="fw-bold text-dark text-truncate small" id="sidebarOfficerName">Pema Dorjee Sherpa</div>
-              <div class="text-muted text-truncate" id="sidebarOfficeLabel" style="font-size: 0.72rem;">HQ DTO Licensing Desk</div>
+              <div class="text-muted text-truncate" id="sidebarOfficeLabel" style="font-size: 0.72rem;">DTO Gangtok Circle</div>
             </div>
           </div>
         </div>
@@ -247,7 +246,7 @@
 
         <div class="text-uppercase text-muted fw-bold mb-2 px-1" style="font-size: 0.68rem; letter-spacing: 0.05em;">Reports &amp; Acts</div>
         <nav class="nav flex-column gap-1 mb-4">
-          <a class="officer-nav-link" id="sidebarReportsLink" href="reports.html?role=dto-hq&office=hq">
+          <a class="officer-nav-link" id="sidebarReportsLink" href="reports.html?role=dist-dto-Gangtok&district=Gangtok">
             <i class="bi bi-file-earmark-bar-graph text-primary"></i>
             <span>Reports &amp; Summary</span>
           </a>
@@ -281,6 +280,27 @@
           </div>
           <div class="badge bg-light text-secondary border px-3 py-1.5 small">
             <i class="bi bi-calendar3 me-1"></i>13 November 2026
+          </div>
+        </div>
+
+        <!-- Real-Time DTO Quick Action Notification Banner -->
+        <div id="dtoNewActionBanner" class="alert alert-success border border-success shadow-xs mb-4 d-none" style="background: #f0fdf4;">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-success text-white p-2 rounded-circle fs-5 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+              <div>
+                <strong id="dtoNewActionTitle" class="text-success-emphasis small d-block">Application Ready for DTO Action</strong>
+                <span id="dtoNewActionDetails" class="text-dark small"></span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <a id="dtoNewActionBtn" href="#" class="btn btn-sm btn-success py-1.5 px-3 fw-semibold shadow-xs" onclick="dismissDtoLiveAlert()">
+                <i class="bi bi-file-earmark-check me-1"></i> Review &amp; Take Action
+              </a>
+              <button type="button" class="btn-close btn-sm" aria-label="Dismiss" onclick="dismissDtoLiveAlert(true)"></button>
+            </div>
           </div>
         </div>
 
@@ -389,14 +409,13 @@
   <script src="document-service.js"></script>
 
   <script>
-    let activeOfficeContext = 'hq';
+    let activeOfficeContext = 'Gangtok';
 
     function normalizeDistrict(d) {
-      if (!d) return 'hq';
+      if (!d) return 'Gangtok';
       const clean = String(d).trim();
       const lower = clean.toLowerCase();
-      if (lower === 'hq' || lower === 'headquarters') return 'hq';
-      if (lower === 'east' || lower === 'gangtok (hq)') return 'Gangtok';
+      if (lower === 'hq' || lower === 'headquarters' || lower === 'east' || lower === 'gangtok (hq)') return 'Gangtok';
       if (lower === 'south') return 'Namchi';
       if (lower === 'north') return 'Mangan';
       if (lower === 'west') return 'Gyalshing';
@@ -404,78 +423,55 @@
         if (key.toLowerCase() === lower) return key;
       }
       return clean;
-    } // 'hq' or district name (Mangan, Namchi, etc.)
+    }
     let activeQueueFilter = 'all';
+
+    window.dismissDtoLiveAlert = function (rerender) {
+      try { localStorage.removeItem('adv_dto_live_alert_v1'); } catch (e) {}
+      const banner = document.getElementById('dtoNewActionBanner');
+      if (banner) banner.classList.add('d-none');
+      if (rerender) renderDtoDashboard();
+    };
 
     document.addEventListener('DOMContentLoaded', function () {
       const urlParams = new URLSearchParams(window.location.search);
-      const officeParam = urlParams.get('office') || urlParams.get('district');
-      if (officeParam) {
-        activeOfficeContext = officeParam;
-        document.getElementById('dtoOfficeSelect').value = officeParam;
-      }
+      const officeParam = normalizeDistrict(urlParams.get('office') || urlParams.get('district') || 'Gangtok');
+      activeOfficeContext = officeParam;
+      const sel = document.getElementById('dtoOfficeSelect');
+      if (sel) sel.value = officeParam;
       renderDtoDashboard();
     });
 
     function onDtoOfficeChange(val) {
-      activeOfficeContext = val;
+      activeOfficeContext = normalizeDistrict(val);
       renderDtoDashboard();
     }
 
     function renderDtoDashboard() {
       const allApps = AdventureWorkflowEngine.getAllApplications();
-      const isHQ = (activeOfficeContext === 'hq');
+      const isHQ = (activeOfficeContext.toLowerCase() === 'gangtok');
 
-      // Update Header & Officer Card
-      if (isHQ) {
-        document.getElementById('headerRoleBadge').textContent = 'DTO – Headquarters';
-        document.getElementById('headerOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.dto.name;
-        document.getElementById('headerOfficerDesignation').textContent = AdventureWorkflowEngine.HQ_OFFICERS.dto.designation;
-        document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-building me-1"></i>Paryatan Bhawan, Tadong, Gangtok (HQ)`;
-        document.getElementById('sidebarAvatar').textContent = 'PD';
-        document.getElementById('sidebarOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.dto.name;
-        document.getElementById('sidebarOfficeLabel').textContent = 'HQ DTO Licensing Authority';
-        document.getElementById('mainDeskTitle').textContent = 'District Tourism Officer (Headquarters Licensing & Accreditation Authority)';
-        document.getElementById('mainDeskSubtitle').textContent = 'Statutory licensing for Adventure Tour Operators, Gangtok Guides, and final Digital ID Card & Logbook issuance for district guides';
-        document.getElementById('navActionQueueTitle').textContent = 'Ready for Approval / Issuance';
-        document.getElementById('kpiSanctionTitle').textContent = 'Ready for Final Approval';
-        const reportsLink = document.getElementById('sidebarReportsLink');
-        if (reportsLink) reportsLink.href = 'reports.html?role=dto-hq&office=hq';
-      } else {
-        const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeOfficeContext] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
-        document.getElementById('headerRoleBadge').textContent = `District DTO – ${activeOfficeContext}`;
-        document.getElementById('headerOfficerName').textContent = distInfo.dtoName;
-        document.getElementById('headerOfficerDesignation').textContent = `District Tourism Officer (${activeOfficeContext} Circle)`;
-        document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-geo-alt-fill text-danger me-1"></i>${distInfo.office}`;
-        document.getElementById('sidebarAvatar').textContent = distInfo.dtoName.split(' ').map(n => n[0]).join('').slice(0, 2);
-        document.getElementById('sidebarOfficerName').textContent = distInfo.dtoName;
-        document.getElementById('sidebarOfficeLabel').textContent = `DTO ${activeOfficeContext} Circle`;
-        document.getElementById('mainDeskTitle').textContent = `District Tourism Officer &bull; ${activeOfficeContext} Circle`;
-        document.getElementById('mainDeskSubtitle').textContent = `Payment activation (₹500) and forwarding payment-submitted applications to HQ Assistant Director for ${activeOfficeContext} District`;
-        document.getElementById('navActionQueueTitle').textContent = 'Forward to HQ Asst. Dir.';
-        document.getElementById('kpiSanctionTitle').textContent = 'Forward to HQ Asst. Dir.';
-        const reportsLink = document.getElementById('sidebarReportsLink');
-        if (reportsLink) reportsLink.href = `reports.html?role=dist-dto-${encodeURIComponent(activeOfficeContext)}&district=${encodeURIComponent(activeOfficeContext)}`;
-      }
+      const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeOfficeContext] || AdventureWorkflowEngine.DISTRICT_OFFICES['Gangtok'];
+      document.getElementById('headerRoleBadge').textContent = `District DTO – ${activeOfficeContext}`;
+      document.getElementById('headerOfficerName').textContent = distInfo.dtoName;
+      document.getElementById('headerOfficerDesignation').textContent = `District Tourism Officer (${activeOfficeContext} Circle)`;
+      document.getElementById('jurisdictionBadgeText').innerHTML = `<i class="bi bi-geo-alt-fill text-danger me-1"></i>${distInfo.office}`;
+      document.getElementById('sidebarAvatar').textContent = distInfo.dtoName.split(' ').map(n => n[0]).join('').slice(0, 2);
+      document.getElementById('sidebarOfficerName').textContent = distInfo.dtoName;
+      document.getElementById('sidebarOfficeLabel').textContent = `DTO ${activeOfficeContext} Circle`;
+      document.getElementById('mainDeskTitle').textContent = `District Tourism Officer • ${activeOfficeContext} Circle`;
+      document.getElementById('mainDeskSubtitle').textContent = `Payment activation and final certificate issuance for ${activeOfficeContext} District`;
+      document.getElementById('navActionQueueTitle').textContent = 'Final Verification';
+      document.getElementById('kpiSanctionTitle').textContent = 'Final Verification';
+      const reportsLink = document.getElementById('sidebarReportsLink');
+      if (reportsLink) reportsLink.href = `reports.html?role=dist-dto-${encodeURIComponent(activeOfficeContext)}&district=${encodeURIComponent(activeOfficeContext)}`;
 
-      // Filter applications relevant to this DTO context:
-      // - HQ DTO sees:
-      //   1. All Adventure Tour Operators reaching DTO stage or with payment
-      //   2. Gangtok Guides reaching DTO stage or with payment
-      //   3. Other-district Guides forwarded to HQ DTO for ID card & logbook issuance
-      // - District DTO (e.g. Namchi DTO) sees:
-      //   1. Guide Registrations belonging to that specific district
+      const isGangtokCtx = (activeOfficeContext === 'hq' || activeOfficeContext.toLowerCase() === 'gangtok');
       let filtered = allApps.filter(app => {
-        if (isHQ) {
-          if (app.type === 'adventure-tour-operator') return true;
-          if (app.type === 'guide-registration' && app.district === 'Gangtok') return true;
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            // Visible to HQ DTO when forwarded to HQ or approved
-            return app.stage.includes('HQ DTO') || app.status === AdventureWorkflowEngine.STATUSES.APPROVED;
-          }
-          return false;
+        if (isGangtokCtx) {
+          return (app.district || 'Gangtok').toLowerCase() === 'gangtok';
         } else {
-          return (app.type === 'guide-registration' && (app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
+          return ((app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 
@@ -511,6 +507,27 @@
       document.getElementById('badgeSanction').textContent = readySanctionCount;
       document.getElementById('badgeIssued').textContent = issuedCount;
 
+      // Render Real-Time DTO Quick Action Notification Banner
+      const dtoBanner = document.getElementById('dtoNewActionBanner');
+      let dtoAlert = null;
+      try { dtoAlert = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null'); } catch (e) {}
+      const targetDtoApp = dtoAlert
+        ? filtered.find(a => a.arn === dtoAlert.arn && (a.currentRole === 'dto-hq' || a.currentRole === 'dist-dto'))
+        : null;
+      if (dtoBanner) {
+        if (targetDtoApp) {
+          const isFinal = Boolean(targetDtoApp.payment && targetDtoApp.payment.paid);
+          document.getElementById('dtoNewActionTitle').textContent = isFinal
+            ? `Payment Completed — Ready for Final Verification: ${targetDtoApp.arn}`
+            : `Application Forwarded for DTO Review: ${targetDtoApp.arn}`;
+          document.getElementById('dtoNewActionDetails').textContent = `${targetDtoApp.applicantName || ''} (${targetDtoApp.typeName || 'Registration'} • ${targetDtoApp.district} District) • Stage: ${isFinal ? 'Final Verification & Certificate' : 'Initial Verification / Payment Activation'}`;
+          document.getElementById('dtoNewActionBtn').href = `review.html?arn=${encodeURIComponent(targetDtoApp.arn)}&role=${encodeURIComponent(targetDtoApp.currentRole)}&district=${encodeURIComponent(targetDtoApp.district)}`;
+          dtoBanner.classList.remove('d-none');
+        } else {
+          dtoBanner.classList.add('d-none');
+        }
+      }
+
       filterDtoTable();
     }
 
@@ -521,20 +538,15 @@
 
     function filterDtoTable() {
       const allApps = AdventureWorkflowEngine.getAllApplications();
-      const isHQ = (activeOfficeContext === 'hq');
+      const isHQ = (activeOfficeContext === 'hq' || activeOfficeContext.toLowerCase() === 'gangtok');
       const searchQuery = (document.getElementById('dtoSearchInput').value || '').toLowerCase().trim();
       const catFilter = document.getElementById('dtoCatFilter').value;
 
       let filtered = allApps.filter(app => {
         if (isHQ) {
-          if (app.type === 'adventure-tour-operator') return true;
-          if (app.type === 'guide-registration' && app.district === 'Gangtok') return true;
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            return app.stage.includes('HQ DTO') || app.status === AdventureWorkflowEngine.STATUSES.APPROVED;
-          }
-          return false;
+          return (app.district || 'Gangtok').toLowerCase() === 'gangtok';
         } else {
-          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+          return ((app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 
@@ -542,7 +554,7 @@
       if (activeQueueFilter === 'payment-pending') {
         filtered = filtered.filter(app => (!app.payment || !app.payment.activated) && app.currentRole === (isHQ ? 'dto-hq' : 'dist-dto'));
       } else if (activeQueueFilter === 'ready-sanction') {
-        filtered = filtered.filter(app => app.payment && app.payment.paid && app.status !== AdventureWorkflowEngine.STATUSES.APPROVED);
+        filtered = filtered.filter(app => app.payment && app.payment.paid && app.currentRole === (isHQ ? 'dto-hq' : 'dist-dto') && app.status !== AdventureWorkflowEngine.STATUSES.APPROVED);
       } else if (activeQueueFilter === 'issued') {
         filtered = filtered.filter(app => app.status === AdventureWorkflowEngine.STATUSES.APPROVED);
       }
@@ -582,7 +594,7 @@
         return;
       }
 
-      const isHQ = (activeOfficeContext === 'hq');
+      const isHQ = (activeOfficeContext === 'hq' || activeOfficeContext.toLowerCase() === 'gangtok');
       const activeRoleKey = isHQ ? 'dto-hq' : 'dist-dto';
 
       apps.forEach(app => {
@@ -602,7 +614,7 @@
             actionBtnIcon = 'bi-currency-rupee';
           } else if (app.payment.paid) {
             actionBtnClass = 'btn-success text-white fw-bold';
-            actionBtnText = isHQ ? 'Approve &amp; Issue' : 'Forward to HQ';
+            actionBtnText = 'Approve &amp; Issue';
             actionBtnIcon = 'bi-stamp';
           } else {
             actionBtnClass = 'btn-primary';
@@ -615,14 +627,9 @@
         if (app.status === AdventureWorkflowEngine.STATUSES.APPROVED) {
           actionButtonsHtml = `
             <div class="d-inline-flex gap-1 align-items-center">
-              <a href="certificate.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2 btn-action-compact" title="View / Print Certificate">
-                <i class="bi bi-file-earmark-check me-1"></i>Certificate
+              <a href="certificate.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2 btn-action-compact" title="Download Certificate${app.type === 'guide-registration' ? ' & ID Card' : ''}">
+                <i class="bi bi-file-earmark-check me-1"></i>${app.type === 'guide-registration' ? 'Certificate & ID Card' : 'Certificate'}
               </a>
-              ${app.type === 'guide-registration' ? `
-                <a href="guide-id-card.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&print=true" target="_blank" class="btn btn-sm btn-primary py-1 px-2 btn-action-compact" title="Print Guide ID Card for Applicant">
-                  <i class="bi bi-printer me-1"></i>Print ID Card
-                </a>
-              ` : ''}
               <a href="review.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-outline-secondary py-1 px-2 btn-action-compact" title="View Dossier">
                 <i class="bi bi-eye"></i>
               </a>

@@ -203,279 +203,89 @@
         </div>
       </div>
 
-      <!-- Role Selection Grid -->
-      <div class="row g-4 justify-content-center">
+      <!-- Compact 4-Column Role Selection Grid -->
+      <div class="row g-3 justify-content-center align-items-stretch">
 
         <!-- OPTION 1: CITIZEN -->
-        <div class="col-xl-4 col-md-6">
-          <div
-            class="card h-100 role-selection-card role-card-citizen p-4 text-center d-flex flex-column justify-content-between">
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-citizen p-3 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-success-subtle text-success border border-success-subtle">
-                  Role 1 &bull; Citizen
-                </span>
+                <span class="role-badge bg-success-subtle text-success border border-success-subtle">Role 1 &bull; Citizen</span>
               </div>
-              <div class="role-icon-circle mx-auto">
+              <div class="role-icon-circle mx-auto mb-2" style="width: 52px; height: 52px;">
                 <i class="bi bi-person-fill"></i>
               </div>
-              <h3 class="h4 fw-bold text-dark mb-2">Citizen</h3>
-              <p class="text-muted small mb-3">
-                Access the Adventure Tour Operator &amp; Guide Registration service, apply online, track progress across
-                5 stages, pay statutory fee (&#8377;1,500), and download certificate / logbook record.
-              </p>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>Two distinct registration streams (ATO &amp; Guide)</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>5-Step visual progress tracker with SLA dates</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>Simulated &#8377;1,500 fee payment modal when activated</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  <span>Interactive multi-scenario switcher</span>
-                </li>
-              </ul>
+              <h3 class="h5 fw-bold text-dark mb-3">Citizen / Applicant</h3>
             </div>
-
             <div>
-              <div class="text-center mt-2">
-                <a href="dashboard.html"
-                  class="btn btn-sm btn-success px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs">
-                  <span>Continue as Citizen</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
+              <a href="dashboard.html" class="btn btn-sm btn-gov-primary w-100 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1 shadow-xs">
+                <span>Continue as Citizen</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- OPTION 2: DEPARTMENT - TA -->
-        <div class="col-xl-4 col-md-6">
-          <div
-            class="card h-100 role-selection-card role-card-ta p-4 text-center d-flex flex-column justify-content-between">
+        <!-- OPTION 2: DEPARTMENT - TO -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-ta p-3 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-primary-subtle text-primary border border-primary-subtle">
-                  Role 2 &bull; Technical Assistant
-                </span>
+                <span class="role-badge bg-primary-subtle text-primary border border-primary-subtle">Role 2 &bull; TO</span>
               </div>
-              <div class="role-icon-circle mx-auto">
+              <div class="role-icon-circle mx-auto mb-2" style="width: 52px; height: 52px;">
                 <i class="bi bi-clipboard-check"></i>
               </div>
-              <h3 class="h4 fw-bold text-dark mb-2">Department – TA</h3>
-              <p class="text-muted small mb-3">
-                Scrutinize initial applications, assign Inspecting Officer (IO) for Adventure Tour Operators, verify
-                Guide dossiers, and forward files.
-              </p>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>HQ TA: Assign IO for ATO gear inspection</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>HQ TA: Review Gangtok Guide 7-point dossier</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>District TA: Scrutinize &amp; forward to District DTO</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-primary"></i>
-                  <span>Return for correction &amp; raise formal queries</span>
-                </li>
-              </ul>
+              <h3 class="h5 fw-bold text-dark mb-3">Tourism Officer (TO)</h3>
             </div>
-
             <div>
-              <div class="text-center mt-2 d-flex justify-content-center gap-2 flex-wrap">
-                <a href="dashboard-ta.html?district=hq"
-                  class="btn btn-sm btn-primary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs">
-                  <span>TA – Headquarters</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-                <a href="dashboard-ta.html?district=mangan" id="taDistContinueBtn"
-                  class="btn btn-sm btn-outline-primary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs">
-                  <span>District TA</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
+              <a href="dashboard-ta.html" id="taDistContinueBtn" class="btn btn-sm btn-primary w-100 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1 shadow-xs">
+                <span>Continue as TO</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- OPTION 3: DEPARTMENT - IO -->
-        <div class="col-xl-4 col-md-6">
-          <div
-            class="card h-100 role-selection-card role-card-ia p-4 text-center d-flex flex-column justify-content-between">
+        <!-- OPTION 3: DEPARTMENT - IA -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-io p-3 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-info-subtle text-info-emphasis border border-info-subtle">
-                  Role 3 &bull; Inspecting Officer
-                </span>
+                <span class="role-badge bg-info-subtle text-info-emphasis border border-info-subtle">Role 3 &bull; IA</span>
               </div>
-              <div class="role-icon-circle mx-auto">
+              <div class="role-icon-circle mx-auto mb-2" style="width: 52px; height: 52px;">
                 <i class="bi bi-shield-check"></i>
               </div>
-              <h3 class="h4 fw-bold text-dark mb-2">Department – IO</h3>
-              <p class="text-muted small mb-3">
-                Conduct mandatory on-site physical gear, safety harness, and equipment inspections strictly for
-                Adventure Tour Operators (ATO).
-              </p>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-info-emphasis"></i>
-                  <span>Exclusive to Adventure Tour Operator flow</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-info-emphasis"></i>
-                  <span>UIAA/EN safety gear certification checks</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-info-emphasis"></i>
-                  <span>Record inspection date, result &amp; field remarks</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-info-emphasis"></i>
-                  <span>Return verified inspection report to HQ TA</span>
-                </li>
-              </ul>
+              <h3 class="h5 fw-bold text-dark mb-3">Inspecting Authority (IA)</h3>
             </div>
-
             <div>
-              <div class="text-center mt-2">
-                <a href="dashboard-io.html"
-                  class="btn btn-sm btn-info px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs text-white">
-                  <span>Continue as IO</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
+              <a href="dashboard-io.html" class="btn btn-sm btn-info text-white w-100 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1 shadow-xs">
+                <span>Continue as IA</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- OPTION 4: DEPARTMENT - ASST. DIR. -->
-        <div class="col-xl-4 col-md-6">
-          <div
-            class="card h-100 role-selection-card role-card-asst-dir p-4 text-center d-flex flex-column justify-content-between">
+        <!-- OPTION 4: DEPARTMENT - DTO -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card h-100 role-selection-card role-card-dto p-3 text-center d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-purple-subtle text-purple border border-purple-subtle"
-                  style="background: #faf5ff; color: #7e22ce; border-color: #e9d5ff;">
-                  Role 4 &bull; Assistant Director HQ
-                </span>
+                <span class="role-badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Role 4 &bull; DTO</span>
               </div>
-              <div class="role-icon-circle mx-auto">
-                <i class="bi bi-person-badge"></i>
-              </div>
-              <h3 class="h4 fw-bold text-dark mb-2">Department – Asst. Dir.</h3>
-              <p class="text-muted small mb-3">
-                Statewide technical oversight and concurrence desk. Reviews ATO inspection reports, Gangtok Guide
-                dossiers, and other-district dossiers before HQ DTO sanction.
-              </p>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-3 mb-4">
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill" style="color: #7e22ce;"></i>
-                  <span>Review IO safety reports for ATO applications</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill" style="color: #7e22ce;"></i>
-                  <span>Review Gangtok Guide dossiers forwarded by TA</span>
-                </li>
-                <li class="mb-2 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill" style="color: #7e22ce;"></i>
-                  <span>Review paid District Guide files for HQ issuance</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill" style="color: #7e22ce;"></i>
-                  <span>Provide technical concurrence &amp; forward to DTO</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <div class="text-center mt-2">
-                <a href="dashboard-asst-dir.html"
-                  class="btn btn-sm px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-xs text-white"
-                  style="background-color: #7e22ce;">
-                  <span>Continue as Asst. Dir.</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- OPTION 5: DEPARTMENT - DTO -->
-        <div class="col-xl-4 col-md-6">
-          <div
-            class="card h-100 role-selection-card role-card-dto p-4 text-center d-flex flex-column justify-content-between">
-            <div>
-              <div class="d-flex justify-content-end mb-2">
-                <span class="role-badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
-                  Role 5 &bull; Tourism Officer (DTO)
-                </span>
-              </div>
-              <div class="role-icon-circle mx-auto">
+              <div class="role-icon-circle mx-auto mb-2" style="width: 52px; height: 52px;">
                 <i class="bi bi-building"></i>
               </div>
-              <h3 class="h4 fw-bold text-dark mb-2">Department – DTO</h3>
-              <p class="text-muted small mb-3">
-                Sanctioning authority. Activates statutory fee (&#8377;1,500), reviews paid files, grants final
-                sanction, and issues Certificates / ID Cards &amp; Manual Logbooks.
-              </p>
-
-              <div class="bg-light p-2.5 rounded-2 border text-start small mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="text-muted">Selected Office:</span>
-                  <strong class="text-dark" id="displayActiveDistrict">Gangtok (HQ)</strong>
-                </div>
-                <div class="text-muted small" style="font-size: 0.75rem;">
-                  <i class="bi bi-geo-alt text-danger me-1"></i>HQ DTO sanctions ATO &amp; Gangtok Guides, and issues
-                  final Logbook for all districts.
-                </div>
-              </div>
-
-              <ul class="list-unstyled text-start small text-muted border-top pt-2 mb-3">
-                <li class="mb-1.5 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>Activate statutory fee (&#8377;1,500) for applicant</span>
-                </li>
-                <li class="mb-1.5 d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>HQ DTO: Final approval &amp; Certificate issuance</span>
-                </li>
-                <li class="d-flex align-items-center gap-2">
-                  <i class="bi bi-check-circle-fill text-warning-emphasis"></i>
-                  <span>HQ DTO: Digital ID &amp; Manual Logbook recording</span>
-                </li>
-              </ul>
+              <h3 class="h5 fw-bold text-dark mb-3">District Tourism Officer</h3>
             </div>
-
             <div>
-              <div class="text-center mt-2 d-flex justify-content-center gap-2 flex-wrap">
-                <a href="dashboard-dto.html?office=hq"
-                  class="btn btn-sm btn-warning px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs">
-                  <span>DTO – Headquarters</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-                <a href="dashboard-dto.html?office=mangan" id="dtoContinueBtn"
-                  class="btn btn-sm btn-outline-warning px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs text-dark">
-                  <span>District DTO</span>
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
+              <a href="dashboard-dto.html" id="dtoContinueBtn" class="btn btn-sm btn-warning text-dark w-100 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-1 shadow-xs">
+                <span>Continue as DTO</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -500,7 +310,7 @@
             </div>
           </div>
           <div class="text-nowrap">
-            <a href="reports.html?role=dto-hq&office=hq"
+            <a href="reports.html?role=dist-dto-Gangtok&district=Gangtok"
               class="btn btn-sm btn-warning text-dark fw-bold px-3 py-2 d-inline-flex align-items-center gap-1.5 shadow-xs">
               <i class="bi bi-bar-chart-line-fill"></i>
               <span>Open Reports Desk</span>
@@ -541,7 +351,7 @@
       const taDistBtn = document.getElementById('taDistContinueBtn');
       if (taDistBtn) {
         taDistBtn.href = 'dashboard-ta.html?district=' + encodeURIComponent(dist);
-        taDistBtn.querySelector('span').textContent = 'District TA (' + dist + ')';
+        taDistBtn.querySelector('span').textContent = 'District TO (' + dist + ')';
       }
     }
 

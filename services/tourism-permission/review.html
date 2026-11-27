@@ -112,8 +112,9 @@
         <select id="roleViewSelect"
           class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs"
           style="max-width: 240px; font-size: 0.775rem;" onchange="switchReviewerRole(this.value)">
+          <option value="to">Tourism Officer (TO Desk)</option>
           <option value="dto">District Tourism Officer (DTO Desk)</option>
-          <option value="hq">Headquarters Administrator (HQ Desk)</option>
+          <option value="hq">HQ Officer (Headquarters Desk)</option>
         </select>
         <span class="fw-semibold text-white ms-1">Jump to Application:</span>
         <select id="quickArnReviewSelect"
@@ -322,6 +323,9 @@
                         Singalila Ridge trail with certified local guides and 8 participants. Strict waste management
                         protocols compliant with Forest Department guidelines will be maintained.</div>
                     </div>
+
+                    <!-- Category-Specific Particulars & Editable TO Drone Parameters -->
+                    <div class="col-12" id="categorySpecificDetailsContainer"></div>
 
                     <!-- Conditional Liaison Officer -->
                     <div class="col-12 d-none" id="dispLoContainer">
@@ -807,6 +811,37 @@
   </footer>
 
   <!-- Scripts -->
+
+  <!-- Modal 10: DTO Extension Decision -->
+  <div class="modal fade" id="modalDtoExtensionDecision" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark py-2.5">
+          <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-clock-history me-2"></i>Decide Extension Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body small">
+          <div class="p-2.5 bg-light border rounded mb-3" id="extModalSummary"></div>
+          <div class="mb-3">
+            <label for="extDecisionSelect" class="form-label fw-semibold">DTO Decision <span class="text-danger">*</span></label>
+            <select class="form-select form-select-sm" id="extDecisionSelect">
+              <option value="Approved">Approve Extension Request</option>
+              <option value="Rejected">Reject Extension Request</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label for="extDecisionRemarks" class="form-label fw-semibold">Official Decision Remarks <span class="text-danger">*</span></label>
+            <textarea class="form-control form-control-sm" id="extDecisionRemarks" rows="3" required placeholder="Enter official remarks for extension decision..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="executeDtoExtensionDecision()">Submit Extension Decision</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal 8: High-Fidelity In-Page Document Viewer Modal (Stage 06) -->
   <div class="modal fade" id="modalDocViewer" tabindex="-1" aria-labelledby="docViewerTitle" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" style="max-width: 920px;">
@@ -909,14 +944,27 @@
         if (activeRole === 'hq') {
           document.body.setAttribute('data-theme', 'royal-navy');
           if (roleIndicator) {
-            roleIndicator.textContent = 'HQ Admin Desk';
+            roleIndicator.textContent = 'HQ Officer Desk';
             roleIndicator.className = 'badge bg-primary text-white fw-bold px-2 py-1';
           }
           if (deskTitle) deskTitle.textContent = 'Tourism & Civil Aviation Department (Headquarters)';
-          if (officerName) officerName.textContent = 'Dr. Tshering Yangchen Lepcha';
-          if (officerDesig) officerDesig.textContent = 'Additional Secretary (Tourism) & HQ Administrator';
+          if (officerName) officerName.textContent = WorkflowEngine.HQ_OFFICER.name;
+          if (officerDesig) officerDesig.textContent = WorkflowEngine.HQ_OFFICER.designation;
           if (backBtn) backBtn.href = 'dashboard-hq.html';
           if (backLabel) backLabel.textContent = 'Back to HQ Queue';
+        } else if (activeRole === 'to') {
+          document.body.setAttribute('data-theme', 'forest-green');
+          if (roleIndicator) {
+            roleIndicator.textContent = 'TO Desk';
+            roleIndicator.className = 'badge bg-info text-dark fw-bold px-2 py-1';
+          }
+          if (deskTitle) deskTitle.textContent = currentApp.dtoOffice || `Tourism Office (${currentApp.district} Circle)`;
+          const districtOffices = WorkflowEngine.DISTRICT_OFFICES || {};
+          const officeInfo = districtOffices[currentApp.district] || districtOffices['Gangtok'] || {};
+          if (officerName) officerName.textContent = officeInfo.toName || 'Phurba Tshering Bhutia';
+          if (officerDesig) officerDesig.textContent = 'Tourism Officer (TO)';
+          if (backBtn) backBtn.href = `dashboard-to.html?district=${encodeURIComponent(currentApp.district)}`;
+          if (backLabel) backLabel.textContent = `Back to ${currentApp.district} TO Queue`;
         } else {
           document.body.setAttribute('data-theme', 'forest-green');
           if (roleIndicator) {
@@ -993,6 +1041,9 @@
         setTxt('summarySubDate', currentApp.submissionDate || '-');
         setTxt('summaryLastUpdated', currentApp.lastUpdated || currentApp.submissionDate || '-');
         setTxt('summaryDesk', currentApp.dtoOffice || '-');
+
+        // 4b. Category-Specific Particulars
+        renderCategorySpecificDetails();
 
         // 5. Supporting Documents Table
         renderSupportingDocsTable();
@@ -1132,360 +1183,330 @@
       // RENDER WORKFLOW ACTIONS (Strictly Role & Stage Gated - Flow A & Flow B)
       // Standardized to compact, natural-width buttons (no w-100 / d-grid bloat)
       // ==============================================================
+      function renderCategorySpecificDetails() {
+        const box = document.getElementById('categorySpecificDetailsContainer');
+        if (!box || !currentApp) return;
+        const k = currentApp.categoryKey || WorkflowEngine.normalizeCategoryKey(currentApp.category);
+        let content = '';
+
+        if (k === 'drone') {
+          const d = currentApp.droneDetails || {};
+          const canToEdit = (activeRole === 'to' && [WorkflowEngine.STAGES.STAGE_2, WorkflowEngine.STAGES.STAGE_5B, WorkflowEngine.STAGES.STAGE_7].includes(currentApp.currentStage));
+          content = `
+            <div class="p-3 border rounded-3 bg-light">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="small text-dark"><i class="bi bi-camera-video text-danger me-1"></i> Drone Permission Particulars (15 Days Validity)</strong>
+                <span class="badge bg-primary-subtle text-primary border">HQ-Level</span>
+              </div>
+              <div class="row g-2 small mb-2">
+                <div class="col-md-6"><strong>Purpose:</strong> ${d.purpose || '-'}</div>
+                <div class="col-md-6"><strong>Location:</strong> ${d.location || '-'} (${d.district || currentApp.district})</div>
+                <div class="col-md-6"><strong>Coordinates:</strong> ${d.latitude || '-'}, ${d.longitude || '-'}</div>
+                <div class="col-md-6"><strong>Make &amp; Model:</strong> ${d.makeModel || '-'}</div>
+                <div class="col-md-6"><strong>Category &amp; Weight:</strong> ${d.categoryWeight || '-'}</div>
+                <div class="col-md-6"><strong>Drone UIN:</strong> <span class="font-monospace">${d.uin || '-'}</span></div>
+                <div class="col-md-6"><strong>Remote Pilot:</strong> ${d.remotePilotName || '-'}</div>
+                <div class="col-md-6"><strong>Pilot Cert No:</strong> <span class="font-monospace">${d.remotePilotCertNo || '-'}</span></div>
+              </div>
+              <div class="p-2.5 bg-white border rounded mt-2">
+                <strong class="small text-primary d-block mb-2">TO Flight Clearance Parameters</strong>
+                ${canToEdit ? `
+                  <div class="row g-2 small">
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold mb-1">Approved Date / Period</label>
+                      <input type="text" class="form-control form-control-sm" id="toDroneApprovedPeriod" value="${d.approvedPeriod || ''}" placeholder="e.g. 01 Dec - 15 Dec 2026 (15 Days)">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold mb-1">Permissible Altitude (AGL)</label>
+                      <input type="text" class="form-control form-control-sm" id="toDroneAltitudeAgl" value="${d.permissibleAltitudeAgl || ''}" placeholder="e.g. 120 meters (393 ft) AGL">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-semibold mb-1">Approved Flying Area</label>
+                      <input type="text" class="form-control form-control-sm" id="toDroneFlyingArea" value="${d.approvedFlyingArea || ''}" placeholder="e.g. Approved 1.5 km Zone">
+                    </div>
+                  </div>
+                ` : `
+                  <div class="row g-2 small">
+                    <div class="col-md-4"><strong>Approved Period:</strong> ${d.approvedPeriod || '<span class="text-muted">Pending TO Update</span>'}</div>
+                    <div class="col-md-4"><strong>Permissible Altitude (AGL):</strong> ${d.permissibleAltitudeAgl || '<span class="text-muted">Pending TO Update</span>'}</div>
+                    <div class="col-md-4"><strong>Approved Flying Area:</strong> ${d.approvedFlyingArea || '<span class="text-muted">Pending TO Update</span>'}</div>
+                  </div>
+                `}
+              </div>
+            </div>
+          `;
+        } else if (k === 'expedition') {
+          const e = currentApp.expeditionDetails || {};
+          content = `
+            <div class="p-3 border rounded-3 bg-light">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="small text-dark"><i class="bi bi-snow text-primary me-1"></i> Expedition Particulars (No Extension Permitted)</strong>
+                <span class="badge bg-primary-subtle text-primary border">HQ-Level</span>
+              </div>
+              <div class="row g-2 small">
+                <div class="col-md-6"><strong>Alpine Peak:</strong> ${e.peakName || '-'}</div>
+                <div class="col-md-6"><strong>Requested Duration (Locked):</strong> <span class="badge bg-warning-subtle text-dark border">${e.requestedDurationText || currentApp.validityLabel || '-'}</span> <span class="text-muted">(Cannot be modified by TO)</span></div>
+                <div class="col-md-6"><strong>Participants:</strong> ${e.participantCount || currentApp.participantCount || 1} person(s)</div>
+                <div class="col-md-6"><strong>Fee (₹100/person):</strong> <strong class="text-primary">${currentApp.fee || '₹100'}</strong></div>
+              </div>
+            </div>
+          `;
+        } else if (k === 'trekking') {
+          const t = currentApp.trekkingDetails || {};
+          content = `
+            <div class="p-3 border rounded-3 bg-light">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="small text-dark"><i class="bi bi-person-walking text-success me-1"></i> Trekking Particulars (10 Days Validity • No Extension)</strong>
+                <span class="badge bg-success-subtle text-success border">DTO-Level</span>
+              </div>
+              <div class="row g-2 small">
+                <div class="col-md-4"><strong>Participants (Max 10):</strong> ${t.participantCount || currentApp.participantCount || 1}</div>
+                <div class="col-md-4"><strong>Composition:</strong> ${t.composition || 'Indians only'}</div>
+                <div class="col-md-4"><strong>Porters (Min 2):</strong> ${t.porterCount || 2}</div>
+                <div class="col-md-6"><strong>Fee (₹100/person):</strong> <strong class="text-primary">${currentApp.fee || '₹100'}</strong></div>
+                <div class="col-md-6"><strong>Photographs Attached:</strong> Operator + ${(t.trekkerPhotos || []).length || t.participantCount || 1} Trekker Photo(s)</div>
+              </div>
+            </div>
+          `;
+        } else if (k === 'events-fairs') {
+          content = `
+            <div class="p-3 border rounded-3 bg-light small">
+              <strong><i class="bi bi-calendar-event text-warning me-1"></i> ${currentApp.category} Validity &amp; Rules:</strong>
+              Valid for <strong>1 Week (7 Days)</strong> &bull; Extension up to 1 additional week decided by DTO.
+            </div>
+          `;
+        } else if (k === 'satellite-phone') {
+          content = `
+            <div class="p-3 border rounded-3 bg-light small">
+              <strong><i class="bi bi-broadcast-pin text-info me-1"></i> Satellite Phone Permission:</strong>
+              Backed by mandatory <strong>Letter of Recommendation issued by IMF</strong> (DTO-Level Approval).
+            </div>
+          `;
+        }
+
+        if (currentApp.extensionRequest && currentApp.extensionRequest.requested) {
+          const ext = currentApp.extensionRequest;
+          const badge = ext.status === 'Approved' ? 'bg-success' : (ext.status === 'Rejected' ? 'bg-danger' : 'bg-warning text-dark');
+          const canDtoDecide = (activeRole === 'dto' && ext.status === 'Pending DTO Decision');
+          content += `
+            <div class="p-3 border border-warning rounded-3 bg-warning-subtle bg-opacity-25 mt-2 small">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <strong><i class="bi bi-clock-history me-1"></i> Extension Request (+${ext.requestedDays} Days)</strong>
+                <span class="badge ${badge}">${ext.status}</span>
+              </div>
+              <div><strong>Citizen Reason:</strong> ${ext.reason}</div>
+              ${ext.decisionRemarks ? '<div class="mt-1"><strong>DTO Decision Remarks:</strong> ' + ext.decisionRemarks + '</div>' : ''}
+              ${ext.revisedValidUntil ? '<div class="mt-1 text-success fw-bold">Revised Validity Until: ' + ext.revisedValidUntil + '</div>' : ''}
+              ${canDtoDecide ? `
+                <div class="mt-2 pt-2 border-top border-warning-subtle">
+                  <button type="button" class="btn btn-sm btn-warning text-dark fw-bold" onclick="openExtensionDecisionModal()">
+                    <i class="bi bi-check2-square me-1"></i> Approve / Reject Extension
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        box.innerHTML = content;
+      }
+
       function renderWorkflowActions() {
         const container = document.getElementById('workflowActionsContainer');
         container.innerHTML = '';
 
         const st = currentApp.currentStage;
         const role = activeRole;
+        const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.categoryKey || currentApp.category);
 
         // ------------------------------------------------------------
-        // ROLE 1: DTO (District Tourism Officer)
+        // ROLE 1: TOURISM OFFICER (TO)
+        // ------------------------------------------------------------
+        if (role === 'to') {
+          if (currentApp.assignedRole === 'to' || [WorkflowEngine.STAGES.STAGE_2, WorkflowEngine.STAGES.STAGE_5B, WorkflowEngine.STAGES.STAGE_7].includes(st)) {
+            container.innerHTML = `
+              <button type="button" class="btn btn-sm btn-primary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="executeToForward('dto')">
+                <i class="bi bi-send-check"></i><span>Verify &amp; Forward to DTO</span>
+              </button>
+              <div class="gov-action-subgroup pt-2 d-flex flex-column gap-1.5 w-100">
+                <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
+                  <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
+                </button>
+              </div>
+            `;
+          } else {
+            container.innerHTML = `<div class="p-3 bg-light rounded small text-muted w-100">Currently with <strong>${(currentApp.assignedRole || 'none').toUpperCase()}</strong> (${st}).</div>`;
+          }
+          return;
+        }
+
+        // ------------------------------------------------------------
+        // ROLE 2: DISTRICT TOURISM OFFICER (DTO)
         // ------------------------------------------------------------
         if (role === 'dto') {
-
-          // STAGE 2: Awaiting DTO Verification (New Application) OR STAGE 7: Reverification
-          if (st === WorkflowEngine.STAGES.STAGE_2 || st === WorkflowEngine.STAGES.STAGE_7) {
-            const isHqFlow = WorkflowEngine.isHqApprovalRequired(currentApp.category);
-
+          if (st === WorkflowEngine.STAGES.STAGE_3 && currentApp.assignedRole === 'dto') {
             if (isHqFlow) {
-              // Flow A (Drone, Events): MUST forward to HQ Admin; direct approval NOT available here
               container.innerHTML = `
-                ${st === WorkflowEngine.STAGES.STAGE_7 ? `
-                  <div class="alert alert-info small p-2 mb-2 w-100">
-                    <i class="bi bi-check-circle-fill me-1"></i> <strong>Corrected Resubmission Received:</strong>
-                    <div class="fst-italic mt-1 text-dark">"${currentApp.citizenRemarks || 'Updated requested files.'}"</div>
-                  </div>
-                ` : ''}
-                <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalForwardToHq">
-                  <i class="bi bi-send-check"></i>
-                  <span>Forward to HQ Admin</span>
+                <button type="button" class="btn btn-sm btn-primary px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalForwardToHq">
+                  <i class="bi bi-send-check me-1"></i> Forward to HQ Officer
                 </button>
-                <div class="gov-action-subgroup pt-1">
-                  <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
-                    <i class="bi bi-arrow-return-left"></i>
-                    <span>Return for Correction</span>
+                <div class="gov-action-subgroup pt-2 d-flex flex-column gap-1.5 w-100">
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
                   </button>
-                  <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
-                    <i class="bi bi-x-circle"></i>
-                    <span>Reject</span>
-                  </button>
-                </div>
-                <div class="pt-2 border-top mt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer"></i>
-                    <span>Print / Download Summary</span>
+                  <button type="button" class="btn btn-sm btn-outline-secondary fw-semibold" onclick="executeDtoReturnToTo()">
+                    <i class="bi bi-arrow-left me-1"></i> Return to TO
                   </button>
                 </div>
               `;
             } else {
-              // Flow B (Trekking, Expedition, Adventure, Other, Sat Phone): Direct DTO Approval; NO Forward to HQ
               container.innerHTML = `
-                ${st === WorkflowEngine.STAGES.STAGE_7 ? `
-                  <div class="alert alert-info small p-2 mb-2 w-100">
-                    <i class="bi bi-check-circle-fill me-1"></i> <strong>Corrected Resubmission Received:</strong>
-                    <div class="fst-italic mt-1 text-dark">"${currentApp.citizenRemarks || 'Updated requested files.'}"</div>
-                  </div>
-                ` : ''}
-                <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" onclick="promptDtoDirectApprove()">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Approve &amp; Issue Approval Letter</span>
+                <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold" onclick="executeDtoActivatePayment()">
+                  <i class="bi bi-credit-card me-1"></i> Approve &amp; Activate Payment (${currentApp.fee || 'Free'})
                 </button>
-                <div class="gov-action-subgroup pt-1">
-                  <button type="button" class="btn btn-sm btn-outline-warning text-dark px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
-                    <i class="bi bi-arrow-return-left"></i>
-                    <span>Return for Correction</span>
+                <div class="gov-action-subgroup pt-2 d-flex flex-column gap-1.5 w-100">
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
                   </button>
-                  <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
-                    <i class="bi bi-x-circle"></i>
-                    <span>Reject</span>
+                  <button type="button" class="btn btn-sm btn-outline-secondary fw-semibold" onclick="executeDtoReturnToTo()">
+                    <i class="bi bi-arrow-left me-1"></i> Return to TO
                   </button>
-                </div>
-                <div class="pt-2 border-top mt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer"></i>
-                    <span>Print / Download Summary</span>
+                  <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
+                    <i class="bi bi-x-circle me-1"></i> Reject
                   </button>
                 </div>
               `;
             }
-          }
-
-          // STAGE 5: Returned by HQ to DTO (Flow 5)
-          else if (st === WorkflowEngine.STAGES.STAGE_5) {
+          } else if (st === WorkflowEngine.STAGES.STAGE_5 && currentApp.assignedRole === 'dto') {
             container.innerHTML = `
-              <div class="alert alert-warning small p-2 mb-2 w-100">
-                <i class="bi bi-exclamation-triangle-fill me-1"></i> <strong>Headquarters Objection:</strong>
-                <div class="fst-italic mt-1 text-dark">"${currentApp.hqRemarks || 'Missing required security documents.'}"</div>
-              </div>
-              <div class="gov-action-subgroup">
-                <button type="button" class="btn btn-sm btn-warning text-dark px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
-                  <i class="bi bi-arrow-return-left"></i>
-                  <span>Return to Citizen with Instructions</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Reject Application</span>
-                </button>
-              </div>
+              <div class="alert alert-warning small p-2 mb-2 w-100"><strong>HQ Remarks:</strong> "${currentApp.hqRemarks || 'Clarification required.'}"</div>
+              <button type="button" class="btn btn-sm btn-warning text-dark fw-semibold w-100 mb-1.5" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">Return to Citizen</button>
+              <button type="button" class="btn btn-sm btn-outline-primary w-100 mb-1.5" data-bs-toggle="modal" data-bs-target="#modalForwardToHq">Forward Back to HQ</button>
+              <button type="button" class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#modalRejectApplication">Reject</button>
             `;
-          }
-
-          // STAGE 11: Awaiting Final DTO Approval (Application Returned from HQ with Approval Sheet)
-          else if (st === WorkflowEngine.STAGES.STAGE_11) {
+          } else if (st === WorkflowEngine.STAGES.STAGE_11 && currentApp.assignedRole === 'dto') {
             container.innerHTML = `
-              <div class="alert alert-success small p-2.5 mb-2 w-100 border border-success-subtle">
-                <div class="d-flex align-items-center gap-1.5 fw-bold text-success mb-1">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Headquarters Approval Granted</span>
-                </div>
-                <div class="small text-dark">
-                  Approved by <strong>${currentApp.hqApprovedBy || 'Dr. Tshering Yangchen Lepcha'}</strong>
-                  ${currentApp.hqApprovalDate ? `<div class="text-muted" style="font-size:0.75rem;"><i class="bi bi-clock me-1"></i>${currentApp.hqApprovalDate}</div>` : ''}
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs w-100 justify-content-center" onclick="executeDtoFinalApproval()">
-                <i class="bi bi-patch-check-fill"></i>
-                <span>Approve &amp; Issue Permission Letter</span>
+              <div class="alert alert-success small p-2 mb-2 w-100">Payment / Clearance Confirmed by Citizen. Ready for DTO Final Approval (No Approval Sheet required).</div>
+              <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold w-100" onclick="executeDtoFinalApproval()">
+                <i class="bi bi-patch-check-fill me-1"></i> Grant Final Approval &amp; Issue Certificate
               </button>
-              <div class="d-flex gap-2 pt-2">
-                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)" title="Preview HQ Approval Sheet">
-                  <i class="bi bi-file-earmark-check"></i>
-                  <span>View Sheet</span>
-                </button>
-                <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=dto" target="_blank" class="btn btn-sm btn-outline-success flex-grow-1 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" title="Open Print-Ready A4 Approval Sheet">
-                  <i class="bi bi-box-arrow-up-right"></i>
-                  <span>Print Sheet</span>
-                </a>
-              </div>
-              <div class="pt-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5" onclick="printApplicationSummary()">
-                  <i class="bi bi-printer"></i>
-                  <span>Download Summary</span>
-                </button>
-              </div>
             `;
-          }
-
-          // STAGE 12: Approved
-          else if (st === WorkflowEngine.STAGES.STAGE_12) {
+          } else if (st === WorkflowEngine.STAGES.STAGE_12) {
+            const hasExtPending = currentApp.extensionRequest && currentApp.extensionRequest.status === 'Pending DTO Decision';
             container.innerHTML = `
+              ${hasExtPending ? `
+                <div class="alert alert-warning small p-2.5 mb-2 w-100">
+                  <strong>Extension Request Pending DTO Decision:</strong> +${currentApp.extensionRequest.requestedDays} Days
+                  <button type="button" class="btn btn-sm btn-warning text-dark fw-bold w-100 mt-2" onclick="openExtensionDecisionModal()">
+                    <i class="bi bi-clock-history me-1"></i> Decide Extension Request
+                  </button>
+                </div>
+              ` : ''}
               <div class="alert alert-success small p-3 text-center mb-0 w-100">
-                <i class="bi bi-patch-check-fill text-success fs-3 d-block mb-1"></i>
-                <strong class="d-block text-dark fs-6">Permission Approved &amp; Issued</strong>
-                <div class="text-muted small mt-1 font-monospace">${currentApp.permissionNumber || 'SK-TOUR-2026-PERM'}</div>
-                <div class="mt-3 d-flex flex-column gap-2">
-                  <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="DocumentService.openPermissionLetter('${currentApp.refNo}', activeRole)">
-                    <i class="bi bi-download me-1"></i> Download Approval Letter
+                <strong class="d-block text-dark">Permission Approved &amp; Issued</strong>
+                <div class="font-monospace small mt-1 mb-2">${currentApp.permissionNumber || ''}</div>
+                <button type="button" class="btn btn-sm btn-success fw-semibold w-100 mb-1.5" onclick="DocumentService.openPermissionLetter('${currentApp.refNo}', activeRole)">
+                  <i class="bi bi-download me-1"></i> Download Permission Letter
+                </button>
+                ${currentApp.approvalSheet ? `
+                  <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="DocumentService.openApprovalSheet('${currentApp.refNo}', activeRole)">
+                    <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
                   </button>
-                  ${currentApp.approvalSheet ? `
-                    <button type="button" class="btn btn-sm btn-outline-success" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
-                      <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
-                    </button>
-                    <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=${activeRole}" target="_blank" class="btn btn-sm btn-outline-primary">
-                      <i class="bi bi-printer me-1"></i> Print HQ Approval Sheet
-                    </a>
-                  ` : ''}
-                  <a href="dashboard.html?arn=${encodeURIComponent(currentApp.refNo)}&view=tracking" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-person me-1"></i> View in Citizen Dashboard
-                  </a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Print / Download Summary
-                  </button>
-                </div>
+                ` : ''}
               </div>
             `;
+          } else {
+            container.innerHTML = `<div class="p-3 bg-light rounded small text-muted w-100">Currently with <strong>${(currentApp.assignedRole || 'none').toUpperCase()}</strong> (${st}).</div>`;
           }
-
-          // STAGE 13: Rejected
-          else if (st === WorkflowEngine.STAGES.STAGE_13) {
-            container.innerHTML = `
-              <div class="alert alert-danger small p-3 text-center mb-0 w-100">
-                <i class="bi bi-x-circle-fill text-danger fs-3 d-block mb-1"></i>
-                <strong class="d-block text-dark fs-6">Application Rejected</strong>
-                <span class="text-muted">Departmental rejection recorded. Reason: <em>"${currentApp.dtoRemarks || 'Rejected by DTO'}"</em></span>
-              </div>
-            `;
-          }
-
-          // STAGE 3, 4, 8, 9, 10: Currently with HQ
-          else if ([WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(st)) {
-            container.innerHTML = `
-              <div class="alert alert-primary small p-3 mb-0 w-100">
-                <i class="bi bi-send-check text-primary fs-4 d-block mb-1"></i>
-                <strong class="d-block text-dark">Under Headquarters Processing</strong>
-                <span class="text-muted">This application has been forwarded to Paryatan Bhawan and is undergoing state-level review.</span>
-                <div class="mt-2 text-primary small">
-                  <i class="bi bi-info-circle me-1"></i> <em>Awaiting HQ review and Approval Sheet transmission.</em>
-                </div>
-                <div class="mt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Download Summary
-                  </button>
-                </div>
-              </div>
-            `;
-          }
-
-          // STAGE 6: With Citizen
-          else if (st === WorkflowEngine.STAGES.STAGE_6) {
-            container.innerHTML = `
-              <div class="alert alert-warning small p-3 mb-0 w-100">
-                <i class="bi bi-clock-history text-warning-emphasis fs-4 d-block mb-1"></i>
-                <strong class="d-block text-dark">Awaiting Citizen Correction</strong>
-                <span class="text-muted">The application was returned with instructions: <em>"${currentApp.dtoRemarks || 'Corrections requested.'}"</em></span>
-                <div class="mt-2 text-muted small">
-                  <em>The applicant has been notified through their portal dashboard to resubmit.</em>
-                </div>
-                <div class="mt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Download Summary
-                  </button>
-                </div>
-              </div>
-            `;
-          }
-
-          else {
-            container.innerHTML = `
-              <div class="p-3 bg-light rounded text-muted small text-center w-100">
-                Currently with <strong>${currentApp.assignedRole.toUpperCase()}</strong> (${st}).
-                <div class="mt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Download Summary
-                  </button>
-                </div>
-              </div>
-            `;
-          }
-
+          return;
         }
 
         // ------------------------------------------------------------
-        // ROLE 2: HQ ADMIN (Headquarters Administrator)
+        // ROLE 3: SINGLE HQ OFFICER (Initial Review + Final Approval)
         // ------------------------------------------------------------
-        else if (role === 'hq') {
+        if (role === 'hq') {
           const hasSheet = !!currentApp.approvalSheet;
+          const catKey = WorkflowEngine.normalizeCategoryKey(currentApp.categoryKey || currentApp.category);
+          const isDroneFree = (catKey === 'drone' || Number(currentApp.feeAmount || 0) === 0);
 
-          // Stages where HQ acts: STAGE_3, STAGE_4, STAGE_8, STAGE_9, STAGE_10
-          if ([WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_10].includes(st)) {
-            container.innerHTML = `
-              <!-- Dedicated HQ Approval Sheet Status Card -->
-              <div class="p-2.5 rounded border mb-2.5 ${hasSheet ? 'bg-success-subtle border-success' : 'bg-light'}">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="fw-bold small text-dark"><i class="bi bi-file-earmark-check text-primary me-1"></i> HQ Approval Sheet</span>
-                  ${hasSheet
-                ? '<span class="badge bg-success"><i class="bi bi-check me-1"></i> Uploaded</span>'
-                : '<span class="badge bg-warning text-dark">Pending Upload</span>'}
+          if (st === WorkflowEngine.STAGES.STAGE_4 && currentApp.assignedRole === 'hq') {
+            if (isDroneFree) {
+              container.innerHTML = `
+                <div class="alert alert-info small p-2 mb-2 w-100">
+                  <strong>Free Category (No Payment Required):</strong> Upload the HQ Approval Sheet and issue the Approval Letter directly.
                 </div>
-                ${hasSheet ? `
-                  <div class="small text-truncate text-muted mb-2 font-monospace" style="font-size: 0.75rem;" title="${currentApp.approvalSheet.fileName}">
-                    ${currentApp.approvalSheet.fileName} (${currentApp.approvalSheet.size || '1.4 MB'})
-                  </div>
-                  <div class="d-flex gap-1.5">
-                    <button type="button" class="btn btn-xs btn-outline-success py-1 px-2 small flex-grow-1" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
-                      <i class="bi bi-eye me-1"></i> View Sheet
-                    </button>
-                    <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2 small" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                      <i class="bi bi-arrow-repeat me-1"></i> Replace
-                    </button>
-                  </div>
-                ` : `
-                  <p class="small text-muted mb-2" style="font-size: 0.75rem;">
-                    Upload the externally processed and signed sanction sheet to enable HQ-level approval.
-                  </p>
-                  <button type="button" class="btn btn-sm btn-primary w-100 py-1.5 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                    <i class="bi bi-upload"></i>
-                    <span>Upload Approval Sheet</span>
+                <button type="button" class="btn btn-sm btn-primary w-100 mb-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
+                  <i class="bi bi-upload me-1"></i> ${hasSheet ? 'Replace Approval Sheet' : 'Upload Approval Sheet'}
+                </button>
+                <button type="button" class="btn btn-sm ${hasSheet ? 'btn-success' : 'btn-outline-secondary'} w-100 py-2 fw-bold mb-2" ${hasSheet ? '' : 'disabled'} onclick="executeHqCompleteFinalApproval()">
+                  <i class="bi bi-patch-check-fill me-1"></i> Complete Final Approval &amp; Issue Letter
+                </button>
+                <div class="gov-action-subgroup d-flex flex-column gap-1.5 w-100">
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
+                    <i class="bi bi-arrow-left-right me-1"></i> Return to DTO
                   </button>
-                `}
-              </div>
-
-              <!-- Main HQ Action: Approve at HQ Level -->
-              ${hasSheet ? `
-                <button type="button" class="btn btn-sm btn-success w-100 py-2 fw-bold d-inline-flex align-items-center justify-content-center gap-1.5 shadow-xs" onclick="executeHqApproveAtHqLevel()">
-                  <i class="bi bi-patch-check-fill"></i>
-                  <span>Approve at HQ Level</span>
-                </button>
-              ` : `
-                <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-2 fw-bold d-inline-flex align-items-center justify-content-center gap-1.5" onclick="showToastAlert('Mandatory HQ Approval Sheet must be uploaded before granting HQ-level approval.', 'warning')">
-                  <i class="bi bi-lock-fill"></i>
-                  <span>Approve at HQ Level (Upload Sheet First)</span>
-                </button>
-              `}
-
-              <!-- Secondary HQ Actions -->
-              <div class="gov-action-subgroup pt-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary w-100 py-1.5 d-inline-flex align-items-center justify-content-center gap-1.5 mb-1.5" onclick="printApplicationSummary()">
-                  <i class="bi bi-printer"></i>
-                  <span>Download Application Summary</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-warning text-dark w-100 py-1.5 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
-                  <i class="bi bi-arrow-left-right"></i>
-                  <span>Return to DTO</span>
-                </button>
-              </div>
-            `;
-          }
-          // After HQ has approved and returned to DTO
-          else if (st === WorkflowEngine.STAGES.STAGE_11) {
-            container.innerHTML = `
-              <div class="alert alert-info small p-3 text-center mb-0 w-100">
-                <i class="bi bi-send-check-fill fs-3 text-primary d-block mb-1"></i>
-                <strong class="d-block text-dark">Approved at HQ Level</strong>
-                <div class="text-muted small mt-1">Application transmitted back to DTO (${currentApp.district} Circle) for final approval and issuance.</div>
-                <div class="mt-3 d-flex flex-column gap-2">
-                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
-                    <i class="bi bi-file-earmark-check me-1"></i> View Uploaded Approval Sheet
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="executeHqReturnToCitizenPrompt()">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
                   </button>
-                  <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=hq" target="_blank" class="btn btn-sm btn-outline-success">
-                    <i class="bi bi-printer me-1"></i> Print HQ Approval Sheet
-                  </a>
-                  <a href="review.html?arn=${encodeURIComponent(currentApp.refNo)}&role=dto" class="btn btn-sm btn-success fw-semibold shadow-xs">
-                    <i class="bi bi-person-check me-1"></i> Switch to DTO Desk &amp; Grant Approval &rarr;
-                  </a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Download Application Summary
+                  <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="executeHqRejectPrompt()">
+                    <i class="bi bi-x-circle me-1"></i> Reject Application
                   </button>
                 </div>
+              `;
+            } else {
+              container.innerHTML = `
+                <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold w-100 mb-2" onclick="executeHqApproveForPayment()">
+                  <i class="bi bi-credit-card-2-front me-1"></i> Approve for Payment (Activate ${currentApp.fee || 'Fee'})
+                </button>
+                <div class="gov-action-subgroup d-flex flex-column gap-1.5 w-100">
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
+                    <i class="bi bi-arrow-left-right me-1"></i> Return to DTO
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="executeHqReturnToCitizenPrompt()">
+                    <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="executeHqRejectPrompt()">
+                    <i class="bi bi-x-circle me-1"></i> Reject Application
+                  </button>
+                </div>
+              `;
+            }
+          } else if (st === WorkflowEngine.STAGES.STAGE_8 && !isDroneFree) {
+            container.innerHTML = `
+              <div class="alert alert-warning small p-3 w-100 mb-0">
+                <strong>Payment Activated</strong><br>
+                Awaiting citizen payment (${currentApp.fee || 'Fee'}). Once completed, the application will automatically return to this HQ Officer for Approval Sheet upload &amp; final approval.
               </div>
             `;
-          }
-          else if (st === WorkflowEngine.STAGES.STAGE_12) {
+          } else if (((st === WorkflowEngine.STAGES.STAGE_9 || st === WorkflowEngine.STAGES.STAGE_10) && currentApp.assignedRole === 'hq') || (st === WorkflowEngine.STAGES.STAGE_8 && isDroneFree)) {
+            container.innerHTML = `
+              <div class="alert alert-info small p-2 mb-2 w-100">
+                <strong>${isDroneFree ? 'Free Category (No Payment Required):' : 'Payment Completed!'}</strong> Upload the HQ Approval Sheet and complete final approval.
+              </div>
+              <button type="button" class="btn btn-sm btn-primary w-100 mb-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
+                <i class="bi bi-upload me-1"></i> ${hasSheet ? 'Replace Approval Sheet' : 'Upload Approval Sheet'}
+              </button>
+              <button type="button" class="btn btn-sm ${hasSheet ? 'btn-success' : 'btn-outline-secondary'} w-100 py-2 fw-bold" ${hasSheet ? '' : 'disabled'} onclick="executeHqCompleteFinalApproval()">
+                <i class="bi bi-patch-check-fill me-1"></i> Complete Final Approval &amp; Issue Letter
+              </button>
+            `;
+          } else if (st === WorkflowEngine.STAGES.STAGE_12) {
             container.innerHTML = `
               <div class="alert alert-success small p-3 text-center mb-0 w-100">
-                <i class="bi bi-award-fill fs-3 text-success d-block mb-1"></i>
-                <strong class="d-block text-dark">Permission Completed &amp; Letter Issued</strong>
-                <div class="text-muted small mt-1 font-monospace">${currentApp.permissionNumber || ''}</div>
-                <div class="mt-3 d-flex flex-column gap-2">
-                  <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="DocumentService.openPermissionLetter('${currentApp.refNo}', activeRole)">
-                    <i class="bi bi-download me-1"></i> Download Approval Letter
+                <strong class="d-block text-dark">HQ Final Approval Completed</strong>
+                <div class="font-monospace small mt-1 mb-2">${currentApp.permissionNumber || ''}</div>
+                <button type="button" class="btn btn-sm btn-success fw-semibold w-100 mb-1.5" onclick="DocumentService.openPermissionLetter('${currentApp.refNo}', activeRole)">
+                  <i class="bi bi-download me-1"></i> Download Approval Letter
+                </button>
+                ${hasSheet ? `
+                  <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="DocumentService.openApprovalSheet('${currentApp.refNo}', activeRole)">
+                    <i class="bi bi-file-earmark-check me-1"></i> View / Print Approval Sheet
                   </button>
-                  <button type="button" class="btn btn-sm btn-outline-success" onclick="DocumentService.openDocumentModal('approval_sheet', '${currentApp.refNo}', activeRole)">
-                    <i class="bi bi-file-earmark-check me-1"></i> View HQ Approval Sheet
-                  </button>
-                  <a href="approval-sheet.html?arn=${encodeURIComponent(currentApp.refNo)}&role=hq" target="_blank" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-printer me-1"></i> Print HQ Approval Sheet
-                  </a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Download Application Summary
-                  </button>
-                </div>
+                ` : ''}
               </div>
             `;
-          }
-          else {
-            container.innerHTML = `
-              <div class="p-3 bg-light rounded text-muted small text-center w-100">
-                Currently with <strong>${currentApp.assignedRole.toUpperCase()}</strong> (${st}).
-                <div class="mt-2 text-secondary small">HQ action is not required at this point.</div>
-                <div class="mt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="printApplicationSummary()">
-                    <i class="bi bi-printer me-1"></i> Download Summary
-                  </button>
-                </div>
-              </div>
-            `;
+          } else {
+            container.innerHTML = `<div class="p-3 bg-light rounded small text-muted w-100">Currently with <strong>${(currentApp.assignedRole || 'none').toUpperCase()}</strong> (${st}).</div>`;
           }
         }
       }
@@ -1523,183 +1544,143 @@
       // ACTION EXECUTION HANDLERS
       // ==============================================================
 
-      // 1. DTO Forward to HQ
-      window.executeDtoForwardToHq = function () {
-        const modalEl = document.getElementById('modalForwardToHq');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
+      // TO Actions
+      window.executeToForward = function (target) {
+        let droneUpdates = null;
+        if (currentApp && (currentApp.categoryKey === 'drone' || WorkflowEngine.normalizeCategoryKey(currentApp.category) === 'drone')) {
+          droneUpdates = {
+            approvedPeriod: document.getElementById('toDroneApprovedPeriod')?.value || '',
+            permissibleAltitudeAgl: document.getElementById('toDroneAltitudeAgl')?.value || '',
+            approvedFlyingArea: document.getElementById('toDroneFlyingArea')?.value || ''
+          };
+        }
+        const res = WorkflowEngine.toForwardApplication(activeArn, null, target, 'Verified by Tourism Officer (TO) and forwarded.', droneUpdates);
+        if (res.success) { showToastAlert('Application verified by TO & forwarded.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
 
+      // DTO Actions
+      window.executeDtoForwardToHq = function () {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalForwardToHq'));
+        if (modal) modal.hide();
         const remarks = document.getElementById('fwdRemarksInput').value;
         const res = WorkflowEngine.dtoVerifyAndForwardToHq(activeArn, null, remarks);
-        if (res.success) {
-          showToastAlert(`Application ${activeArn} verified & transmitted to Headquarters.`, 'success');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
+        if (res.success) { showToastAlert('Forwarded to HQ Officer.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
       };
 
-      // 2. DTO Direct Final Approval (Flow 4)
-      window.promptDtoDirectApprove = function () {
-        if (confirm(`Confirm Direct Final Approval for ${activeArn} under District Tourism Office jurisdiction?`)) {
-          const res = WorkflowEngine.dtoDirectApprove(activeArn, null, 'Direct district verification completed. Route approved and permission letter issued.');
-          if (res.success) {
-            showToastAlert(`Application ${activeArn} approved directly by DTO. Permission letter issued.`, 'success');
-            loadAndRenderReviewScreen();
-          } else {
-            showToastAlert(res.message, 'danger');
-          }
-        }
+      window.executeDtoActivatePayment = function () {
+        if (!confirm('Approve initial review and activate payment for ' + activeArn + '?')) return;
+        const res = WorkflowEngine.dtoActivatePayment(activeArn, null, 'Approved for payment activation by DTO.');
+        if (res.success) { showToastAlert('Payment activated for citizen.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
       };
 
-      // 3. DTO Return to Citizen (Flow 2 & Flow 5)
+      window.executeDtoReturnToTo = function () {
+        const remarks = prompt('Enter mandatory remarks for returning application to TO:');
+        if (!remarks || !remarks.trim()) return;
+        const res = WorkflowEngine.dtoReturnToTo(activeArn, null, remarks.trim());
+        if (res.success) { showToastAlert('Returned to TO.', 'warning'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
       window.executeDtoReturnToCitizen = function () {
-        const remarksInput = document.getElementById('returnRemarksInput');
-        const remarks = remarksInput.value.trim();
-
-        if (!remarks) {
-          remarksInput.classList.add('is-invalid');
-          return;
-        }
-        remarksInput.classList.remove('is-invalid');
-
-        const modalEl = document.getElementById('modalReturnToCitizen');
-        const modal = bootstrap.Modal.getInstance(modalEl);
+        const remarks = document.getElementById('returnRemarksInput').value.trim();
+        if (!remarks) { document.getElementById('returnRemarksInput').classList.add('is-invalid'); return; }
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalReturnToCitizen'));
         if (modal) modal.hide();
-
-        const res = WorkflowEngine.dtoReturnToCitizen(activeArn, null, remarks);
-        if (res.success) {
-          showToastAlert(`Application ${activeArn} returned to citizen for correction.`, 'warning');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
+        const fn = (activeRole === 'to') ? WorkflowEngine.toReturnToCitizen.bind(WorkflowEngine) : WorkflowEngine.dtoReturnToCitizen.bind(WorkflowEngine);
+        const res = fn(activeArn, null, remarks);
+        if (res.success) { showToastAlert('Returned to citizen for correction.', 'warning'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
       };
 
-      // 4. DTO Reject Application (Flow 3)
       window.executeDtoReject = function () {
-        const remarksInput = document.getElementById('rejectRemarksInput');
-        const remarks = remarksInput.value.trim();
-
-        if (!remarks) {
-          remarksInput.classList.add('is-invalid');
-          return;
-        }
-        remarksInput.classList.remove('is-invalid');
-
-        const modalEl = document.getElementById('modalRejectApplication');
-        const modal = bootstrap.Modal.getInstance(modalEl);
+        const remarks = document.getElementById('rejectRemarksInput').value.trim();
+        if (!remarks) { document.getElementById('rejectRemarksInput').classList.add('is-invalid'); return; }
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalRejectApplication'));
         if (modal) modal.hide();
-
         const res = WorkflowEngine.dtoRejectApplication(activeArn, null, remarks);
-        if (res.success) {
-          showToastAlert(`Application ${activeArn} has been rejected by DTO.`, 'danger');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
+        if (res.success) { showToastAlert('Application rejected.', 'danger'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
       };
 
-      // 5. HQ Start Review
-      window.executeHqStartReview = function () {
-        const res = WorkflowEngine.hqStartReview(activeArn, null);
-        if (res.success) {
-          showToastAlert('Headquarters review initiated. Application opened for e-Office verification.', 'info');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
-      };
-
-      // 6. HQ Record e-Office
-      window.executeHqRecordEOffice = function () {
-        const fileRef = document.getElementById('eOfficeFileRefInput').value;
-        const remarks = document.getElementById('eOfficeRemarksInput').value;
-
-        const modalEl = document.getElementById('modalEOfficeRecord');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-
-        const res = WorkflowEngine.hqRecordEOfficeVerification(activeArn, null, fileRef, remarks);
-        if (res.success) {
-          showToastAlert('External e-Office concurrence recorded successfully.', 'success');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
-      };
-
-      // 7. HQ Upload Approval Sheet
-      window.executeHqUploadApprovalSheet = function () {
-        const fileNameInput = document.getElementById('sheetCustomNameInput');
-        const fileName = fileNameInput.value.trim() || `HQ_Approval_Sheet_${activeArn}.pdf`;
-
-        const modalEl = document.getElementById('modalUploadApprovalSheet');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-
-        const res = WorkflowEngine.hqUploadApprovalSheet(activeArn, null, fileName, '1.4 MB');
-        if (res.success) {
-          showToastAlert('Headquarters Approval Sheet attached successfully.', 'success');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
-      };
-
-      // 8. HQ Approves at HQ Level & Transmits Back to DTO
-      window.executeHqApproveAtHqLevel = function () {
-        if (!currentApp || !currentApp.approvalSheet) {
-          showToastAlert('Mandatory HQ Approval Sheet must be uploaded before granting HQ-level approval.', 'warning');
-          return;
-        }
-        if (confirm(`Confirm approval at Headquarters Level for application ${activeArn}?\n\nThis will record the Directorate Sanction Approval Sheet and transmit the file back to District Tourism Officer (${currentApp.district} Circle) for final sanction and Permission Letter issuance.`)) {
-          const res = WorkflowEngine.hqApproveAtHqLevel(activeArn, 'Dr. Tshering Yangchen Lepcha', 'Headquarters verification complete. Directorate Sanction & Approval Sheet attached. Transmitted back to concerned DTO for final approval and Approval Letter issuance.');
-          if (res.success) {
-            showToastAlert(`Application ${activeArn} successfully approved at HQ Level and transmitted to District DTO!`, 'success');
-            loadAndRenderReviewScreen();
-          } else {
-            showToastAlert(res.message, 'danger');
-          }
-        }
-      };
-      window.executeHqForwardBackToDto = window.executeHqApproveAtHqLevel;
-
-      // 9. HQ Return to DTO (Flow 5)
-      window.executeHqReturnToDto = function () {
-        const remarksInput = document.getElementById('hqReturnRemarksInput');
-        const remarks = remarksInput.value.trim();
-
-        if (!remarks) {
-          remarksInput.classList.add('is-invalid');
-          return;
-        }
-        remarksInput.classList.remove('is-invalid');
-
-        const modalEl = document.getElementById('modalHqReturnToDto');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-
-        const res = WorkflowEngine.hqReturnToDto(activeArn, null, remarks);
-        if (res.success) {
-          showToastAlert(`Application ${activeArn} returned to DTO with objection remarks.`, 'warning');
-          loadAndRenderReviewScreen();
-        } else {
-          showToastAlert(res.message, 'danger');
-        }
-      };
-
-      // 10. DTO Final Approval
       window.executeDtoFinalApproval = function () {
-        if (confirm(`Confirm final approval and issuance of permission letter for ${activeArn}?`)) {
-          const res = WorkflowEngine.dtoFinalApproval(activeArn, null, 'Final departmental approval granted following verification of HQ sanction sheet. Official permission letter issued.');
-          if (res.success) {
-            showToastAlert(`Application ${activeArn} granted Final Approval! Permission letter generated.`, 'success');
-            loadAndRenderReviewScreen();
-          } else {
-            showToastAlert(res.message, 'danger');
-          }
-        }
+        if (!confirm('Grant DTO Final Approval and issue Permission Certificate for ' + activeArn + '?')) return;
+        const res = WorkflowEngine.dtoFinalApproval(activeArn, null, 'Final DTO approval granted and Permission Certificate issued.');
+        if (res.success) { showToastAlert('Final approval granted! Certificate issued.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      window.openExtensionDecisionModal = function () {
+        const ext = currentApp.extensionRequest || {};
+        document.getElementById('extModalSummary').innerHTML = `
+          <strong>Application:</strong> ${currentApp.refNo} (${currentApp.category})<br>
+          <strong>Requested Extension:</strong> +${ext.requestedDays} Days<br>
+          <strong>Citizen Reason:</strong> ${ext.reason || '-'}
+        `;
+        new bootstrap.Modal(document.getElementById('modalDtoExtensionDecision')).show();
+      };
+
+      window.executeDtoExtensionDecision = function () {
+        const decision = document.getElementById('extDecisionSelect').value;
+        const remarks = document.getElementById('extDecisionRemarks').value.trim();
+        if (!remarks) { alert('Decision remarks are mandatory.'); return; }
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalDtoExtensionDecision'));
+        if (modal) modal.hide();
+        const res = WorkflowEngine.dtoDecideExtension(activeArn, decision, null, remarks);
+        if (res.success) { showToastAlert('Extension request ' + decision.toLowerCase() + '.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      // HQ Officer Actions
+      window.executeHqApproveForPayment = function () {
+        if (!confirm('Approve ' + activeArn + ' for payment activation? After citizen payment, this application will return to you for final approval.')) return;
+        const res = WorkflowEngine.hqApproveForPayment(activeArn, null, 'Approved for payment at HQ.');
+        if (res.success) { showToastAlert('Payment activated for citizen.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      window.executeHqUploadApprovalSheet = function () {
+        const fileName = document.getElementById('sheetCustomNameInput').value.trim() || `HQ_Approval_Sheet_${activeArn}.pdf`;
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalUploadApprovalSheet'));
+        if (modal) modal.hide();
+        const res = WorkflowEngine.hqUploadApprovalSheet(activeArn, null, fileName, '1.4 MB');
+        if (res.success) { showToastAlert('HQ Approval Sheet attached.', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      window.executeHqCompleteFinalApproval = function () {
+        if (!confirm('Complete final HQ approval and issue Approval Letter / Permission Certificate for ' + activeArn + '?')) return;
+        const res = WorkflowEngine.hqCompleteFinalApproval(activeArn, null, 'HQ final approval granted with Approval Sheet attached.');
+        if (res.success) { showToastAlert('Final HQ approval granted & Permission Certificate issued!', 'success'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      window.executeHqReturnToDto = function () {
+        const remarks = document.getElementById('hqReturnRemarksInput').value.trim();
+        if (!remarks) { document.getElementById('hqReturnRemarksInput').classList.add('is-invalid'); return; }
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalHqReturnToDto'));
+        if (modal) modal.hide();
+        const res = WorkflowEngine.hqReturnToDto(activeArn, null, remarks);
+        if (res.success) { showToastAlert('Returned to DTO.', 'warning'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      window.executeHqReturnToCitizenPrompt = function () {
+        const remarks = prompt('Enter mandatory return remarks for Citizen:');
+        if (!remarks || !remarks.trim()) return;
+        const res = WorkflowEngine.hqReturnToCitizen(activeArn, null, remarks.trim());
+        if (res.success) { showToastAlert('Returned to citizen.', 'warning'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
+      window.executeHqRejectPrompt = function () {
+        const remarks = prompt('Enter mandatory rejection justification:');
+        if (!remarks || !remarks.trim()) return;
+        const res = WorkflowEngine.hqRejectApplication(activeArn, null, remarks.trim());
+        if (res.success) { showToastAlert('Application rejected by HQ Officer.', 'danger'); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
       };
 
       // Document Preview Modal

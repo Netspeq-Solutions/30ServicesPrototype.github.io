@@ -209,7 +209,7 @@
           </a>
           <a class="officer-nav-link" href="javascript:void(0)" onclick="filterIoQueue('submitted')">
             <i class="bi bi-check-circle text-success"></i>
-            <span>Reports Submitted (TA)</span>
+            <span>Reports Submitted (TO)</span>
             <span class="badge bg-success-subtle text-success" id="badgeSubmitted">0</span>
           </a>
         </nav>
@@ -246,10 +246,31 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
           <div>
             <h2 class="h5 fw-bold text-dark mb-0">Inspecting Officer (IO) Adventure Safety Desk</h2>
-            <span class="text-muted small">Conduct physical gear verifications for Adventure Tour Operators and submit inspection findings back to TA</span>
+            <span class="text-muted small">Conduct physical gear verifications for Adventure Tour Operators and submit inspection findings back to TO</span>
           </div>
           <div class="badge bg-light text-secondary border px-3 py-1.5 small">
             <i class="bi bi-calendar3 me-1"></i>13 November 2026
+          </div>
+        </div>
+
+        <!-- Real-Time IA Quick Action Notification Banner -->
+        <div id="ioNewActionBanner" class="alert alert-success border border-success shadow-xs mb-4 d-none" style="background: #f0fdf4;">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-success text-white p-2 rounded-circle fs-5 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+              <div>
+                <strong id="ioNewActionTitle" class="text-success-emphasis small d-block">New Inspection Assignment Received</strong>
+                <span id="ioNewActionDetails" class="text-dark small"></span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <a id="ioNewActionBtn" href="#" class="btn btn-sm btn-success py-1.5 px-3 fw-semibold shadow-xs" onclick="dismissIoLiveAlert()">
+                <i class="bi bi-clipboard2-check me-1"></i> Inspect &amp; Submit Report
+              </a>
+              <button type="button" class="btn-close btn-sm" aria-label="Dismiss" onclick="dismissIoLiveAlert(true)"></button>
+            </div>
           </div>
         </div>
 
@@ -266,7 +287,7 @@
             <div class="officer-kpi-card">
               <div class="small text-muted fw-semibold mb-1">Reports Submitted</div>
               <div class="officer-kpi-number text-success" id="kpiSubmitted">0</div>
-              <div class="small text-muted mt-1"><i class="bi bi-send-check me-1 text-success"></i>Forwarded to TA</div>
+              <div class="small text-muted mt-1"><i class="bi bi-send-check me-1 text-success"></i>Forwarded to TO</div>
             </div>
           </div>
           <div class="col-6 col-xl-3">
@@ -288,7 +309,7 @@
         <!-- Notice Alert on IO Scope -->
         <div class="alert alert-info border-0 p-3 rounded-3 small mb-3">
           <i class="bi bi-info-circle-fill text-primary me-1"></i>
-          <strong>Workflow Scope (Section 2):</strong> Inspecting Officers review <strong>only Adventure Tour Operator (ATO)</strong> applications assigned by TA. Guide Registration applications do not require an inspection workflow. IO enters and submits the inspection report back to TA.
+          <strong>Workflow Scope (Section 2):</strong> Inspecting Officers review <strong>only Adventure Tour Operator (ATO)</strong> applications assigned by TO. Guide Registration applications do not require an inspection workflow. IO enters and submits the inspection report back to TO.
         </div>
 
         <!-- IO Application Table -->
@@ -341,6 +362,13 @@
   <script>
     let activeQueueFilter = 'all';
 
+    window.dismissIoLiveAlert = function (rerender) {
+      try { localStorage.removeItem('adv_io_live_alert_v1'); } catch (e) {}
+      const banner = document.getElementById('ioNewActionBanner');
+      if (banner) banner.classList.add('d-none');
+      if (rerender) renderIoDashboard();
+    };
+
     document.addEventListener('DOMContentLoaded', function () {
       renderIoDashboard();
     });
@@ -352,6 +380,22 @@
 
     function renderIoDashboard() {
       const allApps = AdventureWorkflowEngine.getAllApplications();
+
+      // Render Real-Time IA Quick Action Notification Banner
+      const ioBanner = document.getElementById('ioNewActionBanner');
+      let ioAlert = null;
+      try { ioAlert = JSON.parse(localStorage.getItem('adv_io_live_alert_v1') || 'null'); } catch (e) {}
+      const targetIoApp = ioAlert ? allApps.find(a => a.arn === ioAlert.arn && (a.currentRole === 'io' || a.currentRole === 'io-hq')) : null;
+      if (ioBanner) {
+        if (targetIoApp) {
+          document.getElementById('ioNewActionTitle').textContent = ioAlert.title || `Inspection Assigned: ${targetIoApp.arn}`;
+          document.getElementById('ioNewActionDetails').textContent = `${targetIoApp.applicantName || ''} (${targetIoApp.typeName || 'Adventure Tour Operator'} • ${targetIoApp.district} District) • Stage: Physical Inspection`;
+          document.getElementById('ioNewActionBtn').href = `review.html?arn=${encodeURIComponent(targetIoApp.arn)}&role=io`;
+          ioBanner.classList.remove('d-none');
+        } else {
+          ioBanner.classList.add('d-none');
+        }
+      }
 
       // Filter only Adventure Tour Operators assigned to IO or with inspection report
       let ioApps = allApps.filter(app => app.type === 'adventure-tour-operator' && (app.assignedIO || app.inspectionReport));
