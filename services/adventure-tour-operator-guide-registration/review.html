@@ -53,7 +53,7 @@
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: #1e3a8a;
+      background: #24476B;
       border: 3px solid #ffffff;
       box-shadow: 0 0 0 1px #cbd5e1;
     }
@@ -67,7 +67,7 @@
     }
   </style>
 </head>
-<body data-theme="royal-navy" class="d-flex flex-column min-vh-100 bg-light">
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
 
   <!-- Skip Link -->
   <a class="gov-skip-link" href="#main-review-content">Skip to Main Content</a>
@@ -75,18 +75,17 @@
   <!-- Tricolor Stripe -->
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
-  <!-- Reviewer Quick Mode Switcher (Stage 04 Gateway) -->
-  <aside class="gov-scenario-bar no-print" aria-label="Reviewer Controls" style="background: #0f172a; color: #f8fafc; font-size: 0.8125rem; padding: 0.35rem 0;">
+  <!-- Reviewer Quick Mode Switcher -->
+  <aside class="gov-scenario-bar no-print" aria-label="Reviewer Controls" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
     <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
-          <i class="bi bi-shield-check me-1"></i> STAGE 04 WORKFLOW DESK
+        <span class="badge bg-success text-white fw-bold px-2 py-1">
+          <i class="bi bi-shield-check me-1"></i> LIVE WORKFLOW VERIFICATION DESK
         </span>
         <span class="fw-semibold text-white">Active Role:</span>
         <select id="roleViewSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 220px; font-size: 0.775rem;" onchange="onRoleViewChange(this.value)">
-          <option value="ta-hq">TA – Headquarters</option>
-          <option value="io">Inspecting Officer (IO)</option>
-          <option value="asst-dir-hq">Assistant Director – HQ</option>
+          <option value="ta-hq">TO – Headquarters (Gangtok)</option>
+          <option value="io">Inspecting Authority (IA)</option>
           <option value="dto-hq">District DTO – Gangtok</option>
           <option value="dist-ta">District TO (Circle)</option>
           <option value="dist-dto">District DTO (Circle)</option>
