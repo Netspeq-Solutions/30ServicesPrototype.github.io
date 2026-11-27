@@ -970,6 +970,8 @@
       app.status = STATUSES.UNDER_VERIFICATION;
       app.currentStage = nextStage;
       app.assignedRole = 'DTO';
+      app.dtoReturnInfo = null;
+      app.dtoReturnRemarks = null;
       app.toInspectionReviewRemarks = cleanRemarks;
       app.toRemarks = cleanRemarks;
       app.latestRemarks = cleanRemarks;
@@ -1311,9 +1313,7 @@
 
     /**
      * Explicit DTO Action: Return to Applicant
-     * Rules:
-     *   - At DTO Initial Verification: Permitted ONLY for Outdoor Photographer (NOT TA/TO or Dealer!)
-     *   - At DTO Final Verification: Permitted for ALL categories
+     * Permitted at DTO Initial Verification OR DTO Final Verification for ALL categories.
      */
     dtoReturnToApplicant: function (refNo, remarks, customOfficerName) {
       const app = this.getApplication(refNo);
@@ -1323,12 +1323,12 @@
       }
 
       const isFinalStage = (app.currentStage === STAGES.STAGE_DTO_FINAL);
-      const isInitialOp = (app.currentStage === STAGES.STAGE_DTO_INITIAL && !isInspectionRequired(app));
+      const isInitialStage = (app.currentStage === STAGES.STAGE_DTO_INITIAL);
 
-      if (!isFinalStage && !isInitialOp) {
+      if (!isFinalStage && !isInitialStage) {
         return {
           success: false,
-          message: 'Action not permitted: For inspection-based categories (TA/TO & Dealer), DTO Initial Verification only permits Reject or Approve for Payment.'
+          message: 'Action not permitted: Application is not in DTO Initial or Final Verification.'
         };
       }
       if (!remarks || !remarks.trim()) {
@@ -1382,6 +1382,83 @@
         newStage: app.currentStage,
         destinationRole: 'Applicant / Citizen',
         message: `Application ${app.refNo} returned to Applicant with mandatory remarks.`
+      };
+    },
+
+    /**
+     * Explicit DTO Action: Return to Tourist Officer (TO)
+     * Permitted at DTO Initial Verification OR DTO Final Verification for ALL categories.
+     */
+    dtoReturnToTO: function (refNo, remarks, customOfficerName) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (app.assignedRole !== 'DTO') {
+        return { success: false, message: 'Action not permitted: Application is not in DTO queue.' };
+      }
+      if (app.currentStage !== STAGES.STAGE_DTO_INITIAL && app.currentStage !== STAGES.STAGE_DTO_FINAL) {
+        return { success: false, message: 'Action not permitted: Application is not in DTO Initial or Final Verification.' };
+      }
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory return remarks are required.' };
+      }
+
+      const cleanRemarks = remarks.trim();
+      const distOffice = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const dtoName = customOfficerName || distOffice.dtoName || 'District Tourism Officer';
+      const returnSourceStage = app.currentStage;
+      const targetStage = isInspectionRequired(app)
+        ? STAGES.STAGE_TO_POST_INSPECTION
+        : STAGES.STAGE_TO_INITIAL;
+      const nowStr = formatNow();
+
+      app.status = STATUSES.UNDER_VERIFICATION;
+      app.currentStage = targetStage;
+      app.assignedRole = 'TO';
+      app.dtoReturnRemarks = cleanRemarks;
+      app.dtoReturnInfo = {
+        fromRole: 'District Tourism Officer (DTO)',
+        fromOfficer: dtoName,
+        fromStage: returnSourceStage,
+        remarks: cleanRemarks,
+        timestamp: nowStr
+      };
+      app.returnedBy = `DTO (${dtoName})`;
+      app.returnedByRole = 'DTO';
+      app.returnedFromStage = returnSourceStage;
+      app.returnedDate = nowStr;
+      app.latestRemarks = cleanRemarks;
+
+      this._appendEvent(
+        app,
+        'District Tourism Officer (DTO)',
+        dtoName,
+        'Return to TO',
+        targetStage,
+        `Tourist Officer (${app.district})`,
+        cleanRemarks,
+        `Returned from ${returnSourceStage} to TO`
+      );
+
+      this.saveApplication(app, { action: 'DTO_RETURN_TO', destinationRole: 'TO' });
+
+      this._pushNotification({
+        refNo: app.refNo,
+        targetRole: 'TO',
+        district: app.district,
+        eventKey: 'TO_RET_DTO_' + app.history.length,
+        title: `Returned by DTO for Review: ${app.refNo}`,
+        message: `DTO Remarks: "${cleanRemarks}". Please review and take necessary action.`,
+        type: 'warning',
+        actionLabel: 'Review Application',
+        targetUrl: `review.html?arn=${encodeURIComponent(app.refNo)}&role=to&district=${encodeURIComponent(app.district)}`
+      });
+
+      return {
+        success: true,
+        refNo: app.refNo,
+        newStage: app.currentStage,
+        destinationRole: 'Tourist Officer (TO)',
+        message: `Application ${app.refNo} returned to Tourist Officer (TO) with mandatory remarks.`
       };
     },
 

@@ -197,7 +197,7 @@
                 assignedIO: null,
                 inspectionReport: null,
                 payment: {
-                  amount: isGuide ? 500 : 1500,
+                  amount: 1500,
                   activated: false,
                   activatedBy: null,
                   activatedDate: null,
@@ -331,7 +331,7 @@
         stage = STAGES.ATO_AWAITING_TA;
       }
 
-      const statutoryFee = isGuide ? 500 : 1500;
+      const statutoryFee = 1500;
 
       const newApp = {
         arn: arn,
@@ -683,7 +683,7 @@
       if (!app) return false;
 
       const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
-      const fee = isGuide ? 500 : 1500;
+      const fee = 1500;
 
       app.payment = app.payment || {};
       app.payment.amount = fee;
@@ -733,7 +733,7 @@
       }
 
       const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
-      const fee = (app.payment && app.payment.amount) ? app.payment.amount : (isGuide ? 500 : 1500);
+      const fee = (app.payment && app.payment.amount) ? app.payment.amount : 1500;
 
       const nowStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
       app.payment = app.payment || {};

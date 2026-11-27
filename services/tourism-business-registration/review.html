@@ -153,6 +153,24 @@
       </div>
     </div>
 
+    <!-- Prominent DTO Return Remarks Banner (Visible at top when returned by DTO to TO) -->
+    <div id="topDtoReturnBanner" class="card border-2 border-warning shadow-sm mb-3 d-none" style="background: #fffbeb;">
+      <div class="card-body p-3">
+        <div class="d-flex align-items-start gap-3">
+          <div class="bg-warning text-dark rounded-2 p-2 fs-5 flex-shrink-0">
+            <i class="bi bi-arrow-return-left"></i>
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
+              <strong class="small text-dark" id="topDtoReturnTitle">Returned by District Tourism Officer (DTO) &bull; Action Required</strong>
+              <span class="badge bg-warning text-dark" id="topDtoReturnDate">-</span>
+            </div>
+            <div class="p-2 bg-white rounded border border-warning-subtle small text-dark" id="topDtoReturnRemarks">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Prominent Top Inspection Report Spotlight Banner (Only when Inspection Report exists or active inspection stage) -->
     <div id="topInspectionSpotlightBanner" class="card border-2 border-primary shadow-sm mb-3 d-none" style="background: #f0f9ff;">
       <div class="card-body p-3">
@@ -725,11 +743,27 @@
         document.getElementById('summaryLastUpdated').textContent = currentApp.lastUpdated || '-';
         document.getElementById('summaryDesk').textContent = `${currentApp.district} Circle`;
 
+        renderTopDtoReturnBanner();
         renderTopSpotlightAndInspectionTab();
         renderOverviewAndFormDetails();
         renderDocumentsAndPayment();
         renderHistoryAndRemarks();
         renderWorkflowActions();
+      }
+
+      function renderTopDtoReturnBanner() {
+        const banner = document.getElementById('topDtoReturnBanner');
+        if (!banner) return;
+        const info = currentApp && currentApp.dtoReturnInfo;
+        const isTerminal = currentApp && (currentApp.status === WorkflowEngine.STATUSES.COMPLETED || currentApp.status === WorkflowEngine.STATUSES.REJECTED || currentApp.assignedRole === 'Citizen');
+        if (!info || isTerminal) {
+          banner.classList.add('d-none');
+          return;
+        }
+        banner.classList.remove('d-none');
+        document.getElementById('topDtoReturnTitle').textContent = `Returned by ${info.fromRole} (${info.fromOfficer}) • Action Required`;
+        document.getElementById('topDtoReturnDate').textContent = info.timestamp || 'Recent';
+        document.getElementById('topDtoReturnRemarks').innerHTML = `<span class="fw-bold text-warning-emphasis me-1"><i class="bi bi-chat-left-text me-1"></i>DTO Remarks:</span> ${esc(info.remarks)}`;
       }
 
       function renderTopSpotlightAndInspectionTab() {
@@ -1048,14 +1082,16 @@
 
         if (activeRole === 'dto') {
           if (currentApp.assignedRole === 'DTO' && st === S.STAGE_DTO_INITIAL) {
-            const retBtn = currentApp.category === 'outdoor-photographer'
-              ? `<button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="openReturnActionModal('dto_citizen')"><i class="bi bi-arrow-return-left me-1"></i>Return to Applicant</button>`
-              : '';
             c.innerHTML = `
               <button type="button" class="btn btn-sm btn-primary fw-bold" onclick="openDtoActivatePaymentModal()">
                 <i class="bi bi-credit-card-2-front me-1"></i>Approve for Payment
               </button>
-              ${retBtn}
+              <button type="button" class="btn btn-sm btn-outline-secondary fw-semibold" onclick="openReturnActionModal('dto_to_to')">
+                <i class="bi bi-arrow-left me-1"></i>Return to TO
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="openReturnActionModal('dto_citizen')">
+                <i class="bi bi-arrow-return-left me-1"></i>Return to Applicant
+              </button>
               <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="openRejectModal()">
                 <i class="bi bi-x-circle me-1"></i>Reject
               </button>
@@ -1073,6 +1109,9 @@
               </div>
               <button type="button" class="btn btn-sm btn-success fw-bold" onclick="openDtoIssueModal()">
                 <i class="bi bi-patch-check-fill me-1"></i>Approve &amp; Issue Certificate
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary fw-semibold" onclick="openReturnActionModal('dto_to_to')">
+                <i class="bi bi-arrow-left me-1"></i>Return to TO
               </button>
               <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="openReturnActionModal('dto_citizen')">
                 <i class="bi bi-arrow-return-left me-1"></i>Return to Applicant
@@ -1163,6 +1202,10 @@
           document.getElementById('modalReturnTitle').textContent = 'Return to Applicant';
           document.getElementById('modalReturnActionName').textContent = 'Return to Applicant for Correction';
           document.getElementById('modalReturnDestRole').textContent = 'Applicant / Citizen';
+        } else if (mode === 'dto_to_to') {
+          document.getElementById('modalReturnTitle').textContent = 'Return to TO';
+          document.getElementById('modalReturnActionName').textContent = 'Return to Tourist Officer (TO)';
+          document.getElementById('modalReturnDestRole').textContent = 'Tourist Officer (TO)';
         } else if (mode === 'ia_to_to') {
           document.getElementById('modalReturnTitle').textContent = 'Return to TO';
           document.getElementById('modalReturnActionName').textContent = 'Return to Tourist Officer (TO)';
@@ -1189,6 +1232,7 @@
         if (returnMode === 'to_citizen') res = WorkflowEngine.toReturnToApplicant(currentApp.refNo, remarks);
         else if (returnMode === 'to_ia') res = WorkflowEngine.toReturnToIA(currentApp.refNo, remarks, document.getElementById('returnToIaSelect').value);
         else if (returnMode === 'ia_to_to') res = WorkflowEngine.iaReturnToTO(currentApp.refNo, remarks);
+        else if (returnMode === 'dto_to_to') res = WorkflowEngine.dtoReturnToTO(currentApp.refNo, remarks);
         else if (returnMode === 'dto_citizen') res = WorkflowEngine.dtoReturnToApplicant(currentApp.refNo, remarks);
 
         bootstrap.Modal.getInstance(document.getElementById('modalReturnAction')).hide();

@@ -1149,7 +1149,7 @@
         liveApps.slice().reverse().forEach(liveApp => {
           const arn = liveApp.arn || liveApp.id || liveApp.refNo;
           const isGuide = (liveApp.type === 'guide-registration' || (arn && arn.includes('GR')));
-          const fee = isGuide ? 500 : 1500;
+          const fee = 1500;
           const isPaymentPending = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.PAYMENT_PENDING || liveApp.status === 'Payment Pending' || (liveApp.payment && liveApp.payment.activated && !liveApp.payment.paid));
           const isApproved = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.APPROVED || liveApp.status === 'Approved');
           const isReturned = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.RETURNED || liveApp.status === 'Returned for Correction');
@@ -1214,7 +1214,7 @@
               typeId: payApp.typeId,
               typeName: payApp.typeName,
               enterpriseName: payApp.enterpriseName || payApp.applicantName,
-              feeAmount: isG ? '500' : '1,500',
+              feeAmount: '1,500',
               remarks: 'DTO has verified your application and activated the statutory registration fee. Complete payment to proceed to final approval.',
               activatedBy: payApp.payment.activatedBy || 'District Tourism Officer (DTO)',
               activatedDate: payApp.payment.activatedDate || 'Recent',
@@ -1328,7 +1328,7 @@
           let b = null;
 
           if (liveAlert.actionType === 'payment') {
-            const payAmt = liveAlert.fee ? Number(liveAlert.fee).toLocaleString('en-IN') : (isGuide ? '500' : '1,500');
+            const payAmt = liveAlert.fee ? Number(liveAlert.fee).toLocaleString('en-IN') : '1,500';
             b = {
               border: '#f59e0b', bg: '#fffbeb', iconBg: '#d97706', icon: 'bi-credit-card-fill',
               title: `Payment Activated for Application: ${arn}`,
@@ -1383,7 +1383,7 @@
       // Priority 1: Statutory Fee Payment Due Card
       if (scenario.paymentRequired) {
         const pay = scenario.paymentRequired;
-        const feeAmt = pay.feeAmount || (pay.typeId === 'guide-registration' ? '500' : '1,500');
+        const feeAmt = pay.feeAmount || '1,500';
         container.innerHTML += `
           <div class="action-card action-priority mb-3 border-warning" style="background: #fffbeb; border-left: 5px solid #d97706 !important;">
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
@@ -1542,7 +1542,7 @@
           const isGuideRow = (arn.includes('GR') || app.type === 'guide-registration' || app.category === 'guide-registration' || app.typeId === 'guide-registration');
           actionBtns += `<a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-success py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold"><i class="bi bi-award me-1"></i>${isGuideRow ? 'Download Certificate &amp; ID Card' : 'Download Certificate'}</a>`;
         } else if (isPayPending) {
-          const payAmt = (app.payment && app.payment.amount) ? Number(app.payment.amount).toLocaleString('en-IN') : (arn.includes('GR') ? '500' : '1,500');
+          const payAmt = (app.payment && app.payment.amount) ? Number(app.payment.amount).toLocaleString('en-IN') : '1,500';
           actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay Now (&#8377;${payAmt})</button>`;
         } else if (status === 'RETURNED' || status === 'Returned for Correction') {
           actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'guide-registration'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
@@ -1949,7 +1949,7 @@
 
       if (appRecord) {
         const isGuide = (appRecord.type === 'guide-registration' || (appRecord.arn && appRecord.arn.includes('GR')));
-        const fee = (appRecord.payment && appRecord.payment.amount) ? appRecord.payment.amount : (isGuide ? 500 : 1500);
+        const fee = (appRecord.payment && appRecord.payment.amount) ? appRecord.payment.amount : 1500;
 
         titleEl.textContent = `Application ID: ${appRecord.arn} • ${appRecord.applicantName || appRecord.enterpriseName} (${appRecord.district})`;
         
