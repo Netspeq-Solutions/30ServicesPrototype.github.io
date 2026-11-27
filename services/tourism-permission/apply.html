@@ -173,8 +173,8 @@
           <option value="drone">Drone Permission (HQ • Free • 15 Days)</option>
           <option value="expedition">Expedition Permission (HQ • ₹100/pax)</option>
           <option value="satellite-phone">Satellite Phone Permission (DTO • Free • IMF Letter)</option>
-          <option value="events-fairs">Event / Mela / Fair / Rallies / Marathons (DTO • Free • 1 Week)</option>
-          <option value="trekking">Trekking (DTO • ₹100/pax • Max 10 • 10 Days)</option>
+          <option value="events-fairs">Event / Mela / Fair / Rallies / Marathons (DTO • Free)</option>
+          <option value="trekking">Trekking (DTO • ₹100/person • Max 10)</option>
           <option value="other">Other Permissions (DTO • Free)</option>
         </select>
       </div>
@@ -314,8 +314,8 @@
                   <option value="drone">Drone Permission (HQ-Level • Free • 15 Days)</option>
                   <option value="expedition">Expedition Permission (HQ-Level • ₹100/person)</option>
                   <option value="satellite-phone">Satellite Phone Permission (DTO-Level • Free • IMF Letter)</option>
-                  <option value="events-fairs">Event / Mela / Fair / Rallies / Marathons (DTO-Level • Free • 1 Week)</option>
-                  <option value="trekking" selected>Trekking (DTO-Level • ₹100/person • Max 10 • 10 Days)</option>
+                  <option value="events-fairs">Event / Mela / Fair / Rallies / Marathons (DTO-Level • Free)</option>
+                  <option value="trekking" selected>Trekking (DTO-Level • ₹100/person • Max 10)</option>
                   <option value="other">Other Permissions (DTO-Level • Free)</option>
                 </select>
               </div>
@@ -396,6 +396,10 @@
                   <label for="dronePilotCertNo" class="form-label small fw-semibold">Remote Pilot Certificate Number <span class="text-danger">*</span></label>
                   <input type="text" class="form-control" id="dronePilotCertNo" value="RPC-DGCA-2025-4410" placeholder="e.g. RPC-DGCA-2025-4410">
                 </div>
+                <div class="col-md-6">
+                  <label for="droneProposedPeriod" class="form-label small fw-semibold">Proposed Operation Dates / Period <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="droneProposedPeriod" value="15 Days from Date of Approval" placeholder="e.g. 01 Dec 2026 to 15 Dec 2026">
+                </div>
               </div>
             </div>
           </div>
@@ -455,26 +459,45 @@
             <div class="p-3 p-md-4 rounded-3 border bg-white shadow-xs">
               <div class="form-section-title mb-3">
                 <i class="bi bi-person-walking text-success"></i>
-                <span>3. Trekking Particulars (Max 10 Participants • 10 Days Validity)</span>
+                <span>3. Trekking Particulars (Max 10 Participants)</span>
               </div>
               <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                  <label for="trekPersons" class="form-label small fw-semibold">Total Number of Trekkers (1–10) <span class="text-danger">*</span></label>
+                <div class="col-md-3">
+                  <label for="trekPersons" class="form-label small fw-semibold">Total Trekkers (1–10) <span class="text-danger">*</span></label>
                   <input type="number" class="form-control" id="trekPersons" min="1" max="10" value="4" oninput="onTrekParticipantCountChange()">
                   <div class="invalid-feedback">Maximum 10 participants permitted per trekking application.</div>
                 </div>
-                <div class="col-md-4">
-                  <label for="trekComposition" class="form-label small fw-semibold">Participant Composition <span class="text-danger">*</span></label>
-                  <select class="form-select" id="trekComposition" onchange="renderDynamicDocumentRows()">
+                <div class="col-md-3">
+                  <label for="trekComposition" class="form-label small fw-semibold">Composition <span class="text-danger">*</span></label>
+                  <select class="form-select" id="trekComposition" onchange="onTrekCompositionChange()">
                     <option value="Indians only" selected>Indians only</option>
                     <option value="Foreigners only">Foreigners only</option>
                     <option value="Both foreigners and Indians">Both foreigners and Indians</option>
                   </select>
                 </div>
-                <div class="col-md-4">
-                  <label for="trekPorters" class="form-label small fw-semibold">Number of Porters (Min 2) <span class="text-danger">*</span></label>
+                <div class="col-md-3 d-none" id="trekForeignCountGroup">
+                  <label for="trekForeignCount" class="form-label small fw-semibold">Foreign Trekkers <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" id="trekForeignCount" min="0" max="10" value="0" oninput="recalculateFee()">
+                </div>
+                <div class="col-md-3">
+                  <label for="trekPorters" class="form-label small fw-semibold">Porters (Min 2) <span class="text-danger">*</span></label>
                   <input type="number" class="form-control" id="trekPorters" min="2" value="2">
                   <div class="invalid-feedback">Minimum 2 porters are mandatory for Trekking Permission.</div>
+                </div>
+                <div class="col-md-3">
+                  <label for="trekDurationValue" class="form-label small fw-semibold">Requested Validity <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control" id="trekDurationValue" min="1" value="7" placeholder="e.g. 7">
+                </div>
+                <div class="col-md-3">
+                  <label for="trekDurationUnit" class="form-label small fw-semibold">Duration Unit <span class="text-danger">*</span></label>
+                  <select class="form-select" id="trekDurationUnit">
+                    <option value="Days" selected>Days</option>
+                    <option value="Months">Months</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="trekLiaisonOfficer" class="form-label small fw-semibold">Assigned Local Operator (LO) <span class="text-danger">*</span></label>
+                  <select class="form-select" id="trekLiaisonOfficer"></select>
                 </div>
                 <div class="col-md-6 d-flex align-items-center">
                   <div class="form-check">
@@ -493,7 +516,34 @@
               </div>
               <div class="alert alert-info border-0 small py-2 px-3 mb-0">
                 <i class="bi bi-info-circle-fill me-1"></i>
-                <strong>Validity:</strong> 10 Days from sanction date. <strong>No extension is permitted.</strong>
+                <strong>Validity &amp; LO Guidance:</strong> Validity is calculated from the actual date of approval (<em>no extension permitted</em>). Contact a Local Operator from the <a href="instructions.html" target="_blank" class="fw-bold">LO Directory</a> to confirm availability before applying.
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3D: DATE RANGE & CATEGORY SPECIFICS (Event / Satellite Phone / Other) -->
+          <div id="dateRangeSectionBlock" class="d-none mb-4">
+            <div class="p-3 p-md-4 rounded-3 border bg-white shadow-xs">
+              <div class="form-section-title mb-3">
+                <i class="bi bi-calendar-range text-primary"></i>
+                <span>3. Proposed Schedule &amp; Category Particulars</span>
+              </div>
+              <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                  <label for="activityStartDate" class="form-label small fw-semibold">Proposed Start Date <span class="text-danger">*</span></label>
+                  <input type="date" class="form-control" id="activityStartDate">
+                </div>
+                <div class="col-md-4">
+                  <label for="activityEndDate" class="form-label small fw-semibold">Proposed End Date <span class="text-danger">*</span></label>
+                  <input type="date" class="form-control" id="activityEndDate">
+                </div>
+                <div class="col-md-4 d-none" id="satPhoneImeiGroup">
+                  <label for="satPhoneImei" class="form-label small fw-semibold">Satellite Phone IMEI / Make</label>
+                  <input type="text" class="form-control" id="satPhoneImei" placeholder="e.g. Iridium 9575 / IMEI 30023406...">
+                </div>
+              </div>
+              <div class="alert alert-light border small py-2 px-3 mb-0 text-muted">
+                <i class="bi bi-info-circle me-1"></i> Approved permission will reflect the approved date range. <strong>No extension facility is permitted.</strong>
               </div>
             </div>
           </div>
@@ -534,12 +584,12 @@
                   </div>
                   <div class="file-dropzone-box mt-2" onclick="document.getElementById('trekOperatorPhotoInput').click()" ondragover="handleDropzoneDragOver(event, this)" ondragleave="handleDropzoneDragLeave(this)" ondrop="handleDropzoneDrop(event, 'trekOperatorPhotoInput', this)">
                     <i class="bi bi-cloud-arrow-up text-primary fs-4 d-block mb-1"></i>
-                    <span class="small text-muted" id="label_trek_operator_photo">Click or Drag file to upload</span>
+                    <span class="small text-muted" id="label_trek_operator_photo">Tour_Operator_Photo.jpg</span>
                   </div>
                   <input type="file" class="d-none" id="trekOperatorPhotoInput" accept="image/*,.pdf" onchange="handleSpecialPhotoSelect('operator', this)">
                 </div>
-                <div class="mt-2 text-end d-none" id="preview_trek_operator_photo">
-                  <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached</span>
+                <div class="mt-2 text-end" id="preview_trek_operator_photo">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached (Demo)</span>
                   <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeSpecialPhoto()" style="font-size: 0.75rem;">Remove</button>
                 </div>
               </div>
@@ -695,10 +745,13 @@
     });
 
     function populateLiaisonOfficers() {
-      const sel = document.getElementById('expLiaisonOfficer');
-      if (!sel || !window.WorkflowEngine) return;
+      if (!window.WorkflowEngine) return;
       const list = WorkflowEngine.getLiaisonOfficers().filter(o => o.active !== false);
-      sel.innerHTML = list.map(o => `<option value="${o.name}">${o.name} (${o.phone})</option>`).join('');
+      const html = list.map(o => `<option value="${o.name}">${o.name} (${o.phone})</option>`).join('');
+      const expSel = document.getElementById('expLiaisonOfficer');
+      const trekSel = document.getElementById('trekLiaisonOfficer');
+      if (expSel) expSel.innerHTML = html;
+      if (trekSel) trekSel.innerHTML = html;
     }
 
     const CATEGORY_DEFAULTS = {
@@ -760,11 +813,36 @@
       document.getElementById('expeditionSectionBlock').classList.toggle('d-none', catId !== 'expedition');
       document.getElementById('trekkingSectionBlock').classList.toggle('d-none', catId !== 'trekking');
       document.getElementById('trekkingPhotosUploadBox').classList.toggle('d-none', catId !== 'trekking');
+      const isDateRangeCat = (catId === 'events-fairs' || catId === 'satellite-phone' || catId === 'other');
+      document.getElementById('dateRangeSectionBlock').classList.toggle('d-none', !isDateRangeCat);
+      document.getElementById('satPhoneImeiGroup').classList.toggle('d-none', catId !== 'satellite-phone');
 
       document.getElementById('step2CatLabel').textContent = cfg.name;
       recalculateFee();
       renderDynamicDocumentRows();
-      if (catId === 'trekking') onTrekParticipantCountChange();
+      if (catId === 'trekking') {
+        onTrekCompositionChange();
+        onTrekParticipantCountChange();
+      }
+    }
+
+    function onTrekCompositionChange() {
+      const comp = document.getElementById('trekComposition').value;
+      const total = Math.min(10, Math.max(1, parseInt(document.getElementById('trekPersons').value || '1', 10)));
+      const grp = document.getElementById('trekForeignCountGroup');
+      const inp = document.getElementById('trekForeignCount');
+      if (comp === 'Indians only') {
+        grp.classList.add('d-none');
+        inp.value = 0;
+      } else if (comp === 'Foreigners only') {
+        grp.classList.remove('d-none');
+        inp.value = total;
+      } else {
+        grp.classList.remove('d-none');
+        if (parseInt(inp.value || '0', 10) <= 0) inp.value = Math.min(total, 1);
+      }
+      recalculateFee();
+      renderDynamicDocumentRows();
     }
 
     function recalculateFee() {
@@ -773,9 +851,9 @@
         const pax = Math.max(1, parseInt(document.getElementById('expPersons').value || '1', 10));
         document.getElementById('expFeePreview').textContent = '₹' + (pax * 100).toLocaleString('en-IN');
       } else if (catId === 'trekking') {
-        const pax = Math.min(10, Math.max(1, parseInt(document.getElementById('trekPersons').value || '1', 10)));
-        document.getElementById('trekPaxCountDisplay').textContent = pax;
-        document.getElementById('trekFeePreview').textContent = '₹' + (pax * 100).toLocaleString('en-IN');
+        const total = Math.min(10, Math.max(1, parseInt(document.getElementById('trekPersons').value || '1', 10)));
+        document.getElementById('trekPaxCountDisplay').textContent = total;
+        document.getElementById('trekFeePreview').textContent = '₹' + (total * 100).toLocaleString('en-IN');
       }
     }
 
@@ -804,12 +882,12 @@
                 </div>
                 <div class="file-dropzone-box mt-2" onclick="document.getElementById('input_trekker_photo_${i}').click()" ondragover="handleDropzoneDragOver(event, this)" ondragleave="handleDropzoneDragLeave(this)" ondrop="handleDropzoneDrop(event, 'input_trekker_photo_${i}', this)">
                   <i class="bi bi-cloud-arrow-up text-primary fs-4 d-block mb-1"></i>
-                  <span class="small text-muted" id="label_trekker_photo_${i}">Click or Drag file to upload</span>
+                  <span class="small text-muted" id="label_trekker_photo_${i}">trekker_${i}_photo.jpg</span>
                 </div>
                 <input type="file" class="d-none" id="input_trekker_photo_${i}" accept="image/*,.pdf" onchange="handleTrekkerPhotoSelect(${i}, this)">
               </div>
-              <div class="mt-2 text-end d-none" id="preview_trekker_photo_${i}">
-                <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached</span>
+              <div class="mt-2 text-end" id="preview_trekker_photo_${i}">
+                <span class="badge bg-success-subtle text-success border border-success-subtle small me-1"><i class="bi bi-check2 me-1"></i>Attached (Demo)</span>
                 <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="removeTrekkerPhoto(${i})" style="font-size: 0.75rem;">Remove</button>
               </div>
             </div>
@@ -831,7 +909,7 @@
     function removeSpecialPhoto() {
       const inp = document.getElementById('trekOperatorPhotoInput');
       if (inp) inp.value = '';
-      operatorPhotoFile = 'Operator_Photo.jpg';
+      operatorPhotoFile = '';
       const lbl = document.getElementById('label_trek_operator_photo');
       const prev = document.getElementById('preview_trek_operator_photo');
       if (lbl) lbl.textContent = 'Click or Drag file to upload';
@@ -852,7 +930,7 @@
     function removeTrekkerPhoto(idx) {
       const inp = document.getElementById(`input_trekker_photo_${idx}`);
       if (inp) inp.value = '';
-      trekkerPhotoFiles[idx - 1] = { name: `Trekker ${idx}`, fileName: `trekker_${idx}_photo.jpg` };
+      trekkerPhotoFiles[idx - 1] = { name: `Trekker ${idx}`, fileName: '' };
       const lbl = document.getElementById(`label_trekker_photo_${idx}`);
       const prev = document.getElementById(`preview_trekker_photo_${idx}`);
       if (lbl) lbl.textContent = 'Click or Drag file to upload';
@@ -878,15 +956,65 @@
       }
     }
 
+    const removedDemoDocs = {};
+
     function renderDynamicDocumentRows() {
       const catId = document.getElementById('categorySelect').value;
       const reqs = WorkflowEngine.getDocumentRequirements(catId);
       const comp = document.getElementById('trekComposition') ? document.getElementById('trekComposition').value : '';
+      const hasForeigners = (comp === 'Foreigners only' || comp === 'Both foreigners and Indians');
       const container = document.getElementById('dynamicDocRequirementsList');
 
-      container.innerHTML = reqs.map(doc => {
-        const isVisaMandatory = doc.conditionalOnForeigner && (comp === 'Foreigners only' || comp === 'Both foreigners and Indians');
-        const isMand = doc.mandatory || isVisaMandatory;
+      // Pre-fill demo merged files for Trekking mandatory slots unless explicitly removed
+      if (catId === 'trekking') {
+        const demoFiles = {
+          med_insurance: 'Medical_Insurance_All_Trekkers_Merged.pdf',
+          passport: 'Foreign_Trekkers_Passports_Merged.pdf',
+          visa: 'Foreign_Trekkers_Visas_Merged.pdf'
+        };
+        reqs.forEach(doc => {
+          const isMand = doc.mandatory || (doc.conditionalOnForeigner && hasForeigners);
+          if (isMand && demoFiles[doc.id] && !uploadedDocsMap[doc.id] && !removedDemoDocs[doc.id]) {
+            uploadedDocsMap[doc.id] = {
+              id: doc.id,
+              name: doc.name,
+              fileName: demoFiles[doc.id],
+              size: '1.2 MB',
+              date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+            };
+          }
+        });
+      } else if (catId === 'expedition') {
+        const expDemoFiles = {
+          expedition_itinerary: 'Expedition_Route_Plan_Peak_Clearance.pdf',
+          medical_fitness: 'Expedition_Medical_Fitness_Merged.pdf',
+          insurance_opt: 'Expedition_Team_Insurance_Merged.pdf',
+          guide_details: 'Expedition_Guide_Credentials_Merged.pdf',
+          clients_sheets: 'Expedition_Client_Roster_Sheet.pdf'
+        };
+        reqs.forEach(doc => {
+          if (expDemoFiles[doc.id] && !uploadedDocsMap[doc.id] && !removedDemoDocs[doc.id]) {
+            uploadedDocsMap[doc.id] = {
+              id: doc.id,
+              name: doc.name,
+              fileName: expDemoFiles[doc.id],
+              size: '1.1 MB',
+              date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+            };
+          }
+        });
+      }
+
+      container.innerHTML = reqs
+        .filter(doc => {
+          if (catId === 'trekking' && comp === 'Indians only' && doc.conditionalOnForeigner) {
+            return false;
+          }
+          return true;
+        })
+        .map(doc => {
+        const isForeignerMand = doc.conditionalOnForeigner && (comp === 'Foreigners only' || comp === 'Both foreigners and Indians');
+        const isMand = doc.mandatory || isForeignerMand;
         const badge = doc.notRequired
           ? '<span class="badge bg-secondary-subtle text-secondary small">Not Required</span>'
           : (isMand
@@ -918,6 +1046,7 @@
                   <span class="small fw-bold text-dark">${doc.name}</span>
                   ${badge}
                 </div>
+                ${doc.note ? `<div class="text-muted mb-1" style="font-size: 0.72rem;">${doc.note}</div>` : ''}
                 <div class="file-dropzone-box mt-2" onclick="document.getElementById('input_${doc.id}').click()" ondragover="handleDropzoneDragOver(event, this)" ondragleave="handleDropzoneDragLeave(this)" ondrop="handleDropzoneDrop(event, 'input_${doc.id}', this)">
                   <i class="bi bi-cloud-arrow-up text-primary fs-4 d-block mb-1"></i>
                   <span class="small text-muted" id="label_${doc.id}">${existing ? existing.fileName : 'Click or Drag file to upload'}</span>
@@ -954,6 +1083,7 @@
     function removeAttachedDoc(docId) {
       const inp = document.getElementById('input_' + docId);
       if (inp) inp.value = '';
+      removedDemoDocs[docId] = true;
       delete uploadedDocsMap[docId];
       const lbl = document.getElementById('label_' + docId);
       const prev = document.getElementById('preview_' + docId);
@@ -1025,22 +1155,34 @@
       const catId = document.getElementById('categorySelect').value;
       const reqs = WorkflowEngine.getDocumentRequirements(catId);
       const comp = document.getElementById('trekComposition') ? document.getElementById('trekComposition').value : '';
+      const hasForeigners = (comp === 'Foreigners only' || comp === 'Both foreigners and Indians');
+
+      if (catId === 'trekking') {
+        const opInp = document.getElementById('trekOperatorPhotoInput');
+        const hasOpPhoto = Boolean((opInp && opInp.files && opInp.files[0]) || operatorPhotoFile);
+        const missingPhotos = [];
+        if (!hasOpPhoto) missingPhotos.push('Tour Operator Passport Photograph');
+        const count = Math.min(10, Math.max(1, parseInt(document.getElementById('trekPersons').value || '1', 10)));
+        for (let i = 1; i <= count; i++) {
+          const tInp = document.getElementById(`input_trekker_photo_${i}`);
+          const hasTPhoto = Boolean((tInp && tInp.files && tInp.files[0]) || (trekkerPhotoFiles[i - 1] && trekkerPhotoFiles[i - 1].fileName));
+          if (!hasTPhoto) missingPhotos.push(`Trekker ${i} Passport Format Photograph`);
+        }
+        if (missingPhotos.length > 0) {
+          alert(`Please upload passport-sized photographs for all members:\n• ${missingPhotos.join('\n• ')}`);
+          return;
+        }
+      }
+
       const missing = reqs.filter(doc => {
-        const isVisaMand = doc.conditionalOnForeigner && (comp === 'Foreigners only' || comp === 'Both foreigners and Indians');
-        return (doc.mandatory || isVisaMand) && !doc.notRequired && !uploadedDocsMap[doc.id];
+        if (catId === 'trekking' && !hasForeigners && doc.conditionalOnForeigner) return false;
+        const isForeignerMand = doc.conditionalOnForeigner && hasForeigners;
+        return (doc.mandatory || isForeignerMand) && !doc.notRequired && !uploadedDocsMap[doc.id];
       });
-      if (missing.length > 0 && !confirm(`Note: ${missing.length} mandatory document slot(s) (${missing.map(m => m.name).join(', ')}) have no file chosen. Attach prototype placeholder files and proceed?`)) {
+      if (missing.length > 0) {
+        alert(`Please upload all mandatory supporting documents before proceeding:\n• ${missing.map(m => m.name).join('\n• ')}`);
         return;
       }
-      missing.forEach(doc => {
-        uploadedDocsMap[doc.id] = {
-          id: doc.id,
-          name: doc.name,
-          fileName: doc.id + '_verified_upload.pdf',
-          size: '1.1 MB',
-          date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-        };
-      });
 
       buildSummary();
       goToStep(3);
@@ -1050,9 +1192,15 @@
       const catId = document.getElementById('categorySelect').value;
       const cfg = WorkflowEngine.getCategoryConfig(catId);
       let pax = 1;
-      if (catId === 'expedition') pax = parseInt(document.getElementById('expPersons').value || '1', 10);
-      if (catId === 'trekking') pax = parseInt(document.getElementById('trekPersons').value || '1', 10);
-      const fee = cfg.feePerPerson ? ('₹' + (pax * cfg.feePerPerson).toLocaleString('en-IN')) : 'Free';
+      let feeAmount = 0;
+      if (catId === 'expedition') {
+        pax = parseInt(document.getElementById('expPersons').value || '1', 10);
+        feeAmount = pax * 100;
+      } else if (catId === 'trekking') {
+        pax = Math.min(10, Math.max(1, parseInt(document.getElementById('trekPersons').value || '1', 10)));
+        feeAmount = pax * 100;
+      }
+      const fee = feeAmount > 0 ? ('₹' + feeAmount.toLocaleString('en-IN')) : 'Free';
 
       let extraHtml = '';
       if (catId === 'drone') {
@@ -1063,8 +1211,14 @@
                      <div class="col-md-6"><strong>Requested Duration:</strong> ${document.getElementById('expDurationValue').value} ${document.getElementById('expDurationUnit').value}</div>
                      <div class="col-md-6"><strong>Liaison Officer:</strong> ${document.getElementById('expLiaisonOfficer').value}</div>`;
       } else if (catId === 'trekking') {
+        const durVal = document.getElementById('trekDurationValue').value || '7';
+        const durUnit = document.getElementById('trekDurationUnit').value || 'Days';
         extraHtml = `<div class="col-md-6"><strong>Participants:</strong> ${pax} (${document.getElementById('trekComposition').value})</div>
-                     <div class="col-md-6"><strong>Porters:</strong> ${document.getElementById('trekPorters').value} • <strong>Validity:</strong> 10 Days</div>`;
+                     <div class="col-md-6"><strong>Porters:</strong> ${document.getElementById('trekPorters').value} &bull; <strong>Requested Validity:</strong> ${durVal} ${durUnit}</div>`;
+      } else {
+        const sDate = document.getElementById('activityStartDate').value || 'TBD';
+        const eDate = document.getElementById('activityEndDate').value || 'TBD';
+        extraHtml = `<div class="col-md-6"><strong>Proposed Dates:</strong> ${sDate} to ${eDate}</div>`;
       }
 
       const docs = Object.values(uploadedDocsMap);
@@ -1137,7 +1291,7 @@
           uin: document.getElementById('droneUin').value.trim(),
           remotePilotName: document.getElementById('dronePilotName').value.trim(),
           remotePilotCertNo: document.getElementById('dronePilotCertNo').value.trim(),
-          approvedPeriod: '',
+          approvedPeriod: document.getElementById('droneProposedPeriod').value.trim() || '15 Days from Approval',
           permissibleAltitudeAgl: '',
           approvedFlyingArea: ''
         };
@@ -1145,6 +1299,7 @@
         const durVal = document.getElementById('expDurationValue').value;
         const durUnit = document.getElementById('expDurationUnit').value;
         payload.liaisonOfficer = document.getElementById('expLiaisonOfficer').value;
+        payload.feeAmount = pax * 100;
         payload.expeditionDetails = {
           peakName: document.getElementById('expPeakSelect').value,
           requestedDurationValue: durVal,
@@ -1152,17 +1307,37 @@
           requestedDurationText: `${durVal} ${durUnit}`,
           participantCount: pax
         };
-        payload.validityLabel = `${durVal} ${durUnit} (Applicant Requested)`;
+        payload.validityLabel = `${durVal} ${durUnit} (from Approval Date)`;
       } else if (catId === 'trekking') {
+        const durVal = document.getElementById('trekDurationValue').value || '7';
+        const durUnit = document.getElementById('trekDurationUnit').value || 'Days';
+        const fPax = parseInt(document.getElementById('trekForeignCount').value || '0', 10) || 0;
+        payload.liaisonOfficer = document.getElementById('trekLiaisonOfficer').value;
+        payload.feeAmount = pax * 100;
         payload.trekkingDetails = {
           participantCount: pax,
+          foreignTrekkerCount: fPax,
           composition: document.getElementById('trekComposition').value,
           porterCount: parseInt(document.getElementById('trekPorters').value || '2', 10),
           onBehalf: document.getElementById('trekOnBehalfCheck').checked,
-          validityDays: 10,
+          requestedDurationValue: durVal,
+          requestedDurationUnit: durUnit,
+          requestedDurationText: `${durVal} ${durUnit}`,
           operatorPhotoName: operatorPhotoFile,
           trekkerPhotos: trekkerPhotoFiles
         };
+        payload.validityLabel = `${durVal} ${durUnit} (from Approval Date)`;
+      } else {
+        payload.feeAmount = 0;
+        payload.startDate = document.getElementById('activityStartDate').value || '';
+        payload.endDate = document.getElementById('activityEndDate').value || '';
+        if (catId === 'satellite-phone') {
+          payload.satPhoneDetails = {
+            imei: document.getElementById('satPhoneImei').value.trim(),
+            startDate: payload.startDate,
+            endDate: payload.endDate
+          };
+        }
       }
 
       const created = WorkflowEngine.ingestCitizenSubmission(payload);

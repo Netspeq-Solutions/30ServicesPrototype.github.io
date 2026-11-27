@@ -17,12 +17,20 @@
 
   const STORAGE_KEY = 'tourism_department_applications';
   const STORAGE_VERSION_KEY = 'tourism_dept_apps_version';
-  const CURRENT_SEED_VERSION = 'v9_final_scope_2026';
+  const CURRENT_SEED_VERSION = 'v10_clean_approved_2026';
   const SUBMITTED_STORAGE_KEY = 'tourism_permission_submitted';
   const LO_STORAGE_KEY = 'tourism_permission_lo_directory';
+  const NOTIFICATIONS_KEY = 'tourism_permission_notifications_v1';
+  let syncChannel = null;
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      syncChannel = new BroadcastChannel('tourism_permission_sync_v1');
+    }
+  } catch (e) {}
 
   const STATUSES = {
     SUBMITTED: 'Submitted',
+    UNDER_HQ_REVIEW: 'Under Review by Headquarters',
     PAYMENT_PENDING: 'Payment Pending',
     RETURNED: 'Returned for Correction',
     REJECTED: 'Rejected',
@@ -33,16 +41,19 @@
     STAGE_1: 'Application Submitted',
     STAGE_2: 'Awaiting TO Verification',
     STAGE_3: 'Awaiting DTO Review',
-    STAGE_4: 'Awaiting HQ Officer Review',
+    STAGE_4: 'Awaiting HQ Reviewing Officer',
+    STAGE_4_UNDER_REVIEW: 'Under Review by Headquarters',
+    STAGE_4B: 'Awaiting HQ Decision',
     STAGE_5: 'Returned by HQ to DTO',
     STAGE_5B: 'Returned by DTO to TO',
+    STAGE_5C: 'Returned by HQ to TO',
     STAGE_6: 'Awaiting Citizen Correction',
     STAGE_7: 'Awaiting TO Reverification',
     STAGE_8: 'Payment Activated – Awaiting Citizen Payment',
-    STAGE_9: 'Payment Received – Awaiting HQ Final Approval',
+    STAGE_9: 'Payment Received – Awaiting HQ Final Verification',
     STAGE_10: 'Approval Sheet Uploaded',
     STAGE_11: 'Payment Received – Awaiting DTO Final Approval',
-    STAGE_12: 'Approved – Permission Letter Issued',
+    STAGE_12: 'Approved – Approval Letter Issued',
     STAGE_13: 'Rejected'
   };
 
@@ -89,11 +100,11 @@
       approvalLevel: 'DTO',
       feePerPerson: 0,
       feeLabel: 'Free',
-      validityDays: 7,
-      validityLabel: '1 Week (7 Days)',
-      extensionAllowed: true,
-      maxExtensionDays: 7,
-      extensionLabel: 'Up to 1 additional week (DTO Decision)'
+      validityDays: null,
+      validityLabel: 'As per Approved Date Range',
+      extensionAllowed: false,
+      maxExtensionDays: 0,
+      extensionLabel: 'No Extension Permitted'
     },
     'trekking': {
       key: 'trekking',
@@ -101,8 +112,8 @@
       approvalLevel: 'DTO',
       feePerPerson: 100,
       feeLabel: '₹100 / person',
-      validityDays: 10,
-      validityLabel: '10 Days',
+      validityDays: null,
+      validityLabel: 'As per Applicant Requested Duration',
       maxParticipants: 10,
       minPorters: 2,
       extensionAllowed: false,
@@ -126,23 +137,23 @@
   // Configurable Document Requirements Matrix (Provisional Departmental Agreement)
   const DOCUMENT_REQUIREMENTS = {
     'events-fairs': [
+      { id: 'event_proposal', name: 'Event Proposal', mandatory: true, note: 'Detailed event / mela / rally proposal' },
       { id: 'fire_noc', name: 'Fire NOC', mandatory: true, note: 'Mandatory for Event / Mela / Fair / Rallies / Marathons' },
       { id: 'police_noc', name: 'Police NOC', mandatory: true, note: 'Mandatory for Event / Mela / Fair / Rallies / Marathons' },
-      { id: 'panchayat_noc', name: 'Councillor / Panchayat NOC', mandatory: true, note: 'Mandatory local body clearance' }
+      { id: 'traffic_noc', name: 'Traffic NOC (as applicable)', mandatory: false, note: 'Traffic clearance where applicable' },
+      { id: 'panchayat_noc', name: 'Councillor / Panchayat NOC (as applicable)', mandatory: false, note: 'Local body clearance as applicable' }
     ],
     'satellite-phone': [
       { id: 'imf_rec', name: 'Letter of Recommendation issued by IMF', mandatory: true, note: 'Only required supporting document for Satellite Phone Permission' }
     ],
     'trekking': [
-      { id: 'passport', name: 'Passport', mandatory: true, note: 'Required for trekking participants' },
-      { id: 'visa', name: 'Visa (where applicable)', mandatory: false, conditionalOnForeigner: true, note: 'Mandatory for foreign nationals' },
-      { id: 'med_insurance', name: 'Medical Insurance', mandatory: true, note: 'Required trekking medical insurance' },
-      { id: 'trekker_photos', name: 'Photograph of Each Trekker', mandatory: true, note: 'Individual participant photographs for certificate' },
-      { id: 'operator_photo', name: 'Tour Operator Photograph', mandatory: true, note: 'Displayed on generated Trekking Certificate' },
-      { id: 'medical_fitness', name: 'Medical Fitness', mandatory: false, optionalChecklist: true, note: 'Optional checklist document' },
-      { id: 'insurance_opt', name: 'Insurance (Additional)', mandatory: false, optionalChecklist: true, note: 'Optional checklist document' },
-      { id: 'guide_details', name: 'Guide Details', mandatory: false, optionalChecklist: true, note: 'Optional checklist document' },
-      { id: 'clients_sheets', name: 'Clients Sheets', mandatory: false, optionalChecklist: true, note: 'Optional checklist document' }
+      { id: 'passport', name: 'Passports (Foreign Trekkers)', mandatory: false, conditionalOnForeigner: true, note: 'Not required for Indian trekkers. Merge all foreign trekkers\' passports into a single PDF file and upload.' },
+      { id: 'visa', name: 'Visas (Foreign Trekkers)', mandatory: false, conditionalOnForeigner: true, note: 'Not required for Indian trekkers. Merge all foreign trekkers\' visas into a single PDF file and upload.' },
+      { id: 'med_insurance', name: 'Medical Insurance (Consolidated)', mandatory: true, note: 'Merge all trekkers\' medical insurance policies into a single PDF file and upload.' },
+      { id: 'medical_fitness', name: 'Medical Fitness (Consolidated)', mandatory: false, optionalChecklist: true, note: 'Optional — merge all members\' fitness certificates into a single PDF file.' },
+      { id: 'insurance_opt', name: 'Insurance (Additional)', mandatory: false, optionalChecklist: true, note: 'Optional — merge multiple policies into a single PDF file.' },
+      { id: 'guide_details', name: 'Guide Details', mandatory: false, optionalChecklist: true, note: 'Optional — merge guide credentials into a single PDF file.' },
+      { id: 'clients_sheets', name: 'Clients Sheets', mandatory: false, optionalChecklist: true, note: 'Optional — upload consolidated client roster as a single PDF file.' }
     ],
     'expedition': [
       { id: 'expedition_itinerary', name: 'Expedition Route Plan & Peak Clearance Dossier', mandatory: true, note: 'Peak details and proposed schedule' },
@@ -305,907 +316,11 @@
   }
 
   // Comprehensive Seed Applications covering TO, DTO, HQ, Payment Activation, Post-Payment, Final Approval, Extensions
-  const SEED_APPLICATIONS = [
-    // 1. Drone Permission – Newly submitted, Awaiting TO Verification (HQ Workflow)
-    {
-      refNo: 'SK-TP-2026-APP-00621',
-      flowType: 'flow_a',
-      flowTitle: 'HQ-Level Approval (Drone Permission)',
-      category: 'Drone Permission',
-      categoryKey: 'drone',
-      district: 'Gangtok',
-      dtoOffice: DISTRICT_OFFICES['Gangtok'].office,
-      status: STATUSES.SUBMITTED,
-      currentStage: STAGES.STAGE_2,
-      currentStageNum: 2,
-      assignedRole: 'to',
-      applicantName: 'Sonam Tobgay Bhutia',
-      organizationName: 'Himalaya Aerial Films Pvt. Ltd.',
-      phone: '9800778899',
-      email: 'sonam.bhutia.drone@himalayafilms.in',
-      address: 'Deorali Bazar, Near Ropeway Station, Gangtok – 737102',
-      activityTitle: 'Aerial Cinematography of Tsomgo Lake Corridor',
-      activityDescription: 'Commercial documentary aerial filming using DJI Inspire 3 (UIN registered) strictly outside restricted defence perimeters.',
-      droneDetails: {
-        purpose: 'Tourism Promotional Documentary Filming',
-        location: 'Tsomgo Lake Outer Viewing Deck',
-        district: 'Gangtok',
-        latitude: '27.3742° N',
-        longitude: '88.7619° E',
-        makeModel: 'DJI Inspire 3',
-        categoryWeight: 'Small Category (3.99 kg)',
-        uin: 'UA-0026-INSP3-9921',
-        remotePilotName: 'Sonam Tobgay Bhutia',
-        remotePilotCertNo: 'RPC-DGCA-2025-4410',
-        approvedPeriod: '',
-        permissibleAltitudeAgl: '',
-        approvedFlyingArea: ''
-      },
-      validityDays: 15,
-      validityLabel: '15 Days',
-      extensionAllowed: true,
-      maxExtensionDays: 15,
-      participantCount: 1,
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: false,
-      isPaid: false,
-      paymentStatus: 'NOT_ACTIVATED',
-      submissionDate: '18 Nov 2026, 09:30 AM',
-      lastUpdated: '18 Nov 2026, 09:30 AM',
-      requiresHqVerification: true,
-      documents: [
-        { id: 'doc_621_1', name: 'Drone UIN & Remote Pilot Certificate', fileName: 'DGCA_UIN_RPC_Inspire3.pdf', size: '1.2 MB', date: '18 Nov 2026' },
-        { id: 'doc_621_2', name: 'Flight Area Map & Coordinates Sheet', fileName: 'Tsomgo_Coordinates_Map.pdf', size: '2.4 MB', date: '18 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Sonam Tobgay Bhutia',
-          office: 'Applicant Portal',
-          date: '18 Nov 2026, 09:30 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Drone Permission dossier submitted online for initial TO verification.'
-        }
-      ]
-    },
-
-    // 2. Expedition Permission – Awaiting TO Verification (HQ Workflow, Fee = 5 * 100 = ₹500)
-    {
-      refNo: 'SK-TP-2026-APP-00890',
-      flowType: 'flow_a',
-      flowTitle: 'HQ-Level Approval (Expedition Permission)',
-      category: 'Expedition Permission',
-      categoryKey: 'expedition',
-      district: 'Gyalshing',
-      dtoOffice: DISTRICT_OFFICES['Gyalshing'].office,
-      status: STATUSES.SUBMITTED,
-      currentStage: STAGES.STAGE_2,
-      currentStageNum: 2,
-      assignedRole: 'to',
-      applicantName: 'Nima Dorjee Sherpa',
-      organizationName: 'Khangchendzonga Alpine Expeditions',
-      phone: '9832445566',
-      email: 'nima.sherpa@alpine-sikkim.in',
-      address: 'Yuksom Bazar, Gyalshing, West Sikkim – 737113',
-      activityTitle: 'Mt. Tinchenkhang (6,010 m) Alpine Expedition',
-      activityDescription: 'High-altitude mountaineering expedition to Mt. Tinchenkhang with 5 certified climbers and Liaison Officer Roshni Subba.',
-      expeditionDetails: {
-        peakName: 'Mt. Tinchenkhang (6,010 m)',
-        requestedDurationValue: '21',
-        requestedDurationUnit: 'Days',
-        requestedDurationText: '21 Days',
-        participantCount: 5
-      },
-      liaisonOfficer: 'Roshni Subba',
-      participantCount: 5,
-      fee: '₹500',
-      feeAmount: 500,
-      paymentActivated: false,
-      isPaid: false,
-      paymentStatus: 'NOT_ACTIVATED',
-      extensionAllowed: false,
-      submissionDate: '19 Nov 2026, 10:15 AM',
-      lastUpdated: '19 Nov 2026, 10:15 AM',
-      requiresHqVerification: true,
-      documents: [
-        { id: 'doc_890_1', name: 'Expedition Route Plan & Peak Clearance Dossier', fileName: 'Tinchenkhang_Expedition_Plan.pdf', size: '2.1 MB', date: '19 Nov 2026' },
-        { id: 'doc_890_2', name: 'Medical Fitness (Optional)', fileName: 'Climbers_Medical_Optional.pdf', size: '950 KB', date: '19 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Nima Dorjee Sherpa',
-          office: 'Applicant Portal',
-          date: '19 Nov 2026, 10:15 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Expedition Permission submitted for 5 participants (21 Days requested).'
-        }
-      ]
-    },
-
-    // 3. Trekking Permission – Awaiting DTO Review (DTO Workflow, 4 trekkers = ₹400)
-    {
-      refNo: 'SK-TP-2026-APP-00481',
-      flowType: 'flow_b',
-      flowTitle: 'DTO-Level Approval (Trekking)',
-      category: 'Trekking',
-      categoryKey: 'trekking',
-      district: 'Gangtok',
-      dtoOffice: DISTRICT_OFFICES['Gangtok'].office,
-      status: STATUSES.SUBMITTED,
-      currentStage: STAGES.STAGE_3,
-      currentStageNum: 3,
-      assignedRole: 'dto',
-      applicantName: 'Tenzing Norbu Lepcha',
-      organizationName: 'Singalila Eco Treks',
-      phone: '9800123456',
-      email: 'tenzing.lepcha@example.in',
-      address: 'Near Ridge Park, Below Raj Bhawan, Gangtok – 737101',
-      activityTitle: 'Singalila Ridge Scenic Eco-Trek (4 Participants)',
-      activityDescription: '6-day eco-trekking route along Singalila Ridge with 4 Indian trekkers and 3 certified porters.',
-      trekkingDetails: {
-        participantCount: 4,
-        composition: 'Indians only',
-        porterCount: 3,
-        validityDays: 10,
-        operatorPhotoName: 'Operator_Tenzing.jpg',
-        trekkerPhotos: [
-          { name: 'Trekker 1 – Tenzing Norbu', fileName: 'trekker_1.jpg' },
-          { name: 'Trekker 2 – Pema Bhutia', fileName: 'trekker_2.jpg' },
-          { name: 'Trekker 3 – Karma Wangdi', fileName: 'trekker_3.jpg' },
-          { name: 'Trekker 4 – Doma Lepcha', fileName: 'trekker_4.jpg' }
-        ]
-      },
-      participantCount: 4,
-      fee: '₹400',
-      feeAmount: 400,
-      paymentActivated: false,
-      isPaid: false,
-      paymentStatus: 'NOT_ACTIVATED',
-      validityDays: 10,
-      validityLabel: '10 Days',
-      extensionAllowed: false,
-      submissionDate: '17 Nov 2026, 11:00 AM',
-      lastUpdated: '18 Nov 2026, 02:20 PM',
-      requiresHqVerification: false,
-      documents: [
-        { id: 'doc_481_1', name: 'Passport / Government IDs', fileName: 'Trekker_Passports_IDs.pdf', size: '1.8 MB', date: '17 Nov 2026' },
-        { id: 'doc_481_2', name: 'Medical Insurance', fileName: 'Trek_Medical_Insurance.pdf', size: '820 KB', date: '17 Nov 2026' },
-        { id: 'doc_481_3', name: 'Photograph of Each Trekker & Operator', fileName: 'Trekker_Operator_Photos.zip', size: '2.4 MB', date: '17 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Tenzing Norbu Lepcha',
-          office: 'Applicant Portal',
-          date: '17 Nov 2026, 11:00 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Trekking application submitted for 4 Indian participants and 3 porters.'
-        },
-        {
-          action: 'Verified & Forwarded to DTO',
-          role: 'Tourism Officer (TO)',
-          officer: 'Phurba Tshering Bhutia',
-          office: DISTRICT_OFFICES['Gangtok'].office,
-          date: '18 Nov 2026, 02:20 PM',
-          previousStage: STAGES.STAGE_2,
-          newStage: STAGES.STAGE_3,
-          remarks: 'Participant cap (<=10), minimum porters (>=2), and trekking documents verified. Forwarded to DTO.'
-        }
-      ]
-    },
-
-    // 4. Drone Permission – Awaiting HQ Officer Initial Review (HQ Workflow, TO already updated AGL & Area)
-    {
-      refNo: 'SK-TP-2026-APP-00622',
-      flowType: 'flow_a',
-      flowTitle: 'HQ-Level Approval (Drone Permission)',
-      category: 'Drone Permission',
-      categoryKey: 'drone',
-      district: 'Pakyong',
-      dtoOffice: DISTRICT_OFFICES['Pakyong'].office,
-      status: STATUSES.SUBMITTED,
-      currentStage: STAGES.STAGE_4,
-      currentStageNum: 4,
-      assignedRole: 'hq',
-      hqOfficerName: HQ_OFFICER.name,
-      applicantName: 'Rajeshwari Tamang',
-      organizationName: 'Sikkim GeoSurvey Drones',
-      phone: '9733112200',
-      email: 'rajeshwari@sikkimgeosurvey.in',
-      address: 'Pakyong Bazar, East Sikkim – 737106',
-      activityTitle: 'Tea Garden Ecological Aerial Mapping – Temi & Pakyong',
-      activityDescription: 'Non-invasive multispectral drone survey for agricultural tourism brochure.',
-      droneDetails: {
-        purpose: 'Agricultural & Eco-Tourism Mapping',
-        location: 'Pakyong Valley Ridge',
-        district: 'Pakyong',
-        latitude: '27.2435° N',
-        longitude: '88.5912° E',
-        makeModel: 'DJI Mavic 3 Enterprise',
-        categoryWeight: 'Small Category (915 g)',
-        uin: 'UA-0026-MV3E-1140',
-        remotePilotName: 'Rajeshwari Tamang',
-        remotePilotCertNo: 'RPC-DGCA-2024-8821',
-        approvedPeriod: '01 Dec 2026 to 15 Dec 2026 (15 Days)',
-        permissibleAltitudeAgl: '120 meters (393 ft) AGL',
-        approvedFlyingArea: 'Pakyong Valley Sector B (2 km radius)'
-      },
-      validityDays: 15,
-      validityLabel: '15 Days',
-      extensionAllowed: true,
-      maxExtensionDays: 15,
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: false,
-      isPaid: false,
-      paymentStatus: 'NOT_ACTIVATED',
-      submissionDate: '16 Nov 2026, 09:00 AM',
-      lastUpdated: '18 Nov 2026, 04:00 PM',
-      requiresHqVerification: true,
-      documents: [
-        { id: 'doc_622_1', name: 'Drone UIN & Remote Pilot Certificate', fileName: 'Mavic3E_UIN_RPC.pdf', size: '1.1 MB', date: '16 Nov 2026' },
-        { id: 'doc_622_2', name: 'Flight Area Map & Coordinates Sheet', fileName: 'Pakyong_Flight_Zone.pdf', size: '1.9 MB', date: '16 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Rajeshwari Tamang',
-          office: 'Applicant Portal',
-          date: '16 Nov 2026, 09:00 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Submitted online.'
-        },
-        {
-          action: 'TO Updated Drone Parameters & Forwarded to DTO',
-          role: 'Tourism Officer (TO)',
-          officer: 'Prakash Gurung',
-          office: DISTRICT_OFFICES['Pakyong'].office,
-          date: '17 Nov 2026, 11:30 AM',
-          previousStage: STAGES.STAGE_2,
-          newStage: STAGES.STAGE_3,
-          remarks: 'Updated Approved Period, Permissible Altitude (120m AGL), and Flying Area.'
-        },
-        {
-          action: 'Forwarded to HQ Officer',
-          role: 'District Tourism Officer (DTO)',
-          officer: 'Bikash Tamang',
-          office: DISTRICT_OFFICES['Pakyong'].office,
-          date: '18 Nov 2026, 04:00 PM',
-          previousStage: STAGES.STAGE_3,
-          newStage: STAGES.STAGE_4,
-          remarks: 'District review completed; forwarded to HQ Officer for payment approval.'
-        }
-      ]
-    },
-
-    // 5. Expedition Permission – Payment Received, Returned to Same HQ Officer for Approval Sheet & Final Approval
-    {
-      refNo: 'SK-TP-2026-APP-00914',
-      flowType: 'flow_a',
-      flowTitle: 'HQ-Level Approval (Expedition Permission)',
-      category: 'Expedition Permission',
-      categoryKey: 'expedition',
-      district: 'Namchi',
-      dtoOffice: DISTRICT_OFFICES['Namchi'].office,
-      status: STATUSES.SUBMITTED,
-      currentStage: STAGES.STAGE_9,
-      currentStageNum: 9,
-      assignedRole: 'hq',
-      hqOfficerName: HQ_OFFICER.name,
-      applicantName: 'Bikramjit Singh',
-      organizationName: 'Eastern Himalaya Mountaineers',
-      phone: '9832776655',
-      email: 'bikram@ehmountaineers.org',
-      address: 'Central Park Road, Namchi, South Sikkim – 737126',
-      activityTitle: 'Mt. Frey (5,830 m) Technical Climbing Expedition',
-      activityDescription: 'Technical alpine climb of Mt. Frey with 6 experienced climbers.',
-      expeditionDetails: {
-        peakName: 'Mt. Frey (5,830 m)',
-        requestedDurationValue: '1',
-        requestedDurationUnit: 'Months',
-        requestedDurationText: '1 Month',
-        participantCount: 6
-      },
-      liaisonOfficer: 'Tashi Namgyal Bhutia',
-      participantCount: 6,
-      fee: '₹600',
-      feeAmount: 600,
-      paymentActivated: true,
-      isPaid: true,
-      paymentStatus: 'PAID',
-      paymentTxnRef: 'TXN-SK-2026-91401',
-      extensionAllowed: false,
-      submissionDate: '12 Nov 2026, 10:00 AM',
-      lastUpdated: '19 Nov 2026, 11:00 AM',
-      requiresHqVerification: true,
-      documents: [
-        { id: 'doc_914_1', name: 'Expedition Route Plan & Peak Clearance Dossier', fileName: 'Mt_Frey_Plan.pdf', size: '2.5 MB', date: '12 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Bikramjit Singh',
-          office: 'Applicant Portal',
-          date: '12 Nov 2026, 10:00 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Submitted for 6 participants (1 Month).'
-        },
-        {
-          action: 'Verified & Forwarded to DTO',
-          role: 'Tourism Officer (TO)',
-          officer: 'Suman Rai',
-          office: DISTRICT_OFFICES['Namchi'].office,
-          date: '13 Nov 2026, 03:00 PM',
-          previousStage: STAGES.STAGE_2,
-          newStage: STAGES.STAGE_3,
-          remarks: 'Verified.'
-        },
-        {
-          action: 'Forwarded to HQ Officer',
-          role: 'District Tourism Officer (DTO)',
-          officer: 'Pema Wangchuk Sherpa',
-          office: DISTRICT_OFFICES['Namchi'].office,
-          date: '14 Nov 2026, 12:00 PM',
-          previousStage: STAGES.STAGE_3,
-          newStage: STAGES.STAGE_4,
-          remarks: 'Forwarded to HQ.'
-        },
-        {
-          action: 'HQ Approved for Payment (Payment Activated)',
-          role: 'HQ Officer',
-          officer: HQ_OFFICER.name,
-          office: HQ_OFFICER.office,
-          date: '16 Nov 2026, 04:00 PM',
-          previousStage: STAGES.STAGE_4,
-          newStage: STAGES.STAGE_8,
-          remarks: 'Cleared at HQ; statutory fee ₹600 activated for citizen payment.'
-        },
-        {
-          action: 'Citizen Payment Completed',
-          role: 'Citizen',
-          officer: 'Bikramjit Singh',
-          office: 'Applicant Portal',
-          date: '19 Nov 2026, 11:00 AM',
-          previousStage: STAGES.STAGE_8,
-          newStage: STAGES.STAGE_9,
-          remarks: 'Payment of ₹600 completed (Ref: TXN-SK-2026-91401). Automatically routed back to same HQ Officer for Approval Sheet upload & final approval.'
-        }
-      ]
-    },
-
-    // 6. Rally Permission – Payment Activated (Awaiting Citizen Payment - DTO Level)
-    {
-      refNo: 'SK-TP-2026-APP-00710',
-      flowType: 'flow_b',
-      flowTitle: 'DTO-Level Approval (Event / Mela / Fair / Rallies / Marathons)',
-      category: 'Event / Mela / Fair / Rallies / Marathons',
-      categoryKey: 'events-fairs',
-      district: 'Gangtok',
-      dtoOffice: DISTRICT_OFFICES['Gangtok'].office,
-      status: STATUSES.PAYMENT_PENDING,
-      currentStage: STAGES.STAGE_8,
-      currentStageNum: 8,
-      assignedRole: 'citizen',
-      returnToAfterPayment: 'dto',
-      applicantName: 'Karma Tshering Lepcha',
-      organizationName: 'Sikkim Youth Heritage Club',
-      phone: '9812345678',
-      email: 'karma.lepcha@sikkimheritage.org',
-      address: 'Development Area, Gangtok – 737101',
-      activityTitle: 'Sikkim Clean Mountain Awareness Cycle Rally',
-      activityDescription: 'Peaceful bicycle awareness rally from M.G. Marg to Tadong with 80 cyclists.',
-      validityDays: 7,
-      validityLabel: '1 Week (7 Days)',
-      extensionAllowed: true,
-      maxExtensionDays: 7,
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: true,
-      isPaid: false,
-      paymentStatus: 'PENDING',
-      submissionDate: '15 Nov 2026, 11:15 AM',
-      lastUpdated: '18 Nov 2026, 03:30 PM',
-      requiresHqVerification: false,
-      documents: [
-        { id: 'doc_710_1', name: 'Police NOC', fileName: 'Traffic_Police_Rally_NOC.pdf', size: '1.1 MB', date: '15 Nov 2026' },
-        { id: 'doc_710_2', name: 'Councillor / Panchayat NOC', fileName: 'GMC_Councillor_NOC.pdf', size: '780 KB', date: '15 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Karma Tshering Lepcha',
-          office: 'Applicant Portal',
-          date: '15 Nov 2026, 11:15 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Rally Permission submitted with Police NOC and Councillor NOC (Fire NOC not required for Rally).'
-        },
-        {
-          action: 'Verified & Forwarded to DTO',
-          role: 'Tourism Officer (TO)',
-          officer: 'Phurba Tshering Bhutia',
-          office: DISTRICT_OFFICES['Gangtok'].office,
-          date: '16 Nov 2026, 01:00 PM',
-          previousStage: STAGES.STAGE_2,
-          newStage: STAGES.STAGE_3,
-          remarks: 'Documents verified.'
-        },
-        {
-          action: 'DTO Activated Payment / Clearance',
-          role: 'District Tourism Officer (DTO)',
-          officer: 'Karma Lhendup Bhutia',
-          office: DISTRICT_OFFICES['Gangtok'].office,
-          date: '18 Nov 2026, 03:30 PM',
-          previousStage: STAGES.STAGE_3,
-          newStage: STAGES.STAGE_8,
-          remarks: 'Initial DTO review approved; payment/fee step activated for citizen confirmation.'
-        }
-      ]
-    },
-
-    // 7. Satellite Phone Permission – Payment Received, Awaiting DTO Final Approval
-    {
-      refNo: 'SK-TP-2026-APP-00560',
-      flowType: 'flow_b',
-      flowTitle: 'DTO-Level Approval (Satellite Phone Permission)',
-      category: 'Satellite Phone Permission',
-      categoryKey: 'satellite-phone',
-      district: 'Mangan',
-      dtoOffice: DISTRICT_OFFICES['Mangan'].office,
-      status: STATUSES.SUBMITTED,
-      currentStage: STAGES.STAGE_11,
-      currentStageNum: 11,
-      assignedRole: 'dto',
-      applicantName: 'Dr. Ananya Sharma',
-      organizationName: 'Himalayan Glaciology Research Team',
-      phone: '9832009988',
-      email: 'ananya.sharma@glaciology.edu.in',
-      address: 'Lachen Valley Camp, Mangan District – 737120',
-      activityTitle: 'Iridium Satellite Phone Usage for High-Altitude Field Survey',
-      activityDescription: 'Emergency satellite communication permit for 6-member research expedition in Lachen/Gurudongmar sector.',
-      extensionAllowed: false,
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: true,
-      isPaid: true,
-      paymentStatus: 'PAID',
-      paymentTxnRef: 'TXN-SK-2026-56001',
-      submissionDate: '14 Nov 2026, 02:00 PM',
-      lastUpdated: '19 Nov 2026, 09:45 AM',
-      requiresHqVerification: false,
-      documents: [
-        { id: 'doc_560_1', name: 'Letter of Recommendation issued by IMF', fileName: 'IMF_Recommendation_Letter_2026.pdf', size: '1.0 MB', date: '14 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Dr. Ananya Sharma',
-          office: 'Applicant Portal',
-          date: '14 Nov 2026, 02:00 PM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Submitted with IMF Letter of Recommendation.'
-        },
-        {
-          action: 'Verified & Forwarded to DTO',
-          role: 'Tourism Officer (TO)',
-          officer: 'Ongden Lepcha',
-          office: DISTRICT_OFFICES['Mangan'].office,
-          date: '15 Nov 2026, 11:00 AM',
-          previousStage: STAGES.STAGE_2,
-          newStage: STAGES.STAGE_3,
-          remarks: 'IMF Recommendation Letter verified.'
-        },
-        {
-          action: 'DTO Activated Payment / Clearance',
-          role: 'District Tourism Officer (DTO)',
-          officer: 'Tenzing Dadul Lepcha',
-          office: DISTRICT_OFFICES['Mangan'].office,
-          date: '17 Nov 2026, 02:00 PM',
-          previousStage: STAGES.STAGE_3,
-          newStage: STAGES.STAGE_8,
-          remarks: 'Approved for payment activation.'
-        },
-        {
-          action: 'Citizen Payment / Clearance Confirmed',
-          role: 'Citizen',
-          officer: 'Dr. Ananya Sharma',
-          office: 'Applicant Portal',
-          date: '19 Nov 2026, 09:45 AM',
-          previousStage: STAGES.STAGE_8,
-          newStage: STAGES.STAGE_11,
-          remarks: 'Returned to Mangan DTO for final approval and certificate issuance.'
-        }
-      ]
-    },
-
-    // 8. Event Permission – Returned to Citizen for Correction (Scenario D)
-    {
-      refNo: 'SK-TP-2026-APP-00329',
-      flowType: 'flow_b',
-      flowTitle: 'DTO-Level Approval (Event / Mela / Fair / Rallies / Marathons)',
-      category: 'Event / Mela / Fair / Rallies / Marathons',
-      categoryKey: 'events-fairs',
-      district: 'Namchi',
-      dtoOffice: DISTRICT_OFFICES['Namchi'].office,
-      status: STATUSES.RETURNED,
-      currentStage: STAGES.STAGE_6,
-      currentStageNum: 6,
-      assignedRole: 'citizen',
-      applicantName: 'Pema Choden Tamang',
-      organizationName: 'South Sikkim Cultural Society',
-      phone: '9733445566',
-      email: 'pema.cultural@namchi.in',
-      address: 'Bhanjyang Road, Namchi – 737126',
-      activityTitle: 'Namchi Winter Folk & Music Event 2026',
-      activityDescription: '3-day evening cultural music event at Namchi Central Park.',
-      validityDays: 7,
-      validityLabel: '1 Week (7 Days)',
-      extensionAllowed: true,
-      maxExtensionDays: 7,
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: false,
-      isPaid: false,
-      paymentStatus: 'NOT_ACTIVATED',
-      toRemarks: 'Attached Fire NOC has expired. Please upload a valid Fire NOC issued for Nov/Dec 2026.',
-      dtoRemarks: null,
-      submissionDate: '10 Nov 2026, 01:20 PM',
-      lastUpdated: '12 Nov 2026, 04:10 PM',
-      requiresHqVerification: false,
-      documents: [
-        { id: 'doc_329_1', name: 'Fire NOC', fileName: 'Expired_Fire_NOC.pdf', size: '650 KB', date: '10 Nov 2026' },
-        { id: 'doc_329_2', name: 'Police NOC', fileName: 'Namchi_Police_NOC.pdf', size: '920 KB', date: '10 Nov 2026' },
-        { id: 'doc_329_3', name: 'Councillor / Panchayat NOC', fileName: 'Namchi_MC_NOC.pdf', size: '540 KB', date: '10 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Pema Choden Tamang',
-          office: 'Applicant Portal',
-          date: '10 Nov 2026, 01:20 PM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Submitted Event application.'
-        },
-        {
-          action: 'Returned to Citizen for Clarification',
-          role: 'Tourism Officer (TO)',
-          officer: 'Suman Rai',
-          office: DISTRICT_OFFICES['Namchi'].office,
-          date: '12 Nov 2026, 04:10 PM',
-          previousStage: STAGES.STAGE_2,
-          newStage: STAGES.STAGE_6,
-          remarks: 'Attached Fire NOC has expired. Please upload a valid Fire NOC issued for Nov/Dec 2026.'
-        }
-      ]
-    },
-
-    // 9. Approved Drone Permission WITH Pending Extension Request (for DTO Decision)
-    {
-      refNo: 'SK-TP-2026-APP-00215',
-      flowType: 'flow_a',
-      flowTitle: 'HQ-Level Approval (Drone Permission)',
-      category: 'Drone Permission',
-      categoryKey: 'drone',
-      district: 'Gangtok',
-      dtoOffice: DISTRICT_OFFICES['Gangtok'].office,
-      status: STATUSES.APPROVED,
-      currentStage: STAGES.STAGE_12,
-      currentStageNum: 12,
-      assignedRole: 'none',
-      applicantName: 'Passang Doma Bhutia',
-      organizationName: 'Sikkim Heritage Lens',
-      phone: '9832109876',
-      email: 'passang.doma@sikkim.org',
-      address: 'Below Enchey Monastery, Gangtok – 737101',
-      activityTitle: 'Enchey & Tashi View Point Heritage Drone Shoot',
-      activityDescription: 'Aerial documentation of monastery architecture and Kanchenjunga sunrise viewpoints.',
-      droneDetails: {
-        purpose: 'Heritage Architecture Aerial Documentation',
-        location: 'Enchey & Tashi View Point',
-        district: 'Gangtok',
-        latitude: '27.3358° N',
-        longitude: '88.6194° E',
-        makeModel: 'DJI Air 3',
-        categoryWeight: 'Micro Category (720 g)',
-        uin: 'UA-0026-AIR3-5501',
-        remotePilotName: 'Passang Doma Bhutia',
-        remotePilotCertNo: 'RPC-DGCA-2025-1102',
-        approvedPeriod: '10 Nov 2026 to 24 Nov 2026 (15 Days)',
-        permissibleAltitudeAgl: '100 meters (328 ft) AGL',
-        approvedFlyingArea: 'Tashi View Point & Enchey Outer Corridor (1.5 km)'
-      },
-      validityDays: 15,
-      validityLabel: '15 Days (10 Nov 2026 – 24 Nov 2026)',
-      extensionAllowed: true,
-      maxExtensionDays: 15,
-      extensionRequest: {
-        requested: true,
-        status: 'Pending DTO Decision',
-        requestedDays: 10,
-        reason: 'Heavy morning fog delayed aerial shooting by 8 days; requesting 10-day extension.',
-        requestedDate: '22 Nov 2026, 10:15 AM',
-        decidedBy: null,
-        decisionDate: null,
-        decisionRemarks: null,
-        revisedValidUntil: null
-      },
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: true,
-      isPaid: true,
-      paymentStatus: 'PAID',
-      paymentTxnRef: 'TXN-SK-2026-21501',
-      permissionNumber: 'SK-TOUR-2026-DRO-00215',
-      certRef: 'SK-TOUR-2026-DRO-00215',
-      approvalDate: '09 Nov 2026',
-      approvingOfficer: HQ_OFFICER.name,
-      approvingDesignation: HQ_OFFICER.designation,
-      approvingOffice: HQ_OFFICER.office,
-      approvalSheet: {
-        sheetNo: 'HQ/APP-SHEET/2026/00215',
-        fileName: 'HQ_Approval_Sheet_00215.pdf',
-        size: '1.4 MB',
-        uploadDate: '09 Nov 2026',
-        uploadedBy: HQ_OFFICER.name,
-        designation: HQ_OFFICER.designation,
-        office: HQ_OFFICER.office,
-        eOfficeNumber: 'EOF-2026-SK-TOUR-0215',
-        concurrenceRemarks: 'Airspace clearance and security conditions verified at HQ.'
-      },
-      submissionDate: '01 Nov 2026, 09:00 AM',
-      lastUpdated: '22 Nov 2026, 10:15 AM',
-      requiresHqVerification: true,
-      documents: [
-        { id: 'doc_215_1', name: 'Drone UIN & Remote Pilot Certificate', fileName: 'Air3_UIN_RPC.pdf', size: '1.1 MB', date: '01 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Passang Doma Bhutia',
-          office: 'Applicant Portal',
-          date: '01 Nov 2026, 09:00 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Submitted online.'
-        },
-        {
-          action: 'HQ Final Approval & Permission Letter Issued',
-          role: 'HQ Officer',
-          officer: HQ_OFFICER.name,
-          office: HQ_OFFICER.office,
-          date: '09 Nov 2026, 03:30 PM',
-          previousStage: STAGES.STAGE_9,
-          newStage: STAGES.STAGE_12,
-          remarks: 'Approval Sheet uploaded and final Approval Letter SK-TOUR-2026-DRO-00215 issued.'
-        },
-        {
-          action: 'Extension Requested (10 Days)',
-          role: 'Citizen',
-          officer: 'Passang Doma Bhutia',
-          office: 'Applicant Portal',
-          date: '22 Nov 2026, 10:15 AM',
-          previousStage: STAGES.STAGE_12,
-          newStage: STAGES.STAGE_12,
-          remarks: 'Requested 10-day extension routed to Gangtok DTO: Heavy morning fog delayed aerial shooting.'
-        }
-      ]
-    },
-
-    // 10. Approved Trekking Permission (DTO Level, No Approval Sheet, 3 Trekker Photos + Operator Photo)
-    {
-      refNo: 'SK-TP-2026-APP-00484',
-      flowType: 'flow_b',
-      flowTitle: 'DTO-Level Approval (Trekking)',
-      category: 'Trekking',
-      categoryKey: 'trekking',
-      district: 'Gyalshing',
-      dtoOffice: DISTRICT_OFFICES['Gyalshing'].office,
-      status: STATUSES.APPROVED,
-      currentStage: STAGES.STAGE_12,
-      currentStageNum: 12,
-      assignedRole: 'none',
-      applicantName: 'Chewang Dorjee Bhutia',
-      organizationName: 'West Sikkim Alpine Treks',
-      phone: '9832556677',
-      email: 'chewang@westsikkimtreks.in',
-      address: 'Pelling Upper Bazar, Gyalshing – 737113',
-      activityTitle: 'Dzongri – Goecha La Heritage Trek (3 Participants)',
-      activityDescription: 'Approved 10-day trekking permit along Dzongri-Goecha La route with 3 foreign/Indian trekkers and 2 porters.',
-      trekkingDetails: {
-        participantCount: 3,
-        composition: 'Both foreigners and Indians',
-        porterCount: 2,
-        validityDays: 10,
-        operatorPhotoName: 'Operator_Chewang.jpg',
-        trekkerPhotos: [
-          { name: 'Trekker 1 – Elena Vance (UK)', fileName: 'elena_vance.jpg' },
-          { name: 'Trekker 2 – Marcus Thorne (UK)', fileName: 'marcus_thorne.jpg' },
-          { name: 'Trekker 3 – Aarav Mehta (India)', fileName: 'aarav_mehta.jpg' }
-        ]
-      },
-      participantCount: 3,
-      fee: '₹300',
-      feeAmount: 300,
-      paymentActivated: true,
-      isPaid: true,
-      paymentStatus: 'PAID',
-      paymentTxnRef: 'TXN-SK-2026-48401',
-      validityDays: 10,
-      validityLabel: '10 Days (15 Nov 2026 – 24 Nov 2026)',
-      extensionAllowed: false,
-      permissionNumber: 'SK-TOUR-2026-TRE-00484',
-      certRef: 'SK-TOUR-2026-TRE-00484',
-      approvalDate: '14 Nov 2026',
-      approvingOfficer: DISTRICT_OFFICES['Gyalshing'].dtoName,
-      approvingDesignation: 'District Tourism Officer (DTO)',
-      approvingOffice: DISTRICT_OFFICES['Gyalshing'].office,
-      approvalSheet: null,
-      submissionDate: '08 Nov 2026, 11:00 AM',
-      lastUpdated: '14 Nov 2026, 04:00 PM',
-      requiresHqVerification: false,
-      documents: [
-        { id: 'doc_484_1', name: 'Passport & Visa Copies', fileName: 'Passports_Visas_Group.pdf', size: '2.1 MB', date: '08 Nov 2026' },
-        { id: 'doc_484_2', name: 'Medical Insurance', fileName: 'Trek_Medical_Insurance.pdf', size: '1.1 MB', date: '08 Nov 2026' },
-        { id: 'doc_484_3', name: 'Participant & Operator Photographs', fileName: 'All_Photos.zip', size: '1.9 MB', date: '08 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Submitted',
-          role: 'Citizen',
-          officer: 'Chewang Dorjee Bhutia',
-          office: 'Applicant Portal',
-          date: '08 Nov 2026, 11:00 AM',
-          previousStage: 'New Submission',
-          newStage: STAGES.STAGE_2,
-          remarks: 'Submitted for 3 participants.'
-        },
-        {
-          action: 'DTO Final Approval & Permission Letter Issued',
-          role: 'District Tourism Officer (DTO)',
-          officer: DISTRICT_OFFICES['Gyalshing'].dtoName,
-          office: DISTRICT_OFFICES['Gyalshing'].office,
-          date: '14 Nov 2026, 04:00 PM',
-          previousStage: STAGES.STAGE_11,
-          newStage: STAGES.STAGE_12,
-          remarks: 'Final approval granted by Gyalshing DTO. Permission Letter SK-TOUR-2026-TRE-00484 issued.'
-        }
-      ]
-    },
-
-    // 11. Approved Fair Permission (DTO Level, Extension Eligible up to 1 week)
-    {
-      refNo: 'SK-TP-2026-APP-00636',
-      flowType: 'flow_b',
-      flowTitle: 'DTO-Level Approval (Event / Mela / Fair / Rallies / Marathons)',
-      category: 'Event / Mela / Fair / Rallies / Marathons',
-      categoryKey: 'events-fairs',
-      district: 'Pakyong',
-      dtoOffice: DISTRICT_OFFICES['Pakyong'].office,
-      status: STATUSES.APPROVED,
-      currentStage: STAGES.STAGE_12,
-      currentStageNum: 12,
-      assignedRole: 'none',
-      applicantName: 'Dawa Gyaltsen',
-      organizationName: 'Pakyong Artisans Cooperative',
-      phone: '9832998877',
-      email: 'dawa.pakyong@artisans.in',
-      address: 'Pakyong Haat Complex, Pakyong – 737106',
-      activityTitle: 'Pakyong Organic Handicrafts & Tourism Fair',
-      activityDescription: '7-day regional artisan handicraft fair at Pakyong Ground.',
-      validityDays: 7,
-      validityLabel: '1 Week (16 Nov 2026 – 22 Nov 2026)',
-      extensionAllowed: true,
-      maxExtensionDays: 7,
-      fee: 'Free',
-      feeAmount: 0,
-      paymentActivated: true,
-      isPaid: true,
-      paymentStatus: 'PAID',
-      paymentTxnRef: 'TXN-SK-2026-63601',
-      permissionNumber: 'SK-TOUR-2026-FAI-00636',
-      certRef: 'SK-TOUR-2026-FAI-00636',
-      approvalDate: '15 Nov 2026',
-      approvingOfficer: DISTRICT_OFFICES['Pakyong'].dtoName,
-      approvingDesignation: 'District Tourism Officer (DTO)',
-      approvingOffice: DISTRICT_OFFICES['Pakyong'].office,
-      approvalSheet: null,
-      submissionDate: '10 Nov 2026, 09:30 AM',
-      lastUpdated: '15 Nov 2026, 03:00 PM',
-      requiresHqVerification: false,
-      documents: [
-        { id: 'doc_636_1', name: 'Fire NOC', fileName: 'Fire_NOC_Pakyong.pdf', size: '640 KB', date: '10 Nov 2026' },
-        { id: 'doc_636_2', name: 'Police NOC', fileName: 'Police_NOC_Pakyong.pdf', size: '780 KB', date: '10 Nov 2026' },
-        { id: 'doc_636_3', name: 'Councillor / Panchayat NOC', fileName: 'Panchayat_NOC_Pakyong.pdf', size: '510 KB', date: '10 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'DTO Final Approval & Permission Letter Issued',
-          role: 'District Tourism Officer (DTO)',
-          officer: DISTRICT_OFFICES['Pakyong'].dtoName,
-          office: DISTRICT_OFFICES['Pakyong'].office,
-          date: '15 Nov 2026, 03:00 PM',
-          previousStage: STAGES.STAGE_11,
-          newStage: STAGES.STAGE_12,
-          remarks: 'Fair permission SK-TOUR-2026-FAI-00636 issued for 1 week.'
-        }
-      ]
-    },
-
-    // 12. Rejected Drone Permission
-    {
-      refNo: 'SK-TP-2026-APP-00712',
-      flowType: 'flow_a',
-      flowTitle: 'HQ-Level Approval (Drone Permission)',
-      category: 'Drone Permission',
-      categoryKey: 'drone',
-      district: 'Gangtok',
-      dtoOffice: DISTRICT_OFFICES['Gangtok'].office,
-      status: STATUSES.REJECTED,
-      currentStage: STAGES.STAGE_13,
-      currentStageNum: 13,
-      assignedRole: 'none',
-      applicantName: 'Vikramjit Das',
-      organizationName: 'SkyHigh Media',
-      phone: '9800443322',
-      email: 'vikram@skyhigh.in',
-      address: 'Tadong, Gangtok – 737102',
-      activityTitle: 'Drone Aerial Filming near Restricted Border Zone',
-      activityDescription: 'Proposed aerial shoot within restricted perimeter.',
-      droneDetails: {
-        purpose: 'Commercial Filming',
-        location: 'Nathula Restricted Perimeter',
-        district: 'Gangtok',
-        latitude: '27.3866° N',
-        longitude: '88.8309° E',
-        makeModel: 'DJI Phantom 4',
-        categoryWeight: 'Small Category (1.38 kg)',
-        uin: 'UA-0026-PH4-7712',
-        remotePilotName: 'Vikramjit Das',
-        remotePilotCertNo: 'RPC-DGCA-2024-9090'
-      },
-      fee: 'Free',
-      feeAmount: 0,
-      hqRemarks: 'Proposed coordinates fall inside restricted border security Red Zone where civilian UAS operations are prohibited.',
-      submissionDate: '05 Nov 2026, 10:00 AM',
-      lastUpdated: '08 Nov 2026, 05:00 PM',
-      requiresHqVerification: true,
-      documents: [
-        { id: 'doc_712_1', name: 'Drone UIN & Remote Pilot Certificate', fileName: 'PH4_UIN.pdf', size: '1.0 MB', date: '05 Nov 2026' }
-      ],
-      history: [
-        {
-          action: 'Application Formally Rejected',
-          role: 'HQ Officer',
-          officer: HQ_OFFICER.name,
-          office: HQ_OFFICER.office,
-          date: '08 Nov 2026, 05:00 PM',
-          previousStage: STAGES.STAGE_4,
-          newStage: STAGES.STAGE_13,
-          remarks: 'Rejected: Coordinates fall inside Red Zone prohibited airspace.'
-        }
-      ]
-    }
-  ];
+  const SEED_APPLICATIONS = [];
 
   const WorkflowEngine = {
+    STORAGE_KEY: STORAGE_KEY,
+    NOTIFICATIONS_KEY: NOTIFICATIONS_KEY,
     STATUSES: STATUSES,
     STAGES: STAGES,
     CATEGORIES: CATEGORIES,
@@ -1416,7 +531,61 @@
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
         localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_SEED_VERSION);
+        if (syncChannel) {
+          syncChannel.postMessage({ type: 'APPS_UPDATED', count: apps.length, ts: Date.now() });
+        }
       } catch (e) { }
+    },
+
+    _computeApprovedValidity: function (app, approvalDateObj) {
+      const startObj = approvalDateObj || new Date();
+      const fmt = d => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const iso = d => d.toISOString().slice(0, 10);
+      const catKey = normalizeCategoryKey(app.categoryKey || app.category);
+
+      let endObj = null;
+      let label = '';
+
+      if (catKey === 'drone') {
+        endObj = new Date(startObj.getTime() + (15 * 24 * 60 * 60 * 1000));
+        label = `${fmt(startObj)} to ${fmt(endObj)} (15 Days)`;
+        app.approvedStartDate = fmt(startObj);
+        app.approvedExpiryDate = fmt(endObj);
+        app.approvedStartDateIso = iso(startObj);
+        app.approvedExpiryDateIso = iso(endObj);
+      } else if (catKey === 'expedition' || catKey === 'trekking') {
+        const src = catKey === 'expedition' ? (app.expeditionDetails || {}) : (app.trekkingDetails || {});
+        const val = parseInt(src.requestedDurationValue || app.requestedDurationValue || 15, 10) || 15;
+        const unit = String(src.requestedDurationUnit || app.requestedDurationUnit || 'Days').toLowerCase();
+        endObj = new Date(startObj.getTime());
+        if (unit.startsWith('month')) {
+          endObj.setMonth(endObj.getMonth() + val);
+        } else {
+          endObj.setDate(endObj.getDate() + val);
+        }
+        const unitLabel = unit.startsWith('month') ? (val === 1 ? 'Month' : 'Months') : (val === 1 ? 'Day' : 'Days');
+        label = `${fmt(startObj)} to ${fmt(endObj)} (${val} ${unitLabel})`;
+        app.approvedStartDate = fmt(startObj);
+        app.approvedExpiryDate = fmt(endObj);
+        app.approvedStartDateIso = iso(startObj);
+        app.approvedExpiryDateIso = iso(endObj);
+      } else {
+        // Event / Mela / Fair / Rally / Marathon, Satellite Phone, Other Permissions -> use proposed/approved date range
+        const sRaw = app.startDate || (app.eventDetails && app.eventDetails.startDate) || (app.satPhoneDetails && app.satPhoneDetails.startDate) || '';
+        const eRaw = app.endDate || (app.eventDetails && app.eventDetails.endDate) || (app.satPhoneDetails && app.satPhoneDetails.endDate) || '';
+        const sDate = sRaw ? new Date(sRaw) : startObj;
+        const eDate = eRaw ? new Date(eRaw) : startObj;
+        const validS = isNaN(sDate.getTime()) ? startObj : sDate;
+        const validE = isNaN(eDate.getTime()) ? validS : eDate;
+        app.approvedStartDate = fmt(validS);
+        app.approvedExpiryDate = fmt(validE);
+        app.approvedStartDateIso = iso(validS);
+        app.approvedExpiryDateIso = iso(validE);
+        label = `${app.approvedStartDate} to ${app.approvedExpiryDate}`;
+      }
+
+      app.validityLabel = label;
+      return { start: app.approvedStartDate, expiry: app.approvedExpiryDate, label };
     },
 
     resetToSeedData: function () {
@@ -1424,9 +593,255 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_APPLICATIONS));
         localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_SEED_VERSION);
         localStorage.removeItem(SUBMITTED_STORAGE_KEY);
+        localStorage.removeItem(NOTIFICATIONS_KEY);
         return JSON.parse(JSON.stringify(SEED_APPLICATIONS));
       } catch (e) {
         return JSON.parse(JSON.stringify(SEED_APPLICATIONS));
+      }
+    },
+
+    // ==============================================================
+    // NOTIFICATION & REAL-TIME ACTION ALERT SYSTEM
+    // ==============================================================
+    _formatNotifTime: function () {
+      return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    },
+
+    getNotifications: function (roleFilter, districtFilter) {
+      try {
+        let raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        if (raw === null) {
+          // First-load initialization: seed actionable notifications from current applications
+          localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify([]));
+          const apps = this.getAllApplications();
+          apps.forEach(a => this._notifyForApplicationState(a, true));
+          raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        }
+        let list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) list = [];
+
+        if (roleFilter) {
+          const rf = String(roleFilter).toUpperCase();
+          list = list.filter(n => (n.targetRole || '').toUpperCase() === rf);
+        }
+        if (districtFilter && String(districtFilter).toUpperCase() !== 'ALL') {
+          const df = String(districtFilter).toLowerCase();
+          list = list.filter(n => !n.district || String(n.district).toLowerCase() === df);
+        }
+        return list;
+      } catch (e) {
+        return [];
+      }
+    },
+
+    markNotificationRead: function (notifId) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const updated = list.map(n => n.id === notifId ? Object.assign({}, n, { read: true }) : n);
+        localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+        if (syncChannel) syncChannel.postMessage({ type: 'NOTIFICATION_READ', ts: Date.now() });
+      } catch (e) {}
+    },
+
+    markAllNotificationsRead: function (targetRole, districtFilter) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const rf = targetRole ? String(targetRole).toUpperCase() : null;
+        const df = (districtFilter && String(districtFilter).toUpperCase() !== 'ALL') ? String(districtFilter).toLowerCase() : null;
+
+        const updated = list.map(n => {
+          const roleOk = !rf || (n.targetRole || '').toUpperCase() === rf;
+          const distOk = !df || !n.district || String(n.district).toLowerCase() === df;
+          return (roleOk && distOk) ? Object.assign({}, n, { read: true }) : n;
+        });
+        localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+        if (syncChannel) syncChannel.postMessage({ type: 'NOTIFICATION_READ', ts: Date.now() });
+      } catch (e) {}
+    },
+
+    _pushNotification: function (notif) {
+      try {
+        const raw = localStorage.getItem(NOTIFICATIONS_KEY);
+        let list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) list = [];
+
+        const dedupeKey = `${notif.refNo || ''}_${notif.targetRole || ''}_${notif.eventKey || notif.title}`;
+        list = list.filter(n => n.dedupeKey !== dedupeKey || n.read);
+
+        list.unshift({
+          id: 'NTF-' + Date.now() + '-' + Math.floor(100 + Math.random() * 900),
+          dedupeKey: dedupeKey,
+          refNo: notif.refNo,
+          targetRole: notif.targetRole,
+          district: notif.district || 'Gangtok',
+          title: notif.title,
+          message: notif.message,
+          type: notif.type || 'info',
+          actionType: notif.actionType || 'VIEW',
+          actionLabel: notif.actionLabel || 'View Application',
+          targetUrl: notif.targetUrl || '',
+          timestamp: this._formatNotifTime(),
+          date: this._formatNotifTime(),
+          read: false
+        });
+
+        if (list.length > 80) list = list.slice(0, 80);
+        localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(list));
+      } catch (e) {}
+    },
+
+    _notifyForApplicationState: function (app, isInitialSeed) {
+      if (!app || !app.refNo) return;
+      const st = app.currentStage || '';
+      const ref = app.refNo;
+      const cat = app.category || 'Tourism Permission';
+      const dist = app.district || 'Gangtok';
+      const applicant = app.applicantName || 'Applicant';
+
+      if (st === STAGES.STAGE_1 || st === STAGES.STAGE_2 || st === STAGES.STAGE_7) {
+        const isResub = st === STAGES.STAGE_7;
+        this._pushNotification({
+          refNo: ref,
+          targetRole: 'TO',
+          district: dist,
+          eventKey: isResub ? 'TO_REVERIFY' : 'TO_REVIEW',
+          title: isResub ? `Resubmitted Application: ${ref}` : `New Application for TO Verification: ${ref}`,
+          message: `${applicant} (${cat}) in ${dist} Circle requires TO scrutiny.`,
+          type: isResub ? 'warning' : 'info',
+          actionLabel: isResub ? 'Re-verify Application' : 'Review Application',
+          targetUrl: `review.html?arn=${encodeURIComponent(ref)}&role=to`
+        });
+      } else if (st === STAGES.STAGE_3 || st === STAGES.STAGE_5 || st === STAGES.STAGE_11) {
+        const isHqRet = st === STAGES.STAGE_5;
+        const isFinalDto = st === STAGES.STAGE_11;
+        this._pushNotification({
+          refNo: ref,
+          targetRole: 'DTO',
+          district: dist,
+          eventKey: isHqRet ? 'DTO_HQ_RETURN' : (isFinalDto ? 'DTO_FINAL_APPROVAL' : 'DTO_REVIEW'),
+          title: isHqRet
+            ? `Returned by HQ (${ref})`
+            : (isFinalDto ? `Payment Received – Final DTO Approval (${ref})` : `Awaiting DTO Review (${ref})`),
+          message: isHqRet
+            ? `HQ returned ${cat} (${applicant}) with observations. Action required by DTO.`
+            : (isFinalDto ? `${applicant} paid ${app.fee || 'fee'}. Issue final Permission Letter.` : `${cat} by ${applicant} forwarded for DTO verification.`),
+          type: isHqRet ? 'danger' : (isFinalDto ? 'success' : 'info'),
+          actionLabel: isHqRet ? 'Process HQ Return' : (isFinalDto ? 'Final Approval' : 'Review Application'),
+          targetUrl: `review.html?arn=${encodeURIComponent(ref)}&role=dto`
+        });
+      } else if (st === STAGES.STAGE_4 || st === STAGES.STAGE_4B || st === STAGES.STAGE_9 || st === STAGES.STAGE_10) {
+        const isPostPay = st === STAGES.STAGE_9 || st === STAGES.STAGE_10;
+        this._pushNotification({
+          refNo: ref,
+          targetRole: 'HQ',
+          district: 'all',
+          eventKey: isPostPay ? 'HQ_FINAL_VERIFY' : (st === STAGES.STAGE_4B ? 'HQ_DECISION' : 'HQ_INITIAL_REVIEW'),
+          title: isPostPay
+            ? `Payment Received – HQ Final Verification (${ref})`
+            : `Application Awaiting HQ Action (${ref})`,
+          message: isPostPay
+            ? `${applicant} (${cat}, ${dist}) completed payment. Complete final verification & issue Approval Letter.`
+            : `${cat} by ${applicant} (${dist} Circle) is ready for HQ review.`,
+          type: isPostPay ? 'success' : 'info',
+          actionLabel: isPostPay ? 'Final Verify & Issue' : 'Review Application',
+          targetUrl: `review.html?arn=${encodeURIComponent(ref)}&role=hq`
+        });
+      } else if (st === STAGES.STAGE_4_UNDER_REVIEW) {
+        if (!isInitialSeed) {
+          this._pushNotification({
+            refNo: ref,
+            targetRole: 'Citizen',
+            district: dist,
+            eventKey: 'CITIZEN_UNDER_HQ_REVIEW',
+            title: `Application Under Review by Headquarters`,
+            message: `Your ${cat} (${ref}) is currently under review by State Headquarters.`,
+            type: 'info',
+            actionType: 'TRACK',
+            actionLabel: 'Track Status',
+            targetUrl: `dashboard.html?view=tracking&arn=${encodeURIComponent(ref)}`
+          });
+        }
+      } else if (st === STAGES.STAGE_6) {
+        this._pushNotification({
+          refNo: ref,
+          targetRole: 'Citizen',
+          district: dist,
+          eventKey: 'CITIZEN_RETURNED',
+          title: `Action Required: Application Returned (${ref})`,
+          message: app.returnRemarks || app.hqRemarks || app.dtoRemarks || app.toRemarks || `Your ${cat} was returned for correction.`,
+          type: 'danger',
+          actionType: 'RESUBMIT',
+          actionLabel: 'Fix & Resubmit',
+          targetUrl: `apply.html?ref=${encodeURIComponent(ref)}`
+        });
+      } else if (st === STAGES.STAGE_8) {
+        this._pushNotification({
+          refNo: ref,
+          targetRole: 'Citizen',
+          district: dist,
+          eventKey: 'CITIZEN_PAYMENT_DUE',
+          title: `Payment Activated for ${ref}`,
+          message: `Your ${cat} is approved for fee payment (${app.fee || 'Fee'}). Pay now to proceed.`,
+          type: 'warning',
+          actionType: 'PAY_NOW',
+          actionLabel: 'Pay Now',
+          targetUrl: `dashboard.html?view=applications&arn=${encodeURIComponent(ref)}`
+        });
+      } else if (st === STAGES.STAGE_12) {
+        if (app.extensionRequest && app.extensionRequest.status === 'Pending DTO Decision') {
+          this._pushNotification({
+            refNo: ref,
+            targetRole: 'DTO',
+            district: dist,
+            eventKey: 'DTO_EXTENSION_PENDING',
+            title: `Extension Request Pending (${ref})`,
+            message: `${applicant} requested a validity extension for ${cat}.`,
+            type: 'warning',
+            actionLabel: 'Decide Extension',
+            targetUrl: `review.html?arn=${encodeURIComponent(ref)}&role=dto`
+          });
+        } else if (!isInitialSeed) {
+          this._pushNotification({
+            refNo: ref,
+            targetRole: 'Citizen',
+            district: dist,
+            eventKey: 'CITIZEN_APPROVED',
+            title: `Approval Letter Issued (${ref})`,
+            message: `Your ${cat} has been approved. Download your official Permission Letter.`,
+            type: 'success',
+            actionType: 'DOWNLOAD_CERT',
+            actionLabel: 'Download Letter',
+            targetUrl: `permission-letter.html?arn=${encodeURIComponent(ref)}`
+          });
+          if (app.dtoNotifiedOfIssuance) {
+            this._pushNotification({
+              refNo: ref,
+              targetRole: 'DTO',
+              district: dist,
+              eventKey: 'DTO_HQ_ISSUED',
+              title: `HQ Issued Approval Letter (${ref})`,
+              message: `Headquarters issued final Approval Letter for ${cat} (${applicant}).`,
+              type: 'success',
+              actionLabel: 'View Letter',
+              targetUrl: `permission-letter.html?arn=${encodeURIComponent(ref)}&role=dto`
+            });
+          }
+        }
+      } else if (st === STAGES.STAGE_13 && !isInitialSeed) {
+        this._pushNotification({
+          refNo: ref,
+          targetRole: 'Citizen',
+          district: dist,
+          eventKey: 'CITIZEN_REJECTED',
+          title: `Application Rejected (${ref})`,
+          message: app.hqRemarks || app.dtoRemarks || `Your ${cat} application was rejected.`,
+          type: 'danger',
+          actionType: 'TRACK',
+          actionLabel: 'View Details',
+          targetUrl: `dashboard.html?view=tracking&arn=${encodeURIComponent(ref)}`
+        });
       }
     },
 
@@ -1445,6 +860,7 @@
         apps.unshift(updatedApp);
       }
       this.saveAllApplications(apps);
+      this._notifyForApplicationState(updatedApp, false);
       return updatedApp;
     },
 
@@ -1456,6 +872,7 @@
       const newApp = this._buildApplicationRecord(sub);
       apps.unshift(newApp);
       this.saveAllApplications(apps);
+      this._notifyForApplicationState(newApp, false);
       return newApp;
     },
 
@@ -1548,8 +965,48 @@
       return { success: true, application: app };
     },
 
-    // ==============================================================
-    // DISTRICT TOURISM OFFICER (DTO) ACTIONS
+    // TO redirects an "Other Permissions" application to the appropriate category/workflow/authority
+    toRedirectApplication: function (refNo, officerName, targetCategoryKey, remarks) {
+      if (!remarks || !remarks.trim()) {
+        return { success: false, message: 'Mandatory remarks explaining the redirection must be provided.' };
+      }
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+
+      const officeInfo = DISTRICT_OFFICES[app.district] || DISTRICT_OFFICES['Gangtok'];
+      const actingOfficer = officerName || officeInfo.toName || 'Tourism Officer (TO)';
+      const oldCategory = app.category;
+      const oldStage = app.currentStage;
+      const newKey = normalizeCategoryKey(targetCategoryKey);
+      const newCfg = CATEGORIES[newKey] || CATEGORIES['other'];
+      const requiresHq = (newCfg.approvalLevel === 'HQ');
+
+      app.categoryKey = newKey;
+      app.category = newCfg.name;
+      app.requiresHqVerification = requiresHq;
+      app.flowType = requiresHq ? 'flow_a' : 'flow_b';
+      app.flowTitle = (requiresHq ? 'HQ-Level Approval' : 'DTO-Level Approval') + ' (' + newCfg.name + ')';
+      app.extensionAllowed = newCfg.extensionAllowed;
+      app.maxExtensionDays = newCfg.maxExtensionDays || 0;
+      app.status = STATUSES.SUBMITTED;
+      app.currentStage = STAGES.STAGE_3;
+      app.currentStageNum = 3;
+      app.assignedRole = 'dto';
+      app.toRemarks = remarks.trim();
+
+      this.addHistoryEntry(app, {
+        action: `Redirected from "${oldCategory}" to "${newCfg.name}" & Forwarded to DTO`,
+        role: 'Tourism Officer (TO)',
+        officer: actingOfficer,
+        office: officeInfo.office,
+        previousStage: oldStage,
+        newStage: STAGES.STAGE_3,
+        remarks: app.toRemarks
+      });
+
+      this.updateApplication(app);
+      return { success: true, application: app };
+    },
     // ==============================================================
 
     // DTO forwards HQ-level app (Drone / Expedition) to HQ Officer
@@ -1634,6 +1091,7 @@
       app.permissionNumber = app.permissionNumber || `SK-TOUR-2026-${catCode}-${app.refNo.split('-').pop()}`;
       app.certRef = app.permissionNumber;
       app.approvalDate = app.approvalDate || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      this._computeApprovedValidity(app, new Date());
       app.approvingOfficer = officerName || officeInfo.dtoName;
       app.approvingDesignation = officeInfo.designation || 'District Tourism Officer (DTO)';
       app.approvingOffice = officeInfo.office;
@@ -1774,41 +1232,99 @@
     },
 
     // ==============================================================
-    // SINGLE HQ OFFICER ACTIONS (Initial Review + Final Approval)
+    // HQ REVIEWING OFFICER & HQ DECISION ACTIONS (Workflow A)
     // ==============================================================
 
-    hqApproveForPayment: function (refNo, officerName, remarks) {
+    hqForwardToDecision: function (refNo, officerName, remarks) {
       const app = this.getApplication(refNo);
       if (!app) return { success: false, message: 'Application not found.' };
 
       const oldStage = app.currentStage;
       const actingOfficer = officerName || app.hqOfficerName || HQ_OFFICER.name;
-      const isFreeDrone = (normalizeCategoryKey(app.categoryKey || app.category) === 'drone' || Number(app.feeAmount || 0) === 0);
       app.hqOfficerName = actingOfficer;
+      app.status = STATUSES.SUBMITTED;
+      app.currentStage = STAGES.STAGE_4B;
+      app.currentStageNum = 5;
+      app.assignedRole = 'hq';
+      app.hqRemarks = (remarks && remarks.trim()) ? remarks.trim() : 'HQ Reviewing Officer scrutiny completed. Forwarded to HQ Decision stage.';
 
-      if (isFreeDrone) {
-        app.status = STATUSES.UNDER_HQ_REVIEW;
-        app.currentStage = STAGES.STAGE_9;
-        app.currentStageNum = 9;
-        app.assignedRole = 'hq';
-        app.paymentActivated = false;
-        app.isPaid = true;
-        app.paymentStatus = 'WAIVED_FREE';
-        app.hqRemarks = remarks || 'Free category — payment activation not required. Ready for HQ Approval Sheet upload & final approval.';
+      this.addHistoryEntry(app, {
+        action: 'HQ Reviewing Officer Approved & Forwarded to HQ Decision',
+        role: 'HQ Reviewing Officer',
+        officer: actingOfficer,
+        office: HQ_OFFICER.office,
+        previousStage: oldStage,
+        newStage: STAGES.STAGE_4B,
+        remarks: app.hqRemarks
+      });
 
-        this.addHistoryEntry(app, {
-          action: 'HQ Initial Review Approved (No Payment Required)',
-          role: 'HQ Officer',
-          officer: actingOfficer,
-          office: HQ_OFFICER.office,
-          previousStage: oldStage,
-          newStage: STAGES.STAGE_9,
-          remarks: app.hqRemarks
-        });
+      this.updateApplication(app);
+      return { success: true, application: app };
+    },
 
-        this.updateApplication(app);
-        return { success: true, application: app };
+    hqReturnToTo: function (refNo, officerName, remarks) {
+      if (!remarks || !remarks.trim()) return { success: false, message: 'Mandatory remarks must be provided.' };
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+
+      const oldStage = app.currentStage;
+      app.status = STATUSES.SUBMITTED;
+      app.currentStage = STAGES.STAGE_5C;
+      app.currentStageNum = 2;
+      app.assignedRole = 'to';
+      app.hqRemarks = remarks.trim();
+
+      this.addHistoryEntry(app, {
+        action: 'Returned by HQ to TO',
+        role: 'HQ Officer',
+        officer: officerName || app.hqOfficerName || HQ_OFFICER.name,
+        office: HQ_OFFICER.office,
+        previousStage: oldStage,
+        newStage: STAGES.STAGE_5C,
+        remarks: app.hqRemarks
+      });
+
+      this.updateApplication(app);
+      return { success: true, application: app };
+    },
+
+    hqMarkUnderReview: function (refNo, officerName, remarks) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+
+      const oldStage = app.currentStage;
+      const actingOfficer = officerName || app.hqOfficerName || HQ_OFFICER.name;
+      app.hqOfficerName = actingOfficer;
+      app.status = STATUSES.UNDER_HQ_REVIEW;
+      app.currentStage = STAGES.STAGE_4_UNDER_REVIEW;
+      app.currentStageNum = 4;
+      app.assignedRole = 'hq';
+      app.hqRemarks = (remarks && remarks.trim()) ? remarks.trim() : 'Application summary downloaded & marked Under Review by Headquarters.';
+
+      this.addHistoryEntry(app, {
+        action: 'Marked Under Review by Headquarters',
+        role: 'HQ Reviewing Officer',
+        officer: actingOfficer,
+        office: HQ_OFFICER.office,
+        previousStage: oldStage,
+        newStage: STAGES.STAGE_4_UNDER_REVIEW,
+        remarks: app.hqRemarks
+      });
+
+      this.updateApplication(app);
+      return { success: true, application: app };
+    },
+
+    hqApproveForPayment: function (refNo, officerName, remarks) {
+      const app = this.getApplication(refNo);
+      if (!app) return { success: false, message: 'Application not found.' };
+      if (!app.approvalSheet) {
+        return { success: false, message: 'Please upload the signed External Approval Sheet before marking the application for payment.' };
       }
+
+      const oldStage = app.currentStage;
+      const actingOfficer = officerName || app.hqOfficerName || HQ_OFFICER.name;
+      app.hqOfficerName = actingOfficer;
 
       app.status = STATUSES.PAYMENT_PENDING;
       app.currentStage = STAGES.STAGE_8;
@@ -1817,10 +1333,10 @@
       app.returnToAfterPayment = 'hq';
       app.paymentActivated = true;
       app.paymentStatus = 'PENDING';
-      app.hqRemarks = remarks || 'Approved at HQ for payment. Statutory payment activated; application will automatically return to this HQ Officer after payment.';
+      app.hqRemarks = (remarks && remarks.trim()) ? remarks.trim() : 'External Approval Sheet uploaded & marked for payment. Application will automatically forward to HQ Final Verification after citizen payment.';
 
       this.addHistoryEntry(app, {
-        action: 'HQ Approved for Payment (Payment Activated)',
+        action: 'Marked for Payment (Payment Activated)',
         role: 'HQ Officer',
         officer: actingOfficer,
         office: HQ_OFFICER.office,
@@ -1854,18 +1370,19 @@
         concurrenceRemarks: app.hqRemarks || 'Headquarters approval sheet attached.'
       };
 
-      app.currentStage = STAGES.STAGE_10;
-      app.currentStageNum = 10;
+      app.currentStage = (app.currentStage === STAGES.STAGE_9 || app.currentStage === STAGES.STAGE_10)
+        ? app.currentStage
+        : app.currentStage;
       app.assignedRole = 'hq';
 
       this.addHistoryEntry(app, {
-        action: 'HQ Approval Sheet Uploaded',
+        action: 'External Approval Sheet Uploaded',
         role: 'HQ Officer',
         officer: actingOfficer,
         office: HQ_OFFICER.office,
         previousStage: oldStage,
-        newStage: STAGES.STAGE_10,
-        remarks: `Official signed Approval Sheet [${sheetName}] uploaded by HQ Officer.`
+        newStage: app.currentStage,
+        remarks: `Official signed External Approval Sheet [${sheetName}] uploaded by HQ Officer.`
       });
 
       this.updateApplication(app);
@@ -1890,6 +1407,8 @@
       app.permissionNumber = app.permissionNumber || `SK-TOUR-2026-${catCode}-${app.refNo.split('-').pop()}`;
       app.certRef = app.permissionNumber;
       app.approvalDate = app.approvalDate || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      this._computeApprovedValidity(app, new Date());
+      app.dtoNotifiedOfIssuance = true;
       app.approvingOfficer = actingOfficer;
       app.approvingDesignation = HQ_OFFICER.designation;
       app.approvingOffice = HQ_OFFICER.office;
@@ -1949,6 +1468,7 @@
       app.currentStageNum = 6;
       app.assignedRole = 'citizen';
       app.hqRemarks = remarks.trim();
+      app.returnRemarks = remarks.trim();
 
       this.addHistoryEntry(app, {
         action: 'Returned by HQ Officer to Citizen for Correction',
@@ -2131,10 +1651,13 @@
       app.extensionRequest.decisionRemarks = remarks.trim();
 
       if (approved) {
-        const revDate = new Date(nowDate.getTime() + (app.extensionRequest.requestedDays * 24 * 60 * 60 * 1000));
+        const baseExp = app.approvedExpiryDateIso ? new Date(app.approvedExpiryDateIso) : new Date(nowDate.getTime() + (15 * 24 * 60 * 60 * 1000));
+        const revDate = new Date(baseExp.getTime() + (app.extensionRequest.requestedDays * 24 * 60 * 60 * 1000));
         const revStr = revDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         app.extensionRequest.revisedValidUntil = revStr;
-        app.validityLabel = `${app.validityLabel || ''} (+${app.extensionRequest.requestedDays} Days Extended up to ${revStr})`.trim();
+        app.approvedExpiryDate = revStr;
+        app.approvedExpiryDateIso = revDate.toISOString().slice(0, 10);
+        app.validityLabel = `${app.approvedStartDate || app.approvalDate || ''} to ${revStr} (Extended +${app.extensionRequest.requestedDays} Days)`.trim();
       }
 
       this.addHistoryEntry(app, {
@@ -2307,6 +1830,162 @@
         districtSummary: districtSummary,
         categorySummary: categorySummary
       };
+    },
+
+    getStatusAndNextAction: function (app, viewerRole) {
+      if (!app) return { statusLabel: 'Unknown', badgeClass: 'bg-secondary text-white', nextAction: '-', authority: '-', actionRequired: false };
+      const st = app.currentStage || '';
+      const status = app.status || '';
+      const role = (viewerRole || 'citizen').toLowerCase();
+      const isHqCat = this.isHqApprovalRequired(app.categoryKey || app.category);
+      const hasSheet = Boolean(app.approvalSheet);
+
+      if (status === STATUSES.APPROVED || st === STAGES.STAGE_12) {
+        if (role === 'dto' && app.extensionRequest && app.extensionRequest.status === 'Pending DTO Decision') {
+          return { statusLabel: 'Drone Extension Requested', badgeClass: 'bg-warning text-dark', nextAction: 'Review Extension Request', authority: `DTO (${app.district})`, actionRequired: true };
+        }
+        return {
+          statusLabel: 'Approval Letter Issued',
+          badgeClass: 'bg-success text-white',
+          nextAction: role === 'citizen' ? 'Download Approval Letter' : 'View Issued Permission',
+          authority: isHqCat ? 'HQ Officer' : `DTO (${app.district})`,
+          actionRequired: role === 'citizen'
+        };
+      }
+
+      if (status === STATUSES.REJECTED || st === STAGES.STAGE_13) {
+        return {
+          statusLabel: 'Rejected',
+          badgeClass: 'bg-danger text-white',
+          nextAction: 'Application Rejected – View Remarks',
+          authority: 'Closed',
+          actionRequired: false
+        };
+      }
+
+      if (status === STATUSES.RETURNED || st === STAGES.STAGE_6) {
+        return {
+          statusLabel: 'Returned to Applicant',
+          badgeClass: 'bg-warning text-dark',
+          nextAction: role === 'citizen' ? 'Correct application and resubmit' : 'No action required – Await Applicant',
+          authority: 'Citizen / Applicant',
+          actionRequired: role === 'citizen'
+        };
+      }
+
+      if (st === STAGES.STAGE_8 || status === STATUSES.PAYMENT_PENDING) {
+        return {
+          statusLabel: 'Awaiting Payment',
+          badgeClass: 'bg-warning text-dark',
+          nextAction: role === 'citizen' ? 'Complete Online Payment' : 'No action required – Awaiting Citizen Payment',
+          authority: 'Citizen / Applicant',
+          actionRequired: role === 'citizen'
+        };
+      }
+
+      if (st === STAGES.STAGE_2 || st === STAGES.STAGE_7) {
+        return {
+          statusLabel: st === STAGES.STAGE_7 ? 'Resubmitted – Pending TO Verification' : 'Submitted',
+          badgeClass: 'bg-primary text-white',
+          nextAction: role === 'to' ? 'Verify Application' : 'Awaiting TO Verification',
+          authority: `TO (${app.district})`,
+          actionRequired: role === 'to'
+        };
+      }
+
+      if (st === STAGES.STAGE_5B) {
+        return {
+          statusLabel: 'Returned by DTO to TO',
+          badgeClass: 'bg-warning text-dark',
+          nextAction: role === 'to' ? 'Review and Resubmit to DTO' : 'Awaiting TO Review',
+          authority: `TO (${app.district})`,
+          actionRequired: role === 'to'
+        };
+      }
+
+      if (st === STAGES.STAGE_5C) {
+        return {
+          statusLabel: 'Returned by HQ to TO',
+          badgeClass: 'bg-warning text-dark',
+          nextAction: role === 'to' ? 'Review and Forward to DTO / HQ' : 'Awaiting TO Review',
+          authority: `TO (${app.district})`,
+          actionRequired: role === 'to'
+        };
+      }
+
+      if (st === STAGES.STAGE_3) {
+        return {
+          statusLabel: 'Pending DTO Verification',
+          badgeClass: 'bg-info text-dark',
+          nextAction: role === 'dto' ? (isHqCat ? 'Review and Forward to HQ' : 'Review & Approve for Payment') : 'Awaiting DTO Review',
+          authority: `DTO (${app.district})`,
+          actionRequired: role === 'dto'
+        };
+      }
+
+      if (st === STAGES.STAGE_5) {
+        return {
+          statusLabel: 'Returned by HQ to DTO',
+          badgeClass: 'bg-warning text-dark',
+          nextAction: role === 'dto' ? 'Review and Forward to HQ' : 'Awaiting DTO Review',
+          authority: `DTO (${app.district})`,
+          actionRequired: role === 'dto'
+        };
+      }
+
+      if (st === STAGES.STAGE_4) {
+        return {
+          statusLabel: 'Pending HQ Review',
+          badgeClass: 'bg-primary text-white',
+          nextAction: role === 'hq' ? (hasSheet ? 'Mark for Payment / Forward' : 'View Summary & Mark Under Review') : 'Awaiting Headquarters Review',
+          authority: 'HQ Reviewing Officer',
+          actionRequired: role === 'hq'
+        };
+      }
+
+      if (st === STAGES.STAGE_4_UNDER_REVIEW || status === STATUSES.UNDER_HQ_REVIEW) {
+        return {
+          statusLabel: 'Under Review by Headquarters',
+          badgeClass: 'bg-info-subtle text-info-emphasis border border-info-subtle',
+          nextAction: role === 'hq'
+            ? (hasSheet ? 'Mark for Payment' : 'Upload External Approval Sheet')
+            : 'Under Review – No action required from applicant',
+          authority: 'HQ Reviewing Officer',
+          actionRequired: role === 'hq'
+        };
+      }
+
+      if (st === STAGES.STAGE_4B) {
+        return {
+          statusLabel: 'Pending HQ Decision',
+          badgeClass: 'bg-primary text-white',
+          nextAction: role === 'hq' ? (hasSheet ? 'Mark for Payment / Return / Reject' : 'Upload External Approval Sheet & Mark for Payment') : 'Awaiting HQ Decision',
+          authority: 'HQ Decision Officer',
+          actionRequired: role === 'hq'
+        };
+      }
+
+      if (st === STAGES.STAGE_9 || st === STAGES.STAGE_10) {
+        return {
+          statusLabel: 'Payment Completed',
+          badgeClass: 'bg-success-subtle text-success border border-success-subtle',
+          nextAction: role === 'hq' ? 'Perform Final Verification & Issue Approval Letter' : 'Awaiting HQ Final Verification',
+          authority: 'HQ Final Verification',
+          actionRequired: role === 'hq'
+        };
+      }
+
+      if (st === STAGES.STAGE_11) {
+        return {
+          statusLabel: 'Payment Completed',
+          badgeClass: 'bg-success-subtle text-success border border-success-subtle',
+          nextAction: role === 'dto' ? 'Perform Final Verification & Issue Approval Letter' : 'Awaiting DTO Final Verification',
+          authority: `DTO (${app.district})`,
+          actionRequired: role === 'dto'
+        };
+      }
+
+      return { statusLabel: status || 'Submitted', badgeClass: 'bg-secondary text-white', nextAction: st || 'Under Review', authority: 'Department', actionRequired: false };
     },
 
     generateCsv: function (reportData) {

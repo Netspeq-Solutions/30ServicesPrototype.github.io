@@ -105,33 +105,24 @@
   <!-- Tricolor Ribbon -->
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
-  <!-- Reviewer Scenario Control Bar (High-Fidelity Demonstration Switcher) -->
-  <aside class="gov-scenario-bar" aria-label="Reviewer Scenario Controller">
+  <!-- Live Sync & Role Controller Bar -->
+  <aside class="gov-scenario-bar" aria-label="Workspace Controller">
     <div class="container-fluid px-lg-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
-            <i class="fas fa-flask me-1"></i> STAGE 02 DEMO
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-success text-white fw-bold px-2 py-1">
+            <i class="bi bi-broadcast me-1"></i> LIVE WORKFLOW SYNC
           </span>
-          <span class="fw-semibold text-white">Scenario Switcher:</span>
-          <label for="scenarioSelector" class="visually-hidden">Select Citizen Scenario</label>
-          <select id="scenarioSelector" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 340px; font-size: 0.825rem;">
-            <option value="scenarioA" selected>Scenario A: First-Time Citizen (0 Applications)</option>
-            <option value="scenarioB">Scenario B: Citizen with Draft Applications (1 Draft)</option>
-            <option value="scenarioC">Scenario C: Citizen with Submitted Applications (Multiple Active)</option>
-            <option value="scenarioD">Scenario D: Citizen with Returned Application (Needs Clarification)</option>
-            <option value="scenarioE">Scenario E: Citizen with Approved Application (Permission Issued)</option>
-            <option value="scenarioF">Scenario F: Citizen with Rejected Application (Restricted Zone)</option>
-          </select>
+          <span class="small text-white-50 d-none d-md-inline">Tourism Permission Citizen Portal</span>
           <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
             <i class="bi bi-people-fill me-1"></i> Switch Role
           </a>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-light-subtle text-white-50 border border-white-50 small d-none d-md-inline-block">
-            <i class="fas fa-shield-alt text-warning me-1"></i> Simulated Sikkim GO SSO Session
-          </span>
+          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="if(confirm('Clear all test applications?')){WorkflowEngine.resetToSeedData(); renderScenario('live');}" style="font-size: 0.75rem;">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Workspace
+          </button>
           <!-- Font Sizing & High Contrast Controls -->
           <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
             <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size">A-</button>
@@ -306,6 +297,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Real-Time Actionable Citizen Notifications Stack -->
+        <div id="citizenQuickNotifStack" class="mb-3"></div>
 
         <!-- ==============================================================
              ACTION-ORIENTED CITIZEN CARDS & EMPTY STATE
@@ -638,6 +632,83 @@
           </div>
         </div>
 
+      </section>
+
+      <!-- ==============================================================
+           VIEW 1B: PAYMENT ACKNOWLEDGEMENT SLIP
+           ============================================================== -->
+      <section id="section-acknowledgement" class="workspace-section d-none">
+        <div class="card border-0 shadow-sm p-4 mx-auto" style="max-width: 720px;">
+          <div class="text-center mb-3">
+            <div class="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 54px; height: 54px;">
+              <i class="bi bi-patch-check-fill fs-3"></i>
+            </div>
+            <h2 class="h5 fw-bold text-dark mb-1">Payment Acknowledgement Slip</h2>
+            <p class="text-muted small mb-0">Tourism &amp; Civil Aviation Department, Government of Sikkim</p>
+          </div>
+
+          <div class="border rounded-3 p-3 mb-3 bg-white">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-2 mb-3 border-bottom">
+              <div>
+                <span class="text-muted d-block" style="font-size: 0.72rem;">Acknowledgement Status</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold">
+                  <i class="bi bi-check-circle-fill me-1"></i> Payment Recorded &amp; Routed for Final Approval
+                </span>
+              </div>
+              <div class="text-end">
+                <span class="text-muted d-block" style="font-size: 0.72rem;">Payment Date &amp; Time</span>
+                <div class="fw-semibold text-dark small" id="ackDateDisplay">-</div>
+              </div>
+            </div>
+
+            <div class="p-2 bg-light rounded-2 mb-3 text-center border">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">Application Reference Number (ARN)</span>
+              <span class="fs-5 fw-bold font-monospace text-primary d-inline-block" id="ackArnDisplay">-</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2 py-0 px-1.5" onclick="copyAckArnToClipboard()" title="Copy ARN" style="font-size: 0.72rem;">
+                <i class="bi bi-copy"></i> Copy
+              </button>
+            </div>
+
+            <div class="row g-2 small">
+              <div class="col-6">
+                <span class="text-muted d-block" style="font-size: 0.74rem;">Applicant / Organisation</span>
+                <strong class="text-dark" id="ackNameDisplay">-</strong>
+              </div>
+              <div class="col-6">
+                <span class="text-muted d-block" style="font-size: 0.74rem;">Permission Category</span>
+                <strong class="text-dark" id="ackCatDisplay">-</strong>
+              </div>
+              <div class="col-6">
+                <span class="text-muted d-block" style="font-size: 0.74rem;">District</span>
+                <strong class="text-dark" id="ackDistrictDisplay">-</strong>
+              </div>
+              <div class="col-6">
+                <span class="text-muted d-block" style="font-size: 0.74rem;">Fee Paid</span>
+                <strong class="text-success font-monospace" id="ackFeeAmountDisplay">-</strong>
+              </div>
+              <div class="col-6">
+                <span class="text-muted d-block" style="font-size: 0.74rem;">Transaction Reference</span>
+                <strong class="text-dark font-monospace" id="ackTxnIdDisplay">-</strong>
+              </div>
+              <div class="col-6">
+                <span class="text-muted d-block" style="font-size: 0.74rem;">Payment Mode / Next Authority</span>
+                <strong class="text-dark" id="ackReceiptNoDisplay">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <button type="button" class="btn btn-sm btn-outline-secondary px-3 fw-semibold" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> Print Slip
+            </button>
+            <button type="button" class="btn btn-sm btn-gov-primary px-3 fw-semibold" onclick="closePayModalAndGoToDashboard()">
+              <i class="bi bi-speedometer2 me-1"></i> Dashboard
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-primary px-3 fw-semibold" onclick="trackFromAck()">
+              <i class="bi bi-geo-alt me-1"></i> Track Application
+            </button>
+          </div>
+        </div>
       </section>
 
       <!-- ==============================================================
@@ -1046,9 +1117,14 @@
            VIEW 6: NOTIFICATIONS FEED
            ============================================================== -->
       <section id="section-notifications" class="workspace-section d-none">
-        <div class="mb-4">
-          <h2 class="h4 fw-bold mb-0 text-dark">Citizen Notifications</h2>
-          <p class="text-muted small mb-0">Official system notifications, status alerts, and departmental remarks.</p>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+          <div>
+            <h2 class="h4 fw-bold mb-0 text-dark">Citizen Notifications</h2>
+            <p class="text-muted small mb-0">Official system notifications, status alerts, and departmental remarks.</p>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary" onclick="markAllCitizenNotifsRead()">
+            <i class="bi bi-check2-all me-1"></i> Mark All Read
+          </button>
         </div>
 
         <div class="card border-0 shadow-sm">
@@ -1316,32 +1392,90 @@
   <div class="modal fade" id="citizenPaymentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header bg-success text-white py-2.5">
-          <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-credit-card-2-front me-2"></i>Statutory Fee Payment / Clearance</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div id="payModalEntryView">
+          <div class="modal-header bg-success text-white py-2.5">
+            <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-credit-card-2-front me-2"></i>Statutory Fee Payment / Clearance</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body small">
+            <input type="hidden" id="payModalArn">
+            <div class="p-3 bg-light border rounded mb-3">
+              <div class="d-flex justify-content-between mb-1"><span class="text-muted">Application ID:</span><strong class="font-monospace text-primary" id="payModalArnText">-</strong></div>
+              <div class="d-flex justify-content-between mb-1"><span class="text-muted">Category:</span><strong id="payModalCategory">-</strong></div>
+              <div class="d-flex justify-content-between"><span class="text-muted">Payable Amount:</span><strong class="text-success fs-6" id="payModalAmount">₹0</strong></div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label fw-semibold">Payment Mode</label>
+              <select class="form-select form-select-sm" id="payModalMode">
+                <option value="Sikkim GO UPI / QR">Sikkim GO UPI / QR Gateway</option>
+                <option value="Net Banking (SBS / SBI)">Net Banking (SBS / SBI)</option>
+                <option value="Debit / Credit Card">Debit / Credit Card</option>
+              </select>
+            </div>
+            <div class="alert alert-info border-0 py-2 px-3 mb-0">
+              <i class="bi bi-info-circle me-1"></i> Upon completion, this application automatically returns to the approving authority (<strong id="payModalReturnTarget">HQ Officer / DTO</strong>) for final approval.
+            </div>
+          </div>
+          <div class="modal-footer bg-light py-2">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="executeCitizenPayment()">Confirm &amp; Complete Payment</button>
+          </div>
         </div>
-        <div class="modal-body small">
-          <input type="hidden" id="payModalArn">
-          <div class="p-3 bg-light border rounded mb-3">
-            <div class="d-flex justify-content-between mb-1"><span class="text-muted">Application ID:</span><strong class="font-monospace text-primary" id="payModalArnText">-</strong></div>
-            <div class="d-flex justify-content-between mb-1"><span class="text-muted">Category:</span><strong id="payModalCategory">-</strong></div>
-            <div class="d-flex justify-content-between"><span class="text-muted">Payable Amount:</span><strong class="text-success fs-6" id="payModalAmount">₹0</strong></div>
+
+        <div id="payModalSuccessView" class="d-none">
+          <div class="modal-header bg-success text-white py-2.5">
+            <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-patch-check-fill me-2"></i>Payment Acknowledgement</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="mb-2">
-            <label class="form-label fw-semibold">Payment Mode</label>
-            <select class="form-select form-select-sm" id="payModalMode">
-              <option value="Sikkim GO UPI / QR">Sikkim GO UPI / QR Gateway</option>
-              <option value="Net Banking (SBS / SBI)">Net Banking (SBS / SBI)</option>
-              <option value="Debit / Credit Card">Debit / Credit Card</option>
-            </select>
+          <div class="modal-body text-center p-4 small">
+            <div class="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 52px; height: 52px;">
+              <i class="bi bi-check-lg fs-3"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-1">Payment / Clearance Recorded Successfully</h6>
+            <p class="text-muted mb-3">Your application has been automatically routed back for final verification and approval letter issuance.</p>
+
+            <div class="card p-3 border rounded-3 bg-light text-start mb-3 shadow-xs">
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted">Application Reference (ARN):</span>
+                <strong class="font-monospace text-primary" id="paySuccessArn">-</strong>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted">Applicant:</span>
+                <span class="fw-semibold text-dark" id="paySuccessApplicant">-</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted">Category:</span>
+                <span class="badge bg-primary-subtle text-primary border" id="paySuccessCategory">-</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted">Transaction Ref (Txn ID):</span>
+                <span class="font-monospace fw-bold text-dark" id="paySuccessTxnId">-</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                <span class="text-muted">Payment Mode:</span>
+                <span class="fw-semibold text-dark" id="paySuccessMode">-</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center pt-1">
+                <span class="fw-bold text-dark">Total Fee Paid:</span>
+                <span class="fw-bold text-success fs-5" id="paySuccessAmount">₹0</span>
+              </div>
+            </div>
+
+            <div class="alert alert-info py-2 px-3 small text-start mb-0 border-0 d-flex align-items-start gap-2">
+              <i class="bi bi-info-circle-fill text-info flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong>Next Step:</strong> Automatically routed to <strong id="paySuccessNextTarget">HQ Officer</strong> for final verification and Permission Letter issuance.
+              </div>
+            </div>
           </div>
-          <div class="alert alert-info border-0 py-2 px-3 mb-0">
-            <i class="bi bi-info-circle me-1"></i> Upon completion, this application automatically returns to the approving authority (<strong id="payModalReturnTarget">HQ Officer / DTO</strong>) for final approval.
+          <div class="modal-footer bg-light d-flex justify-content-between align-items-center flex-wrap gap-2 py-2">
+            <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" onclick="showPaymentAcknowledgementFromModal()">
+              <i class="bi bi-file-earmark-check me-1"></i> View Official Acknowledgement Slip
+            </button>
+            <button type="button" class="btn btn-sm btn-success px-3 fw-semibold shadow-xs" onclick="closePayModalAndGoToDashboard()">
+              <i class="bi bi-speedometer2 me-1"></i> Dashboard
+            </button>
           </div>
-        </div>
-        <div class="modal-footer bg-light py-2">
-          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-sm btn-success fw-semibold" onclick="executeCitizenPayment()">Confirm &amp; Complete Payment</button>
         </div>
       </div>
     </div>
@@ -1444,6 +1578,19 @@
             }, 50);
           }
         }
+
+        // Real-time cross-tab sync with TO / DTO / HQ Dashboards
+        if (typeof BroadcastChannel !== 'undefined') {
+          const citizenSync = new BroadcastChannel('tourism_permission_sync_v1');
+          citizenSync.onmessage = function () {
+            renderActiveScenario(activeScenarioKey);
+          };
+        }
+        window.addEventListener('storage', function (e) {
+          if (typeof WorkflowEngine !== 'undefined' && (e.key === WorkflowEngine.STORAGE_KEY || e.key === WorkflowEngine.NOTIFICATIONS_KEY)) {
+            renderActiveScenario(activeScenarioKey);
+          }
+        });
       });
 
       // 1. Scenario Selector Handler
@@ -1524,7 +1671,10 @@
         }
 
         currentActiveApps = apps;
-        const notifs = scenario.notifications;
+        const liveNotifs = (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.getNotifications === 'function')
+          ? WorkflowEngine.getNotifications('Citizen')
+          : [];
+        const notifs = liveNotifs.length > 0 ? liveNotifs : (scenario.notifications || []);
 
         // Header / Profile details
         document.getElementById('citizenNameDisplay').textContent = citizen.fullName;
@@ -1792,9 +1942,9 @@
             const card = document.createElement('div');
             card.className = 'gov-mobile-app-card';
             card.innerHTML = `
-              <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
                 <span class="fw-bold font-monospace text-primary">${app.refNo}</span>
-                ${renderStatusBadge(app)}
+                <div class="text-end">${renderStatusBadge(app)}</div>
               </div>
               <div class="small fw-semibold text-dark mb-1">${app.activityTitle}</div>
               ${isApproved ? `<div class="mb-2"><span class="badge bg-success-subtle text-success border border-success-subtle font-monospace py-0.5 px-2" style="font-size: 0.72rem;"><i class="bi bi-patch-check-fill me-1"></i>Permit: ${app.certRef || app.permissionNumber || 'Issued'}</span></div>` : ''}
@@ -1885,22 +2035,27 @@
         });
       }
 
-      // Helper: Render Status Badge
+      // Helper: Render Status Badge & Next Action
       function renderStatusBadge(app) {
-        const s = (app.status || '').toUpperCase();
-        if (s === 'APPROVED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_12)) {
-          return `<span class="gov-badge gov-badge-approved"><i class="bi bi-check-circle"></i> Approved</span>`;
-        } else if (s === 'PAYMENT PENDING' || s === 'PAYMENT_PENDING' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_8)) {
-          return `<span class="gov-badge bg-warning text-dark border border-warning"><i class="bi bi-credit-card"></i> Payment Due</span>`;
-        } else if (s === 'RETURNED' || s === 'RETURNED FOR CORRECTION' || (typeof WorkflowEngine !== 'undefined' && (app.currentStage === WorkflowEngine.STAGES.STAGE_5 || app.currentStage === WorkflowEngine.STAGES.STAGE_6))) {
-          return `<span class="gov-badge gov-badge-returned"><i class="bi bi-exclamation-triangle"></i> Returned</span>`;
-        } else if (s === 'DRAFT') {
-          return `<span class="gov-badge gov-badge-draft"><i class="bi bi-file-earmark-diff"></i> Draft</span>`;
-        } else if (s === 'REJECTED' || (typeof WorkflowEngine !== 'undefined' && app.currentStage === WorkflowEngine.STAGES.STAGE_13)) {
-          return `<span class="gov-badge gov-badge-rejected"><i class="bi bi-x-circle"></i> Rejected</span>`;
-        } else {
-          return `<span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span>`;
+        if (typeof WorkflowEngine !== 'undefined' && app && app.status !== 'DRAFT') {
+          const sn = WorkflowEngine.getStatusAndNextAction(app, 'citizen');
+          const latestRemarks = app.returnRemarks || app.hqRemarks || app.dtoRemarks || app.toRemarks;
+          const retNote = (latestRemarks && (app.status === WorkflowEngine.STATUSES.RETURNED || (app.status || '').toUpperCase().includes('RETURN')))
+            ? `<div class="text-danger small mt-1" style="font-size: 0.72rem;"><i class="bi bi-chat-left-text me-1"></i><strong>Remarks:</strong> ${latestRemarks}</div>`
+            : '';
+          return `
+            <div>
+              <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span>
+              <div class="text-muted small mt-1" style="font-size: 0.73rem;"><strong>Next:</strong> ${sn.nextAction}</div>
+              ${retNote}
+            </div>
+          `;
         }
+        const s = (app.status || '').toUpperCase();
+        if (s === 'DRAFT') {
+          return `<span class="gov-badge gov-badge-draft"><i class="bi bi-file-earmark-diff"></i> Draft</span><div class="text-muted small mt-1" style="font-size: 0.73rem;"><strong>Next:</strong> Complete &amp; submit application</div>`;
+        }
+        return `<span class="gov-badge gov-badge-review"><i class="bi bi-hourglass-split"></i> Under Review</span>`;
       }
 
       // Helper: Render Row Action Buttons
@@ -1957,11 +2112,11 @@
               </button>
             </div>
           `;
-        } else if (st === 'RETURNED' || st === 'RETURNED FOR CORRECTION') {
+        } else if (st.includes('RETURN') || (typeof WorkflowEngine !== 'undefined' && (app.currentStage === WorkflowEngine.STAGES.STAGE_5 || app.currentStage === WorkflowEngine.STAGES.STAGE_6))) {
           html += `
             <div class="d-inline-flex align-items-center justify-content-end gap-1.5 text-nowrap">
               <a href="apply.html?ref=${encodeURIComponent(app.refNo)}" class="btn btn-sm btn-danger py-1 px-2.5 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Correct & Resubmit">
-                <i class="bi bi-pencil-square"></i> Correct
+                <i class="bi bi-pencil-square"></i> Correct &amp; Resubmit
               </a>
               <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 fw-semibold d-inline-flex align-items-center gap-1 text-nowrap" title="Track Status" onclick="openTrackingFor('${app.refNo}')">
                 <i class="bi bi-geo-alt"></i> Track
@@ -1980,10 +2135,46 @@
         return html;
       }
 
-      // 5. Render Notifications
+      // 5. Render Notifications & Quick Action Stack
+      function renderCitizenQuickNotifs(notifs) {
+        const container = document.getElementById('citizenQuickNotifStack');
+        if (!container) return;
+        const unread = (notifs || []).filter(n => !n.read);
+        if (unread.length === 0) {
+          container.innerHTML = '';
+          return;
+        }
+        container.innerHTML = unread.slice(0, 4).map(n => {
+          const border = n.type === 'danger' ? 'alert-danger border-danger' : (n.type === 'success' ? 'alert-success border-success' : (n.type === 'warning' ? 'alert-warning border-warning' : 'alert-info border-info'));
+          const lbl = String(n.actionLabel || n.actionType || '').toLowerCase();
+          let ctaHtml = `<button type="button" class="btn btn-sm btn-outline-dark" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'track')">Track Status</button>`;
+          if (n.actionType === 'RESUBMIT' || lbl.includes('resubmit')) {
+            ctaHtml = `<button type="button" class="btn btn-sm btn-danger fw-semibold" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'resubmit')"><i class="bi bi-pencil-square me-1"></i>Fix &amp; Resubmit</button>`;
+          } else if (n.actionType === 'PAY_NOW' || lbl.includes('pay')) {
+            ctaHtml = `<button type="button" class="btn btn-sm btn-warning text-dark fw-semibold" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'pay')"><i class="bi bi-credit-card me-1"></i>Pay Now</button>`;
+          } else if (n.actionType === 'DOWNLOAD_CERT' || lbl.includes('letter') || lbl.includes('certificate')) {
+            ctaHtml = `<button type="button" class="btn btn-sm btn-success fw-semibold" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'cert')"><i class="bi bi-download me-1"></i>Download Letter</button>`;
+          }
+          return `
+            <div class="alert ${border} border-start border-4 shadow-xs d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 py-2.5">
+              <div>
+                <div class="fw-bold small text-dark"><i class="bi bi-bell-fill me-1"></i>${n.title} ${n.refNo ? `<span class="font-monospace text-primary ms-1">${n.refNo}</span>` : ''}</div>
+                <div class="small text-dark opacity-75">${n.message}</div>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                ${ctaHtml}
+                ${n.id ? `<button type="button" class="btn btn-sm btn-link text-secondary p-1" title="Dismiss notification" onclick="dismissCitizenNotif('${n.id}')"><i class="bi bi-x-lg"></i></button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
       function renderNotifications(notifs) {
+        renderCitizenQuickNotifs(notifs);
         const dashList = document.getElementById('dashboardNotifList');
         const fullList = document.getElementById('fullNotifList');
+        if (!dashList || !fullList) return;
         dashList.innerHTML = '';
         fullList.innerHTML = '';
 
@@ -2000,21 +2191,68 @@
           if (n.type === 'success') icon = 'bi-check-circle-fill text-success';
           if (n.type === 'warning') icon = 'bi-bell-fill text-warning';
 
+          const lbl = String(n.actionLabel || n.actionType || '').toLowerCase();
+          let actionBtn = n.refNo ? `<button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" onclick="openNotifAction('${n.id || ''}', '${n.refNo}', 'track')">Track</button>` : '';
+          if (n.actionType === 'RESUBMIT' || lbl.includes('resubmit')) {
+            actionBtn = `<button type="button" class="btn btn-sm btn-danger py-0 px-2" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'resubmit')">Fix &amp; Resubmit</button>`;
+          } else if (n.actionType === 'PAY_NOW' || lbl.includes('pay')) {
+            actionBtn = `<button type="button" class="btn btn-sm btn-warning text-dark py-0 px-2 fw-semibold" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'pay')">Pay Now</button>`;
+          } else if (n.actionType === 'DOWNLOAD_CERT' || lbl.includes('letter') || lbl.includes('certificate')) {
+            actionBtn = `<button type="button" class="btn btn-sm btn-success py-0 px-2" onclick="openNotifAction('${n.id || ''}', '${n.refNo || ''}', 'cert')">Download Letter</button>`;
+          }
+
           const item = document.createElement('div');
-          item.className = 'list-group-item list-group-item-action d-flex align-items-start gap-3 py-3';
+          item.className = `list-group-item list-group-item-action d-flex align-items-start gap-3 py-3 ${n.read ? '' : 'bg-light'}`;
           item.innerHTML = `
             <i class="bi ${icon} fs-5 mt-1 flex-shrink-0"></i>
             <div class="flex-grow-1">
-              <div class="d-flex justify-content-between align-items-center">
-                <strong class="text-dark small">${n.title}</strong>
-                <span class="text-muted" style="font-size: 0.72rem;">${n.date}</span>
+              <div class="d-flex justify-content-between align-items-center gap-2">
+                <strong class="text-dark small">${n.title} ${!n.read && n.id ? '<span class="badge bg-primary ms-1">New</span>' : ''}</strong>
+                <span class="text-muted" style="font-size: 0.72rem;">${n.timestamp || n.date || ''}</span>
               </div>
-              <p class="small text-muted mb-0 mt-1">${n.message}</p>
+              <p class="small text-muted mb-1 mt-1">${n.message}</p>
+              ${actionBtn ? `<div class="mt-1">${actionBtn}</div>` : ''}
             </div>
           `;
           dashList.appendChild(item.cloneNode(true));
           fullList.appendChild(item);
         });
+      }
+
+      function openNotifAction(notifId, refNo, mode) {
+        if (notifId && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.markNotificationRead === 'function') {
+          WorkflowEngine.markNotificationRead(notifId);
+        }
+        if (mode === 'resubmit' && refNo) {
+          window.location.href = 'apply.html?ref=' + encodeURIComponent(refNo);
+          return;
+        }
+        if (mode === 'pay' && refNo) {
+          renderActiveScenario(activeScenarioKey);
+          openCitizenPaymentModal(refNo);
+          return;
+        }
+        if (mode === 'cert' && refNo) {
+          renderActiveScenario(activeScenarioKey);
+          downloadCertificateDirect(refNo);
+          return;
+        }
+        renderActiveScenario(activeScenarioKey);
+        if (refNo) openTrackingFor(refNo);
+      }
+
+      function dismissCitizenNotif(notifId) {
+        if (notifId && typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.markNotificationRead === 'function') {
+          WorkflowEngine.markNotificationRead(notifId);
+        }
+        renderActiveScenario(activeScenarioKey);
+      }
+
+      function markAllCitizenNotifsRead() {
+        if (typeof WorkflowEngine !== 'undefined' && typeof WorkflowEngine.markAllNotificationsRead === 'function') {
+          WorkflowEngine.markAllNotificationsRead('Citizen');
+        }
+        renderActiveScenario(activeScenarioKey);
       }
 
       // 6. Workflow Tracking Renderer (Synchronized with Live WorkflowEngine - Flow A & Flow B)
@@ -2528,12 +2766,15 @@
       function openCitizenPaymentModal(refNo) {
         const app = window.WorkflowEngine ? WorkflowEngine.getApplication(refNo) : null;
         if (!app) return;
+        window.currentPayingArn = app.refNo;
+        document.getElementById('payModalEntryView').classList.remove('d-none');
+        document.getElementById('payModalSuccessView').classList.add('d-none');
         document.getElementById('payModalArn').value = app.refNo;
         document.getElementById('payModalArnText').textContent = app.refNo;
         document.getElementById('payModalCategory').textContent = app.category;
         document.getElementById('payModalAmount').textContent = app.fee || (app.feeAmount > 0 ? ('₹' + app.feeAmount) : 'Free (₹0)');
         document.getElementById('payModalReturnTarget').textContent = app.requiresHqVerification ? (app.hqOfficerName || 'Same HQ Officer') : (app.district + ' DTO');
-        new bootstrap.Modal(document.getElementById('citizenPaymentModal')).show();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('citizenPaymentModal')).show();
       }
 
       function executeCitizenPayment() {
@@ -2541,12 +2782,74 @@
         const mode = document.getElementById('payModalMode').value;
         const res = WorkflowEngine.citizenCompletePayment(refNo, null, mode);
         if (res.success) {
-          const m = bootstrap.Modal.getInstance(document.getElementById('citizenPaymentModal'));
-          if (m) m.hide();
-          alert('Payment / Clearance completed for ' + refNo + '! Automatically routed back to ' + (res.application.assignedRole === 'hq' ? 'HQ Officer' : 'DTO') + ' for final approval.');
+          const app = res.application;
+          const nextAuth = app.assignedRole === 'hq' ? (app.hqOfficerName || 'HQ Officer') : (app.district + ' DTO');
+          const feeDisplay = app.fee || (app.feeAmount > 0 ? ('₹' + Number(app.feeAmount).toLocaleString('en-IN')) : 'Free (₹0)');
+          window.lastPaymentData = {
+            arn: app.refNo,
+            fee: feeDisplay,
+            txnId: app.paymentTxnRef || '-',
+            mode: mode,
+            nextAuth: nextAuth,
+            app: app
+          };
+          document.getElementById('paySuccessArn').textContent = app.refNo;
+          document.getElementById('paySuccessApplicant').textContent = app.applicantName || 'Applicant';
+          document.getElementById('paySuccessCategory').textContent = app.category || 'Tourism Permission';
+          document.getElementById('paySuccessTxnId').textContent = app.paymentTxnRef || '-';
+          document.getElementById('paySuccessMode').textContent = mode;
+          document.getElementById('paySuccessAmount').textContent = feeDisplay;
+          document.getElementById('paySuccessNextTarget').textContent = nextAuth;
+
+          document.getElementById('payModalEntryView').classList.add('d-none');
+          document.getElementById('payModalSuccessView').classList.remove('d-none');
           renderActiveScenario(activeScenarioKey);
         } else {
           alert(res.message);
+        }
+      }
+
+      function showPaymentAcknowledgement(arn, payData) {
+        const app = (payData && payData.app) || (window.WorkflowEngine ? WorkflowEngine.getApplication(arn) : null);
+        if (!app) return;
+        window.activeAckArn = app.refNo;
+        const feeDisplay = (payData && payData.fee) || app.fee || (app.feeAmount > 0 ? ('₹' + Number(app.feeAmount).toLocaleString('en-IN')) : 'Free (₹0)');
+        const nextAuth = (payData && payData.nextAuth) || (app.assignedRole === 'hq' ? 'HQ Officer' : (app.district + ' DTO'));
+
+        document.querySelectorAll('.workspace-section').forEach(s => s.classList.add('d-none'));
+        document.getElementById('section-acknowledgement').classList.remove('d-none');
+        document.getElementById('ackArnDisplay').textContent = app.refNo;
+        document.getElementById('ackDateDisplay').textContent = app.lastUpdated || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        document.getElementById('ackNameDisplay').textContent = app.applicantName || '-';
+        document.getElementById('ackCatDisplay').textContent = app.category || '-';
+        document.getElementById('ackDistrictDisplay').textContent = (app.district || 'Gangtok') + ' Circle';
+        document.getElementById('ackFeeAmountDisplay').textContent = feeDisplay;
+        document.getElementById('ackTxnIdDisplay').textContent = (payData && payData.txnId) || app.paymentTxnRef || '-';
+        document.getElementById('ackReceiptNoDisplay').textContent = ((payData && payData.mode) || 'Online') + ' → ' + nextAuth;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showPaymentAcknowledgementFromModal() {
+        const m = bootstrap.Modal.getInstance(document.getElementById('citizenPaymentModal'));
+        if (m) m.hide();
+        showPaymentAcknowledgement(window.currentPayingArn, window.lastPaymentData);
+      }
+
+      function closePayModalAndGoToDashboard() {
+        const m = bootstrap.Modal.getInstance(document.getElementById('citizenPaymentModal'));
+        if (m) m.hide();
+        switchView('dashboard');
+        renderActiveScenario(activeScenarioKey);
+      }
+
+      function trackFromAck() {
+        if (window.activeAckArn) openTrackingFor(window.activeAckArn);
+      }
+
+      function copyAckArnToClipboard() {
+        const arn = document.getElementById('ackArnDisplay').textContent;
+        if (navigator.clipboard && arn && arn !== '-') {
+          navigator.clipboard.writeText(arn);
         }
       }
 
@@ -2606,6 +2909,14 @@
       window.simulateLogout = simulateLogout;
       window.openResubmitModal = openResubmitModal;
       window.handleCitizenResubmit = handleCitizenResubmit;
+      window.openNotifAction = openNotifAction;
+      window.dismissCitizenNotif = dismissCitizenNotif;
+      window.markAllCitizenNotifsRead = markAllCitizenNotifsRead;
+      window.showPaymentAcknowledgement = showPaymentAcknowledgement;
+      window.showPaymentAcknowledgementFromModal = showPaymentAcknowledgementFromModal;
+      window.closePayModalAndGoToDashboard = closePayModalAndGoToDashboard;
+      window.trackFromAck = trackFromAck;
+      window.copyAckArnToClipboard = copyAckArnToClipboard;
 
     })();
   </script>

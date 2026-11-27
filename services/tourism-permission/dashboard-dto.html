@@ -191,6 +191,10 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
+          <button type="button" class="btn btn-sm btn-outline-success position-relative" onclick="toggleDtoNotificationsDrawer()" title="Notification Centre">
+            <i class="bi bi-bell-fill"></i>
+            <span class="badge bg-danger rounded-pill ms-1" id="dtoNotifCountBadge">0</span>
+          </button>
           <div class="text-end d-none d-sm-block">
             <div class="fw-bold text-dark small" id="dtoOfficerName">Karma Lhendup Bhutia</div>
             <div class="text-muted" style="font-size: 0.75rem;" id="dtoOfficerDesignation">District Tourism Officer (DTO)</div>
@@ -287,7 +291,38 @@
 
     <!-- Main Content Area -->
     <main id="main-dto-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0">
-      
+
+      <!-- Real-Time DTO Notification Banner -->
+      <div id="dtoLiveNotificationBanner" class="alert alert-success border border-success shadow-xs mb-3 d-none" style="background: #f0fdf4;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <div>
+              <strong id="dtoNotifBannerTitle" class="text-success-emphasis small d-block">Action Required</strong>
+              <span id="dtoNotifBannerMsg" class="text-dark small"></span>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <a id="dtoNotifBannerBtn" href="#" class="btn btn-sm btn-success fw-semibold px-3">Review Application</a>
+            <button type="button" class="btn-close btn-sm" aria-label="Dismiss" onclick="dismissLatestDtoNotification()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Drawer -->
+      <div id="dtoNotificationsDrawer" class="card border shadow-sm mb-3 d-none">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+          <strong class="small text-dark"><i class="bi bi-bell-fill text-success me-1"></i> DTO Notification Centre</strong>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="markAllDtoNotificationsRead()">Mark All Read</button>
+            <button type="button" class="btn-close btn-sm" onclick="toggleDtoNotificationsDrawer(false)"></button>
+          </div>
+        </div>
+        <div class="card-body p-2" id="dtoNotificationsListContainer"></div>
+      </div>
+
       <!-- Welcome Officer Card -->
       <div class="card border-0 bg-white p-4 shadow-xs mb-3">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -774,6 +809,7 @@
           else if (app.currentStage === WorkflowEngine.STAGES.STAGE_2) statusBadgeClass = 'gov-status-pill gov-status-pill-submitted';
           else if (app.currentStage === WorkflowEngine.STAGES.STAGE_7) statusBadgeClass = 'gov-status-pill gov-status-pill-submitted';
 
+          const sn = WorkflowEngine.getStatusAndNextAction(app, 'dto');
           const categoryDisplay = app.customCategoryName ? `${app.category} (${app.customCategoryName})` : app.category;
           const liaisonBadge = (app.categoryKey === 'expedition' || (app.category || '').toLowerCase().includes('expedition')) ? 
             '<span class="badge bg-info-subtle text-info border border-info-subtle ms-1" title="Requires Liaison Officer">LO</span>' : '';
@@ -859,9 +895,9 @@
               ${appDate.time ? `<div class="text-muted" style="font-size: 0.72rem;"><i class="bi bi-clock me-1"></i>${appDate.time}</div>` : ''}
             </td>
             <td>
-              <span class="${statusBadgeClass}">${app.status}</span>
-              <div class="text-muted small text-truncate" style="font-size: 0.75rem; max-width: 160px;" title="${app.currentStage}">${app.currentStage}</div>
-              ${app.approvalSheet ? `<div class="mt-0.5"><span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5" style="font-size: 0.7rem;"><i class="bi bi-file-earmark-check me-1"></i>HQ Sheet Attached</span></div>` : ''}
+              <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span>
+              <div class="text-muted small mt-1" style="font-size: 0.74rem;" title="${sn.nextAction}"><strong>Next:</strong> ${sn.nextAction}</div>
+              ${app.approvalSheet ? `<div class="mt-0.5"><span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5" style="font-size: 0.7rem;"><i class="bi bi-file-earmark-check me-1"></i>External Approval Sheet Attached</span></div>` : ''}
             </td>
             <td class="text-end text-nowrap">
               ${actionBtnHtml}
@@ -878,10 +914,11 @@
                 <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=dto" class="fw-bold font-monospace text-primary text-decoration-none">
                   ${app.refNo}
                 </a>
-                <span class="${statusBadgeClass}">${app.status}</span>
+                <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span>
               </div>
               <div class="fw-semibold text-dark mb-1">${app.applicantName}</div>
-              <div class="small text-muted mb-2 text-truncate">${app.activityTitle}</div>
+              <div class="small text-muted mb-1 text-truncate">${app.activityTitle}</div>
+              <div class="small text-muted mb-2" style="font-size: 0.73rem;"><strong>Next:</strong> ${sn.nextAction}</div>
               <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
                 <span><i class="bi bi-tag me-1"></i>${categoryDisplay} ${liaisonBadge}</span>
                 <span><i class="bi bi-calendar-event me-1"></i>${appDate.date}${appDate.time ? ' &bull; ' + appDate.time : ''}</span>
@@ -979,10 +1016,84 @@
         dateDisplayEl.textContent = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
       }
 
+      function updateNotifications() {
+        const distFilter = currentDistrict === 'all' ? 'ALL' : currentDistrict;
+        const notifs = WorkflowEngine.getNotifications('DTO', distFilter);
+        const unread = notifs.filter(n => !n.read);
+        const badgeEl = document.getElementById('dtoNotifCountBadge');
+        if (badgeEl) badgeEl.textContent = unread.length;
+
+        const banner = document.getElementById('dtoLiveNotificationBanner');
+        if (banner) {
+          if (unread.length > 0) {
+            const top = unread[0];
+            window.__latestDtoNotifId = top.id;
+            document.getElementById('dtoNotifBannerTitle').textContent = top.title;
+            document.getElementById('dtoNotifBannerMsg').textContent = top.message;
+            const btn = document.getElementById('dtoNotifBannerBtn');
+            btn.textContent = top.actionLabel || 'Review Application';
+            btn.href = top.targetUrl || `review.html?arn=${encodeURIComponent(top.refNo)}&role=dto`;
+            btn.onclick = () => WorkflowEngine.markNotificationRead(top.id);
+            banner.classList.remove('d-none');
+          } else {
+            window.__latestDtoNotifId = null;
+            banner.classList.add('d-none');
+          }
+        }
+
+        const listEl = document.getElementById('dtoNotificationsListContainer');
+        if (listEl) {
+          listEl.innerHTML = notifs.length === 0
+            ? '<div class="text-muted small text-center py-2">No notifications yet.</div>'
+            : notifs.slice(0, 12).map(n => `
+              <div class="d-flex justify-content-between align-items-center gap-2 p-2 border-bottom ${n.read ? 'bg-white' : 'bg-success-subtle bg-opacity-25'}">
+                <div>
+                  <div class="small fw-semibold text-dark">${n.title} ${!n.read ? '<span class="badge bg-success ms-1">New</span>' : ''}</div>
+                  <div class="text-muted" style="font-size: 0.76rem;">${n.message} &bull; ${n.timestamp}</div>
+                </div>
+                <a href="${n.targetUrl || '#'}" class="btn btn-sm btn-outline-success py-0 px-2 text-nowrap" onclick="WorkflowEngine.markNotificationRead('${n.id}')">${n.actionLabel || 'Open'}</a>
+              </div>
+            `).join('');
+        }
+      }
+
+      window.dismissLatestDtoNotification = function () {
+        if (window.__latestDtoNotifId) WorkflowEngine.markNotificationRead(window.__latestDtoNotifId);
+        updateNotifications();
+      };
+      window.markAllDtoNotificationsRead = function () {
+        const distFilter = currentDistrict === 'all' ? 'ALL' : currentDistrict;
+        WorkflowEngine.markAllNotificationsRead('DTO', distFilter);
+        updateNotifications();
+      };
+      window.toggleDtoNotificationsDrawer = function (force) {
+        const d = document.getElementById('dtoNotificationsDrawer');
+        if (!d) return;
+        if (force === false) d.classList.add('d-none');
+        else d.classList.toggle('d-none');
+      };
+
       updateDistrictContext();
       updateMetrics();
       updateCardHeader();
       renderTable();
+      updateNotifications();
+
+      if (typeof BroadcastChannel !== 'undefined') {
+        const dtoSync = new BroadcastChannel('tourism_permission_sync_v1');
+        dtoSync.onmessage = function () {
+          updateMetrics();
+          renderTable();
+          updateNotifications();
+        };
+      }
+      window.addEventListener('storage', function (e) {
+        if (e.key === WorkflowEngine.STORAGE_KEY || e.key === WorkflowEngine.NOTIFICATIONS_KEY) {
+          updateMetrics();
+          renderTable();
+          updateNotifications();
+        }
+      });
 
     })();
   </script>
