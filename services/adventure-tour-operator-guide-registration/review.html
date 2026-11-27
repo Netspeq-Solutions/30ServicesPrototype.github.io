@@ -88,7 +88,7 @@
           <option value="io">Inspecting Officer (IO)</option>
           <option value="asst-dir-hq">Assistant Director – HQ</option>
           <option value="dto-hq">DTO – Headquarters</option>
-          <option value="dist-ta">District TA (Circle)</option>
+          <option value="dist-ta">District TO (Circle)</option>
           <option value="dist-dto">District DTO (Circle)</option>
         </select>
 
@@ -135,7 +135,7 @@
         <div class="d-flex align-items-center gap-3">
           <div class="text-end d-none d-sm-block">
             <div class="fw-bold text-dark small" id="reviewOfficerName">Tashi Namgyal Bhutia</div>
-            <div class="text-muted" style="font-size: 0.75rem;" id="reviewOfficerDesignation">Technical Assistant (Headquarters Scrutiny)</div>
+            <div class="text-muted" style="font-size: 0.75rem;" id="reviewOfficerDesignation">Tourism Officer (Headquarters Scrutiny)</div>
           </div>
           <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
             <i class="bi bi-box-arrow-right"></i>
@@ -165,7 +165,7 @@
               <div class="d-flex align-items-center gap-2 flex-wrap">
                 <span class="fs-5 fw-bold font-monospace text-primary" id="headerArn">SK-ATO-2026-0042</span>
                 <span class="badge bg-primary px-2 py-1" id="headerStatusBadge">Under Review</span>
-                <span class="badge bg-light text-dark border px-2 py-1" id="headerStageBadge">Stage 1: Awaiting TA Review</span>
+                <span class="badge bg-light text-dark border px-2 py-1" id="headerStageBadge">Stage 1: Awaiting TO Review</span>
                 <span class="badge bg-secondary text-white" id="headerTypeBadge">Adventure Tour Operator</span>
                 <span class="badge bg-light text-dark border" id="headerDistrictBadge">Gangtok District</span>
               </div>
@@ -396,7 +396,7 @@
             <h3 class="h6 fw-bold mb-0 text-dark">
               <i class="bi bi-lightning-charge-fill text-warning me-2"></i> Workflow Action Desk
             </h3>
-            <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="activeRoleIndicator">TA Desk</span>
+            <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="activeRoleIndicator">TO Desk</span>
           </div>
 
           <!-- Current Processing Stage Callout -->
@@ -404,7 +404,7 @@
             <span class="text-muted small d-block mb-1">Current Stage:</span>
             <div class="p-2 bg-light rounded border fw-bold text-primary small d-flex align-items-center gap-2" id="currentStageDisplay">
               <i class="bi bi-hourglass-split"></i>
-              <span id="currentStageText">Awaiting HQ TA Review</span>
+              <span id="currentStageText">Awaiting TO Review</span>
             </div>
           </div>
 
@@ -567,7 +567,7 @@
         <div class="modal-footer bg-light py-2">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-success btn-sm px-3 fw-semibold" onclick="confirmSubmitReport()">
-            <i class="bi bi-send-check me-1"></i> Submit Inspection Report to Tourism Authority (TA)
+            <i class="bi bi-send-check me-1"></i> Submit Inspection Report to Tourism Authority (TO)
           </button>
         </div>
       </div>
@@ -829,7 +829,7 @@
         if (backBtn && backLabel) {
           if (activeRole === 'ta-hq') {
             backBtn.href = 'dashboard-ta.html';
-            backLabel.textContent = 'Back to HQ TA Queue';
+            backLabel.textContent = 'Back to TO Queue';
           } else if (activeRole === 'io') {
             backBtn.href = 'dashboard-io.html';
             backLabel.textContent = 'Back to IO Queue';
@@ -1058,7 +1058,7 @@
             inspBadge.textContent = 'Pending Assignment';
             inspBody.innerHTML = `
               <div class="text-muted small py-2">
-                <i class="bi bi-clock me-1"></i>No Inspecting Officer assigned yet. Technical Assistant (Headquarters) will assign an IO for physical on-site gear and safety infrastructure inspection.
+                <i class="bi bi-clock me-1"></i>No Inspecting Officer assigned yet. Tourism Officer (Headquarters) will assign an IO for physical on-site gear and safety infrastructure inspection.
               </div>
             `;
           } else if (app.assignedIO && !app.inspectionReport) {
@@ -1217,7 +1217,7 @@
 
         // Set Officer Identity
         if (role === 'ta-hq') {
-          roleIndicator.textContent = 'HQ TA Desk';
+          roleIndicator.textContent = 'TO Desk';
           offNameEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
           offDesigEl.textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.designation;
           offTitleEl.textContent = 'Tourism & Civil Aviation Department • Headquarters Scrutiny Desk';
@@ -1238,9 +1238,9 @@
           offTitleEl.textContent = 'District Tourism Office, Gangtok Circle • State Licensing Authority';
         } else if (role === 'dist-ta') {
           const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeDistrict] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
-          roleIndicator.textContent = `${activeDistrict} TA Desk`;
+          roleIndicator.textContent = `${activeDistrict} TO Desk`;
           offNameEl.textContent = distInfo.taName;
-          offDesigEl.textContent = `Technical Assistant (${activeDistrict} District Circle)`;
+          offDesigEl.textContent = `Tourism Officer (${activeDistrict} District Circle)`;
           offTitleEl.textContent = `District Tourism Office, ${activeDistrict} Circle`;
         } else if (role === 'dist-dto') {
           const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeDistrict] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
@@ -1292,9 +1292,13 @@
         }
 
         // AUTHORITATIVE WORKFLOW ACTION BUTTONS
-        // 1. TA – Headquarters Actions
+        // 1. TO – Gangtok Actions
         if (role === 'ta-hq') {
-          instructions.textContent = 'Verify credentials, mandate on-site IO safety gear inspection or forward to Assistant Director.';
+          instructions.textContent = 'Review application details, assign IA for ATO inspection, or forward Guide applications directly to DTO.';
+          if (app.currentRole !== 'ta-hq') {
+            container.innerHTML += `<div class="alert alert-info small p-2 mb-0"><i class="bi bi-info-circle me-1"></i>Currently at: <strong>${app.stage}</strong>. No pending TO action.</div>`;
+            return;
+          }
           if (app.type === 'adventure-tour-operator') {
             if (!app.assignedIO) {
               container.innerHTML += `
@@ -1304,8 +1308,8 @@
               `;
             } else if (app.inspectionReport) {
               container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('asst-dir-hq', 'HQ Assistant Director')">
-                  <i class="bi bi-send-fill me-1"></i> Forward to Assistant Director
+                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('dto-hq', 'District Tourism Officer (DTO)')">
+                  <i class="bi bi-send-fill me-1"></i> Forward to DTO
                 </button>
               `;
             } else {
@@ -1317,8 +1321,8 @@
             }
           } else if (app.type === 'guide-registration' && app.district === 'Gangtok') {
             container.innerHTML += `
-              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('asst-dir-hq', 'HQ Assistant Director')">
-                <i class="bi bi-send-fill me-1"></i> Forward to Assistant Director
+              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('dto-hq', 'District Tourism Officer (DTO)')">
+                <i class="bi bi-send-fill me-1"></i> Forward to DTO
               </button>
             `;
           } else {
@@ -1349,7 +1353,7 @@
           } else if (app.inspectionReport) {
             container.innerHTML += `
               <div class="badge bg-success-subtle text-success border p-2 small">
-                <i class="bi bi-check-circle-fill me-1"></i>Report Submitted &bull; Returned to TA
+                <i class="bi bi-check-circle-fill me-1"></i>Report Submitted &bull; Returned to TO
               </div>
             `;
           } else {
@@ -1375,34 +1379,31 @@
           `;
         }
 
-        // 4. HQ DTO Actions
-        else if (role === 'dto-hq') {
-          instructions.textContent = 'Activate statutory registration fee of ₹1,500 or grant final statutory approval.';
-          if (app.type === 'adventure-tour-operator' || (app.type === 'guide-registration' && app.district === 'Gangtok')) {
-            if (!app.payment || !app.payment.activated) {
-              container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-warning fw-bold text-dark shadow-xs" onclick="activateStatutoryPayment()">
-                  <i class="bi bi-currency-rupee me-1"></i> Activate Fee Payment (₹1,500)
-                </button>
-              `;
-            } else if (app.payment.activated && !app.payment.paid) {
-              container.innerHTML += `
-                <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
-                  <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
-                </div>
-              `;
-            } else if (app.payment.paid) {
-              container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="approveAndIssueCertificate()">
-                  <i class="bi bi-patch-check-fill me-1"></i> Approve &amp; Issue Registration Certificate
-                </button>
-              `;
-            }
-          } else {
-            // Other-district Guide: HQ DTO issues digital ID Card & manual Logbook!
+        // 4. DTO – Gangtok / District DTO Actions
+        else if (role === 'dto-hq' || role === 'dist-dto') {
+          const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
+          const feeLabel = isGuide ? '₹500' : '₹1,500';
+          instructions.textContent = `Approve for payment (${feeLabel}) or grant final approval & issue certificate.`;
+          if (app.currentRole !== 'dto-hq' && app.currentRole !== 'dist-dto') {
+            container.innerHTML += `<div class="alert alert-info small p-2 mb-0"><i class="bi bi-info-circle me-1"></i>Currently at: <strong>${app.stage}</strong>. No pending DTO action.</div>`;
+            return;
+          }
+          if (!app.payment || !app.payment.activated) {
             container.innerHTML += `
-              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="issueDigitalIdAndLogbook()">
-                <i class="bi bi-person-badge-fill me-1"></i> Issue Digital ID Card &amp; Record Logbook
+              <button type="button" class="btn btn-sm btn-warning fw-bold text-dark shadow-xs" onclick="activateStatutoryPayment()">
+                <i class="bi bi-currency-rupee me-1"></i> Approve for Payment (${feeLabel})
+              </button>
+            `;
+          } else if (app.payment.activated && !app.payment.paid) {
+            container.innerHTML += `
+              <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
+                <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
+              </div>
+            `;
+          } else if (app.payment.paid) {
+            container.innerHTML += `
+              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="approveAndIssueCertificate()">
+                <i class="bi bi-patch-check-fill me-1"></i> Final Approve &amp; Issue Certificate
               </button>
             `;
           }
@@ -1419,17 +1420,33 @@
           `;
         }
 
-        // 5. District TA Actions (Other-District Guide)
+        // 5. District TO Actions
         else if (role === 'dist-ta') {
-          instructions.textContent = 'Scrutinize local circle documents and forward to District Tourism Officer.';
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
+          instructions.textContent = 'Review district application documents and forward to IA (for ATO) or directly to District DTO (for Guide).';
+          if (app.currentRole !== 'dist-ta') {
+            container.innerHTML += `<div class="alert alert-info small p-2 mb-0"><i class="bi bi-info-circle me-1"></i>Currently at: <strong>${app.stage}</strong>. No pending TO action.</div>`;
+            return;
+          }
+          if (app.type === 'adventure-tour-operator') {
+            if (!app.assignedIO) {
+              container.innerHTML += `
+                <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" onclick="openAssignIoModal()">
+                  <i class="bi bi-person-plus-fill me-1"></i> Assign Inspecting Authority (IA)
+                </button>
+              `;
+            } else if (app.inspectionReport) {
+              container.innerHTML += `
+                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('dist-dto', 'District DTO (${app.district})')">
+                  <i class="bi bi-send-fill me-1"></i> Forward to District DTO
+                </button>
+              `;
+            }
+          } else {
             container.innerHTML += `
               <button type="button" class="btn btn-sm btn-primary fw-semibold shadow-xs" onclick="openForwardModal('dist-dto', 'District DTO (${app.district})')">
                 <i class="bi bi-send-fill me-1"></i> Forward to District DTO
               </button>
             `;
-          } else {
-            container.innerHTML += `<div class="text-muted small">Application handled by HQ TA Desk.</div>`;
           }
 
           container.innerHTML += `
@@ -1444,29 +1461,33 @@
           `;
         }
 
-        // 6. District DTO Actions (Other-District Guide)
+        // 6. District DTO Actions
         else if (role === 'dist-dto') {
-          instructions.textContent = 'Activate local fee deposit and forward verified file to HQ Assistant Director.';
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            if (!app.payment || !app.payment.activated) {
-              container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-warning fw-bold text-dark shadow-xs" onclick="activateStatutoryPayment()">
-                  <i class="bi bi-currency-rupee me-1"></i> Activate Fee Payment (₹1,500)
-                </button>
-              `;
-            } else if (app.payment.activated && !app.payment.paid) {
-              container.innerHTML += `
-                <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
-                  <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
-                </div>
-              `;
-            } else if (app.payment.paid) {
-              container.innerHTML += `
-                <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="openForwardModal('asst-dir-hq', 'HQ Assistant Director')">
-                  <i class="bi bi-send-fill me-1"></i> Forward to HQ Assistant Director
-                </button>
-              `;
-            }
+          const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
+          const feeLabel = isGuide ? '₹500' : '₹1,500';
+          instructions.textContent = `Approve for payment (${feeLabel}) or grant final approval & issue certificate directly.`;
+          if (app.currentRole !== 'dist-dto') {
+            container.innerHTML += `<div class="alert alert-info small p-2 mb-0"><i class="bi bi-info-circle me-1"></i>Currently at: <strong>${app.stage}</strong>. No pending DTO action.</div>`;
+            return;
+          }
+          if (!app.payment || !app.payment.activated) {
+            container.innerHTML += `
+              <button type="button" class="btn btn-sm btn-warning fw-bold text-dark shadow-xs" onclick="activateStatutoryPayment()">
+                <i class="bi bi-currency-rupee me-1"></i> Approve for Payment (${feeLabel})
+              </button>
+            `;
+          } else if (app.payment.activated && !app.payment.paid) {
+            container.innerHTML += `
+              <div class="badge bg-warning-subtle text-warning-emphasis border p-2 small">
+                <i class="bi bi-clock me-1"></i>Payment Activated &bull; Awaiting Applicant Deposit
+              </div>
+            `;
+          } else if (app.payment.paid) {
+            container.innerHTML += `
+              <button type="button" class="btn btn-sm btn-success fw-semibold shadow-xs" onclick="approveAndIssueCertificate()">
+                <i class="bi bi-patch-check-fill me-1"></i> Final Approve &amp; Issue Certificate
+              </button>
+            `;
           } else {
             container.innerHTML += `<div class="text-muted small">Application handled by HQ DTO Desk.</div>`;
           }
@@ -1604,7 +1625,7 @@
         if (modal) modal.hide();
 
         loadApplicationReview(currentArn);
-        showToastAlert('On-Site Gear & Safety Inspection Report submitted successfully to Tourism Authority (TA).', 'success');
+        showToastAlert('On-Site Gear & Safety Inspection Report submitted successfully to Tourism Authority (TO).', 'success');
       };
 
       window.openForwardModal = function (targetRole, targetTitle) {

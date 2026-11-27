@@ -55,13 +55,270 @@
       position: relative;
       min-height: 1050px;
       display: flex;
-      flex-column: column;
+      flex-direction: column;
       justify-content: space-between;
       box-sizing: border-box;
       font-family: 'Noto Serif', serif;
       line-height: 2.1;
       font-size: 1.05rem;
       color: #000000;
+    }
+
+    .cert-paper.guide-cert-mode {
+      padding: 2.25rem 3rem 2.25rem 3rem;
+      min-height: 1020px;
+      line-height: 1.8;
+    }
+
+    .cert-paper.guide-cert-mode .cert-title-heading {
+      margin-bottom: 1.75rem;
+    }
+
+    .cert-paper.guide-cert-mode .cert-body-statement {
+      margin-bottom: 1.25rem;
+      line-height: 2;
+    }
+
+    .cert-paper.guide-cert-mode .cert-validity-statement {
+      margin-bottom: 1.5rem;
+    }
+
+    .cert-paper.guide-cert-mode .cert-signoff-row {
+      margin-top: 1.5rem;
+    }
+
+    .cert-paper.guide-cert-mode .cert-page-footer {
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Integrated Approved Guide ID Card (Reused from guide-id-card.html) */
+    .integrated-id-cutline {
+      border-top: 2px dotted #475569;
+      position: relative;
+      text-align: center;
+      margin: 1rem 0 1.25rem 0;
+    }
+    .integrated-id-cutline span {
+      background: #ffffff;
+      padding: 0 0.75rem;
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 0.75rem;
+      color: #475569;
+      position: relative;
+      top: -0.75rem;
+      font-weight: 600;
+    }
+    .integrated-id-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      font-family: 'Noto Sans', sans-serif;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .pvc-card {
+      width: 344px;
+      height: 218px;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #64748b;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .front-top-ref-bar {
+      padding: 4px 10px 2px 10px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #1e293b;
+      background: #ffffff;
+      line-height: 1.2;
+    }
+    .front-title-banner {
+      background-color: #0e3768;
+      color: #ffffff;
+      padding: 3px 12px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .front-body-content {
+      padding: 6px 10px 4px 10px;
+      display: flex;
+      gap: 8px;
+      flex-grow: 1;
+    }
+    .front-photo-box {
+      width: 72px;
+      height: 92px;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #e2e8f0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .front-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .front-details-col {
+      flex-grow: 1;
+      font-size: 0.58rem;
+      line-height: 1.3;
+      color: #0f172a;
+      min-width: 0;
+    }
+    .front-detail-line {
+      margin-bottom: 1.5px;
+      display: flex;
+      gap: 3px;
+    }
+    .front-detail-line strong {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .front-detail-line span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .specialization-box {
+      border: 1px solid #94a3b8;
+      border-radius: 5px;
+      padding: 3px 5px;
+      margin-top: 3px;
+      background: #f8fafc;
+    }
+    .specialization-title {
+      font-weight: 700;
+      font-size: 0.56rem;
+      color: #0f172a;
+      margin-bottom: 1px;
+    }
+    .specialization-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px 4px;
+      font-size: 0.54rem;
+    }
+    .spec-item {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: #1e293b;
+    }
+    .spec-check-icon {
+      font-size: 0.62rem;
+      color: #0e3768;
+      width: 11px;
+      text-align: center;
+    }
+    .front-bottom-band {
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid #cbd5e1;
+      height: 38px;
+    }
+    .front-validity-box {
+      background-color: #0e3768;
+      color: #ffffff;
+      padding: 4px 8px;
+      width: 50%;
+      font-size: 0.54rem;
+      line-height: 1.25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .front-authority-box {
+      background-color: #ffffff;
+      color: #0f172a;
+      padding: 3px 6px;
+      width: 50%;
+      font-size: 0.48rem;
+      line-height: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: right;
+    }
+    .back-card-body {
+      padding: 10px 12px 8px 12px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background-color: #fdfefe;
+      background-image: radial-gradient(#e2e8f0 0.8px, transparent 0.8px);
+      background-size: 14px 14px;
+    }
+    .back-qr-group {
+      position: absolute;
+      top: 9px;
+      right: 10px;
+      text-align: center;
+      z-index: 2;
+    }
+    .back-qr-img {
+      width: 46px;
+      height: 46px;
+      display: block;
+      margin: 0 auto;
+    }
+    .back-url-text {
+      font-size: 0.46rem;
+      color: #0f172a;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .back-symbol-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      flex-grow: 1;
+      z-index: 1;
+    }
+    .back-symbol-svg {
+      width: 84px;
+      height: 84px;
+      opacity: 0.95;
+    }
+    .back-dept-title {
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 800;
+      color: #0e3768;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      z-index: 2;
+    }
+    .back-legal-note {
+      text-align: center;
+      font-size: 0.44rem;
+      color: #475569;
+      line-height: 1.2;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 3px;
+      margin: 0;
+      z-index: 2;
     }
 
     /* Gazette Sample Header Typography */
@@ -214,8 +471,8 @@
         <button type="button" class="btn btn-sm btn-success py-1 px-3 text-nowrap shadow-xs fw-semibold" onclick="window.print()">
           <i class="bi bi-printer me-1"></i>Print Certificate
         </button>
-        <button type="button" class="btn btn-sm btn-primary py-1 px-3 text-nowrap shadow-xs fw-semibold" onclick="window.print()">
-          <i class="bi bi-download me-1"></i>Download PDF
+        <button type="button" class="btn btn-sm btn-primary py-1 px-3 text-nowrap shadow-xs fw-semibold" id="btnDownloadDoc" onclick="window.print()">
+          <i class="bi bi-download me-1"></i>Download Certificate
         </button>
       </div>
     </div>
@@ -262,6 +519,98 @@
       <!-- Bottom Page Number Exact from Gazette Samples: -77- or -78- -->
       <div>
         <div class="cert-page-footer" id="certPageNumber">-77-</div>
+
+        <!-- Section B: Integrated Approved Guide ID Card (Reused from guide-id-card.html, with Cut-Out Line) -->
+        <div id="guideIdCardCutoutSection" style="display: none; margin-top: 0.75rem;">
+          <div class="integrated-id-cutline">
+            <span>&#9986; Cut along the dotted line to separate the Guide ID Card</span>
+          </div>
+
+          <div class="integrated-id-grid">
+            <!-- FRONT SIDE -->
+            <div class="pvc-card" id="cardFrontSide">
+              <div class="front-top-ref-bar" id="idCardRefNumber">133/DoT&amp;CAv/GTK/26/TG</div>
+              <div class="front-title-banner">Tour Guide</div>
+              <div class="front-body-content">
+                <div class="front-photo-box">
+                  <img src="assets/guide-photo-placeholder.svg" alt="Applicant Photo" class="front-photo-img" id="idCardPhoto">
+                </div>
+                <div class="front-details-col">
+                  <div class="front-detail-line">
+                    <strong>Full Name:</strong>
+                    <span id="idCardName">-</span>
+                  </div>
+                  <div class="front-detail-line">
+                    <strong>Address:</strong>
+                    <span id="idCardAddress">-</span>
+                  </div>
+                  <div class="front-detail-line">
+                    <strong>Mobile No.:</strong>
+                    <span id="idCardMobile">-</span>
+                  </div>
+                  <div class="front-detail-line">
+                    <strong>Blood Group:</strong>
+                    <span id="idCardBloodGroup">-</span>
+                  </div>
+                  <div class="specialization-box">
+                    <div class="specialization-title">Specialization Options</div>
+                    <div class="specialization-grid">
+                      <div class="spec-item">
+                        <span class="spec-check-icon" id="idCheckTourGuide"><i class="bi bi-check-square-fill"></i></span>
+                        <span>Tour Guide</span>
+                      </div>
+                      <div class="spec-item">
+                        <span class="spec-check-icon" id="idCheckBirdWatching"><i class="bi bi-square"></i></span>
+                        <span>Bird Watching</span>
+                      </div>
+                      <div class="spec-item">
+                        <span class="spec-check-icon" id="idCheckTrekkingGuide"><i class="bi bi-square"></i></span>
+                        <span>Trekking Guide</span>
+                      </div>
+                      <div class="spec-item">
+                        <span class="spec-check-icon" id="idCheckTrekkingCook"><i class="bi bi-square"></i></span>
+                        <span>Trekking Cook</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="front-bottom-band">
+                <div class="front-validity-box">
+                  <div><strong>Date of Issue:</strong> <span id="idCardIssueDate">-</span></div>
+                  <div><strong>Valid upto:</strong> <span id="idCardValidTill">-</span></div>
+                </div>
+                <div class="front-authority-box">
+                  <strong>District Tourism Officer (DTO),</strong>
+                  <div>Tourism and Civil Aviation Department,</div>
+                  <div>Government of Sikkim (<span id="idCardDistrict">-</span>).</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BACK SIDE -->
+            <div class="pvc-card" id="cardBackSide">
+              <div class="back-card-body">
+                <div class="back-qr-group">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fwww.sikkimtourism.gov.in" alt="Verification QR Code" class="back-qr-img" id="idCardBackQr">
+                  <div class="back-url-text">www.sikkimtourism.gov.in</div>
+                </div>
+                <div class="back-symbol-center">
+                  <img src="assets/sikkim-endless-knot.svg" alt="Sikkim Endless Knot" class="back-symbol-svg">
+                </div>
+                <div>
+                  <div class="back-dept-title">
+                    Tourism &amp; Civil Aviation Department,<br>
+                    Government of Sikkim
+                  </div>
+                  <p class="back-legal-note">
+                    *Note: This ID Card is non-Transferable and its loss must be reported immediately to police and Issuing authority. Reg. No: <span id="idCardRegNo" class="fw-bold"></span> | Ref: <span id="idCardArn"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Departmental Clarification Note for Guide Sample (Screen only) -->
         <div class="cert-source-note no-print" id="sourceClarificationNote" style="display: none;">
@@ -345,21 +694,71 @@
       const date = app.lastUpdated || app.submittedDate || '02 Nov 2026';
 
       // Update Top Screen Title & Bar
-      document.getElementById('pageTitle').textContent = `${isGuide ? 'Annexure XVIII – Guide Registration Certificate' : 'Annexure XVII – Adventure Tour Operator Certificate'} • ${arn}`;
-      document.getElementById('barDocTitle').textContent = isGuide ? 'Guide Registration Certificate (Annexure XVIII)' : 'Adventure Tour Operator Certificate (Annexure XVII)';
+      document.getElementById('pageTitle').textContent = `${isGuide ? 'Annexure XVIII – Guide Registration Certificate & ID Card' : 'Annexure XVII – Adventure Tour Operator Certificate'} • ${arn}`;
+      document.getElementById('barDocTitle').textContent = isGuide ? 'Guide Registration Certificate & ID Card (Annexure XVIII)' : 'Adventure Tour Operator Certificate (Annexure XVII)';
+      const dlBtn = document.getElementById('btnDownloadDoc');
+      if (dlBtn) {
+        dlBtn.innerHTML = isGuide
+          ? '<i class="bi bi-download me-1"></i>Download Certificate &amp; ID Card'
+          : '<i class="bi bi-download me-1"></i>Download Certificate';
+      }
+      const paperEl = document.getElementById('certificatePaper');
+      if (paperEl) paperEl.classList.toggle('guide-cert-mode', isGuide);
 
       if (isGuide) {
         // Annexure XVIII: Guide Certificate
         document.getElementById('certAnnexureText').textContent = 'Annexure XVIII';
         document.getElementById('certTitleHeading').textContent = 'CERTIFICATE OF REGISTRATION OF A GUIDE';
         document.getElementById('certPageNumber').textContent = '-78-';
-        document.getElementById('sourceClarificationNote').style.display = 'block';
+        document.getElementById('sourceClarificationNote').style.display = 'none';
 
         // Official Wording verbatim from Guide Certificate.jpeg sample
         document.getElementById('certBodyContent').innerHTML = `
           This is to certify that Mr. <span class="dotted-fill">${applicantName}</span> S/o. <span class="dotted-fill">${guardian}</span> permanent resident of <span class="dotted-fill">${address}</span> has been registered as <span class="dotted-fill">${category}</span> Adventure Tour Operators under The Sikkim Registration of Tourist Trade Rules, 2025 Vide Serial No. <span class="dotted-fill">${serialNo}</span> Reg. No. <span class="dotted-fill">${regNo}</span>
         `;
+
+        // Populate Section B: Integrated Approved Guide ID Card at bottom of certificate
+        const idCardSec = document.getElementById('guideIdCardCutoutSection');
+        if (idCardSec) {
+          idCardSec.style.display = 'block';
+          const mobile = (app.details && (app.details.mobile || app.details.phone)) || '9800000000';
+          const bloodGroup = (app.details && app.details.bloodGroup) || 'O+';
+          const distCode = (place || 'GTK').substring(0, 3).toUpperCase();
+          const cardRef = app.cardReference || app.idCardNo || `${arn.split('-').pop()}/DoT&CAv/${distCode}/26/TG`;
+          const issueDate = app.issueDate || date;
+
+          document.getElementById('idCardRefNumber').textContent = cardRef;
+          document.getElementById('idCardName').textContent = applicantName;
+          document.getElementById('idCardAddress').textContent = address;
+          document.getElementById('idCardMobile').textContent = mobile;
+          document.getElementById('idCardBloodGroup').textContent = bloodGroup;
+          document.getElementById('idCardIssueDate').textContent = issueDate;
+          document.getElementById('idCardRegNo').textContent = regNo;
+          document.getElementById('idCardArn').textContent = arn;
+          document.getElementById('idCardDistrict').textContent = place;
+          document.getElementById('idCardValidTill').textContent = validTill;
+
+          if (app.details && app.details.photoUrl) {
+            document.getElementById('idCardPhoto').src = app.details.photoUrl;
+          }
+
+          const cats = (app.details && app.details.categories) || [category];
+          const hasTourGuide = cats.some(c => c.toLowerCase().includes('tour guide'));
+          const hasBirdWatching = cats.some(c => c.toLowerCase().includes('bird'));
+          const hasTrekkingGuide = cats.some(c => c.toLowerCase().includes('trekking guide'));
+          const hasTrekkingCook = cats.some(c => c.toLowerCase().includes('cook'));
+
+          document.getElementById('idCheckTourGuide').innerHTML = hasTourGuide ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+          document.getElementById('idCheckBirdWatching').innerHTML = hasBirdWatching ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+          document.getElementById('idCheckTrekkingGuide').innerHTML = hasTrekkingGuide ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+          document.getElementById('idCheckTrekkingCook').innerHTML = hasTrekkingCook ? '<i class="bi bi-check-square-fill"></i>' : '<i class="bi bi-square"></i>';
+
+          const qrData = encodeURIComponent(`https://www.sikkimtourism.gov.in/verify/${encodeURIComponent(arn)}`);
+          document.getElementById('idCardBackQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${qrData}`;
+        }
       } else {
+        const idCardSec = document.getElementById('guideIdCardCutoutSection');
+        if (idCardSec) idCardSec.style.display = 'none';
         // Annexure XVII: Adventure Tour Operator Certificate
         document.getElementById('certAnnexureText').textContent = 'Annexure XVII';
         document.getElementById('certTitleHeading').textContent = 'CERTIFICATE OF REGISTRATION OF ADVENTURE TOUR OPERATOR';

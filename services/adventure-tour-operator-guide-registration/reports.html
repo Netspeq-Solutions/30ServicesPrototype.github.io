@@ -168,12 +168,12 @@
               <option value="dist-dto-Pakyong">District DTO &bull; Pakyong Circle (Assigned)</option>
               <option value="dist-dto-Soreng">District DTO &bull; Soreng Circle (Assigned)</option>
             </optgroup>
-            <optgroup label="District TA Desks (Strict District Isolation)">
-              <option value="dist-ta-Namchi">District TA &bull; Namchi Circle (Assigned)</option>
-              <option value="dist-ta-Mangan">District TA &bull; Mangan Circle (Assigned)</option>
-              <option value="dist-ta-Gyalshing">District TA &bull; Gyalshing Circle (Assigned)</option>
-              <option value="dist-ta-Pakyong">District TA &bull; Pakyong Circle (Assigned)</option>
-              <option value="dist-ta-Soreng">District TA &bull; Soreng Circle (Assigned)</option>
+            <optgroup label="District TO Desks (Strict District Isolation)">
+              <option value="dist-ta-Namchi">District TO &bull; Namchi Circle (Assigned)</option>
+              <option value="dist-ta-Mangan">District TO &bull; Mangan Circle (Assigned)</option>
+              <option value="dist-ta-Gyalshing">District TO &bull; Gyalshing Circle (Assigned)</option>
+              <option value="dist-ta-Pakyong">District TO &bull; Pakyong Circle (Assigned)</option>
+              <option value="dist-ta-Soreng">District TO &bull; Soreng Circle (Assigned)</option>
             </optgroup>
           </select>
         </div>
@@ -794,7 +794,7 @@
             return app.type === 'adventure-tour-operator';
           }
 
-          // Rule 3: District DTO & District TA: STRICT DISTRICT ISOLATION
+          // Rule 3: District DTO & District TO: STRICT DISTRICT ISOLATION
           // Only view Guide Registration applications belonging to their assigned district
           if (activeRole === 'dist-dto' || activeRole === 'dist-ta') {
             return (app.type === 'guide-registration' && app.district === activeDistrict);
@@ -918,7 +918,7 @@
           roleLabel = 'TA – Headquarters';
           districtLabel = 'All 6 Circles Consolidated';
           officerName = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
-          officerDesig = 'Technical Assistant (Scrutiny Desk)';
+          officerDesig = 'Tourism Officer (Scrutiny Desk)';
           backUrl = 'dashboard-ta.html?office=hq';
           typeSelect.disabled = false;
         } else if (activeRole === 'io') {
@@ -940,10 +940,10 @@
           typeSelect.disabled = true; // District DTO only receives district Guide applications
         } else if (activeRole === 'dist-ta') {
           const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeDistrict] || {};
-          roleLabel = `District TA &bull; ${activeDistrict}`;
+          roleLabel = `District TO &bull; ${activeDistrict}`;
           districtLabel = `${activeDistrict} District (Locked Circle)`;
-          officerName = distInfo.taName || 'District Technical Assistant';
-          officerDesig = `Technical Assistant (${activeDistrict} Circle)`;
+          officerName = distInfo.taName || 'District Tourism Officer';
+          officerDesig = `Tourism Officer (${activeDistrict} Circle)`;
           backUrl = `dashboard-ta.html?office=${encodeURIComponent(activeDistrict)}`;
           typeSelect.value = 'guide-registration';
           typeSelect.disabled = true;

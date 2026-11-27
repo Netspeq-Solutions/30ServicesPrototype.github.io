@@ -707,7 +707,7 @@
               <i class="bi bi-info-circle-fill text-primary"></i> What Happens Next?
             </h6>
             <p class="small text-secondary mb-0" id="trackingWhatHappensNext">
-              Your application is under technical document verification by the Technical Assistant (TA). An on-site safety gear inspection will be scheduled shortly by the Inspecting Authority (IA).
+              Your application is under technical document verification by the Tourism Officer (TO). An on-site safety gear inspection will be scheduled shortly by the Inspecting Authority (IA).
             </p>
           </div>
 
@@ -1149,7 +1149,7 @@
             ],
             nextExpectedStep: isPaymentPending 
               ? 'Statutory fee of ₹' + fee + ' is due for payment.' 
-              : (isApproved ? 'Registration Certificate has been issued.' : 'Application dossier is currently under technical review at the ' + (isGuide && liveApp.district !== 'Gangtok' ? (liveApp.district + ' District') : 'HQ') + ' TA Desk.')
+              : (isApproved ? 'Registration Certificate has been issued.' : 'Application dossier is currently under technical review at the ' + (isGuide && liveApp.district !== 'Gangtok' ? (liveApp.district + ' District') : 'HQ') + ' TO Desk.')
           };
 
           if (!scenario.applications.some(a => (a.refNo || a.arn) === arn)) {
@@ -1351,18 +1351,24 @@
         const isOtherGuide = district !== 'Gangtok' && (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || app.category === 'guide-registration');
 
         let actionBtns = '';
-        if (stage === 'Payment Activated' || status === 'PAYMENT_ACTIVATED') {
-          actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay &#8377;1,500</button>`;
-        } else if (stage.includes('Payment Received') || stage.includes('DTO Approval') || (app.payment && app.payment.paid) || status === 'PAID') {
+        const isApprovedApp = (status === 'APPROVED' || status === 'Approved' || stage.includes('Certificate Issued'));
+        const isPayPending = !isApprovedApp && (
+          status === 'Payment Pending' ||
+          status === 'PAYMENT_PENDING' ||
+          status === 'PAYMENT_ACTIVATED' ||
+          stage.includes('Payment Activated') ||
+          (app.payment && app.payment.activated && !app.payment.paid)
+        );
+        if (isApprovedApp) {
+          const isGuideRow = (arn.includes('GR') || app.type === 'guide-registration' || app.category === 'guide-registration' || app.typeId === 'guide-registration');
+          actionBtns += `<a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-success py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold"><i class="bi bi-award me-1"></i>${isGuideRow ? 'Download Certificate &amp; ID Card' : 'Download Certificate'}</a>`;
+        } else if (isPayPending) {
+          const payAmt = (app.payment && app.payment.amount) ? Number(app.payment.amount).toLocaleString('en-IN') : (arn.includes('GR') ? '500' : '1,500');
+          actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay Now (&#8377;${payAmt})</button>`;
+        } else if (stage.includes('Payment Received') || stage.includes('Payment Submitted') || stage.includes('DTO Approval') || (app.payment && app.payment.paid) || status === 'PAID') {
           actionBtns += `<button class="btn btn-sm btn-outline-success py-1 px-2 text-nowrap shadow-xs me-1" onclick="showPaymentAcknowledgement('${arn}')" title="View Payment Acknowledgement Slip"><i class="bi bi-file-earmark-check me-1"></i>Slip</button>`;
         } else if (status === 'RETURNED' || status === 'Returned for Correction') {
           actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'adventure-tour-operator'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
-        } else if (status === 'APPROVED' || status === 'Approved') {
-          const isGuideApp = (app.typeId === 'guide-registration' || app.categoryCode === 'GR' || app.category === 'guide-registration' || app.type === 'guide-registration' || arn.includes('GR'));
-          actionBtns += `<a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-success py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-award me-1"></i>Certificate</a>`;
-          if (isGuideApp) {
-            actionBtns += `<a href="guide-id-card.html?arn=${arn}" target="_blank" class="btn btn-sm btn-primary py-1 px-2 text-nowrap shadow-xs me-1"><i class="bi bi-person-badge me-1"></i>Guide ID Card</a>`;
-          }
         }
         actionBtns += `<button class="btn btn-sm btn-outline-primary py-1 px-2 text-nowrap" onclick="openTrackingModal('${arn}')"><i class="bi bi-search me-1"></i>Track</button>`;
 

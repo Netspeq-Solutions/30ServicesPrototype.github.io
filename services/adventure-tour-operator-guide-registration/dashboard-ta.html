@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1e3a8a">
-  <title>Technical Assistant (TA) Scrutiny Desk &bull; Adventure Tour Operator &amp; Guide Registration &bull; Government of Sikkim</title>
+  <title>Tourism Officer (TO) Scrutiny Desk &bull; Adventure Tour Operator &amp; Guide Registration &bull; Government of Sikkim</title>
 
   <!-- Google Fonts: Noto Sans & Noto Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -163,7 +163,7 @@
         <div>
           <div class="d-flex align-items-center gap-2">
             <h1 class="h6 mb-0 fw-bold text-dark">Adventure Tour Operator &amp; Guide Registration</h1>
-            <span class="role-badge-tag" id="headerRoleBadge">Dept &bull; TA Desk</span>
+            <span class="role-badge-tag" id="headerRoleBadge">Dept &bull; TO Desk</span>
           </div>
           <span class="small text-muted" id="headerOfficeSubtitle">Tourism &amp; Civil Aviation Department &bull; Technical Scrutiny &amp; Document Intake Desk</span>
         </div>
@@ -171,7 +171,7 @@
       <div class="d-flex align-items-center gap-3">
         <div class="d-none d-md-block text-end">
           <div class="fw-bold small text-dark" id="headerOfficerName">Tashi Namgyal Bhutia</div>
-          <span class="small text-muted" id="headerOfficerDesignation">Technical Assistant (Headquarters Scrutiny)</span>
+          <span class="small text-muted" id="headerOfficerDesignation">Tourism Officer (Headquarters Scrutiny)</span>
         </div>
         <a href="role-select.html" class="btn btn-sm btn-outline-secondary" title="Switch Demonstration Role">
           <i class="bi bi-arrow-left-right me-1"></i>Switch Role
@@ -187,11 +187,11 @@
         <span class="small fw-bold text-dark"><i class="bi bi-person-gear text-primary me-1"></i>TA Office Jurisdiction:</span>
         <select class="form-select form-select-sm w-auto fw-bold text-primary" id="taContextSelect" onchange="onTaContextChange(this.value)">
           <option value="hq" selected>TA – Headquarters (All ATO + Gangtok Guides)</option>
-          <option value="Mangan">District TA &bull; Mangan Circle</option>
-          <option value="Namchi">District TA &bull; Namchi Circle</option>
-          <option value="Gyalshing">District TA &bull; Gyalshing Circle</option>
-          <option value="Pakyong">District TA &bull; Pakyong Circle</option>
-          <option value="Soreng">District TA &bull; Soreng Circle</option>
+          <option value="Mangan">District TO &bull; Mangan Circle</option>
+          <option value="Namchi">District TO &bull; Namchi Circle</option>
+          <option value="Gyalshing">District TO &bull; Gyalshing Circle</option>
+          <option value="Pakyong">District TO &bull; Pakyong Circle</option>
+          <option value="Soreng">District TO &bull; Soreng Circle</option>
         </select>
       </div>
       <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -372,7 +372,7 @@
         <div class="card border rounded-3 bg-white shadow-xs">
           <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-table me-1 text-primary"></i> <span id="tableTitleText">Applications in TA Queue</span></h3>
+              <h3 class="h6 fw-bold text-dark mb-0"><i class="bi bi-table me-1 text-primary"></i> <span id="tableTitleText">Applications in TO Queue</span></h3>
               <span class="small text-muted" id="tableSubtitleText">Click Review to scrutinize dossier and perform workflow actions</span>
             </div>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-semibold" id="tableRecordCountBadge">0 Records</span>
@@ -407,7 +407,7 @@
   <footer class="gov-footer py-3 bg-dark text-white border-top mt-auto" role="contentinfo">
     <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2 text-white-50 small">
       <div>&copy; 2026 Tourism &amp; Civil Aviation Department, Government of Sikkim.</div>
-      <div>Technical Assistant Workspace &bull; Stage 04 Active</div>
+      <div>Tourism Officer Workspace &bull; Stage 04 Active</div>
     </div>
   </footer>
 
@@ -482,7 +482,7 @@
       if (isAll) {
         document.getElementById('headerRoleBadge').textContent = 'TA – Statewide Scrutiny';
         document.getElementById('headerOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
-        document.getElementById('headerOfficerDesignation').textContent = 'Technical Assistant (Statewide Central Registry)';
+        document.getElementById('headerOfficerDesignation').textContent = 'Tourism Officer (Statewide Central Registry)';
         document.getElementById('jurisdictionBadgeText').innerHTML = '<i class="bi bi-globe-americas text-primary me-1"></i>Statewide (All Circles &amp; Categories)';
         document.getElementById('sidebarAvatar').textContent = 'TN';
         document.getElementById('sidebarOfficerName').textContent = AdventureWorkflowEngine.HQ_OFFICERS.ta.name;
@@ -505,9 +505,9 @@
         if (reportsLink) reportsLink.href = 'reports.html?role=ta-hq&office=hq';
       } else {
         const distInfo = AdventureWorkflowEngine.DISTRICT_OFFICES[activeOfficeContext] || AdventureWorkflowEngine.DISTRICT_OFFICES['Namchi'];
-        document.getElementById('headerRoleBadge').textContent = 'District TA – ' + activeOfficeContext;
+        document.getElementById('headerRoleBadge').textContent = 'District TO – ' + activeOfficeContext;
         document.getElementById('headerOfficerName').textContent = distInfo.taName;
-        document.getElementById('headerOfficerDesignation').textContent = 'Technical Assistant (' + activeOfficeContext + ' Circle)';
+        document.getElementById('headerOfficerDesignation').textContent = 'Tourism Officer (' + activeOfficeContext + ' Circle)';
         document.getElementById('jurisdictionBadgeText').innerHTML = '<i class="bi bi-geo-alt-fill text-danger me-1"></i>' + distInfo.office;
         document.getElementById('sidebarAvatar').textContent = distInfo.taName.split(' ').map(n => n[0]).join('').slice(0, 2);
         document.getElementById('sidebarOfficerName').textContent = distInfo.taName;

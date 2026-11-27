@@ -638,26 +638,48 @@
             </div>
 
             <div class="row g-3">
-              <div class="col-md-5">
-                <label for="atoQualAcademic" class="form-label small fw-semibold">Qualification (Academic) <span class="req-mark">*</span></label>
+              <div class="col-md-3">
+                <label for="atoMinQualLevel" class="form-label small fw-semibold">Minimum Qualification (Min 8th Std) <span class="req-mark">*</span></label>
+                <select class="form-select form-select-sm" id="atoMinQualLevel" required>
+                  <option value="Below 8th Standard">Below 8th Standard (Not Eligible)</option>
+                  <option value="8th Standard Pass">8th Standard Pass</option>
+                  <option value="10th Standard">10th Standard (Matriculation)</option>
+                  <option value="12th Standard">12th Standard (Higher Secondary)</option>
+                  <option value="Graduate" selected>Graduate</option>
+                  <option value="Post-Graduate">Post-Graduate</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="atoQualAcademic" class="form-label small fw-semibold">Qualification (Academic Details) <span class="req-mark">*</span></label>
                 <input type="text" class="form-control form-control-sm" id="atoQualAcademic" required placeholder="e.g. B.Sc. Environmental Science, Sikkim University">
               </div>
-              <div class="col-md-5">
+              <div class="col-md-3">
                 <label for="atoQualTechnical" class="form-label small fw-semibold">Qualification (Technical) <span class="req-mark">*</span></label>
-                <input type="text" class="form-control form-control-sm" id="atoQualTechnical" required placeholder="e.g. HMI Advance Mountaineering & Search & Rescue Grade 'A'">
+                <input type="text" class="form-control form-control-sm" id="atoQualTechnical" required placeholder="e.g. HMI Advance Mountaineering">
               </div>
               <div class="col-md-2">
                 <label for="atoStaffStrength" class="form-label small fw-semibold">Staff Strength <span class="req-mark">*</span></label>
-                <input type="number" min="1" class="form-control form-control-sm" id="atoStaffStrength" required value="8">
+                <input type="number" min="1" max="50" class="form-control form-control-sm" id="atoStaffStrength" required value="3" oninput="renderDynamicStaffFields()">
               </div>
 
               <div class="col-md-6">
                 <label for="atoStaffAcademicDetails" class="form-label small fw-semibold">Staff Qualification Details (Academic) <span class="req-mark">*</span></label>
-                <textarea class="form-control form-control-sm" id="atoStaffAcademicDetails" rows="3" required placeholder="Summary of academic qualifications of administrative and support personnel"></textarea>
+                <textarea class="form-control form-control-sm" id="atoStaffAcademicDetails" rows="2" required placeholder="Summary of academic qualifications of administrative and support personnel"></textarea>
               </div>
               <div class="col-md-6">
                 <label for="atoStaffTechnicalDetails" class="form-label small fw-semibold">Staff Qualification Details (Technical) <span class="req-mark">*</span></label>
-                <textarea class="form-control form-control-sm" id="atoStaffTechnicalDetails" rows="3" required placeholder="Mountaineering certifications, river rafting licences, WFR first-aid qualifications of lead instructors"></textarea>
+                <textarea class="form-control form-control-sm" id="atoStaffTechnicalDetails" rows="2" required placeholder="Mountaineering certifications, river rafting licences, WFR first-aid qualifications of lead instructors"></textarea>
+              </div>
+
+              <!-- Dynamic Additional Staff Details (when Staff Strength > 1) -->
+              <div class="col-12 d-none" id="atoDynamicStaffWrapper">
+                <div class="p-3 border rounded-3 bg-light">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small fw-bold text-dark"><i class="bi bi-people-fill text-primary me-1"></i> Additional Staff Member Details (<span id="atoAdditionalStaffCount">0</span>)</span>
+                    <span class="badge bg-white text-muted border small">Excluding Primary Applicant</span>
+                  </div>
+                  <div id="atoDynamicStaffContainer" class="row g-2"></div>
+                </div>
               </div>
             </div>
 
@@ -1174,9 +1196,9 @@
             </div>
 
             <div class="row g-3">
-              <!-- Doc 1: Identity Proof -->
+              <!-- Doc 1: Identity Proof (Optional) -->
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">1. Identity Proof (Inferred: Voter ID Card) <span class="req-mark">*</span></label>
+                <label class="form-label small fw-semibold">1. Identity Proof (Voter ID / Aadhaar) <span class="badge bg-light text-secondary border small">Optional</span></label>
                 <input type="file" id="grDoc1Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc1Input', 'grDoc1Meta', 'voter_id_sonam_gyatso_sherpa.pdf')">
                 <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
                   <span class="small text-muted text-truncate" id="grDoc1Name">voter_id_sonam_gyatso_sherpa.pdf</span>
@@ -1190,9 +1212,9 @@
                 </div>
               </div>
 
-              <!-- Doc 2: Domicile / COI Proof -->
+              <!-- Doc 2: Certificate of Identification (COI) (Mandatory) -->
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">2. Domicile / COI Proof (Inferred: Sikkim Subject COI) <span class="req-mark">*</span></label>
+                <label class="form-label small fw-semibold">2. Certificate of Identification (COI) <span class="req-mark">*</span></label>
                 <input type="file" id="grDoc2Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc2Input', 'grDoc2Meta', 'coi_certificate_sonam_sherpa.pdf')">
                 <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
                   <span class="small text-muted text-truncate" id="grDoc2Name">coi_certificate_sonam_sherpa.pdf</span>
@@ -1206,9 +1228,9 @@
                 </div>
               </div>
 
-              <!-- Doc 3: Education Qualification Certificate -->
+              <!-- Doc 3: Education Qualification Certificate (Optional) -->
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">3. Education Qualification Certificate <span class="req-mark">*</span></label>
+                <label class="form-label small fw-semibold">3. Education Qualification Certificate <span class="badge bg-light text-secondary border small">Optional</span></label>
                 <input type="file" id="grDoc3Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc3Input', 'grDoc3Meta', 'class_xii_marksheet_cbse.pdf')">
                 <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
                   <span class="small text-muted text-truncate" id="grDoc3Name">class_xii_marksheet_cbse.pdf</span>
@@ -1222,9 +1244,9 @@
                 </div>
               </div>
 
-              <!-- Doc 4: Experience Certificate -->
+              <!-- Doc 4: Experience Certificate (Optional) -->
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">4. Experience Certificate <span class="req-mark">*</span></label>
+                <label class="form-label small fw-semibold">4. Experience Certificate <span class="badge bg-light text-secondary border small">Optional</span></label>
                 <input type="file" id="grDoc4Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc4Input', 'grDoc4Meta', 'himalayan_mountaineering_experience_letter.pdf')">
                 <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
                   <span class="small text-muted text-truncate" id="grDoc4Name">himalayan_mountaineering_experience_letter.pdf</span>
@@ -1238,9 +1260,9 @@
                 </div>
               </div>
 
-              <!-- Doc 5: Insurance Document -->
+              <!-- Doc 5: Insurance Document (Optional) -->
               <div class="col-md-6">
-                <label class="form-label small fw-semibold">5. Insurance Document <span class="req-mark">*</span></label>
+                <label class="form-label small fw-semibold">5. Insurance Document <span class="badge bg-light text-secondary border small">Optional</span></label>
                 <input type="file" id="grDoc5Input" class="form-control form-control-sm d-none" onchange="handleMockFileChange('grDoc5Input', 'grDoc5Meta', 'personal_accident_insurance_policy.pdf')">
                 <div class="file-upload-card d-flex justify-content-between align-items-center py-1.5">
                   <span class="small text-muted text-truncate" id="grDoc5Name">personal_accident_insurance_policy.pdf</span>
@@ -1396,13 +1418,13 @@
             </div>
             <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
               <span class="small text-muted">Current Workflow Status:</span>
-              <span class="badge bg-info-subtle text-info border border-info-subtle small fw-bold">Stage 1: TA Scrutiny Active</span>
+              <span class="badge bg-info-subtle text-info border border-info-subtle small fw-bold">Stage 1: TO Scrutiny Active</span>
             </div>
           </div>
 
           <div class="alert alert-info border-0 p-3 rounded-3 text-start small mx-auto mb-4" style="max-width: 540px;">
             <i class="bi bi-info-circle-fill text-primary me-1"></i>
-            <strong>What Happens Next?</strong> The designated Technical Assistant (TA) will verify the uploaded credentials within 2 working days. If any clarifications are required, you will receive an alert on your citizen dashboard. Physical inspection schedule will be notified via SMS.
+            <strong>What Happens Next?</strong> The designated Tourism Officer (TO) will verify the uploaded credentials within 2 working days. If any clarifications are required, you will receive an alert on your citizen dashboard. Physical inspection schedule will be notified via SMS.
           </div>
 
           <div class="d-flex justify-content-center gap-2 flex-wrap">
@@ -1413,7 +1435,7 @@
               <i class="bi bi-speedometer2"></i> Go to Citizen Dashboard
             </a>
             <a id="ackTaDeskLink" href="dashboard-ta.html" class="btn btn-sm btn-primary btn-action-compact">
-              <i class="bi bi-person-check"></i> Open in TA Scrutiny Desk
+              <i class="bi bi-person-check"></i> Open in TO Scrutiny Desk
             </a>
             <button type="button" class="btn btn-sm btn-outline-primary btn-action-compact" onclick="startNewApplication()">
               <i class="bi bi-plus-lg"></i> New Application
@@ -1462,7 +1484,11 @@
         { id: "act_land_10", name: "Nature walk", defaultChecked: true },
         { id: "act_land_11", name: "Mountain biking", defaultChecked: true },
         { id: "act_land_12", name: "Skiing" },
-        { id: "act_land_13", name: "Go kart" }
+        { id: "act_land_13", name: "Go kart" },
+        { id: "act_land_14", name: "Mountain Guide" },
+        { id: "act_land_15", name: "Mountain Bike Guide" },
+        { id: "act_land_16", name: "Raft Guide" },
+        { id: "act_land_17", name: "Others" }
       ],
       air: [
         { id: "act_air_1", name: "Paragliding", defaultChecked: true },
@@ -1470,7 +1496,8 @@
         { id: "act_air_3", name: "Hot air ballooning" },
         { id: "act_air_4", name: "Para Jumping" },
         { id: "act_air_5", name: "Para Motor" },
-        { id: "act_air_6", name: "Ultra craft / Micro light flying" }
+        { id: "act_air_6", name: "Ultra craft / Micro light flying" },
+        { id: "act_air_7", name: "Others" }
       ],
       water: [
         { id: "act_water_1", name: "River rafting", defaultChecked: true },
@@ -1479,7 +1506,8 @@
         { id: "act_water_4", name: "Fishing" },
         { id: "act_water_5", name: "Water sports centers" },
         { id: "act_water_6", name: "Row Boat" },
-        { id: "act_water_7", name: "Boat rides" }
+        { id: "act_water_7", name: "Boat rides" },
+        { id: "act_water_8", name: "Others" }
       ]
     };
 
@@ -1839,6 +1867,45 @@
       });
     }
 
+    function renderDynamicStaffFields() {
+      const strength = Math.max(1, parseInt(document.getElementById('atoStaffStrength')?.value || '1', 10));
+      const additionalCount = Math.max(0, strength - 1);
+      const wrapper = document.getElementById('atoDynamicStaffWrapper');
+      const container = document.getElementById('atoDynamicStaffContainer');
+      const countEl = document.getElementById('atoAdditionalStaffCount');
+      if (!wrapper || !container) return;
+
+      if (additionalCount === 0) {
+        wrapper.classList.add('d-none');
+        container.innerHTML = '';
+        return;
+      }
+      wrapper.classList.remove('d-none');
+      if (countEl) countEl.textContent = additionalCount;
+      let html = '';
+      for (let i = 1; i <= additionalCount; i++) {
+        html += `
+          <div class="col-12">
+            <div class="p-2 bg-white border rounded-2 row g-2 align-items-center">
+              <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" id="atoStaffName_${i}" placeholder="Staff ${i} Full Name" value="Staff Member ${i}">
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" id="atoStaffRole_${i}" placeholder="Role / Designation" value="Adventure Instructor">
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" id="atoStaffAcad_${i}" placeholder="Academic Qualification" value="10th / 12th Pass">
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" id="atoStaffTech_${i}" placeholder="Technical Qualification" value="BMC / First Aid">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
     function renderAllEquipmentTables() {
       renderEquipmentTable('safety', 'atoSafetyEquipBody');
       renderEquipmentTable('rescue', 'atoRescueEquipBody');
@@ -1923,6 +1990,11 @@
       }
       // Step 2 Validation
       else if (fromStep === 2) {
+        const minQual = document.getElementById('atoMinQualLevel')?.value || '';
+        if (minQual === 'Below 8th Standard') {
+          alert('Minimum qualification for Adventure Tour Operator Registration is 8th Standard Pass.');
+          return;
+        }
         if (!document.getElementById('atoOrgName').value.trim() ||
             !document.getElementById('atoGstNumber').value.trim() ||
             !document.getElementById('atoPanNumber').value.trim() ||
@@ -2012,7 +2084,11 @@
       }
       // Step 3 Validation
       else if (fromStep === 3) {
-        // Validate required dossier documents
+        const coiName = document.getElementById('grDoc2Name')?.textContent.trim();
+        if (!coiName || coiName.toLowerCase().includes('no file')) {
+          alert('Certificate of Identification (COI) is mandatory for Guide Registration.');
+          return;
+        }
         goToGrStep(4);
       }
     }
@@ -2483,10 +2559,10 @@
         const cleanDist = (district || '').trim();
         if (isAto || cleanDist.toLowerCase() === 'gangtok') {
           ackTaLink.href = 'dashboard-ta.html?district=hq';
-          ackTaLink.innerHTML = '<i class="bi bi-person-check me-1"></i> Open in HQ TA Queue';
+          ackTaLink.innerHTML = '<i class="bi bi-person-check me-1"></i> Open in TO Queue';
         } else {
           ackTaLink.href = 'dashboard-ta.html?district=' + encodeURIComponent(cleanDist);
-          ackTaLink.innerHTML = '<i class="bi bi-person-check me-1"></i> Open in District TA (' + cleanDist + ')';
+          ackTaLink.innerHTML = '<i class="bi bi-person-check me-1"></i> Open in District TO (' + cleanDist + ')';
         }
       }
       document.getElementById('acknowledgementScreen').style.display = 'block';
@@ -2505,7 +2581,7 @@
         district: district,
         submittedDate: new Date().toISOString().split('T')[0],
         status: 'UNDER_REVIEW',
-        stage: 'Stage 1: TA Scrutiny'
+        stage: 'Stage 1: TO Scrutiny'
       });
       localStorage.setItem('adv_submitted_applications', JSON.stringify(existing));
     }

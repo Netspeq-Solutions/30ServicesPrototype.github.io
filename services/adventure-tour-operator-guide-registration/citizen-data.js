@@ -3,7 +3,7 @@
  * Service: Adventure Tour Operator & Guide Registration
  * Department: Tourism & Civil Aviation Department, Government of Sikkim
  * Theme: Royal Navy (data-theme="royal-navy")
- * Roles: Citizen, Department - TA, Department - IA, Department - Asst. Dir., Department - DTO (6 Districts)
+ * Roles: Citizen, Department – TO, Department - IA, Department - Asst. Dir., Department - DTO (6 Districts)
  */
 
 const AdventureServiceData = {
@@ -49,7 +49,7 @@ const AdventureServiceData = {
   // 5 User Roles in Hierarchy
   userHierarchy: [
     { roleKey: "citizen", level: "Citizen", designation: "Citizen Applicant", abbreviation: "CITIZEN", desc: "Applies for Adventure Operator or Guide registration and tracks status", landingUrl: "dashboard.html" },
-    { roleKey: "ta", level: "Department", designation: "Technical Assistant", abbreviation: "TA", desc: "Initial technical verification, equipment checklist review and scrutiny", landingUrl: "dashboard-ta.html" },
+    { roleKey: "ta", level: "Department", designation: "Tourism Officer", abbreviation: "TA", desc: "Initial technical verification, equipment checklist review and scrutiny", landingUrl: "dashboard-ta.html" },
     { roleKey: "ia", level: "Department", designation: "Inspecting Authority", abbreviation: "IA", desc: "Field & equipment safety inspection, physical verification & report upload", landingUrl: "dashboard-ia.html" },
     { roleKey: "asst-dir", level: "Department", designation: "Assistant Director", abbreviation: "Asst. Dir.", desc: "State-level technical review, policy compliance & concurrence desk", landingUrl: "dashboard-asst-dir.html" },
     { roleKey: "dto", level: "Department", designation: "District Tourism Officer", abbreviation: "DTO", desc: "District-level administrative sanction, final approval & certificate issuance", landingUrl: "dashboard-dto.html" }
@@ -180,14 +180,14 @@ const AdventureServiceData = {
         badge: "Under Review",
         enterpriseName: "Khangchendzonga Adventure Trails LLP",
         submittedDate: "08 Nov 2026",
-        currentStage: "Stage 2: Technical Assistant (TA) Scrutiny",
+        currentStage: "Stage 2: Tourism Officer (TO) Scrutiny",
         currentStatus: "Under Review",
         lastUpdated: "12 Nov 2026",
         district: "Gangtok",
         nextExpectedStep: "On-site safety equipment and safety harness inspection by Inspecting Authority (IA).",
         timeline: [
           { stage: "Application Submitted", date: "08 Nov 2026", status: "Completed", authority: "Citizen / Portal", remarks: "Application and statutory credentials uploaded successfully." },
-          { stage: "TA Document Verification", date: "10 Nov 2026", status: "In Progress", authority: "Department – TA (Gangtok)", remarks: "Lead instructor mountaineering certificates and equipment checklist under review." },
+          { stage: "TA Document Verification", date: "10 Nov 2026", status: "In Progress", authority: "Department – TO (Gangtok)", remarks: "Lead instructor mountaineering certificates and equipment checklist under review." },
           { stage: "IA Field Inspection", date: "Pending", status: "Pending", authority: "Department – IA", remarks: "Physical on-site inspection of adventure gear and safety harness." },
           { stage: "Asst. Dir. Review", date: "Pending", status: "Pending", authority: "Department – Asst. Dir.", remarks: "State-level technical concurrence and review." },
           { stage: "DTO Approval & Certificate", date: "Pending", status: "Pending", authority: "Department – DTO (Gangtok)", remarks: "Final statutory sanction and digital QR certificate issuance." }
@@ -210,7 +210,7 @@ const AdventureServiceData = {
         }
       ],
       notifications: [
-        { id: "notif-03", date: "10 Nov 2026", title: "Technical Verification Initiated", message: "Application SK-ATO-2026-0042 is being verified by Technical Assistant, Gangtok.", type: "info", read: false },
+        { id: "notif-03", date: "10 Nov 2026", title: "Technical Verification Initiated", message: "Application SK-ATO-2026-0042 is being verified by Tourism Officer, Gangtok.", type: "info", read: false },
         { id: "notif-04", date: "08 Nov 2026", title: "Application Successfully Submitted", message: "Your application for Adventure Tour Operator has been received with Application ID SK-ATO-2026-0042.", type: "success", read: true }
       ]
     },
@@ -237,7 +237,7 @@ const AdventureServiceData = {
         badge: "Correction Required",
         currentStatus: "Returned for Remarks",
         remarks: "Annual equipment inspection log for mountaineering ropes and carabiners missing UIAA batch certification numbers. Please re-upload updated equipment register.",
-        returnedBy: "Technical Assistant (TA HQ), Gangtok",
+        returnedBy: "Tourism Officer (TA HQ), Gangtok",
         returnDate: "11 Nov 2026",
         requiredAction: "Upload updated equipment log & re-submit.",
         actionUrl: "apply.html?ref=ATO-2026-006&type=adventure-tour-operator"
@@ -517,7 +517,7 @@ const AdventureServiceData = {
   // District Scoped Applications for DTO Dashboard (All 6 Districts)
   districtApplications: {
     "Gangtok": [
-      { id: "SK-ATO-2026-0042", applicant: "Tenzing Norbu Lepcha", type: "Adventure Tour Operator", categoryCode: "ATO", submittedDate: "08 Nov 2026", stage: "TA Scrutiny", status: "UNDER_REVIEW", statusLabel: "Under Scrutiny", badge: "bg-info-subtle text-info", actionText: "Review File" },
+      { id: "SK-ATO-2026-0042", applicant: "Tenzing Norbu Lepcha", type: "Adventure Tour Operator", categoryCode: "ATO", submittedDate: "08 Nov 2026", stage: "TO Scrutiny", status: "UNDER_REVIEW", statusLabel: "Under Scrutiny", badge: "bg-info-subtle text-info", actionText: "Review File" },
       { id: "SK-ATO-2026-0009", applicant: "Sonam Gyatso Sherpa", type: "Adventure Tour Operator", categoryCode: "ATO", submittedDate: "20 Oct 2026", stage: "Certificate Issued", status: "APPROVED", statusLabel: "Approved", badge: "bg-success-subtle text-success", actionText: "View Certificate" },
       { id: "SK-GR-2026-0033", applicant: "Phurba Dawa Bhutia", type: "Guide Registration", categoryCode: "GR", submittedDate: "09 Nov 2026", stage: "Ready for DTO Sanction", status: "PENDING_SANCTION", statusLabel: "Pending Sanction", badge: "bg-warning-subtle text-warning-emphasis", actionText: "Sanction Decision" }
     ],
@@ -534,7 +534,7 @@ const AdventureServiceData = {
       { id: "SK-GR-2026-0039", applicant: "Lakpa Subba", type: "Guide Registration", categoryCode: "GR", submittedDate: "06 Nov 2026", stage: "IA Field Verification", status: "UNDER_REVIEW", statusLabel: "Under Review", badge: "bg-info-subtle text-info", actionText: "Review File" }
     ],
     "Pakyong": [
-      { id: "SK-GR-2026-0056", applicant: "Chungda Bhutia", type: "Guide Registration", categoryCode: "GR", submittedDate: "10 Nov 2026", stage: "TA Scrutiny", status: "UNDER_REVIEW", statusLabel: "Under Scrutiny", badge: "bg-info-subtle text-info", actionText: "Review File" }
+      { id: "SK-GR-2026-0056", applicant: "Chungda Bhutia", type: "Guide Registration", categoryCode: "GR", submittedDate: "10 Nov 2026", stage: "TO Scrutiny", status: "UNDER_REVIEW", statusLabel: "Under Scrutiny", badge: "bg-info-subtle text-info", actionText: "Review File" }
     ],
     "Soreng": [
       { id: "SK-ATO-2026-0063", applicant: "Barsey Rhododendron Trails", type: "Adventure Tour Operator", categoryCode: "ATO", submittedDate: "09 Nov 2026", stage: "Ready for DTO Sanction", status: "PENDING_SANCTION", statusLabel: "Pending Sanction", badge: "bg-warning-subtle text-warning-emphasis", actionText: "Sanction Decision" }

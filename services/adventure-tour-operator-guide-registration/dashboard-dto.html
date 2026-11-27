@@ -452,30 +452,18 @@
         document.getElementById('sidebarOfficeLabel').textContent = `DTO ${activeOfficeContext} Circle`;
         document.getElementById('mainDeskTitle').textContent = `District Tourism Officer &bull; ${activeOfficeContext} Circle`;
         document.getElementById('mainDeskSubtitle').textContent = `Payment activation (₹500) and forwarding payment-submitted applications to HQ Assistant Director for ${activeOfficeContext} District`;
-        document.getElementById('navActionQueueTitle').textContent = 'Forward to HQ Asst. Dir.';
-        document.getElementById('kpiSanctionTitle').textContent = 'Forward to HQ Asst. Dir.';
+        document.getElementById('navActionQueueTitle').textContent = 'Final Verification';
+        document.getElementById('kpiSanctionTitle').textContent = 'Final Verification';
         const reportsLink = document.getElementById('sidebarReportsLink');
         if (reportsLink) reportsLink.href = `reports.html?role=dist-dto-${encodeURIComponent(activeOfficeContext)}&district=${encodeURIComponent(activeOfficeContext)}`;
       }
 
-      // Filter applications relevant to this DTO context:
-      // - HQ DTO sees:
-      //   1. All Adventure Tour Operators reaching DTO stage or with payment
-      //   2. Gangtok Guides reaching DTO stage or with payment
-      //   3. Other-district Guides forwarded to HQ DTO for ID card & logbook issuance
-      // - District DTO (e.g. Namchi DTO) sees:
-      //   1. Guide Registrations belonging to that specific district
+      const isGangtokCtx = (activeOfficeContext === 'hq' || activeOfficeContext.toLowerCase() === 'gangtok');
       let filtered = allApps.filter(app => {
-        if (isHQ) {
-          if (app.type === 'adventure-tour-operator') return true;
-          if (app.type === 'guide-registration' && app.district === 'Gangtok') return true;
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            // Visible to HQ DTO when forwarded to HQ or approved
-            return app.stage.includes('HQ DTO') || app.status === AdventureWorkflowEngine.STATUSES.APPROVED;
-          }
-          return false;
+        if (isGangtokCtx) {
+          return (app.district || 'Gangtok').toLowerCase() === 'gangtok';
         } else {
-          return (app.type === 'guide-registration' && (app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
+          return ((app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 
@@ -521,20 +509,15 @@
 
     function filterDtoTable() {
       const allApps = AdventureWorkflowEngine.getAllApplications();
-      const isHQ = (activeOfficeContext === 'hq');
+      const isHQ = (activeOfficeContext === 'hq' || activeOfficeContext.toLowerCase() === 'gangtok');
       const searchQuery = (document.getElementById('dtoSearchInput').value || '').toLowerCase().trim();
       const catFilter = document.getElementById('dtoCatFilter').value;
 
       let filtered = allApps.filter(app => {
         if (isHQ) {
-          if (app.type === 'adventure-tour-operator') return true;
-          if (app.type === 'guide-registration' && app.district === 'Gangtok') return true;
-          if (app.type === 'guide-registration' && app.district !== 'Gangtok') {
-            return app.stage.includes('HQ DTO') || app.status === AdventureWorkflowEngine.STATUSES.APPROVED;
-          }
-          return false;
+          return (app.district || 'Gangtok').toLowerCase() === 'gangtok';
         } else {
-          return (app.type === 'guide-registration' && app.district === activeOfficeContext);
+          return ((app.district || '').toLowerCase() === activeOfficeContext.toLowerCase());
         }
       });
 
@@ -615,14 +598,9 @@
         if (app.status === AdventureWorkflowEngine.STATUSES.APPROVED) {
           actionButtonsHtml = `
             <div class="d-inline-flex gap-1 align-items-center">
-              <a href="certificate.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2 btn-action-compact" title="View / Print Certificate">
-                <i class="bi bi-file-earmark-check me-1"></i>Certificate
+              <a href="certificate.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}" target="_blank" class="btn btn-sm btn-outline-success py-1 px-2 btn-action-compact" title="Download Certificate${app.type === 'guide-registration' ? ' & ID Card' : ''}">
+                <i class="bi bi-file-earmark-check me-1"></i>${app.type === 'guide-registration' ? 'Certificate & ID Card' : 'Certificate'}
               </a>
-              ${app.type === 'guide-registration' ? `
-                <a href="guide-id-card.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&print=true" target="_blank" class="btn btn-sm btn-primary py-1 px-2 btn-action-compact" title="Print Guide ID Card for Applicant">
-                  <i class="bi bi-printer me-1"></i>Print ID Card
-                </a>
-              ` : ''}
               <a href="review.html?arn=${encodeURIComponent(app.arn)}&role=${encodeURIComponent(activeRoleKey)}&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-outline-secondary py-1 px-2 btn-action-compact" title="View Dossier">
                 <i class="bi bi-eye"></i>
               </a>

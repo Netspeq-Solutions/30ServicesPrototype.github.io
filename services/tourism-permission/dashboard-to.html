@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourism Officer (TO) Workspace &bull; Tourism Permission &bull; Government of Sikkim</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../../common/css/gigw-template.css">
+  <link rel="stylesheet" href="../../common/css/themes.css">
+  <link rel="stylesheet" href="../../common/css/components.css">
+  <link rel="stylesheet" href="../../common/css/responsive.css">
+
+  <style>
+    html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100% !important; }
+    .officer-stat-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.15rem; transition: all 0.2s; cursor: pointer; height: 100%; }
+    .officer-stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); border-color: #094738; }
+    .officer-stat-card.active-kpi { border: 2px solid #094738 !important; background-color: #f0fdf4 !important; }
+    .officer-stat-number { font-size: 1.85rem; font-weight: 800; line-height: 1.1; }
+    .officer-sidebar { width: 260px !important; min-width: 260px !important; max-width: 260px !important; flex-shrink: 0 !important; background: #fff; border-right: 1px solid #e2e8f0; min-height: calc(100vh - 120px); }
+    .officer-nav-link { display: flex !important; align-items: center !important; gap: 0.5rem !important; padding: 0.42rem 0.65rem !important; color: #334155; font-weight: 500; border-radius: 6px; text-decoration: none; font-size: 0.8125rem !important; white-space: nowrap !important; }
+    .officer-nav-link span { white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; }
+    .officer-nav-link i { font-size: 0.95rem !important; width: 1.25rem !important; text-align: center; flex-shrink: 0 !important; }
+    .officer-nav-link .badge { flex-shrink: 0 !important; margin-left: auto !important; font-size: 0.72rem !important; padding: 0.18rem 0.45rem !important; font-weight: 700; border-radius: 10rem; }
+    .officer-nav-link:hover { background-color: #f1f5f9; color: #094738; }
+    .officer-nav-link.active { background-color: #e8f5e9; color: #094738; font-weight: 700; border-left: 3px solid #094738; border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; }
+  </style>
+</head>
+<body data-theme="forest-green" class="d-flex flex-column min-vh-100 bg-light">
+
+  <a class="gov-skip-link" href="#main-to-content">Skip to Main Content</a>
+  <div class="gov-flag-stripe" aria-hidden="true"></div>
+
+  <aside class="gov-scenario-bar" aria-label="TO Controls" style="background: #1e293b; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+    <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="badge bg-info text-dark fw-bold px-2 py-1">
+          <i class="bi bi-clipboard2-check me-1"></i> TOURISM OFFICER (TO) WORKSPACE
+        </span>
+        <span class="fw-semibold text-white">Circle:</span>
+        <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 240px; font-size: 0.8rem;" onchange="onDistrictChange(this.value)">
+          <option value="all" selected>All Districts (Statewide TO View)</option>
+          <option value="Gangtok">Gangtok District Circle</option>
+          <option value="Mangan">Mangan District Circle</option>
+          <option value="Namchi">Namchi District Circle</option>
+          <option value="Gyalshing">Gyalshing District Circle</option>
+          <option value="Pakyong">Pakyong District Circle</option>
+          <option value="Soreng">Soreng District Circle</option>
+        </select>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetDemo()" style="font-size: 0.75rem;">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Seed Data
+        </button>
+        <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+          <i class="bi bi-people-fill me-1"></i> Switch Role
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
+    <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
+        <div>
+          <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim</span>
+          <div class="fw-bold fs-6 text-dark" id="toOfficeTitle">Tourism Officer (TO) Verification Desk</div>
+          <span class="small text-muted" style="font-size: 0.75rem;">Initial Review &bull; Category Redirection &bull; Drone Parameter Updates</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+          <div class="fw-bold text-dark small" id="toOfficerName">Phurba Tshering Bhutia</div>
+          <div class="text-muted" style="font-size: 0.75rem;">Tourism Officer (TO)</div>
+        </div>
+        <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+          <i class="bi bi-box-arrow-right"></i><span>Switch Role</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="d-flex flex-column flex-lg-row flex-grow-1 w-100 overflow-hidden">
+    <aside class="officer-sidebar px-2 py-3 d-none d-lg-block flex-shrink-0">
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem;">TO Work Queues</div>
+      <nav class="nav flex-column gap-1 mb-3">
+        <a href="#pending" class="officer-nav-link active" id="navTab-pending" onclick="switchTab('pending', event)">
+          <i class="bi bi-inbox-fill text-warning"></i><span>Pending TO Review</span>
+          <span class="badge bg-warning text-dark" id="badgePending">0</span>
+        </a>
+        <a href="#returnedDto" class="officer-nav-link" id="navTab-returnedDto" onclick="switchTab('returnedDto', event)">
+          <i class="bi bi-arrow-return-left text-danger"></i><span>Returned by DTO</span>
+          <span class="badge bg-danger" id="badgeReturnedDto">0</span>
+        </a>
+        <a href="#forwarded" class="officer-nav-link" id="navTab-forwarded" onclick="switchTab('forwarded', event)">
+          <i class="bi bi-send-check text-primary"></i><span>Forwarded to DTO/HQ</span>
+          <span class="badge bg-primary" id="badgeForwarded">0</span>
+        </a>
+        <a href="#returnedCitizen" class="officer-nav-link" id="navTab-returnedCitizen" onclick="switchTab('returnedCitizen', event)">
+          <i class="bi bi-reply-fill text-secondary"></i><span>Returned to Citizen</span>
+          <span class="badge bg-secondary" id="badgeReturnedCitizen">0</span>
+        </a>
+        <a href="#all" class="officer-nav-link" id="navTab-all" onclick="switchTab('all', event)">
+          <i class="bi bi-folder2-open text-muted"></i><span>All Applications</span>
+          <span class="badge bg-light text-dark border" id="badgeAll">0</span>
+        </a>
+      </nav>
+      <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem;">Reports</div>
+      <nav class="nav flex-column gap-1">
+        <a href="reports.html?role=to&district=all" class="officer-nav-link">
+          <i class="bi bi-bar-chart-line text-success"></i><span>Service Reports</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main id="main-to-content" class="flex-grow-1 p-3 p-lg-4" style="min-width: 0; overflow-x: hidden;">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+        <div>
+          <h1 class="h4 fw-bold text-dark mb-0">Tourism Officer (TO) Initial Verification Desk</h1>
+          <p class="text-muted small mb-0">Review newly submitted applications, update Drone flight parameters, redirect miscategorised filings, or forward to DTO.</p>
+        </div>
+      </div>
+
+      <!-- 4 KPI Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+          <div class="officer-stat-card active-kpi" id="kpi-pending" onclick="switchTab('pending')">
+            <div class="small text-muted fw-semibold mb-1">Pending TO Review</div>
+            <div class="officer-stat-number text-warning-emphasis" id="kpiPendingCount">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="officer-stat-card" id="kpi-returnedDto" onclick="switchTab('returnedDto')">
+            <div class="small text-muted fw-semibold mb-1">Returned by DTO</div>
+            <div class="officer-stat-number text-danger" id="kpiReturnedDtoCount">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="officer-stat-card" id="kpi-forwarded" onclick="switchTab('forwarded')">
+            <div class="small text-muted fw-semibold mb-1">Forwarded to DTO / HQ</div>
+            <div class="officer-stat-number text-primary" id="kpiForwardedCount">0</div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="officer-stat-card" id="kpi-all" onclick="switchTab('all')">
+            <div class="small text-muted fw-semibold mb-1">Total Applications</div>
+            <div class="officer-stat-number text-dark" id="kpiAllCount">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="card border shadow-xs">
+        <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <strong class="small text-dark" id="tableTitle">Pending TO Verification Queue</strong>
+          <div class="d-flex gap-2">
+            <input type="text" class="form-control form-control-sm" id="searchInput" placeholder="Search ID or Applicant..." oninput="renderTable()" style="max-width: 220px;">
+            <select class="form-select form-select-sm" id="catFilter" onchange="renderTable()" style="max-width: 200px;">
+              <option value="all">All Categories</option>
+              <option value="drone">Drone Permission (HQ)</option>
+              <option value="expedition">Expedition Permission (HQ)</option>
+              <option value="satellite-phone">Satellite Phone</option>
+              <option value="events-fairs">Event / Mela / Fair / Rallies / Marathons</option>
+              <option value="trekking">Trekking</option>
+              <option value="other">Other Permissions</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive d-none d-md-block">
+          <table class="gov-table-compact table-hover align-middle mb-0 w-100">
+            <thead>
+              <tr>
+                <th>Application ID</th>
+                <th>Applicant &amp; Subject</th>
+                <th>Category</th>
+                <th>District</th>
+                <th>Stage &amp; Status</th>
+                <th class="text-end text-nowrap">Action</th>
+              </tr>
+            </thead>
+            <tbody id="toTableBody"></tbody>
+          </table>
+        </div>
+        <div id="toMobileCards" class="d-md-none p-2"></div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="gov-footer py-3 bg-dark text-white mt-auto" role="contentinfo">
+    <div class="container-fluid px-lg-4 small text-white-50 d-flex justify-content-between flex-wrap gap-2">
+      <div>&copy; 2026 Tourism &amp; Civil Aviation Department, Government of Sikkim.</div>
+      <div>GIGW 3.0 &amp; WCAG 2.1 AA Compliant</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="workflow-engine.js"></script>
+  <script>
+    let currentTab = 'pending';
+    let currentDistrict = 'all';
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const dist = urlParams.get('district');
+      if (dist && WorkflowEngine.DISTRICT_OFFICES[dist]) {
+        currentDistrict = dist;
+        document.getElementById('districtFilterSelect').value = dist;
+      }
+      refresh();
+    });
+
+    function onDistrictChange(val) {
+      currentDistrict = val || 'all';
+      const info = WorkflowEngine.DISTRICT_OFFICES[currentDistrict] || WorkflowEngine.DISTRICT_OFFICES['all'];
+      document.getElementById('toOfficerName').textContent = info.toName || 'Tourism Officer (TO)';
+      refresh();
+    }
+
+    function switchTab(tab, e) {
+      if (e) e.preventDefault();
+      currentTab = tab;
+      document.querySelectorAll('.officer-nav-link').forEach(el => el.classList.remove('active'));
+      const nav = document.getElementById('navTab-' + tab);
+      if (nav) nav.classList.add('active');
+      document.querySelectorAll('.officer-stat-card').forEach(el => el.classList.remove('active-kpi'));
+      const kpi = document.getElementById('kpi-' + tab);
+      if (kpi) kpi.classList.add('active-kpi');
+      renderTable();
+    }
+
+    function getScopedApps() {
+      let apps = WorkflowEngine.getAllApplications();
+      if (currentDistrict !== 'all') apps = apps.filter(a => a.district === currentDistrict);
+      return apps;
+    }
+
+    function refresh() {
+      const apps = getScopedApps();
+      const pending = apps.filter(a => a.assignedRole === 'to' && a.currentStage !== WorkflowEngine.STAGES.STAGE_5B);
+      const retDto = apps.filter(a => a.currentStage === WorkflowEngine.STAGES.STAGE_5B && a.assignedRole === 'to');
+      const fwd = apps.filter(a => [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_11, WorkflowEngine.STAGES.STAGE_12].includes(a.currentStage));
+      const retCit = apps.filter(a => a.status === WorkflowEngine.STATUSES.RETURNED);
+
+      document.getElementById('badgePending').textContent = pending.length;
+      document.getElementById('badgeReturnedDto').textContent = retDto.length;
+      document.getElementById('badgeForwarded').textContent = fwd.length;
+      document.getElementById('badgeReturnedCitizen').textContent = retCit.length;
+      document.getElementById('badgeAll').textContent = apps.length;
+
+      document.getElementById('kpiPendingCount').textContent = pending.length;
+      document.getElementById('kpiReturnedDtoCount').textContent = retDto.length;
+      document.getElementById('kpiForwardedCount').textContent = fwd.length;
+      document.getElementById('kpiAllCount').textContent = apps.length;
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const apps = getScopedApps();
+      const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      const cat = document.getElementById('catFilter').value;
+
+      let list = apps.filter(a => {
+        if (currentTab === 'pending') return a.assignedRole === 'to' && a.currentStage !== WorkflowEngine.STAGES.STAGE_5B;
+        if (currentTab === 'returnedDto') return a.currentStage === WorkflowEngine.STAGES.STAGE_5B && a.assignedRole === 'to';
+        if (currentTab === 'forwarded') return [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_11, WorkflowEngine.STAGES.STAGE_12].includes(a.currentStage);
+        if (currentTab === 'returnedCitizen') return a.status === WorkflowEngine.STATUSES.RETURNED;
+        return true;
+      });
+
+      if (cat !== 'all') list = list.filter(a => a.categoryKey === cat);
+      if (q) list = list.filter(a => (a.refNo || '').toLowerCase().includes(q) || (a.applicantName || '').toLowerCase().includes(q) || (a.activityTitle || '').toLowerCase().includes(q));
+
+      const tbody = document.getElementById('toTableBody');
+      const mob = document.getElementById('toMobileCards');
+      tbody.innerHTML = '';
+      mob.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">No applications in this queue.</td></tr>';
+        mob.innerHTML = '<div class="text-center py-4 text-muted small">No applications in this queue.</div>';
+        return;
+      }
+
+      list.forEach(app => {
+        const levelBadge = app.requiresHqVerification ? '<span class="badge bg-primary-subtle text-primary border ms-1">HQ</span>' : '<span class="badge bg-success-subtle text-success border ms-1">DTO</span>';
+        const reviewUrl = `review.html?arn=${encodeURIComponent(app.refNo)}&role=to`;
+        tbody.innerHTML += `
+          <tr>
+            <td><strong class="font-monospace text-primary">${app.refNo}</strong></td>
+            <td>
+              <div class="fw-semibold text-dark">${app.applicantName}</div>
+              <div class="small text-muted text-truncate" style="max-width: 240px;">${app.activityTitle}</div>
+            </td>
+            <td><span class="small fw-semibold">${app.category}</span>${levelBadge}</td>
+            <td><span class="badge bg-light text-dark border">${app.district}</span></td>
+            <td><span class="badge bg-info-subtle text-info border">${app.currentStage}</span></td>
+            <td class="text-end text-nowrap">
+              <a href="${reviewUrl}" class="btn btn-sm btn-primary fw-semibold"><i class="bi bi-eye me-1"></i>Review Application</a>
+            </td>
+          </tr>
+        `;
+        mob.innerHTML += `
+          <div class="gov-mobile-app-card p-3 border rounded mb-2 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <strong class="font-monospace text-primary small">${app.refNo}</strong>
+              <span class="badge bg-info-subtle text-info border small">${app.currentStage}</span>
+            </div>
+            <div class="fw-semibold text-dark small">${app.applicantName} &bull; ${app.category}</div>
+            <div class="text-end mt-2">
+              <a href="${reviewUrl}" class="btn btn-sm btn-primary">Review Application</a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function resetDemo() {
+      if (confirm('Reset prototype data to initial seed state?')) {
+        WorkflowEngine.resetToSeedData();
+        refresh();
+      }
+    }
+  </script>
+</body>
+</html>
