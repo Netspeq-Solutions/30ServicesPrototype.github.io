@@ -197,7 +197,7 @@
                 assignedIO: null,
                 inspectionReport: null,
                 payment: {
-                  amount: isGuide ? 500 : 1500,
+                  amount: 1500,
                   activated: false,
                   activatedBy: null,
                   activatedDate: null,
@@ -331,7 +331,7 @@
         stage = STAGES.ATO_AWAITING_TA;
       }
 
-      const statutoryFee = isGuide ? 500 : 1500;
+      const statutoryFee = 1500;
 
       const newApp = {
         arn: arn,
@@ -507,6 +507,8 @@
       app.currentRole = 'io';
       app.stage = STAGES.ATO_UNDER_INSPECTION;
       app.status = STATUSES.UNDER_REVIEW;
+      app.deptReturnInfo = null;
+      app.returnRemarks = null;
 
       this._addHistory(
         app,
@@ -592,6 +594,8 @@
       app.currentRole = (app.district === 'Gangtok') ? 'ta-hq' : 'dist-ta';
       app.stage = STAGES.ATO_REPORT_SUBMITTED;
       app.status = STATUSES.UNDER_REVIEW;
+      app.deptReturnInfo = null;
+      app.returnRemarks = null;
 
       this._addHistory(
         app,
@@ -641,15 +645,18 @@
       const app = this.getApplicationByArn(arn);
       if (!app) return false;
 
+      app.deptReturnInfo = null;
+      app.returnRemarks = null;
       app.currentRole = targetRole || 'dto-hq';
+      const isPaid = Boolean(app.payment && app.payment.paid);
       if (app.type === 'adventure-tour-operator') {
-        app.stage = STAGES.ATO_AWAITING_DTO;
+        app.stage = isPaid ? STAGES.ATO_PAYMENT_SUBMITTED : STAGES.ATO_AWAITING_DTO;
       } else if (app.district === 'Gangtok') {
-        app.stage = STAGES.GR_HQ_AWAITING_DTO;
+        app.stage = isPaid ? STAGES.GR_HQ_PAYMENT_SUBMITTED : STAGES.GR_HQ_AWAITING_DTO;
       } else if (targetRole === 'dist-dto') {
-        app.stage = STAGES.GR_DIST_AWAITING_DTO;
+        app.stage = isPaid ? STAGES.GR_DIST_PAYMENT_SUBMITTED : STAGES.GR_DIST_AWAITING_DTO;
       } else {
-        app.stage = STAGES.GR_DIST_AWAITING_HQ_DTO;
+        app.stage = isPaid ? STAGES.GR_DIST_PAYMENT_SUBMITTED : STAGES.GR_DIST_AWAITING_HQ_DTO;
       }
       app.status = STATUSES.UNDER_REVIEW;
 
@@ -676,7 +683,7 @@
       if (!app) return false;
 
       const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
-      const fee = isGuide ? 500 : 1500;
+      const fee = 1500;
 
       app.payment = app.payment || {};
       app.payment.amount = fee;
@@ -726,7 +733,7 @@
       }
 
       const isGuide = (app.type === 'guide-registration' || (app.arn && app.arn.includes('GR')));
-      const fee = (app.payment && app.payment.amount) ? app.payment.amount : (isGuide ? 500 : 1500);
+      const fee = (app.payment && app.payment.amount) ? app.payment.amount : 1500;
 
       const nowStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
       app.payment = app.payment || {};
@@ -997,13 +1004,30 @@
         // DTO returns to TO post-inspection
         app.currentRole = isGangtok ? 'ta-hq' : 'dist-ta';
         app.stage = STAGES.ATO_REPORT_SUBMITTED;
+        app.returnRemarks = remarks || 'Returned by District Tourism Officer (DTO) to TO for re-verification.';
+        try {
+          const curDto = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null');
+          if (curDto && curDto.arn === app.arn) localStorage.removeItem('adv_dto_live_alert_v1');
+        } catch (e) {}
       } else {
         // Guide Registration: DTO returns to TO
         app.currentRole = isGangtok ? 'ta-hq' : 'dist-ta';
         app.stage = isGangtok ? STAGES.GR_HQ_AWAITING_TA : STAGES.GR_DIST_AWAITING_TA;
+        app.returnRemarks = remarks || 'Returned by District Tourism Officer (DTO) to TO for re-verification.';
+        try {
+          const curDto = JSON.parse(localStorage.getItem('adv_dto_live_alert_v1') || 'null');
+          if (curDto && curDto.arn === app.arn) localStorage.removeItem('adv_dto_live_alert_v1');
+        } catch (e) {}
       }
 
       app.status = STATUSES.UNDER_REVIEW;
+      app.deptReturnInfo = {
+        fromRole: officerRole || 'Departmental Officer',
+        fromOfficer: officerName || 'Departmental Officer',
+        targetRole: app.currentRole,
+        remarks: remarks || 'Returned to previous department for review/correction.',
+        timestamp: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ', ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      };
       this._addHistory(
         app,
         'Returned to Previous Department',

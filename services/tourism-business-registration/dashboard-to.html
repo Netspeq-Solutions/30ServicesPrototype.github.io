@@ -555,10 +555,12 @@
           const isCompleted = app.status === WorkflowEngine.STATUSES.COMPLETED;
           const isRejected = app.status === WorkflowEngine.STATUSES.REJECTED;
           const isReturnedByIa = Boolean(isInitial && app.iaReturnRemarks);
+          const isReturnedByDto = Boolean(app.assignedRole === 'TO' && app.dtoReturnInfo);
 
           let badgeClass = 'badge bg-info text-white';
           if (isCompleted) badgeClass = 'badge bg-success text-white';
           else if (isRejected) badgeClass = 'badge bg-danger text-white';
+          else if (isReturnedByDto) badgeClass = 'badge bg-warning text-dark';
           else if (isPostInsp) badgeClass = 'badge bg-warning text-dark';
           else if ((app.status || '').includes('Action Required') || (app.status || '').includes('Payment Pending')) badgeClass = 'badge bg-warning-subtle text-warning-emphasis border border-warning-subtle';
           else if (isInitial) badgeClass = 'badge bg-primary text-white';
@@ -589,9 +591,10 @@
             </td>
             <td><span class="text-dark small">${app.submittedDate ? app.submittedDate.split(',')[0] : ''}</span></td>
             <td>
-              <span class="${badgeClass}">${app.status}</span>
+              <span class="${badgeClass}">${isReturnedByDto ? 'Returned by DTO' : app.status}</span>
               <div class="text-muted small text-truncate" style="max-width: 210px;" title="${app.currentStage}">${app.currentStage}</div>
               ${isReturnedByIa ? '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mt-1" style="font-size: 0.68rem;">Returned by IA</span>' : ''}
+              ${isReturnedByDto ? `<div class="small text-warning-emphasis mt-1 text-truncate" style="max-width: 240px;" title="${app.dtoReturnInfo.remarks}"><i class="bi bi-chat-left-text me-1"></i>${app.dtoReturnInfo.remarks}</div>` : ''}
             </td>
             <td class="text-end text-nowrap">${actionBtnHtml}</td>
           `;

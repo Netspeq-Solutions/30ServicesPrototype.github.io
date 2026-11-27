@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1e3a8a">
+  <meta name="theme-color" content="#24476B">
   <meta name="description" content="Citizen Dashboard - Adventure Tour Operator & Guide Registration, Tourism & Civil Aviation Department, Government of Sikkim.">
   <title>Citizen Dashboard | Adventure Tour Operator &amp; Guide Registration | Government of Sikkim</title>
 
@@ -32,10 +32,10 @@
       max-width: 100% !important;
     }
     .gov-scenario-bar {
-      background: #0b1533;
-      color: #e2e8f0;
+      background: #18334F;
+      color: #f8fafc;
       font-size: 0.8125rem;
-      padding: 6px 0;
+      padding: 0.4rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
     .gov-sidebar {
@@ -75,14 +75,14 @@
     }
     .gov-sidebar-link:hover {
       background-color: #f1f5f9;
-      color: #1e3a8a;
+      color: #24476B;
     }
     .gov-nav-active,
     .gov-sidebar-link.active {
-      background-color: #eff6ff !important;
-      color: #1e3a8a !important;
+      background-color: #e8f1f8 !important;
+      color: #24476B !important;
       font-weight: 700 !important;
-      border-left: 4px solid #1e3a8a !important;
+      border-left: 3px solid #24476B !important;
       border-top-left-radius: 0 !important;
       border-bottom-left-radius: 0 !important;
     }
@@ -180,7 +180,7 @@
     }
   </style>
 </head>
-<body data-theme="royal-navy" class="d-flex flex-column min-vh-100 bg-light">
+<body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
 
   <!-- Skip Links -->
   <a class="gov-skip-link" href="#main-citizen-content">Skip to Main Content</a>
@@ -189,44 +189,31 @@
   <!-- Tricolor Ribbon -->
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
-  <!-- Reviewer Scenario Control Bar (High-Fidelity Demonstration Switcher) -->
-  <aside class="gov-scenario-bar" aria-label="Reviewer Scenario Controller">
+  <!-- Live Sync & Role Controller Bar -->
+  <aside class="gov-scenario-bar" aria-label="Workspace Controller">
     <div class="container-fluid px-lg-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2 flex-wrap">
-          <span class="badge bg-warning text-dark fw-bold px-2 py-1">
-            <i class="fas fa-flask me-1"></i> PROTOTYPE DEMO
+          <span class="badge bg-success text-white fw-bold px-2 py-1">
+            <i class="bi bi-broadcast me-1"></i> LIVE WORKFLOW SYNC
           </span>
-          <span class="fw-semibold text-white">Select Citizen Scenario:</span>
-          <label for="citizenScenarioSelect" class="visually-hidden">Select Citizen Scenario</label>
-          <select id="citizenScenarioSelect" class="form-select form-select-sm py-1 px-2 border-0 fw-semibold bg-white text-dark shadow-xs" style="max-width: 370px; font-size: 0.825rem;" onchange="switchCitizenScenario(this.value)">
-            <option value="liveSubmission">Live Submitted Applications (Real-Time)</option>
-            <option value="scenarioA" selected>Scenario A: First-Time Citizen (0 Applications)</option>
-            <option value="scenarioB">Scenario B: Ongoing Application (Under Review)</option>
-            <option value="scenarioC">Scenario C: Action Required (Returned for Remarks)</option>
-            <option value="scenarioPayment">Scenario F: Statutory Fee Due (₹1,500 Payment)</option>
-            <option value="scenarioGuidePayment">Scenario H: Guide Statutory Fee Due (₹500 Payment)</option>
-            <option value="scenarioD">Scenario D: Approved Application (Certificate Issued)</option>
-            <option value="scenarioGuideDistrict">Scenario G: Other-District Guide (Digital ID &amp; Logbook)</option>
-            <option value="scenarioE">Scenario E: Rejected Application (Ineligible)</option>
-          </select>
+          <span class="small text-white-50 d-none d-md-inline">Adventure Tour Operator &amp; Guide Registration Portal</span>
           <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
             <i class="bi bi-people-fill me-1"></i> Switch Role
           </a>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-          <span class="badge bg-light-subtle text-white-50 border border-white-50 small d-none d-md-inline-block">
-            <i class="fas fa-shield-alt text-warning me-1"></i> Simulated Sikkim GO SSO Session
-          </span>
-          <!-- Font Sizing & High Contrast Controls -->
+          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetCitizenWorkspace()" style="font-size: 0.75rem;" title="Reset Workspace Data">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Workspace
+          </button>
           <div class="btn-group btn-group-sm" role="group" aria-label="Text Size Controls">
-            <button type="button" class="btn btn-outline-gov-light" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size">A-</button>
-            <button type="button" class="btn btn-outline-gov-light active" id="btn-font-reset" data-font-action="reset" title="Normal font size">A</button>
-            <button type="button" class="btn btn-outline-gov-light" id="btn-font-increase" data-font-action="increase" title="Increase font size">A+</button>
+            <button type="button" class="btn btn-outline-light py-0 px-2" id="btn-font-decrease" data-font-action="decrease" title="Decrease font size">A-</button>
+            <button type="button" class="btn btn-outline-light py-0 px-2 active" id="btn-font-reset" data-font-action="reset" title="Normal font size">A</button>
+            <button type="button" class="btn btn-outline-light py-0 px-2" id="btn-font-increase" data-font-action="increase" title="Increase font size">A+</button>
           </div>
-          <button type="button" class="btn btn-outline-gov-light btn-sm" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
-            <i class="fas fa-adjust" aria-hidden="true"></i>
+          <button type="button" class="btn btn-outline-light btn-sm py-0 px-2" id="btn-contrast-toggle" title="Toggle High Contrast Mode">
+            <i class="bi bi-circle-half" aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -367,11 +354,11 @@
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                <h2 class="h4 fw-bold mb-0 text-dark">Welcome to Adventure Tour Operator &amp; Guide Registration, <span id="welcomeCitizenName">Passang Doma Bhutia</span></h2>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="scenarioBadgeDisplay">No Prior Applications</span>
+                <h2 class="h4 fw-bold mb-0 text-dark">Adventure Tour Operator &amp; Guide Registration &ndash; Welcome, <span id="welcomeCitizenName">Citizen</span></h2>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="scenarioBadgeDisplay">Live Portal</span>
               </div>
               <p class="text-muted small mb-0" id="scenarioDescriptionDisplay">
-                First-time citizen with empty history, ready to explore registration options and start an application.
+                Apply for Adventure Tour Operator or Guide Registration, respond to returns, pay statutory fees, and download certificates.
               </p>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -379,8 +366,60 @@
                 <i class="bi bi-file-earmark-text me-1"></i> Read Instructions
               </a>
               <button type="button" class="btn btn-sm btn-gov-primary px-3 py-1.5 fw-semibold shadow-xs" data-bs-toggle="modal" data-bs-target="#registrationTypeModal">
-                <i class="bi bi-plus-lg me-1"></i> Apply for Registration
+                <i class="bi bi-plus-lg me-1"></i> Apply for New Registration
               </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live KPI Summary Cards (Single Source of Truth) -->
+        <div class="row g-3 mb-4" id="citizenKpiCardsRow">
+          <div class="col-6 col-xl-3">
+            <div class="card border-0 shadow-xs p-3 h-100 cursor-pointer" onclick="filterByKpiStatus('ALL')">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="text-muted small fw-semibold">Total Applications</div>
+                  <div class="h3 fw-bold mb-0 mt-1 text-dark" id="kpiCitizenTotal">0</div>
+                  <div class="text-muted mt-1" style="font-size: 0.72rem;">Submitted records</div>
+                </div>
+                <span class="badge bg-primary-subtle text-primary p-2"><i class="bi bi-folder2-open fs-5"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="card border-0 shadow-xs p-3 h-100 cursor-pointer" onclick="filterByKpiStatus('UNDER_REVIEW')">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="text-muted small fw-semibold">Under Processing</div>
+                  <div class="h3 fw-bold mb-0 mt-1 text-primary" id="kpiCitizenInProgress">0</div>
+                  <div class="text-muted mt-1" style="font-size: 0.72rem;">TO / IA / DTO Scrutiny</div>
+                </div>
+                <span class="badge bg-info-subtle text-info p-2"><i class="bi bi-hourglass-split fs-5"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="card border-0 shadow-xs p-3 h-100 cursor-pointer" onclick="filterByKpiStatus('ACTION_REQUIRED')">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="text-muted small fw-semibold">Action / Payment Due</div>
+                  <div class="h3 fw-bold mb-0 mt-1 text-warning-emphasis" id="kpiCitizenAction">0</div>
+                  <div class="text-muted mt-1" style="font-size: 0.72rem;">Returned or Fee Pending</div>
+                </div>
+                <span class="badge bg-warning-subtle text-warning-emphasis p-2"><i class="bi bi-exclamation-circle fs-5"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-xl-3">
+            <div class="card border-0 shadow-xs p-3 h-100 cursor-pointer" onclick="filterByKpiStatus('APPROVED')">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="text-muted small fw-semibold">Completed / Issued</div>
+                  <div class="h3 fw-bold mb-0 mt-1 text-success" id="kpiCitizenCompleted">0</div>
+                  <div class="text-muted mt-1" style="font-size: 0.72rem;">Certificates ready</div>
+                </div>
+                <span class="badge bg-success-subtle text-success p-2"><i class="bi bi-award fs-5"></i></span>
+              </div>
             </div>
           </div>
         </div>
@@ -1110,7 +1149,7 @@
         liveApps.slice().reverse().forEach(liveApp => {
           const arn = liveApp.arn || liveApp.id || liveApp.refNo;
           const isGuide = (liveApp.type === 'guide-registration' || (arn && arn.includes('GR')));
-          const fee = isGuide ? 500 : 1500;
+          const fee = 1500;
           const isPaymentPending = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.PAYMENT_PENDING || liveApp.status === 'Payment Pending' || (liveApp.payment && liveApp.payment.activated && !liveApp.payment.paid));
           const isApproved = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.APPROVED || liveApp.status === 'Approved');
           const isReturned = (liveApp.status === AdventureWorkflowEngine?.STATUSES?.RETURNED || liveApp.status === 'Returned for Correction');
@@ -1165,20 +1204,69 @@
           }
         });
 
-        // Set activeApplication for Ongoing banner if in scenarioA or liveSubmission
-        if ((scenarioKey === 'scenarioA' || scenarioKey === 'liveSubmission') && scenario.applications.length > 0) {
-          scenario.activeApplication = scenario.applications[0];
+        // Derive activeApplication, paymentRequired, and actionRequired from live persisted records
+        if (scenario.applications.length > 0) {
+          const payApp = scenario.applications.find(a => a.payment && a.payment.activated && !a.payment.paid && a.status !== 'Approved' && a.status !== 'APPROVED' && a.status !== 'Rejected' && a.status !== 'REJECTED');
+          if (payApp) {
+            const isG = (payApp.typeId === 'guide-registration' || (payApp.refNo || '').includes('GR'));
+            scenario.paymentRequired = {
+              refNo: payApp.refNo,
+              typeId: payApp.typeId,
+              typeName: payApp.typeName,
+              enterpriseName: payApp.enterpriseName || payApp.applicantName,
+              feeAmount: '1,500',
+              remarks: 'DTO has verified your application and activated the statutory registration fee. Complete payment to proceed to final approval.',
+              activatedBy: payApp.payment.activatedBy || 'District Tourism Officer (DTO)',
+              activatedDate: payApp.payment.activatedDate || 'Recent',
+              dueDate: '7 Working Days'
+            };
+          }
+
+          const retApp = scenario.applications.find(a => a.status === 'Returned for Correction' || a.status === 'RETURNED');
+          if (retApp) {
+            scenario.actionRequired = {
+              refNo: retApp.refNo,
+              typeId: retApp.typeId,
+              typeName: retApp.typeName,
+              enterpriseName: retApp.enterpriseName || retApp.applicantName,
+              remarks: (retApp.timeline && retApp.timeline[0] && retApp.timeline[0].remarks) || 'Clarification or document correction required.',
+              returnedBy: (retApp.timeline && retApp.timeline[0] && retApp.timeline[0].by) || 'Department Officer',
+              returnedDate: retApp.lastUpdated || 'Recent',
+              deadline: '15 Days',
+              ctaText: 'Fix & Resubmit'
+            };
+          }
+
+          const ongoingApp = scenario.applications.find(a => a.status !== 'Approved' && a.status !== 'APPROVED' && a.status !== 'Rejected' && a.status !== 'REJECTED' && a.status !== 'Returned for Correction' && a.status !== 'RETURNED' && !(a.payment && a.payment.activated && !a.payment.paid));
+          scenario.activeApplication = ongoingApp || null;
+
+          const firstApp = scenario.applications[0];
           scenario.citizen = {
-            fullName: scenario.activeApplication.applicantName || 'Citizen Applicant',
-            citizenId: 'SK-CTZ-2026-LIVE',
+            fullName: firstApp.applicantName || 'Registered Citizen',
+            citizenId: 'CIT-SK-2026-4412',
             mobile: '9832145698',
-            email: 'applicant@sikkim.gov.in',
-            district: scenario.activeApplication.district || 'Gangtok'
+            email: 'citizen.applicant@sikkim.in',
+            district: firstApp.district || 'Gangtok'
           };
-          scenario.badge = 'Active Filing: ' + scenario.activeApplication.refNo;
-          scenario.description = 'Tracking your live submitted application (' + scenario.activeApplication.refNo + ') across Sikkim Tourism departmental verification desks.';
+          scenario.badge = `${scenario.applications.length} Active Filing${scenario.applications.length > 1 ? 's' : ''}`;
+          scenario.description = 'Track your Adventure Tour Operator and Guide Registration applications in real time across TO, IA, and DTO desks.';
         }
       }
+
+      // Compute KPI summary counts from persisted applications
+      const allCitizenApps = scenario.applications || [];
+      const kpiTotal = allCitizenApps.length;
+      const kpiApproved = allCitizenApps.filter(a => a.status === 'Approved' || a.status === 'APPROVED').length;
+      const kpiAction = allCitizenApps.filter(a => (a.status === 'Returned for Correction' || a.status === 'RETURNED') || (a.payment && a.payment.activated && !a.payment.paid && a.status !== 'Approved' && a.status !== 'APPROVED' && a.status !== 'Rejected' && a.status !== 'REJECTED')).length;
+      const kpiInProgress = allCitizenApps.filter(a => a.status !== 'Approved' && a.status !== 'APPROVED' && a.status !== 'Rejected' && a.status !== 'REJECTED' && a.status !== 'Returned for Correction' && a.status !== 'RETURNED' && !(a.payment && a.payment.activated && !a.payment.paid)).length;
+      const kpiTotalEl = document.getElementById('kpiCitizenTotal');
+      const kpiProgEl = document.getElementById('kpiCitizenInProgress');
+      const kpiActEl = document.getElementById('kpiCitizenAction');
+      const kpiCompEl = document.getElementById('kpiCitizenCompleted');
+      if (kpiTotalEl) kpiTotalEl.textContent = kpiTotal;
+      if (kpiProgEl) kpiProgEl.textContent = kpiInProgress;
+      if (kpiActEl) kpiActEl.textContent = kpiAction;
+      if (kpiCompEl) kpiCompEl.textContent = kpiApproved;
 
       // Update Header & Profile
       document.getElementById('headerCitizenName').textContent = scenario.citizen.fullName;
@@ -1240,7 +1328,7 @@
           let b = null;
 
           if (liveAlert.actionType === 'payment') {
-            const payAmt = liveAlert.fee ? Number(liveAlert.fee).toLocaleString('en-IN') : (isGuide ? '500' : '1,500');
+            const payAmt = liveAlert.fee ? Number(liveAlert.fee).toLocaleString('en-IN') : '1,500';
             b = {
               border: '#f59e0b', bg: '#fffbeb', iconBg: '#d97706', icon: 'bi-credit-card-fill',
               title: `Payment Activated for Application: ${arn}`,
@@ -1295,7 +1383,7 @@
       // Priority 1: Statutory Fee Payment Due Card
       if (scenario.paymentRequired) {
         const pay = scenario.paymentRequired;
-        const feeAmt = pay.feeAmount || (pay.typeId === 'guide-registration' ? '500' : '1,500');
+        const feeAmt = pay.feeAmount || '1,500';
         container.innerHTML += `
           <div class="action-card action-priority mb-3 border-warning" style="background: #fffbeb; border-left: 5px solid #d97706 !important;">
             <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
@@ -1454,7 +1542,7 @@
           const isGuideRow = (arn.includes('GR') || app.type === 'guide-registration' || app.category === 'guide-registration' || app.typeId === 'guide-registration');
           actionBtns += `<a href="certificate.html?arn=${arn}" target="_blank" class="btn btn-sm btn-success py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold"><i class="bi bi-award me-1"></i>${isGuideRow ? 'Download Certificate &amp; ID Card' : 'Download Certificate'}</a>`;
         } else if (isPayPending) {
-          const payAmt = (app.payment && app.payment.amount) ? Number(app.payment.amount).toLocaleString('en-IN') : (arn.includes('GR') ? '500' : '1,500');
+          const payAmt = (app.payment && app.payment.amount) ? Number(app.payment.amount).toLocaleString('en-IN') : '1,500';
           actionBtns += `<button class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold" onclick="openCitizenPaymentModal('${arn}')"><i class="bi bi-credit-card me-1"></i>Pay Now (&#8377;${payAmt})</button>`;
         } else if (status === 'RETURNED' || status === 'Returned for Correction') {
           actionBtns += `<a href="apply.html?ref=${arn}&type=${app.typeId || app.category || 'guide-registration'}" class="btn btn-sm btn-warning py-1 px-2 text-nowrap shadow-xs me-1 fw-semibold"><i class="bi bi-pencil-square me-1"></i>Correct</a>`;
@@ -1553,7 +1641,20 @@
         const title = (app.title || app.applicantName || app.enterpriseName || '').toLowerCase();
         const matchesSearch = !search || arn.includes(search) || title.includes(search);
         const matchesCat = (cat === 'ALL' || app.typeId === cat || app.category === cat);
-        const matchesStatus = (status === 'ALL' || app.status === status || (status === 'UNDER_REVIEW' && app.status === 'Under Scrutiny'));
+        const st = (app.status || '').toUpperCase();
+        const isPayDue = Boolean(app.payment && app.payment.activated && !app.payment.paid && st !== 'APPROVED' && st !== 'REJECTED');
+        let matchesStatus = true;
+        if (status === 'UNDER_REVIEW') {
+          matchesStatus = (st !== 'APPROVED' && st !== 'REJECTED' && st !== 'RETURNED' && st !== 'RETURNED FOR CORRECTION' && !isPayDue);
+        } else if (status === 'ACTION_REQUIRED') {
+          matchesStatus = (st === 'RETURNED' || st === 'RETURNED FOR CORRECTION' || isPayDue);
+        } else if (status === 'RETURNED') {
+          matchesStatus = (st === 'RETURNED' || st === 'RETURNED FOR CORRECTION');
+        } else if (status === 'APPROVED') {
+          matchesStatus = (st === 'APPROVED');
+        } else if (status === 'REJECTED') {
+          matchesStatus = (st === 'REJECTED');
+        }
         return matchesSearch && matchesCat && matchesStatus;
       });
 
@@ -1848,7 +1949,7 @@
 
       if (appRecord) {
         const isGuide = (appRecord.type === 'guide-registration' || (appRecord.arn && appRecord.arn.includes('GR')));
-        const fee = (appRecord.payment && appRecord.payment.amount) ? appRecord.payment.amount : (isGuide ? 500 : 1500);
+        const fee = (appRecord.payment && appRecord.payment.amount) ? appRecord.payment.amount : 1500;
 
         titleEl.textContent = `Application ID: ${appRecord.arn} • ${appRecord.applicantName || appRecord.enterpriseName} (${appRecord.district})`;
         
@@ -1970,34 +2071,59 @@
       window.location.href = 'apply.html?type=' + encodeURIComponent(val);
     }
 
+    function filterByKpiStatus(statusKey) {
+      const sel = document.getElementById('filterAppStatus');
+      if (sel) {
+        if (!Array.from(sel.options).some(o => o.value === statusKey)) {
+          const opt = document.createElement('option');
+          opt.value = statusKey;
+          opt.textContent = 'Action / Payment Due';
+          sel.appendChild(opt);
+        }
+        sel.value = statusKey;
+      }
+      filterApplicationList();
+      const appsSec = document.getElementById('applicationsSection');
+      if (appsSec && !appsSec.classList.contains('d-none')) {
+        appsSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function resetCitizenWorkspace() {
+      if (confirm('Clear all submitted applications and notifications in this workspace?')) {
+        if (window.AdventureWorkflowEngine) {
+          AdventureWorkflowEngine.resetDatabase();
+        }
+        try {
+          localStorage.removeItem('adv_citizen_live_alert_v1');
+          localStorage.removeItem('adv_submitted_applications');
+          localStorage.removeItem('adv_latest_submitted_arn');
+        } catch (e) {}
+        renderCitizenDashboard('live');
+      }
+    }
+
     function switchCitizenScenario(scenKey) {
-      renderCitizenDashboard(scenKey);
+      renderCitizenDashboard(scenKey || 'live');
     }
 
     window.addEventListener('storage', function(e) {
-      if (e.key === 'adv_workflow_applications_v6' || e.key === 'adv_submitted_applications' || e.key === 'adv_latest_submitted_arn') {
-        const cur = getAdventureCitizenScenario();
-        renderCitizenDashboard(cur);
+      if (e.key === 'adv_workflow_applications_v6' || e.key === 'adv_submitted_applications' || e.key === 'adv_latest_submitted_arn' || e.key === 'adv_citizen_live_alert_v1') {
+        renderCitizenDashboard('live');
       }
     });
 
     window.addEventListener('focus', function() {
-      const cur = getAdventureCitizenScenario();
-      renderCitizenDashboard(cur);
+      renderCitizenDashboard('live');
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-      const currentScen = getAdventureCitizenScenario();
-      const select = document.getElementById('citizenScenarioSelect');
-      if (select) {
-        select.value = currentScen;
-      }
-      renderCitizenDashboard(currentScen);
+      renderCitizenDashboard('live');
 
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('view') === 'acknowledgement') {
+      if (urlParams.get('view') === 'acknowledgement' && urlParams.get('arn')) {
         setTimeout(() => {
-          showPaymentAcknowledgement(urlParams.get('arn') || 'ATO-2026-004');
+          showPaymentAcknowledgement(urlParams.get('arn'));
         }, 150);
       }
 
