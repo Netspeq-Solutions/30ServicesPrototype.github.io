@@ -1,6 +1,6 @@
 /**
  * STAGE 06: DOCUMENT & CERTIFICATE GENERATION SERVICE
- * Service: Tourism Business & Outdoor Photography Registration
+ * Service: Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services
  * Department: Tourism & Civil Aviation Department, Government of Sikkim
  * Framework: Sikkim G2C Web Services Framework
  */
@@ -15,34 +15,36 @@
      * @returns {object} Document package containing DTO sanction sheet and Registration Certificate states
      */
     getDocumentStatus: function (refNo) {
-      const app = (typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication)
-        ? TourismBusinessData.getApplication(refNo)
-        : null;
+      const app = (typeof WorkflowEngine !== 'undefined' && WorkflowEngine.getApplication)
+        ? WorkflowEngine.getApplication(refNo)
+        : ((typeof TourismBusinessData !== 'undefined' && TourismBusinessData.getApplication)
+          ? TourismBusinessData.getApplication(refNo)
+          : null);
 
-      const isApproved = app ? (app.status === 'APPROVED') : true;
+      const isApproved = app ? (app.status === 'Completed' || app.status === 'APPROVED' || app.status === 'Approved') : false;
 
       return {
         refNo: refNo,
         approvalSheet: {
           applicable: true,
-          uploaded: true,
+          uploaded: isApproved,
           title: 'Department Verification & Sanction Sheet',
-          statusText: 'Available for View / Download',
-          badgeClass: 'bg-success',
+          statusText: isApproved ? 'Available for View / Download' : 'Pending DTO Sanction',
+          badgeClass: isApproved ? 'bg-success' : 'bg-secondary',
           fileName: `Sanction_Sheet_${refNo}.pdf`,
-          date: (app && app.submittedDate) ? app.submittedDate.split(',')[0] : '15 Oct 2026',
-          issuer: 'District Tourism Officer (DTO), Gangtok Circle'
+          date: (app && app.submittedDate) ? app.submittedDate.split(',')[0] : '-',
+          issuer: 'District Tourism Officer (DTO)'
         },
         permissionLetter: {
           applicable: true,
           issued: isApproved,
           title: 'Form 3: Certificate of Registration (1-Year Validity)',
-          statusText: isApproved ? 'Official Statutory Certificate Available' : 'Under Review',
+          statusText: isApproved ? 'Official Statutory Certificate Available' : 'Pending Final Approval',
           badgeClass: isApproved ? 'bg-success' : 'bg-secondary',
-          certNo: (app && app.certificateNo) || `SK-TCD-REG-2026-${refNo.substring(refNo.length - 8)}`,
-          issueDate: (app && app.submittedDate) ? app.submittedDate.split(',')[0] : '15 Oct 2026',
-          validUntil: (app && app.validUntil) || '14 Oct 2027',
-          issuer: 'District Tourism Officer, Government of Sikkim'
+          certNo: (app && app.certificateNo) || 'Not Issued Yet',
+          issueDate: (app && app.certificateIssuedDate) || (app && app.submittedDate ? app.submittedDate.split(',')[0] : '-'),
+          validUntil: (app && app.validUntil) || '-',
+          issuer: (app && app.district) ? `District Tourism Officer (DTO, ${app.district})` : 'District Tourism Officer, Government of Sikkim'
         }
       };
     },
@@ -57,13 +59,23 @@
           ? TourismBusinessData.getApplication(refNo)
           : null);
 
-      const firmName = (app && app.businessName) || 'Singalila Eco-Tours Sikkim';
-      const applicantName = (app && app.applicantName) || 'Tenzing Norbu Lepcha';
-      const categoryName = (app && app.categoryName) || 'Tour Operator Registration';
-      const address = (app && app.shopAddress ? app.shopAddress + ', ' : '') + ((app && app.district) || 'Gangtok') + ' Circle, Sikkim';
-      const certNo = (app && app.certificateNo) || `SK-TCD-REG-2026-${refNo.substring(refNo.length - 8)}`;
-      const issueDate = (app && app.submittedDate) ? app.submittedDate.split(',')[0] : '15 Oct 2026';
-      const validUntil = (app && app.validUntil) || '14 Oct 2027';
+      if (!app || (app.status !== 'Completed' && app.status !== 'APPROVED' && app.status !== 'Approved')) {
+        return `
+          <div class="alert alert-warning p-4 text-center my-3">
+            <i class="bi bi-exclamation-triangle-fill fs-3 d-block mb-2"></i>
+            <strong>Certificate Not Yet Issued</strong>
+            <div class="small mt-1">Application <code>${refNo}</code> has not completed DTO Final Verification and Certificate Issuance yet.</div>
+          </div>
+        `;
+      }
+
+      const firmName = app.businessName || app.applicantName;
+      const applicantName = app.applicantName || 'Registered Applicant';
+      const categoryName = app.categoryName || app.category;
+      const address = (app.shopAddress ? app.shopAddress + ', ' : '') + (app.district || 'Gangtok') + ' Circle, Sikkim';
+      const certNo = app.certificateNo || `SK-TCD-REG-2026-${refNo.substring(refNo.length - 8)}`;
+      const issueDate = app.certificateIssuedDate || (app.submittedDate ? app.submittedDate.split(',')[0] : 'Issued Today');
+      const validUntil = app.validUntil || '1 Year Validity';
 
       return `
         <div class="bg-white p-4 p-md-5 rounded border shadow-sm mx-auto" style="border: 3px double #24476B !important; background-color: #FFFDF9 !important; max-width: 760px; font-family: 'Noto Serif', serif;">

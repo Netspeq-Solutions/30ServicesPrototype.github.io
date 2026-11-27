@@ -147,12 +147,9 @@
       </div>
 
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <label for="sampleSwitcherSelect" class="visually-hidden">Switch Application Sample</label>
-        <select id="sampleSwitcherSelect" class="form-select form-select-sm py-1 bg-dark text-white border-secondary" style="max-width: 250px; font-size: 0.8rem;" onchange="loadApplicationByArn(this.value)">
-          <option value="SK-TBR-2026-DLR-00305" selected>Equipment Dealer (Mountain Essentials)</option>
-          <option value="SK-TBR-2026-TO-00105">TA/TO (Mountain Quest Travels)</option>
-          <option value="SK-TBR-2026-TO-00107">TA/TO Grade B (Sikkim Panoramic)</option>
-          <option value="SK-TBR-2026-PHO-00142">Photographer (Kanchenjunga Vista)</option>
+        <label for="sampleSwitcherSelect" class="visually-hidden">Select Issued Application</label>
+        <select id="sampleSwitcherSelect" class="form-select form-select-sm py-1 bg-dark text-white border-secondary" style="max-width: 280px; font-size: 0.8rem;" onchange="loadApplicationByArn(this.value)">
+          <option value="">-- Select Issued Certificate --</option>
         </select>
         <button type="button" class="btn btn-sm btn-outline-light px-3 d-inline-flex align-items-center gap-1" onclick="downloadSimulatedPdf()">
           <i class="bi bi-file-earmark-pdf"></i>
@@ -297,23 +294,35 @@
         app = TourismBusinessData.getApplication(arn);
       }
 
-      if (!app) {
-        // Fallback robust mock
-        app = {
-          refNo: arn,
-          categoryName: arn.includes('DLR') ? 'Dealer Registration' : (arn.includes('PHO') ? 'Outdoor Photographer Registration' : 'Travel Agent / Tour Operator (TA/TO)'),
-          businessName: arn.includes('DLR') ? 'Mountain Essentials Trading' : (arn.includes('PHO') ? 'Kanchenjunga Vista Photography' : 'Sikkim Panoramic Expeditions'),
-          applicantName: arn.includes('DLR') ? 'Sonam Gyatso Sherpa' : (arn.includes('PHO') ? 'Tenzing Doma Lepcha' : 'Norbu Wangdi Bhutia'),
-          district: arn.includes('DLR') ? 'Gyalshing' : 'Gangtok',
-          shopAddress: arn.includes('DLR') ? 'Pelling Bazaar' : 'Development Area, Gangtok',
-          certificateNo: `SK-TR-CERT-2026-${arn.split('-')[2] || 'REG'}-${arn.split('-').pop()}`,
-          submittedDate: '25 Oct 2026',
-          validUntil: '24 Oct 2027',
-          registrationGrade: arn.includes('TO') ? 'Grade B' : 'Not Applicable'
-        };
+      if (!app || (app.status !== 'Completed' && app.status !== 'APPROVED' && app.status !== 'Approved')) {
+        const paper = document.getElementById('printableCertPaper');
+        if (paper) {
+          paper.innerHTML = `
+            <div class="text-center py-5">
+              <i class="bi bi-award text-muted fs-1 d-block mb-3"></i>
+              <h2 class="h4 fw-bold text-dark">Certificate Not Issued</h2>
+              <p class="text-muted small mx-auto mb-4" style="max-width: 520px;">
+                ${app ? `Application <strong>${arn}</strong> is currently in <em>${app.currentStage}</em>. Form 3 Certificate is generated only after DTO Final Verification approval.` : `No issued application record found for Reference Number <strong>${arn || '(none)'}</strong>.`}
+              </p>
+              <a href="dashboard.html" class="btn btn-primary btn-sm">Return to Citizen Dashboard</a>
+            </div>
+          `;
+        }
+        return;
       }
 
       renderCertificate(app);
+    }
+
+    function populateCompletedSwitcher(selectedArn) {
+      const sel = document.getElementById('sampleSwitcherSelect');
+      if (!sel || typeof WorkflowEngine === 'undefined') return;
+      const completed = WorkflowEngine.getAllApplications().filter(a => a.status === 'Completed' || a.status === 'Approved');
+      if (completed.length === 0) {
+        sel.innerHTML = '<option value="">No Issued Certificates Yet</option>';
+        return;
+      }
+      sel.innerHTML = completed.map(a => `<option value="${a.refNo}" ${a.refNo === selectedArn ? 'selected' : ''}>${a.refNo} (${a.businessName || a.applicantName})</option>`).join('');
     }
 
     function renderCertificate(app) {
@@ -370,7 +379,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      const arn = getQueryParam('arn') || 'SK-TBR-2026-DLR-00305';
+      const completed = (typeof WorkflowEngine !== 'undefined')
+        ? WorkflowEngine.getAllApplications().filter(a => a.status === 'Completed' || a.status === 'Approved')
+        : [];
+      const arn = getQueryParam('arn') || (completed[0] ? completed[0].refNo : '');
+      populateCompletedSwitcher(arn);
       loadApplicationByArn(arn);
     });
   </script>

@@ -1,7 +1,7 @@
 {
   "serviceId": "tourism-business-registration",
-  "serviceName": "Tourism Business & Outdoor Photography Registration",
-  "serviceShortName": "Tourism Business Registration",
+  "serviceName": "Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services",
+  "serviceShortName": "Travel Agent, Dealer & Photographer Services",
   "department": "Tourism & Civil Aviation Department",
   "government": "Government of Sikkim",
   "theme": "alpine-blue",
@@ -83,14 +83,12 @@
       "badge": "Inspection Required",
       "description": "For businesses seeking statutory registration as an authorized Tourism Equipment, Handicraft, or Commercial Service Dealer under departmental requirements.",
       "targetAudience": "Commercial dealers of mountaineering gear, trekking equipment, indigenous crafts, and rental businesses.",
-      "eligibility": "Commercial shop or office premises in Sikkim with valid Shop Act license, verified equipment stock, and mandatory physical inspection by a designated Tourism Officer.",
+      "eligibility": "Commercial shop or office premises in Sikkim with valid Certificate of Identification (COI), safety undertaking, and mandatory physical inspection by Inspecting Authority.",
       "documents": [
-        "Shop & Commercial Establishment Act Registration (Shop Act)",
-        "Commercial Premises Ownership Deed or Registered Rent Agreement",
-        "Conditional House-Owner NOC (for rented premises)",
-        "Equipment Inventory / Stock Register & Catalog",
-        "Staff Details & Organization Constitution",
-        "Premises Parking & Safety Compliance Undertaking"
+        "Certificate of Identification (COI) / Sikkim Subject Certificate (Mandatory)",
+        "Commercial Premises Ownership / Tenancy Particulars (No separate legal contract upload required)",
+        "Equipment Inventory & Stock Particulars",
+        "Sustainable Tourism & Safety Compliance Undertaking"
       ],
       "fee": "₹2,000 / 1 Year",
       "timeline": "21 Working Days",
@@ -108,12 +106,10 @@
       "targetAudience": "Individual outdoor photographers, drone cinematographers, and documentary creators.",
       "eligibility": "Individual applicant of minimum 18 years age with minimum Class X educational qualification, verified professional photography credentials/training, and recommendation.",
       "documents": [
-        "Proof of Identity & Age (Aadhaar / Voter ID / Passport)",
-        "Class X Educational Qualification Certificate (Mandatory Minimum)",
-        "Certificate / Diploma in Photography / Cinematography or Verified Training Record",
-        "Portfolio of Work & Experience Credentials",
-        "Professional Recommendation Letter",
-        "Equipment Declaration & GST Registration (where applicable)"
+        "Proof of Identity & Age (COI / Aadhaar / Voter ID)",
+        "Class X Educational Qualification Certificate (Optional)",
+        "Photography Training Certificate & Recommendation Letter (Optional)",
+        "Optional Outdoor Experience & Paragliding Endorsement"
       ],
       "fee": "₹1,500 / 1 Year",
       "timeline": "7 Working Days",
@@ -182,7 +178,7 @@
   ],
   "faqs": [
     {
-      "q": "What is the Tourism Business & Outdoor Photography Registration Service?",
+      "q": "What is the Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services Portal?",
       "a": "It is a unified, single-window online service established by the Tourism & Civil Aviation Department, Government of Sikkim, through which applicants can apply for statutory registration as Travel Agents, Tour Operators, Dealers, or Outdoor Photographers."
     },
     {

@@ -7,165 +7,74 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>Inspecting Authority (Level 1) Physical Inspection Desk &bull; Tourism Business Registration &bull; Government of Sikkim</title>
+  <title>Inspecting Authority (IA) Field Desk &bull; Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services &bull; Government of Sikkim</title>
 
-  <!-- Google Fonts: Noto Sans & Noto Serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap 5.3 CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <!-- Bootstrap Icons CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <!-- Shared Framework CSS -->
   <link rel="stylesheet" href="../../common/css/gigw-template.css">
   <link rel="stylesheet" href="../../common/css/themes.css">
   <link rel="stylesheet" href="../../common/css/components.css">
   <link rel="stylesheet" href="../../common/css/responsive.css">
 
   <style>
-    html, body {
-      overflow-x: hidden !important;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
+    html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100% !important; }
     .officer-stat-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 1.15rem;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-      cursor: pointer;
-      height: 100%;
+      background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.1rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; cursor: pointer; height: 100%;
     }
-    .officer-stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-      border-color: #24476B;
-    }
-    .officer-stat-card.active-kpi {
-      border: 2px solid #b45309 !important;
-      background-color: #fffbeb !important;
-      box-shadow: 0 4px 12px rgba(180, 83, 9, 0.12);
-    }
-    .officer-stat-number {
-      font-size: 1.85rem;
-      font-weight: 800;
-      line-height: 1.1;
-      color: #24476B;
-    }
+    .officer-stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); border-color: #24476B; }
+    .officer-stat-card.active-kpi { border: 2px solid #b45309 !important; background-color: #fffbeb !important; }
+    .officer-stat-number { font-size: 1.8rem; font-weight: 800; line-height: 1.1; color: #24476B; }
     .officer-sidebar {
-      width: 260px !important;
-      min-width: 260px !important;
-      max-width: 260px !important;
-      flex-shrink: 0 !important;
-      background: #ffffff;
-      border-right: 1px solid #e2e8f0;
-      min-height: calc(100vh - 120px);
+      width: 260px !important; min-width: 260px !important; max-width: 260px !important;
+      flex-shrink: 0 !important; background: #ffffff; border-right: 1px solid #e2e8f0; min-height: calc(100vh - 120px);
     }
     .officer-nav-link {
-      display: flex !important;
-      align-items: center !important;
-      gap: 0.5rem !important;
-      padding: 0.42rem 0.65rem !important;
-      color: #334155;
-      font-weight: 500;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: all 0.15s ease;
-      font-size: 0.8125rem !important;
-      line-height: 1.25 !important;
-      white-space: nowrap !important;
+      display: flex !important; align-items: center !important; gap: 0.5rem !important; padding: 0.42rem 0.65rem !important;
+      color: #334155; font-weight: 500; border-radius: 6px; text-decoration: none; transition: all 0.15s ease;
+      font-size: 0.8125rem !important; line-height: 1.25 !important; white-space: nowrap !important;
     }
-    .officer-nav-link span {
-      white-space: nowrap !important;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1 1 auto;
-    }
-    .officer-nav-link i {
-      font-size: 0.95rem !important;
-      width: 1.25rem !important;
-      text-align: center;
-      flex-shrink: 0 !important;
-    }
-    .officer-nav-link .badge {
-      flex-shrink: 0 !important;
-      margin-left: auto !important;
-      font-size: 0.72rem !important;
-      padding: 0.18rem 0.45rem !important;
-      font-weight: 700;
-      border-radius: 10rem;
-      line-height: 1;
-    }
-    .officer-nav-link:hover {
-      background-color: #f1f5f9;
-      color: #24476B;
-    }
-    .officer-nav-link.active {
-      background-color: #fff8e1;
-      color: #b45309;
-      font-weight: 700;
-      border-left: 3px solid #b45309;
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
-    }
-    .cursor-pointer { cursor: pointer; }
-    .badge-workflow-stage {
-      font-size: 0.725rem;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
+    .officer-nav-link span { white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; }
+    .officer-nav-link i { font-size: 0.95rem !important; width: 1.25rem !important; text-align: center; flex-shrink: 0 !important; }
+    .officer-nav-link .badge { flex-shrink: 0 !important; margin-left: auto !important; font-size: 0.72rem !important; padding: 0.18rem 0.45rem !important; font-weight: 700; border-radius: 10rem; line-height: 1; }
+    .officer-nav-link:hover { background-color: #f1f5f9; color: #24476B; }
+    .officer-nav-link.active { background-color: #fff8e1; color: #b45309; font-weight: 700; border-left: 3px solid #b45309; border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; }
   </style>
 </head>
 <body data-theme="alpine-blue" class="d-flex flex-column min-vh-100 bg-light">
 
-  <!-- Accessibility Skip Link -->
   <a class="gov-skip-link" href="#main-ia-content">Skip to Main Content</a>
-
-  <!-- Tricolor Stripe -->
   <div class="gov-flag-stripe" aria-hidden="true"></div>
 
-  <!-- Reviewer Demonstration Control Bar -->
-  <aside class="gov-scenario-bar" aria-label="Reviewer Controller" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
+  <!-- Control Bar -->
+  <aside class="gov-scenario-bar" aria-label="Role Controller" style="background: #18334F; color: #f8fafc; font-size: 0.8125rem; padding: 0.4rem 0;">
     <div class="container-fluid px-lg-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2 flex-wrap">
           <span class="badge bg-warning text-dark fw-bold px-2 py-1">
-            <i class="bi bi-shield-check me-1"></i> LEVEL 1 &bull; IA PHYSICAL INSPECTION DESK
+            <i class="bi bi-shield-check me-1"></i> LEVEL 1 &bull; INSPECTING AUTHORITY (IA) DESK
           </span>
-          <span class="fw-semibold text-white">Jurisdiction:</span>
-          <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 230px; font-size: 0.8rem;" onchange="changeDistrictQueue(this.value)">
-            <option value="ALL">All Circles (Statewide IA Overview)</option>
-            <option value="Gangtok" selected>Gangtok Circle (HQ)</option>
-            <option value="Namchi">Namchi Circle (South)</option>
-            <option value="Gyalshing">Gyalshing Circle (West)</option>
-            <option value="Mangan">Mangan Circle (North)</option>
+          <label for="districtFilterSelect" class="fw-semibold text-white mb-0">Circle:</label>
+          <select id="districtFilterSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs" style="max-width: 220px; font-size: 0.8rem;" onchange="changeDistrictQueue(this.value)">
+            <option value="ALL">All Circles (Statewide View)</option>
+            <option value="Gangtok" selected>Gangtok Circle</option>
+            <option value="Namchi">Namchi Circle</option>
+            <option value="Gyalshing">Gyalshing Circle</option>
+            <option value="Mangan">Mangan Circle</option>
             <option value="Pakyong">Pakyong Circle</option>
             <option value="Soreng">Soreng Circle</option>
           </select>
-
-          <!-- IA Officer Switcher -->
-          <span class="fw-semibold text-white ms-1 d-none d-sm-inline">IA Officer:</span>
-          <select id="iaOfficerSelect" class="form-select form-select-sm py-0 px-2 border-0 fw-bold bg-white text-dark shadow-xs d-none d-sm-inline-block" style="max-width: 230px; font-size: 0.8rem;" onchange="changeIaOfficer(this.value)">
-            <!-- Populated dynamically via JS -->
-          </select>
-
-          <!-- Quick Scenario / Application Switcher -->
-          <span class="text-white-50 ms-1 d-none d-md-inline">&bull; Quick Review:</span>
-          <select id="quickArnJumpSelect" class="form-select form-select-sm py-0 px-2 border-0 bg-light text-dark fw-semibold shadow-xs d-none d-md-inline-block" style="max-width: 290px; font-size: 0.775rem;" onchange="jumpToReview(this.value)">
-            <option value="">-- Jump to Specific Application --</option>
-          </select>
+          <span class="badge bg-success-subtle text-success border border-success-subtle d-none d-sm-inline-flex align-items-center gap-1">
+            <i class="bi bi-broadcast"></i> Real-Time Sync Active
+          </span>
         </div>
-
         <div class="d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetPrototypeData()" title="Reset Demo Seed Data" style="font-size: 0.75rem;">
-            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Seed Data
+          <button type="button" class="btn btn-sm btn-outline-light py-0 px-2" onclick="resetPrototypeData()" style="font-size: 0.75rem;">
+            <i class="bi bi-trash3 me-1"></i> Clear Test Data
           </button>
           <a href="role-select.html" class="btn btn-sm btn-outline-warning py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
             <i class="bi bi-people-fill me-1"></i> Switch Role
@@ -178,7 +87,7 @@
     </div>
   </aside>
 
-  <!-- Government Branding Header -->
+  <!-- Government Header -->
   <header class="gov-header py-2 bg-white border-bottom shadow-xs" role="banner">
     <div class="container-fluid px-lg-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -187,32 +96,35 @@
             <img src="../../common/assets/images/sikkim-government-logo-dark.png" alt="Emblem of Government of Sikkim" class="gov-header-emblem" style="height: 50px; width: auto;">
           </a>
           <div>
-            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim</span>
-            <div class="fw-bold fs-6 text-dark" id="iaHeaderOfficeTitle">Inspecting Authority, Gangtok Circle</div>
-            <span class="small text-muted" style="font-size: 0.75rem;">Tourism Business Registration &bull; Level 1 Inspecting Authority (IA) Field Physical Inspection Desk</span>
+            <span class="gov-header-state d-block text-uppercase fw-bold text-muted small" style="font-size: 0.725rem; letter-spacing: 0.5px;">Government of Sikkim &bull; Tourism &amp; Civil Aviation Department</span>
+            <div class="fw-bold fs-6 text-dark">Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services</div>
+            <span class="small text-muted" style="font-size: 0.75rem;">Inspecting Authority (IA) Desk &bull; <span id="iaHeaderCircleName">Gangtok Circle</span> (TA/TO &amp; Dealer Only)</span>
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
+          <button type="button" class="btn btn-sm btn-outline-warning text-dark position-relative" onclick="toggleIaNotificationsDrawer()" title="Notification Centre">
+            <i class="bi bi-bell-fill"></i>
+            <span class="badge bg-danger rounded-pill ms-1" id="iaNotifCountBadge">0</span>
+          </button>
           <div class="text-end d-none d-sm-block">
             <div class="fw-bold text-dark small" id="iaOfficerName">Tashi Wangdi Lepcha</div>
-            <div class="text-muted" style="font-size: 0.75rem;" id="iaOfficerDesignation">Inspecting Authority (Level 1)</div>
+            <div class="text-muted" style="font-size: 0.75rem;" id="iaOfficerDesignation">Inspecting Authority (IA)</div>
           </div>
           <a href="role-select.html" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
             <i class="bi bi-box-arrow-right"></i>
-            <span>Switch Role / Logout</span>
+            <span>Switch Role</span>
           </a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- IA Desk Layout Container -->
   <div class="d-flex flex-column flex-lg-row flex-grow-1 w-100 overflow-hidden officer-workspace-container">
-    
-    <!-- Officer Desk Sidebar -->
+
+    <!-- Sidebar -->
     <aside class="officer-sidebar px-2 py-3 d-none d-lg-block flex-shrink-0" id="iaSidebarNav">
       <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
-        Work Queues (<span id="sidebarDistrictName">Gangtok</span>)
+        IA Inspection Queues (<span id="sidebarDistrictName">Gangtok</span>)
       </div>
       <nav class="nav flex-column gap-1 mb-3">
         <a href="#queue-pending" class="officer-nav-link active" id="navTab-pending" onclick="switchQueueTab('pending', event)">
@@ -220,458 +132,337 @@
           <span>Pending Inspection</span>
           <span class="badge bg-warning text-dark ms-auto fw-bold" id="iaBadgePending">0</span>
         </a>
-        <a href="#queue-scheduled" class="officer-nav-link" id="navTab-scheduled" onclick="switchQueueTab('scheduled', event)">
-          <i class="bi bi-calendar-event text-info"></i>
-          <span>Visits Scheduled</span>
-          <span class="badge bg-info text-white ms-auto" id="iaBadgeScheduled">0</span>
+        <a href="#queue-returned-by-to" class="officer-nav-link" id="navTab-returnedByTo" onclick="switchQueueTab('returnedByTo', event)">
+          <i class="bi bi-arrow-return-left text-danger"></i>
+          <span>Returned by TO</span>
+          <span class="badge bg-danger ms-auto fw-bold" id="iaBadgeReturnedTo">0</span>
         </a>
         <a href="#queue-completed" class="officer-nav-link" id="navTab-completed" onclick="switchQueueTab('completed', event)">
           <i class="bi bi-check-circle-fill text-success"></i>
-          <span>Reports Submitted</span>
+          <span>Reports Submitted to TO</span>
           <span class="badge bg-success text-white ms-auto fw-bold" id="iaBadgeCompleted">0</span>
         </a>
         <a href="#queue-all" class="officer-nav-link" id="navTab-all" onclick="switchQueueTab('all', event)">
           <i class="bi bi-folder2-open text-muted"></i>
-          <span>All Inspections</span>
+          <span>All Inspection Cases</span>
           <span class="badge bg-light text-dark border ms-auto" id="iaBadgeAll">0</span>
         </a>
       </nav>
 
       <div class="text-uppercase fw-bold text-muted small mb-2 px-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
-        Department Hierarchy Navigation
+        Department Switcher
       </div>
       <nav class="nav flex-column gap-1">
         <a href="dashboard-to.html" class="officer-nav-link text-secondary">
           <i class="bi bi-shield-check text-primary"></i>
-          <span>Inspect Level 0 (TO Desk)</span>
+          <span>Open TO Desk</span>
         </a>
         <a href="dashboard-dto.html" class="officer-nav-link text-secondary">
           <i class="bi bi-award text-success"></i>
-          <span>Inspect Level 2 (DTO Desk)</span>
+          <span>Open DTO Desk</span>
         </a>
-        <a href="instructions.html" class="officer-nav-link" target="_blank">
-          <i class="bi bi-file-earmark-ruled"></i>
-          <span>Service Guidelines</span>
-        </a>
-        <a href="role-select.html" class="officer-nav-link text-danger">
-          <i class="bi bi-people"></i>
-          <span>Switch Access Role</span>
+        <a href="dashboard.html" class="officer-nav-link text-secondary">
+          <i class="bi bi-person-circle text-primary"></i>
+          <span>Open Citizen Dashboard</span>
         </a>
       </nav>
-
-      <!-- District Quick Info Card -->
-      <div class="card border-0 bg-light p-3 rounded-2 mt-4 small">
-        <div class="fw-bold text-dark" id="sidebarOfficeTitle"><i class="bi bi-geo-alt-fill text-primary me-1"></i> Gangtok Circle Desk</div>
-        <div class="text-muted mt-1" style="font-size: 0.75rem;" id="sidebarOfficeAddress">Paryatan Bhawan, Tadong, Gangtok – 737102</div>
-        <div class="text-muted" style="font-size: 0.75rem;" id="sidebarOfficePhone">Phone: 03592-209092</div>
-      </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main id="main-ia-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0">
-      
-      <!-- Welcome Officer Card -->
-      <div class="card border-0 bg-white p-4 shadow-xs mb-3">
+
+      <!-- Real-Time IA Notification Banner -->
+      <div id="iaLiveNotificationBanner" class="alert alert-warning border border-warning shadow-xs mb-3 d-none" style="background: #fffbeb;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <div>
+              <strong id="iaNotifBannerTitle" class="text-dark small d-block">New Inspection Assignment</strong>
+              <span id="iaNotifBannerMsg" class="text-dark small"></span>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <a id="iaNotifBannerBtn" href="#" class="btn btn-sm btn-warning text-dark fw-bold px-3">Open &amp; Inspect</a>
+            <button type="button" class="btn-close btn-sm" aria-label="Dismiss" onclick="dismissLatestIaNotification()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Drawer -->
+      <div id="iaNotificationsDrawer" class="card border shadow-sm mb-3 d-none">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+          <strong class="small text-dark"><i class="bi bi-bell-fill text-warning me-1"></i> IA Notification Centre</strong>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="markAllIaNotificationsRead()">Mark All Read</button>
+            <button type="button" class="btn-close btn-sm" onclick="toggleIaNotificationsDrawer(false)"></button>
+          </div>
+        </div>
+        <div class="card-body p-2" id="iaNotificationsListContainer"></div>
+      </div>
+
+      <div class="card border-0 bg-white p-3 p-lg-4 shadow-xs mb-3">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
-            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-              <h1 class="h5 fw-bold text-dark mb-0" id="iaDeskHeading">Level 1 Inspecting Authority Field Desk &bull; Gangtok Circle</h1>
-              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">Level 1 Physical Inspection</span>
-              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">Tour Operator &bull; Travel Agent &bull; Dealer</span>
-            </div>
+            <h1 class="h5 fw-bold text-dark mb-1" id="iaDeskHeading">Inspecting Authority (IA) Physical Inspection Desk &bull; Gangtok Circle</h1>
             <p class="text-muted small mb-0">
-              Conduct mandatory on-site physical inspection of Tour Operator offices, Travel Agency branches, and Equipment Dealer showrooms, verify operational infrastructure and safety measures, and submit inspection reports to Level 0 TO.
+              Scoped strictly to <strong>Travel Agent / Tour Operator</strong> and <strong>Dealer</strong> applications (Outdoor Photographer applications never appear here). Upload the inspection report with comments and submit to TO, or return to TO with remarks.
             </p>
           </div>
-          <div class="d-flex gap-2">
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="location.reload()">
-              <i class="bi bi-arrow-clockwise me-1"></i> Refresh Queue
-            </button>
-            <a href="role-select.html" class="btn btn-outline-danger btn-sm">
-              <i class="bi bi-people-fill me-1"></i> Switch Role
-            </a>
-          </div>
+          <button type="button" class="btn btn-outline-secondary btn-sm" onclick="refreshDashboardData()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Sync Now
+          </button>
         </div>
       </div>
 
-      <!-- Standardized 4 Actionable KPI Cards -->
+      <!-- 3 KPIs -->
       <div class="row g-3 mb-3">
-        <!-- 1. Pending Physical Inspection -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="officer-stat-card active-kpi" id="kpiCard-pending" onclick="switchQueueTab('pending')" title="Dealer applications assigned by TO awaiting physical inspection">
+        <div class="col-sm-6 col-lg-4">
+          <div class="officer-stat-card active-kpi" id="kpiCard-pending" onclick="switchQueueTab('pending')">
             <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <span class="officer-stat-number text-warning" id="statIaPending">0</span>
-                <h4 class="h6 fw-bold text-warning-emphasis mb-0 mt-1">Pending Inspection</h4>
-              </div>
-              <div class="gov-icon-circle gov-icon-circle-sm bg-warning-subtle text-warning">
-                <i class="bi bi-clipboard-check"></i>
-              </div>
+              <div><span class="officer-stat-number text-warning" id="statIaPending">0</span><h4 class="h6 fw-bold text-warning-emphasis mb-0 mt-1">Pending Inspection</h4></div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-warning-subtle text-warning"><i class="bi bi-clipboard-check"></i></div>
             </div>
-            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Assigned by TO</div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Upload inspection report &amp; submit</div>
           </div>
         </div>
-
-        <!-- 2. Visits Scheduled -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="officer-stat-card" id="kpiCard-scheduled" onclick="switchQueueTab('scheduled')" title="Applications with scheduled on-site physical premise visits">
+        <div class="col-sm-6 col-lg-4">
+          <div class="officer-stat-card" id="kpiCard-returnedByTo" onclick="switchQueueTab('returnedByTo')">
             <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <span class="officer-stat-number text-info" id="statIaScheduled">0</span>
-                <h4 class="h6 fw-bold text-info mb-0 mt-1">Visits Scheduled</h4>
-              </div>
-              <div class="gov-icon-circle gov-icon-circle-sm bg-info-subtle text-info">
-                <i class="bi bi-calendar-event"></i>
-              </div>
+              <div><span class="officer-stat-number text-danger" id="statIaReturnedTo">0</span><h4 class="h6 fw-bold text-danger mb-0 mt-1">Returned by TO</h4></div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-danger-subtle text-danger"><i class="bi bi-arrow-return-left"></i></div>
             </div>
-            <div class="small text-muted mt-2" style="font-size: 0.75rem;">On-site visit booked</div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Needs re-inspection / correction</div>
           </div>
         </div>
-
-        <!-- 3. Reports Submitted -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="officer-stat-card" id="kpiCard-completed" onclick="switchQueueTab('completed')" title="Inspections completed and forwarded to DTO">
+        <div class="col-sm-6 col-lg-4">
+          <div class="officer-stat-card" id="kpiCard-completed" onclick="switchQueueTab('completed')">
             <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <span class="officer-stat-number text-success" id="statIaCompleted">0</span>
-                <h4 class="h6 fw-bold text-success mb-0 mt-1">Reports Submitted</h4>
-              </div>
-              <div class="gov-icon-circle gov-icon-circle-sm bg-success-subtle text-success">
-                <i class="bi bi-check-circle-fill"></i>
-              </div>
+              <div><span class="officer-stat-number text-success" id="statIaCompleted">0</span><h4 class="h6 fw-bold text-success mb-0 mt-1">Reports Submitted</h4></div>
+              <div class="gov-icon-circle gov-icon-circle-sm bg-success-subtle text-success"><i class="bi bi-check-circle-fill"></i></div>
             </div>
-            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Forwarded to DTO</div>
-          </div>
-        </div>
-
-        <!-- 4. Total Dealer Inspections -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="officer-stat-card" id="kpiCard-all" onclick="switchQueueTab('all')" title="All inspections registered in this circle">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <span class="officer-stat-number text-dark" id="statIaTotal">0</span>
-                <h4 class="h6 fw-bold text-secondary mb-0 mt-1">All Inspections</h4>
-              </div>
-              <div class="gov-icon-circle gov-icon-circle-sm bg-light text-secondary">
-                <i class="bi bi-folder2"></i>
-              </div>
-            </div>
-            <div class="small text-muted mt-2" style="font-size: 0.75rem;">In selected circle</div>
+            <div class="small text-muted mt-2" style="font-size: 0.75rem;">Forwarded to TO post-inspection</div>
           </div>
         </div>
       </div>
 
-      <!-- Secondary Metric Bar -->
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 px-3 py-2 bg-white rounded-3 border mb-3 small text-muted">
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-          <span><i class="bi bi-building-check text-warning me-1"></i> Premise Verifications Done: <strong class="text-dark" id="statIaPremiseDone">0</strong></span>
-          <span class="text-secondary">&bull;</span>
-          <span><i class="bi bi-patch-check-fill text-success me-1"></i> Recommended to DTO: <strong class="text-dark" id="statIaRecommended">0</strong></span>
-          <span class="text-secondary">&bull;</span>
-          <span><i class="bi bi-exclamation-triangle text-danger me-1"></i> Deficiencies Noted: <strong class="text-dark" id="statIaDeficiencies">0</strong></span>
-        </div>
-        <div>
-          <span class="badge bg-light text-secondary border">IA Inspection Desk</span>
-        </div>
-      </div>
-
-      <!-- Applications Queue Card -->
+      <!-- Queue Table Card -->
       <div class="card border-0 shadow-sm bg-white mb-3">
         <div class="card-header bg-white py-3 border-bottom">
           <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
               <h2 class="h6 fw-bold mb-0 text-dark" id="queueCardTitle">
-                <i class="bi bi-list-check me-1 text-primary"></i> Pending Physical Inspection Queue (Gangtok Circle)
+                <i class="bi bi-list-check me-1 text-primary"></i> Pending Physical Inspection Queue
               </h2>
-              <span class="text-muted small" id="queueCardSubtitle">Select a dealer application to conduct physical on-site inspection or enter inspection report.</span>
+              <span class="text-muted small" id="queueCardSubtitle">Applications assigned by TO requiring premises inspection and report submission.</span>
             </div>
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <div class="input-group input-group-sm" style="max-width: 240px;">
                 <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-search"></i></span>
-                <input type="text" id="iaSearchInput" class="form-control form-control-sm border-start-0" placeholder="Search ID or Shop...">
+                <input type="text" id="iaSearchInput" class="form-control form-control-sm border-start-0" placeholder="Search ID or Enterprise...">
               </div>
-              <select id="iaCategoryFilter" class="form-select form-select-sm" style="max-width: 260px;">
-                <option value="ALL" selected>All Categories</option>
-                <option value="ta-to">Travel Agent / Tour Operator (TA/TO)</option>
-                <option value="dealer">Equipment Dealer (Mandatory)</option>
-                <option value="outdoor-photographer">Outdoor Photographer</option>
+              <select id="iaCategoryFilter" class="form-select form-select-sm" style="max-width: 240px;">
+                <option value="ALL" selected>All Inspection Categories</option>
+                <option value="ta-to">Travel Agent / Tour Operator</option>
+                <option value="dealer">Dealer</option>
               </select>
             </div>
           </div>
         </div>
 
         <div class="card-body p-0">
-          <!-- Desktop Table View -->
           <div class="table-responsive d-none d-md-block">
             <table class="gov-table-compact table-hover align-middle mb-0" id="iaQueueTable">
               <thead>
                 <tr>
-                  <th scope="col" style="width: 20%;">Application ID</th>
-                  <th scope="col" style="width: 25%;">Enterprise / Store &amp; Applicant</th>
-                  <th scope="col" style="width: 15%;">Category</th>
-                  <th scope="col" style="width: 14%;">Submitted</th>
-                  <th scope="col" style="width: 14%;">Inspection Status</th>
-                  <th scope="col" class="text-end" style="width: 12%;">Action</th>
+                  <th scope="col" style="width: 18%;">Application ID</th>
+                  <th scope="col" style="width: 24%;">Enterprise &amp; Applicant</th>
+                  <th scope="col" style="width: 16%;">Category</th>
+                  <th scope="col" style="width: 13%;">Submitted</th>
+                  <th scope="col" style="width: 15%;">Inspection Stage</th>
+                  <th scope="col" class="text-end" style="width: 14%;">Action</th>
                 </tr>
               </thead>
-              <tbody id="iaQueueTableBody">
-                <!-- Dynamically populated via JS -->
-              </tbody>
+              <tbody id="iaQueueTableBody"></tbody>
             </table>
           </div>
-
-          <!-- Mobile Cards View -->
-          <div class="gov-cards-mobile d-block d-md-none p-3" id="iaQueueCardsMobile">
-            <!-- Dynamically populated via JS -->
-          </div>
+          <div class="gov-cards-mobile d-block d-md-none p-3" id="iaQueueCardsMobile"></div>
         </div>
       </div>
-
     </main>
   </div>
 
-  <!-- Mandatory GIGW 3.0 Footer -->
+  <!-- Footer -->
   <footer class="gov-footer py-2.5 border-top bg-white text-muted small" role="contentinfo">
     <div class="container-fluid px-lg-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
       <div>&copy; 2026 Government of Sikkim. Tourism &amp; Civil Aviation Department.</div>
       <div class="d-flex align-items-center gap-3">
-        <span>GIGW 3.0 / WCAG 2.1 Level AA</span>
+        <span>Travel Agent / Tour Operator, Dealer, Outdoor Photographer Services</span>
         <span>&bull;</span>
         <a href="role-select.html" class="text-decoration-none text-muted">Role Gateway</a>
-        <span>&bull;</span>
-        <a href="index.html" class="text-decoration-none text-muted">Portal Home</a>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../../common/js/common.js"></script>
-  <script src="citizen-data.js?v=20261112_09"></script>
-  <script src="workflow-engine.js?v=20261112_09"></script>
+  <script src="workflow-engine.js"></script>
+  <script src="citizen-data.js"></script>
 
   <script>
     (function () {
       'use strict';
 
-      // Ensure WorkflowEngine is initialized with guaranteed self-healing
-      if (window.WorkflowEngine && typeof window.WorkflowEngine.init === 'function') {
-        window.WorkflowEngine.init();
-        if (window.WorkflowEngine.getAllApplications().length === 0) {
-          window.WorkflowEngine.resetToSeedData();
-        }
-      }
-
       const urlParams = new URLSearchParams(window.location.search);
       let currentDistrict = urlParams.get('district') || 'Gangtok';
-      let currentIaOfficer = urlParams.get('officer') || 'Tashi Wangdi Lepcha';
-      let currentTab = 'pending'; // 'pending', 'scheduled', 'completed', 'all'
+      let currentTab = 'pending';
 
       const districtSelect = document.getElementById('districtFilterSelect');
       if (districtSelect) districtSelect.value = currentDistrict;
-
-      function populateIaOfficerSelect() {
-        const select = document.getElementById('iaOfficerSelect');
-        if (!select) return;
-        select.innerHTML = '';
-
-        const optAll = document.createElement('option');
-        optAll.value = 'ALL';
-        optAll.textContent = 'All Circle IAs (Pool View)';
-        select.appendChild(optAll);
-
-        const districtIas = WorkflowEngine.getIaOfficers(currentDistrict);
-        districtIas.forEach(ia => {
-          const opt = document.createElement('option');
-          opt.value = ia.name;
-          opt.textContent = `${ia.name} (${ia.designation.split(' ')[0]})`;
-          if (ia.name === currentIaOfficer) opt.selected = true;
-          select.appendChild(opt);
-        });
-
-        // Fallback if currentIaOfficer not in current circle
-        if (currentIaOfficer !== 'ALL' && !districtIas.some(i => i.name === currentIaOfficer)) {
-          currentIaOfficer = districtIas[0] ? districtIas[0].name : 'ALL';
-          select.value = currentIaOfficer;
-        }
-      }
-
-      window.changeIaOfficer = function (name) {
-        currentIaOfficer = name;
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.set('officer', currentIaOfficer);
-        window.history.replaceState({}, '', newUrl);
-
-        const nameEl = document.getElementById('iaOfficerName');
-        if (nameEl) nameEl.textContent = (name === 'ALL') ? 'Statewide Inspecting Authorities Pool' : name;
-
-        updateMetrics();
-        updateCardHeader();
-        renderTable();
-      };
 
       window.changeDistrictQueue = function (dist) {
         currentDistrict = dist;
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('district', currentDistrict);
         window.history.replaceState({}, '', newUrl);
-
-        populateIaOfficerSelect();
-        updateDistrictContext();
-        updateMetrics();
-        updateCardHeader();
-        renderTable();
-      };
-
-      window.jumpToReview = function (arn) {
-        if (!arn) return;
-        window.location.href = `review.html?arn=${encodeURIComponent(arn)}&role=ia`;
+        refreshDashboardData();
       };
 
       function updateDistrictContext() {
         const info = WorkflowEngine.DISTRICT_OFFICES[currentDistrict] || WorkflowEngine.DISTRICT_OFFICES['Gangtok'];
-        const districtName = (currentDistrict === 'ALL') ? 'Statewide' : currentDistrict;
-
-        document.getElementById('iaDeskHeading').textContent = `Level 1 Inspecting Authority Field Desk • ${districtName} Circle`;
-        document.getElementById('iaHeaderOfficeTitle').textContent = (currentDistrict === 'ALL')
-          ? 'Inspecting Authority Directorate, All Circles'
-          : `Inspecting Authority, ${currentDistrict} Circle`;
+        const circleLabel = (currentDistrict === 'ALL') ? 'All 6 Circles' : `${currentDistrict} Circle`;
+        document.getElementById('iaDeskHeading').textContent = `Inspecting Authority (IA) Physical Inspection Desk • ${circleLabel}`;
+        document.getElementById('iaHeaderCircleName').textContent = circleLabel;
         document.getElementById('iaOfficerName').textContent = info.iaName;
-        document.getElementById('iaOfficerDesignation').textContent = info.iaDesignation || 'Inspecting Authority (Level 1)';
-
-        document.getElementById('sidebarDistrictName').textContent = districtName;
-        document.getElementById('sidebarOfficeTitle').innerHTML = `<i class="bi bi-geo-alt-fill text-primary me-1"></i> ${districtName} Circle Desk`;
-        document.getElementById('sidebarOfficeAddress').textContent = info.office || 'Paryatan Bhawan, Tadong, Gangtok – 737102';
-        document.getElementById('sidebarOfficePhone').textContent = `Phone: ${info.phone || '03592-209092'}`;
+        document.getElementById('iaOfficerDesignation').textContent = info.iaDesignation || 'Inspecting Authority (IA)';
+        document.getElementById('sidebarDistrictName').textContent = (currentDistrict === 'ALL') ? 'All' : currentDistrict;
       }
 
-      function populateQuickArnSelect() {
-        const select = document.getElementById('quickArnJumpSelect');
-        if (!select) return;
-        select.innerHTML = '<option value="">-- Jump to Specific Application --</option>';
-        const allApps = WorkflowEngine.getAllApplications();
-        allApps.forEach(a => {
-          const opt = document.createElement('option');
-          opt.value = a.refNo;
-          opt.textContent = `[${a.categoryCode || a.category}] ${a.refNo} • ${a.applicantName}`;
-          select.appendChild(opt);
-        });
-      }
-
-      function getFilteredApplications() {
-        let apps = WorkflowEngine.getAllApplications();
-
-        // District filter (case-insensitive)
+      // Strict RBAC: Outdoor Photographer NEVER appears in IA
+      function getIaEligibleApps() {
+        let apps = WorkflowEngine.getAllApplications().filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer');
         if (currentDistrict && currentDistrict.toUpperCase() !== 'ALL') {
           apps = apps.filter(a => (a.district || '').toLowerCase() === currentDistrict.toLowerCase());
         }
+        return apps;
+      }
 
-        // Category filter (safe against empty or all)
-        const catFilterEl = document.getElementById('iaCategoryFilter');
-        const catFilter = catFilterEl ? (catFilterEl.value || '').trim() : '';
-        if (catFilter && catFilter.toUpperCase() !== 'ALL') {
-          if (catFilter === 'ta-to') {
-            apps = apps.filter(a => ['ta-to', 'tour-operator', 'travel-agent'].includes((a.category || '').toLowerCase()));
-          } else {
-            apps = apps.filter(a => (a.category || '').toLowerCase() === catFilter.toLowerCase());
-          }
+      function isIaPending(a) {
+        return a.assignedRole === 'IA';
+      }
+      function isIaReturnedByTo(a) {
+        return a.assignedRole === 'IA' && a.currentStage === WorkflowEngine.STAGES.STAGE_IA_RETURNED;
+      }
+      function isIaSubmittedReport(a) {
+        return a.assignedRole !== 'IA' && Boolean(a.inspectionDocName || a.inspectionFindings);
+      }
+
+      function getFilteredApplications() {
+        let apps = getIaEligibleApps();
+        const catFilter = (document.getElementById('iaCategoryFilter')?.value || 'ALL').trim();
+        if (catFilter !== 'ALL') {
+          if (catFilter === 'ta-to') apps = apps.filter(a => ['ta-to', 'tour-operator', 'travel-agent'].includes((a.category || '').toLowerCase()));
+          else apps = apps.filter(a => (a.category || '').toLowerCase() === catFilter.toLowerCase());
         }
 
-        // Search text (safe against null)
-        const searchInput = document.getElementById('iaSearchInput');
-        const searchTxt = searchInput ? (searchInput.value || '').trim().toLowerCase() : '';
+        const searchTxt = (document.getElementById('iaSearchInput')?.value || '').trim().toLowerCase();
         if (searchTxt) {
-          apps = apps.filter(a => 
+          apps = apps.filter(a =>
             (a.refNo && a.refNo.toLowerCase().includes(searchTxt)) ||
             (a.applicantName && a.applicantName.toLowerCase().includes(searchTxt)) ||
             (a.businessName && a.businessName.toLowerCase().includes(searchTxt))
           );
         }
 
-        // Exclude outdoor-photographer (exempt from Level 1 IA inspection)
-        apps = apps.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer');
-
-        // Queue Tab filter
-        if (currentTab === 'pending') {
-          apps = apps.filter(a => !a.inspectionDocName && !a.inspectionFindings && !a.inspectionDate && (a.assignedRole === 'IA' || (a.currentStage || '').includes('Level 1: Assigned') || (a.currentStage || '').includes('Re-inspection')));
-          if (currentIaOfficer && currentIaOfficer !== 'ALL') {
-            apps = apps.filter(a => {
-              const assigned = a.assignedIaOfficer || (WorkflowEngine.DISTRICT_OFFICES[a.district] ? WorkflowEngine.DISTRICT_OFFICES[a.district].iaName : 'Tashi Wangdi Lepcha');
-              return assigned === currentIaOfficer;
-            });
-          }
-        } else if (currentTab === 'scheduled') {
-          apps = apps.filter(a => !a.inspectionDocName && !a.inspectionFindings && (a.inspectionDate || (a.currentStage || '').includes('Scheduled')));
-          if (currentIaOfficer && currentIaOfficer !== 'ALL') {
-            apps = apps.filter(a => {
-              const assigned = a.assignedIaOfficer || (WorkflowEngine.DISTRICT_OFFICES[a.district] ? WorkflowEngine.DISTRICT_OFFICES[a.district].iaName : 'Tashi Wangdi Lepcha');
-              return assigned === currentIaOfficer;
-            });
-          }
-        } else if (currentTab === 'completed') {
-          apps = apps.filter(a => !!a.inspectionDocName || !!a.inspectionFindings || (a.currentStage || '').includes('IA Report Received') || (a.inspectionStatus || '').includes('Submitted to TO'));
-        }
+        if (currentTab === 'pending') apps = apps.filter(isIaPending);
+        else if (currentTab === 'returnedByTo') apps = apps.filter(isIaReturnedByTo);
+        else if (currentTab === 'completed') apps = apps.filter(isIaSubmittedReport);
+        else apps = apps.filter(a => a.assignedRole === 'IA' || isIaSubmittedReport(a));
 
         return apps;
       }
 
       function updateMetrics() {
-        let scoped = WorkflowEngine.getAllApplications();
-        if (currentDistrict && currentDistrict.toUpperCase() !== 'ALL') {
-          scoped = scoped.filter(a => (a.district || '').toLowerCase() === currentDistrict.toLowerCase());
-        }
+        const eligible = getIaEligibleApps();
+        const pCount = eligible.filter(isIaPending).length;
+        const rCount = eligible.filter(isIaReturnedByTo).length;
+        const cCount = eligible.filter(isIaSubmittedReport).length;
+        const allCount = eligible.filter(a => a.assignedRole === 'IA' || isIaSubmittedReport(a)).length;
 
-        const eligible = scoped.filter(a => (a.category || '').toLowerCase() !== 'outdoor-photographer');
-        
-        let pendingList = eligible.filter(a => !a.inspectionDocName && !a.inspectionFindings && !a.inspectionDate && (a.assignedRole === 'IA' || (a.currentStage || '').includes('Level 1: Assigned') || (a.currentStage || '').includes('Re-inspection')));
-        let scheduledList = eligible.filter(a => !a.inspectionDocName && !a.inspectionFindings && (a.inspectionDate || (a.currentStage || '').includes('Scheduled')));
+        document.getElementById('statIaPending').textContent = pCount;
+        document.getElementById('statIaReturnedTo').textContent = rCount;
+        document.getElementById('statIaCompleted').textContent = cCount;
 
-        if (currentIaOfficer && currentIaOfficer !== 'ALL') {
-          pendingList = pendingList.filter(a => {
-            const assigned = a.assignedIaOfficer || (WorkflowEngine.DISTRICT_OFFICES[a.district] ? WorkflowEngine.DISTRICT_OFFICES[a.district].iaName : 'Tashi Wangdi Lepcha');
-            return assigned === currentIaOfficer;
-          });
-          scheduledList = scheduledList.filter(a => {
-            const assigned = a.assignedIaOfficer || (WorkflowEngine.DISTRICT_OFFICES[a.district] ? WorkflowEngine.DISTRICT_OFFICES[a.district].iaName : 'Tashi Wangdi Lepcha');
-            return assigned === currentIaOfficer;
-          });
-        }
-
-        const pending = pendingList.length;
-        const scheduled = scheduledList.length;
-        const completed = eligible.filter(a => !!a.inspectionDocName || !!a.inspectionFindings || (a.currentStage || '').includes('IA Report Received') || (a.inspectionStatus || '').includes('Submitted to TO')).length;
-        const total = (currentIaOfficer && currentIaOfficer !== 'ALL') ? (pending + scheduled + completed) : eligible.length;
-
-        document.getElementById('statIaPending').textContent = pending;
-        document.getElementById('statIaScheduled').textContent = scheduled;
-        document.getElementById('statIaCompleted').textContent = completed;
-        document.getElementById('statIaTotal').textContent = total;
-
-        document.getElementById('iaBadgePending').textContent = pending;
-        document.getElementById('iaBadgeScheduled').textContent = scheduled;
-        document.getElementById('iaBadgeCompleted').textContent = completed;
-        document.getElementById('iaBadgeAll').textContent = total;
-
-        document.getElementById('statIaPremiseDone').textContent = completed;
-        document.getElementById('statIaRecommended').textContent = completed;
-        document.getElementById('statIaDeficiencies').textContent = 0;
+        document.getElementById('iaBadgePending').textContent = pCount;
+        document.getElementById('iaBadgeReturnedTo').textContent = rCount;
+        document.getElementById('iaBadgeCompleted').textContent = cCount;
+        document.getElementById('iaBadgeAll').textContent = allCount;
       }
 
+      function updateNotifications() {
+        const notifs = WorkflowEngine.getNotifications('IA', currentDistrict);
+        const unread = notifs.filter(n => !n.read);
+        document.getElementById('iaNotifCountBadge').textContent = unread.length;
+
+        const banner = document.getElementById('iaLiveNotificationBanner');
+        if (unread.length > 0) {
+          const top = unread[0];
+          window.__latestIaNotifId = top.id;
+          document.getElementById('iaNotifBannerTitle').textContent = top.title;
+          document.getElementById('iaNotifBannerMsg').textContent = top.message;
+          const btn = document.getElementById('iaNotifBannerBtn');
+          btn.textContent = top.actionLabel || 'Open & Inspect';
+          btn.href = top.targetUrl || `review.html?arn=${encodeURIComponent(top.refNo)}&role=ia`;
+          btn.onclick = () => WorkflowEngine.markNotificationRead(top.id);
+          banner.classList.remove('d-none');
+        } else {
+          window.__latestIaNotifId = null;
+          banner.classList.add('d-none');
+        }
+
+        const listEl = document.getElementById('iaNotificationsListContainer');
+        if (listEl) {
+          listEl.innerHTML = notifs.length === 0
+            ? '<div class="text-muted small text-center py-2">No notifications yet.</div>'
+            : notifs.slice(0, 12).map(n => `
+              <div class="d-flex justify-content-between align-items-center gap-2 p-2 border-bottom ${n.read ? 'bg-white' : 'bg-warning-subtle bg-opacity-25'}">
+                <div>
+                  <div class="small fw-semibold text-dark">${n.title} ${!n.read ? '<span class="badge bg-warning text-dark ms-1">New</span>' : ''}</div>
+                  <div class="text-muted" style="font-size: 0.76rem;">${n.message} &bull; ${n.timestamp}</div>
+                </div>
+                <a href="${n.targetUrl || '#'}" class="btn btn-sm btn-outline-warning text-dark py-0 px-2 text-nowrap" onclick="WorkflowEngine.markNotificationRead('${n.id}')">${n.actionLabel || 'Open'}</a>
+              </div>
+            `).join('');
+        }
+      }
+
+      window.dismissLatestIaNotification = function () {
+        if (window.__latestIaNotifId) WorkflowEngine.markNotificationRead(window.__latestIaNotifId);
+        updateNotifications();
+      };
+      window.markAllIaNotificationsRead = function () {
+        WorkflowEngine.markAllNotificationsRead('IA', currentDistrict);
+        updateNotifications();
+      };
+      window.toggleIaNotificationsDrawer = function (force) {
+        const d = document.getElementById('iaNotificationsDrawer');
+        if (!d) return;
+        if (force === false) d.classList.add('d-none');
+        else d.classList.toggle('d-none');
+      };
+
       function updateCardHeader() {
-        const titleEl = document.getElementById('queueCardTitle');
-        const subEl = document.getElementById('queueCardSubtitle');
-        const circleLabel = (currentDistrict === 'ALL') ? 'All Circles' : currentDistrict + ' Circle';
-
-        const tabTitles = {
-          pending: { title: 'Pending Physical Inspection Queue', sub: 'Tour Operator, Travel Agent & Dealer applications assigned by Level 0 TO awaiting on-site physical inspection.' },
-          scheduled: { title: 'Visits Scheduled Queue', sub: 'Commercial premises with confirmed on-site inspection visit dates.' },
-          completed: { title: 'Inspection Reports Submitted Queue', sub: 'Completed on-site inspections submitted back to Level 0 TO for review and endorsement.' },
-          all: { title: 'All Circle Inspections Register', sub: 'Comprehensive register of all physical inspections in ' + circleLabel + '.' }
+        const circleLabel = (currentDistrict === 'ALL') ? 'All Circles' : `${currentDistrict} Circle`;
+        const titles = {
+          pending: { title: 'Pending Physical Inspection Queue', sub: 'Applications forwarded by TO awaiting inspection report upload & submission.' },
+          returnedByTo: { title: 'Returned by TO Queue', sub: 'Applications returned by TO Post-Inspection Verification requiring re-inspection or updated report.' },
+          completed: { title: 'Inspection Reports Submitted to TO', sub: 'Completed inspection reports forwarded to TO for post-inspection verification.' },
+          all: { title: 'All Inspection Cases', sub: `All TA/TO & Dealer inspection applications in ${circleLabel}.` }
         };
-
-        const activeInfo = tabTitles[currentTab] || tabTitles.all;
-        titleEl.innerHTML = `<i class="bi bi-list-check me-1 text-primary"></i> ${activeInfo.title} (${circleLabel})`;
-        subEl.textContent = activeInfo.sub;
+        const info = titles[currentTab] || titles.all;
+        document.getElementById('queueCardTitle').innerHTML = `<i class="bi bi-list-check me-1 text-primary"></i> ${info.title} (${circleLabel})`;
+        document.getElementById('queueCardSubtitle').textContent = info.sub;
       }
 
       function renderTable() {
@@ -681,80 +472,59 @@
         mobileContainer.innerHTML = '';
 
         const apps = getFilteredApplications();
-
         if (apps.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications found in this queue.</td></tr>`;
-          mobileContainer.innerHTML = `<div class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications found in this queue.</div>`;
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications waiting for IA inspection.</td></tr>`;
+          mobileContainer.innerHTML = `<div class="text-center py-4 text-muted"><i class="bi bi-inbox fs-3 d-block mb-1"></i>No applications waiting for IA inspection.</div>`;
           return;
         }
 
         apps.forEach(app => {
-          let inspBadge = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Pending Visit</span>';
-          let actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia" class="btn btn-sm btn-warning text-dark py-1 px-3 fw-bold"><i class="bi bi-clipboard2-check me-1"></i> Inspect</a>`;
-          let mobileActionLabel = 'Conduct Inspection';
+          const isMine = app.assignedRole === 'IA';
+          const isRet = isIaReturnedByTo(app);
+          let badge = '<span class="badge bg-success text-white">Report Submitted</span>';
+          if (isRet) badge = '<span class="badge bg-danger text-white">Returned by TO</span>';
+          else if (isMine) badge = '<span class="badge bg-warning text-dark">Pending Inspection</span>';
 
-          if (app.inspectionFindings) {
-            inspBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle">Report Submitted</span>';
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia" class="btn btn-sm btn-outline-success py-1 px-3 fw-semibold"><i class="bi bi-file-earmark-check me-1"></i> Report</a>`;
-            mobileActionLabel = 'View Inspection Report';
-          } else if (app.assignedRole !== 'IA') {
-            actionBtnHtml = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia" class="btn btn-sm btn-outline-primary py-1 px-3 fw-semibold"><i class="bi bi-eye me-1"></i> View</a>`;
-            mobileActionLabel = 'View Details';
-          } else if (app.inspectionDate) {
-            inspBadge = `<span class="badge bg-info-subtle text-info border border-info-subtle">${app.inspectionDate.split(',')[0]}</span>`;
+          let actions = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-outline-primary py-1 px-2.5 fw-semibold">View Report</a>`;
+          if (isMine) {
+            actions = `
+              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-warning text-dark py-1 px-2.5 fw-bold">
+                <i class="bi bi-file-earmark-arrow-up me-1"></i>Upload Report &amp; Submit to TO
+              </a>
+            `;
           }
 
-          // Desktop Row
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
-              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia" class="fw-bold font-monospace text-primary text-decoration-none">
-                ${app.refNo}
-              </a>
-              <div class="text-muted small text-truncate" style="max-width: 170px;">${app.shopAddress || 'Premise Check'}</div>
+              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia&district=${encodeURIComponent(app.district)}" class="fw-bold font-monospace text-primary text-decoration-none">${app.refNo}</a>
+              <div class="text-muted small">${app.district} Circle</div>
             </td>
             <td>
-              <div class="fw-semibold text-dark">${app.businessName || app.applicantName}</div>
-              <div class="text-muted" style="font-size: 0.75rem;"><i class="bi bi-person me-1"></i>${app.applicantName} &bull; ${app.phone || 'N/A'}</div>
+              <div class="fw-semibold text-dark text-truncate" style="max-width: 220px;">${app.businessName || app.applicantName}</div>
+              <div class="text-muted small">${app.applicantName}</div>
             </td>
+            <td><span class="badge bg-light text-dark border">${app.categoryName || app.category}</span></td>
+            <td><span class="text-dark small">${app.submittedDate ? app.submittedDate.split(',')[0] : ''}</span></td>
             <td>
-              <span class="badge bg-light text-dark border">${app.categoryName || app.category}</span>
-              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-block mt-1" style="font-size: 0.68rem; width: fit-content;">Physical Inspection</span>
+              ${badge}
+              <div class="text-muted small text-truncate" style="max-width: 200px;">${app.currentStage}</div>
             </td>
-            <td>
-              <span class="text-dark small">${app.submittedDate ? app.submittedDate.split(',')[0] : '28 Oct 2026'}</span>
-            </td>
-            <td>
-              ${inspBadge}
-              <div class="text-muted small text-truncate" style="font-size: 0.75rem; max-width: 170px;" title="${app.inspectionStatus || 'Scheduled'}">${app.inspectionStatus || 'Scheduled'}</div>
-            </td>
-            <td class="text-end text-nowrap">
-              ${actionBtnHtml}
-            </td>
+            <td class="text-end text-nowrap">${actions}</td>
           `;
           tbody.appendChild(tr);
 
-          // Mobile Card
           const card = document.createElement('div');
           card.className = 'gov-mobile-app-card';
           card.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia" class="fw-bold font-monospace text-primary text-decoration-none">
-                ${app.refNo}
-              </a>
-              ${inspBadge}
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold font-monospace text-primary">${app.refNo}</span>
+              ${badge}
             </div>
-            <div class="fw-semibold text-dark mb-1">${app.businessName || app.applicantName}</div>
-            <div class="small text-muted mb-2">${app.shopAddress || 'Physical Premise'}</div>
-            <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
-              <span><i class="bi bi-tag me-1"></i>${app.categoryName || app.category}</span>
-              <span><i class="bi bi-calendar-event me-1"></i>${app.submittedDate ? app.submittedDate.split(',')[0] : '28 Oct 2026'}</span>
-            </div>
-            <div class="d-flex justify-content-end mt-2">
-              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia" class="btn btn-sm btn-warning text-dark px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
-                <span>${mobileActionLabel}</span>
-                <i class="bi bi-arrow-right"></i>
-              </a>
+            <div class="fw-semibold text-dark small mb-1">${app.businessName || app.applicantName} &bull; ${app.categoryName}</div>
+            <div class="small text-muted mb-2">${app.currentStage}</div>
+            <div class="text-end">
+              <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=ia&district=${encodeURIComponent(app.district)}" class="btn btn-sm btn-warning text-dark py-1 px-3 fw-bold">Open Inspection Desk</a>
             </div>
           `;
           mobileContainer.appendChild(card);
@@ -764,56 +534,41 @@
       window.switchQueueTab = function (tab, e) {
         if (e) e.preventDefault();
         currentTab = tab;
-
         document.querySelectorAll('.officer-nav-link').forEach(l => l.classList.remove('active'));
         const navEl = document.getElementById('navTab-' + tab);
         if (navEl) navEl.classList.add('active');
-
         document.querySelectorAll('.officer-stat-card').forEach(c => c.classList.remove('active-kpi'));
-        const activeKpi = document.getElementById('kpiCard-' + tab);
-        if (activeKpi) activeKpi.classList.add('active-kpi');
-
+        const kpiEl = document.getElementById('kpiCard-' + tab);
+        if (kpiEl) kpiEl.classList.add('active-kpi');
         updateCardHeader();
         renderTable();
+      };
+
+      window.refreshDashboardData = function () {
+        updateDistrictContext();
+        updateMetrics();
+        updateNotifications();
+        updateCardHeader();
+        renderTable();
+      };
+
+      window.resetPrototypeData = function () {
+        if (confirm('Clear all test applications and notifications for a clean start?')) {
+          WorkflowEngine.resetToCleanState();
+          refreshDashboardData();
+        }
       };
 
       document.getElementById('iaSearchInput').addEventListener('input', renderTable);
       document.getElementById('iaCategoryFilter').addEventListener('change', renderTable);
-
-      window.resetPrototypeData = function () {
-        if (confirm('Reset prototype applications back to default seed state across all 6 circles?')) {
-          WorkflowEngine.resetToSeedData();
-          populateQuickArnSelect();
-          updateMetrics();
-          renderTable();
-          alert('Demo data restored to initial seed state.');
-        }
-      };
-
       const contrastBtn = document.getElementById('btn-contrast-toggle');
-      if (contrastBtn) {
-        contrastBtn.addEventListener('click', function () {
-          document.body.classList.toggle('high-contrast');
-        });
-      }
+      if (contrastBtn) contrastBtn.addEventListener('click', () => document.body.classList.toggle('high-contrast'));
 
-      // Initial Synchronous Execution
-      populateIaOfficerSelect();
-      updateDistrictContext();
-      populateQuickArnSelect();
-      updateMetrics();
-      updateCardHeader();
-      renderTable();
-
-      // Additional safety listener
-      window.addEventListener('load', function () {
-        updateDistrictContext();
-        populateQuickArnSelect();
-        updateMetrics();
-        updateCardHeader();
-        renderTable();
+      WorkflowEngine.subscribeRealtime(() => {
+        refreshDashboardData();
       });
 
+      refreshDashboardData();
     })();
   </script>
 </body>
