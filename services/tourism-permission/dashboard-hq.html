@@ -175,6 +175,10 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
+          <button type="button" class="btn btn-sm btn-outline-primary position-relative" onclick="toggleHqNotificationsDrawer()" title="Notification Centre">
+            <i class="bi bi-bell-fill"></i>
+            <span class="badge bg-danger rounded-pill ms-1" id="hqNotifCountBadge">0</span>
+          </button>
           <div class="text-end d-none d-sm-block">
             <div class="fw-bold text-dark small" id="hqOfficerName">Dr. Tshering Yangchen Lepcha</div>
             <div class="text-muted" style="font-size: 0.75rem;" id="hqOfficerDesignation">Additional Secretary (Tourism) &amp; HQ Administrator</div>
@@ -262,6 +266,37 @@
 
     <!-- Main Content Area -->
     <main id="main-hq-content" class="flex-grow-1 p-3 p-lg-4 bg-light overflow-x-hidden min-w-0">
+
+      <!-- Real-Time HQ Notification Banner -->
+      <div id="hqLiveNotificationBanner" class="alert alert-primary border border-primary shadow-xs mb-3 d-none" style="background: #eff6ff;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <div>
+              <strong id="hqNotifBannerTitle" class="text-primary-emphasis small d-block">Action Required</strong>
+              <span id="hqNotifBannerMsg" class="text-dark small"></span>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <a id="hqNotifBannerBtn" href="#" class="btn btn-sm btn-primary fw-semibold px-3">Review Application</a>
+            <button type="button" class="btn-close btn-sm" aria-label="Dismiss" onclick="dismissLatestHqNotification()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HQ Notification Drawer -->
+      <div id="hqNotificationsDrawer" class="card border shadow-sm mb-3 d-none">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+          <strong class="small text-dark"><i class="bi bi-bell-fill text-primary me-1"></i> HQ Notification Centre</strong>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="markAllHqNotificationsRead()">Mark All Read</button>
+            <button type="button" class="btn-close btn-sm" onclick="toggleHqNotificationsDrawer(false)"></button>
+          </div>
+        </div>
+        <div class="card-body p-2" id="hqNotificationsListContainer"></div>
+      </div>
       
       <!-- Welcome Officer Card -->
       <div class="card border-0 bg-white p-4 shadow-xs mb-3">
@@ -474,6 +509,42 @@
     </div>
   </div>
 
+  <!-- Modal: HQ Application Summary & Mark Under Review -->
+  <div class="modal fade" id="hqAppSummaryModal" tabindex="-1" aria-labelledby="hqAppSummaryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white py-3">
+          <h5 class="modal-title fs-6 fw-bold" id="hqAppSummaryModalLabel">
+            <i class="bi bi-file-earmark-text me-2"></i> Application Summary &bull; <span id="hqSumArn">-</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 small">
+          <div id="hqSummaryBodyContent"></div>
+          <div class="mt-3 pt-3 border-top" id="hqSummaryUnderReviewBox">
+            <label for="hqSummaryUnderReviewRemarks" class="form-label fw-bold text-dark">
+              HQ Review Comments / Remarks <span class="text-muted fw-normal">(Optional when marking Under Review)</span>:
+            </label>
+            <textarea class="form-control form-control-sm" id="hqSummaryUnderReviewRemarks" rows="2" placeholder="Enter HQ observation or review notes while marking Under Review..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2 d-flex justify-content-between flex-wrap gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold" onclick="downloadHqSummaryBundle()">
+            <i class="bi bi-download me-1"></i> Download Summary &amp; Attachments
+          </button>
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="button" class="btn btn-info text-white btn-sm fw-semibold" id="hqSumMarkUnderReviewBtn" onclick="confirmHqSummaryUnderReview()">
+              <i class="bi bi-eye-fill me-1"></i> Mark Under Review
+            </button>
+            <a href="#" id="hqSumOpenFullDetailsBtn" class="btn btn-primary btn-sm fw-semibold">
+              <i class="bi bi-box-arrow-up-right me-1"></i> Open Application Details
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Standard Government Footer -->
   <footer class="gov-footer py-4 bg-dark text-white mt-auto">
     <div class="container-fluid px-lg-4">
@@ -534,7 +605,7 @@
         ).length;
 
         const awaitingReview = hqRelevantApps.filter(app =>
-          app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq'
+          (app.currentStage === WorkflowEngine.STAGES.STAGE_4 || app.currentStage === WorkflowEngine.STAGES.STAGE_4_UNDER_REVIEW || app.currentStage === WorkflowEngine.STAGES.STAGE_4B) && app.assignedRole === 'hq'
         ).length;
 
         const underReview = hqRelevantApps.filter(app =>
@@ -584,7 +655,7 @@
         switch (currentHqTab) {
           case 'review':
             return hqRelevantApps.filter(app =>
-              app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq'
+              (app.currentStage === WorkflowEngine.STAGES.STAGE_4 || app.currentStage === WorkflowEngine.STAGES.STAGE_4_UNDER_REVIEW || app.currentStage === WorkflowEngine.STAGES.STAGE_4B) && app.assignedRole === 'hq'
             );
           case 'underReview':
             return hqRelevantApps.filter(app =>
@@ -647,32 +718,31 @@
         if (mobileContainer) mobileContainer.innerHTML = '';
 
         items.forEach(app => {
-          let stageBadgeClass = 'gov-status-pill gov-status-pill-submitted';
-          if (app.currentStage === WorkflowEngine.STAGES.STAGE_3 || app.currentStage === WorkflowEngine.STAGES.STAGE_8) stageBadgeClass = 'gov-status-pill gov-status-pill-submitted';
-          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_4) stageBadgeClass = 'gov-status-pill gov-status-pill-review';
-          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_9) stageBadgeClass = 'gov-status-pill gov-status-pill-review';
-          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_10) stageBadgeClass = 'gov-status-pill gov-status-pill-approved';
-          else if (app.currentStage === WorkflowEngine.STAGES.STAGE_11 || app.currentStage === WorkflowEngine.STAGES.STAGE_12) stageBadgeClass = 'gov-status-pill gov-status-pill-approved';
-
+          const sn = WorkflowEngine.getStatusAndNextAction(app, 'hq');
+          const sumBtn = `<button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5 fw-semibold" onclick="openHqSummaryModal('${app.refNo}')"><i class="bi bi-file-earmark-text me-1"></i>Application Summary</button>`;
           let hqActionBtn = '';
           let mobileActionLabel = 'Review';
           let mobileActionClass = 'btn-primary';
 
-          if (app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq') {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-primary py-1 px-3 fw-semibold"><i class="bi bi-check2-circle me-1"></i> Review &amp; Activate Payment</a>`;
-            mobileActionLabel = 'Review & Activate Payment';
+          if ((app.currentStage === WorkflowEngine.STAGES.STAGE_4 || app.currentStage === WorkflowEngine.STAGES.STAGE_4_UNDER_REVIEW) && app.assignedRole === 'hq') {
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-primary py-1 px-2.5 fw-semibold"><i class="bi bi-check2-circle me-1"></i> Review &amp; Upload Sheet</a>`;
+            mobileActionLabel = 'Review & Upload Sheet';
             mobileActionClass = 'btn-primary';
+          } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_4B && app.assignedRole === 'hq') {
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-warning text-dark py-1 px-2.5 fw-bold"><i class="bi bi-gavel me-1"></i> HQ Decision</a>`;
+            mobileActionLabel = 'HQ Decision';
+            mobileActionClass = 'btn-warning text-dark';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_8) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-warning text-dark py-1 px-3 fw-semibold"><i class="bi bi-hourglass-split me-1"></i> Awaiting Payment</a>`;
-            mobileActionLabel = 'Awaiting Citizen Payment';
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-warning text-dark py-1 px-2.5 fw-semibold"><i class="bi bi-hourglass-split me-1"></i> Awaiting Payment</a>`;
+            mobileActionLabel = 'Awaiting Payment';
             mobileActionClass = 'btn-outline-warning text-dark';
           } else if (app.currentStage === WorkflowEngine.STAGES.STAGE_9 || app.currentStage === WorkflowEngine.STAGES.STAGE_10) {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-3 fw-bold shadow-xs"><i class="bi bi-upload me-1"></i> Upload Sheet &amp; Final Approve</a>`;
-            mobileActionLabel = 'Upload Sheet & Final Approve';
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-success py-1 px-2.5 fw-bold shadow-xs"><i class="bi bi-patch-check-fill me-1"></i> Final Verify &amp; Issue</a>`;
+            mobileActionLabel = 'Final Verify & Issue';
             mobileActionClass = 'btn-success';
           } else {
-            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-secondary py-1 px-3"><i class="bi bi-eye me-1"></i> View</a>`;
-            mobileActionLabel = 'View Application Details';
+            hqActionBtn = `<a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm btn-outline-secondary py-1 px-2.5"><i class="bi bi-eye me-1"></i> View</a>`;
+            mobileActionLabel = 'View Details';
             mobileActionClass = 'btn-outline-secondary';
           }
 
@@ -687,7 +757,7 @@
             </td>
             <td>
               <span class="badge bg-light text-dark border"><i class="bi bi-geo-alt me-1 text-primary"></i>${app.district} Circle</span>
-              <div class="text-muted small mt-0.5" style="font-size: 0.75rem;"><i class="bi bi-inbox me-1"></i>Recd: ${app.dateReceivedAtHq || 'Recent'}</div>
+              <div class="text-muted small mt-0.5" style="font-size: 0.75rem;"><i class="bi bi-clock me-1"></i>${app.lastUpdated || 'Recent'}</div>
             </td>
             <td>
               <div class="fw-semibold text-dark">${app.applicantName}</div>
@@ -697,10 +767,14 @@
               <span class="badge bg-light text-dark border">${app.category}</span>
             </td>
             <td>
-              <span class="${stageBadgeClass}">${app.currentStage}</span>
+              <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span>
+              <div class="text-muted small mt-1" style="font-size: 0.74rem;"><strong>Next:</strong> ${sn.nextAction}</div>
             </td>
             <td class="text-end text-nowrap">
-              ${hqActionBtn}
+              <div class="d-inline-flex align-items-center gap-1.5 text-nowrap">
+                ${sumBtn}
+                ${hqActionBtn}
+              </div>
             </td>
           `;
           tbody.appendChild(tr);
@@ -718,11 +792,13 @@
               </div>
               <div class="fw-semibold text-dark mb-1">${app.applicantName}</div>
               <div class="small text-muted mb-2 text-truncate">${app.activityTitle}</div>
-              <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-2" style="font-size: 0.75rem;">
-                <span class="${stageBadgeClass}">${app.currentStage}</span>
+              <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mb-1" style="font-size: 0.75rem;">
+                <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span>
                 <span><i class="bi bi-tag me-1"></i>${app.category}</span>
               </div>
-              <div class="d-flex justify-content-end mt-2">
+              <div class="small text-muted mb-2" style="font-size: 0.73rem;"><strong>Next:</strong> ${sn.nextAction}</div>
+              <div class="d-flex justify-content-end gap-2 mt-2">
+                ${sumBtn}
                 <a href="review.html?arn=${encodeURIComponent(app.refNo)}&role=hq" class="btn btn-sm ${mobileActionClass} px-3 py-1.5 fw-semibold d-inline-flex align-items-center gap-1">
                   <span>${mobileActionLabel}</span>
                   <i class="bi bi-arrow-right"></i>
@@ -793,10 +869,129 @@
         });
       }
 
-      // Initial Execution
+      let activeSummaryArn = null;
+
+      window.openHqSummaryModal = function (arn) {
+        const app = WorkflowEngine.getApplication(arn);
+        if (!app) return;
+        activeSummaryArn = arn;
+        const sn = WorkflowEngine.getStatusAndNextAction(app, 'hq');
+        document.getElementById('hqSumArn').textContent = app.refNo;
+        document.getElementById('hqSumOpenFullDetailsBtn').href = `review.html?arn=${encodeURIComponent(app.refNo)}&role=hq`;
+
+        const canMarkUnderRev = (app.currentStage === WorkflowEngine.STAGES.STAGE_4 && app.assignedRole === 'hq');
+        document.getElementById('hqSumMarkUnderReviewBtn').classList.toggle('d-none', !canMarkUnderRev);
+        document.getElementById('hqSummaryUnderReviewBox').classList.toggle('d-none', !canMarkUnderRev);
+        document.getElementById('hqSummaryUnderReviewRemarks').value = '';
+
+        const docsHtml = (app.documents || []).map(d => `<li><i class="bi bi-file-earmark-check text-success me-1"></i><strong>${d.name}:</strong> ${d.fileName || 'Attached'}</li>`).join('') || '<li class="text-muted">No attachments uploaded</li>';
+        document.getElementById('hqSummaryBodyContent').innerHTML = `
+          <div class="row g-2 p-3 bg-light rounded border mb-3">
+            <div class="col-md-6"><strong>Applicant:</strong> ${app.applicantName}</div>
+            <div class="col-md-6"><strong>Category:</strong> ${app.category}</div>
+            <div class="col-md-6"><strong>District:</strong> ${app.district} Circle</div>
+            <div class="col-md-6"><strong>Submitted:</strong> ${app.submissionDate || '-'}</div>
+            <div class="col-md-6"><strong>Current Status:</strong> <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span></div>
+            <div class="col-md-6"><strong>Next Action:</strong> ${sn.nextAction}</div>
+            <div class="col-12"><strong>Subject:</strong> ${app.activityTitle}</div>
+            <div class="col-12 text-muted">${app.activityDescription || ''}</div>
+          </div>
+          <div class="mb-2 fw-bold text-dark">Supporting Documents (${(app.documents || []).length}):</div>
+          <ul class="list-unstyled ps-2 mb-0">${docsHtml}</ul>
+        `;
+        new bootstrap.Modal(document.getElementById('hqAppSummaryModal')).show();
+      };
+
+      window.downloadHqSummaryBundle = function () {
+        if (!activeSummaryArn) return;
+        alert('Downloading complete Application Summary & supporting attachments for ' + activeSummaryArn + '...');
+      };
+
+      window.confirmHqSummaryUnderReview = function () {
+        if (!activeSummaryArn) return;
+        const remarks = document.getElementById('hqSummaryUnderReviewRemarks').value.trim();
+        const res = WorkflowEngine.hqMarkUnderReview(activeSummaryArn, null, remarks);
+        const modal = bootstrap.Modal.getInstance(document.getElementById('hqAppSummaryModal'));
+        if (modal) modal.hide();
+        if (res.success) {
+          updateHqMetrics();
+          renderHqTable();
+          updateHqNotifications();
+        }
+      };
+
+      function updateHqNotifications() {
+        const notifs = WorkflowEngine.getNotifications('HQ', 'ALL');
+        const unread = notifs.filter(n => !n.read);
+        const badgeEl = document.getElementById('hqNotifCountBadge');
+        if (badgeEl) badgeEl.textContent = unread.length;
+
+        const banner = document.getElementById('hqLiveNotificationBanner');
+        if (banner) {
+          if (unread.length > 0) {
+            const top = unread[0];
+            window.__latestHqNotifId = top.id;
+            document.getElementById('hqNotifBannerTitle').textContent = top.title;
+            document.getElementById('hqNotifBannerMsg').textContent = top.message;
+            const btn = document.getElementById('hqNotifBannerBtn');
+            btn.textContent = top.actionLabel || 'Review Application';
+            btn.href = top.targetUrl || `review.html?arn=${encodeURIComponent(top.refNo)}&role=hq`;
+            btn.onclick = () => WorkflowEngine.markNotificationRead(top.id);
+            banner.classList.remove('d-none');
+          } else {
+            window.__latestHqNotifId = null;
+            banner.classList.add('d-none');
+          }
+        }
+
+        const listEl = document.getElementById('hqNotificationsListContainer');
+        if (listEl) {
+          listEl.innerHTML = notifs.length === 0
+            ? '<div class="text-muted small text-center py-2">No notifications yet.</div>'
+            : notifs.slice(0, 12).map(n => `
+              <div class="d-flex justify-content-between align-items-center gap-2 p-2 border-bottom ${n.read ? 'bg-white' : 'bg-primary-subtle bg-opacity-25'}">
+                <div>
+                  <div class="small fw-semibold text-dark">${n.title} ${!n.read ? '<span class="badge bg-primary ms-1">New</span>' : ''}</div>
+                  <div class="text-muted" style="font-size: 0.76rem;">${n.message} &bull; ${n.timestamp}</div>
+                </div>
+                <a href="${n.targetUrl || '#'}" class="btn btn-sm btn-outline-primary py-0 px-2 text-nowrap" onclick="WorkflowEngine.markNotificationRead('${n.id}')">${n.actionLabel || 'Open'}</a>
+              </div>
+            `).join('');
+        }
+      }
+
+      window.dismissLatestHqNotification = function () {
+        if (window.__latestHqNotifId) WorkflowEngine.markNotificationRead(window.__latestHqNotifId);
+        updateHqNotifications();
+      };
+      window.markAllHqNotificationsRead = function () {
+        WorkflowEngine.markAllNotificationsRead('HQ', 'ALL');
+        updateHqNotifications();
+      };
+      window.toggleHqNotificationsDrawer = function (force) {
+        const d = document.getElementById('hqNotificationsDrawer');
+        if (!d) return;
+        if (force === false) d.classList.add('d-none');
+        else d.classList.toggle('d-none');
+      };
+
+      // Initial Execution & Real-Time Sync
       updateHqMetrics();
       updateHqCardHeader();
       renderHqTable();
+      updateHqNotifications();
+
+      try {
+        const ch = new BroadcastChannel('tourism_permission_sync_v1');
+        ch.onmessage = function () { updateHqMetrics(); renderHqTable(); updateHqNotifications(); };
+      } catch (e) {}
+      window.addEventListener('storage', function (e) {
+        if (e.key === 'tourism_department_applications' || e.key === 'tourism_permission_submitted' || e.key === WorkflowEngine.NOTIFICATIONS_KEY) {
+          updateHqMetrics();
+          renderHqTable();
+          updateHqNotifications();
+        }
+      });
 
     })();
   </script>

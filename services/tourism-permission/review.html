@@ -664,23 +664,23 @@
       <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-success text-white py-3">
           <h5 class="modal-title fs-6 fw-bold" id="modalUploadLabel">
-            <i class="bi bi-file-earmark-arrow-up me-2"></i> Attach Headquarters Approval Sheet
+            <i class="bi bi-file-earmark-arrow-up me-2"></i> Upload External Approval Sheet
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4 small">
           <p class="text-muted mb-3">
-            Upload the externally prepared and signed Headquarters Sanction/Approval Sheet for application <strong
+            Upload the externally prepared and signed <strong>External Approval Sheet</strong> (required before marking for payment) for application <strong
               class="font-monospace text-primary modalArnDisplay">SK-TP-2026-APP-00481</strong>:
           </p>
           <div class="mb-3">
-            <label for="sheetFileInput" class="form-label fw-semibold text-dark">Choose Signed Approval Sheet
+            <label for="sheetFileInput" class="form-label fw-semibold text-dark">Choose Signed External Approval Sheet
               PDF:</label>
             <input type="file" class="form-control form-control-sm" id="sheetFileInput" accept=".pdf">
-            <div class="form-text">Simulated attachment of signed departmental sanction sheet.</div>
+            <div class="form-text">Simulated attachment of signed external departmental approval sheet.</div>
           </div>
           <div class="mb-3">
-            <label for="sheetCustomNameInput" class="form-label fw-semibold text-dark">Approval Sheet Title:</label>
+            <label for="sheetCustomNameInput" class="form-label fw-semibold text-dark">External Approval Sheet Title:</label>
             <input type="text" class="form-control form-control-sm" id="sheetCustomNameInput"
               value="HQ_Sanction_Approval_Sheet.pdf">
           </div>
@@ -724,6 +724,40 @@
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-warning text-dark btn-sm px-3 fw-bold" onclick="executeHqReturnToDto()">
             <i class="bi bi-arrow-return-left me-1"></i> Return to DTO
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6B: Unified Departmental Action Confirmation & Remarks Modal -->
+  <div class="modal fade" id="modalUnifiedActionRemarks" tabindex="-1" aria-labelledby="unifiedActionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-primary text-white py-3" id="unifiedActionHeader">
+          <h5 class="modal-title fs-6 fw-bold" id="unifiedActionModalLabel">
+            <i class="bi bi-chat-square-text me-2"></i> <span id="unifiedActionTitle">Confirm Action</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 small">
+          <div class="mb-3 p-2.5 bg-light border rounded">
+            <div class="text-muted" style="font-size: 0.72rem;">Selected Action:</div>
+            <strong class="text-dark" id="unifiedActionSummary">-</strong>
+          </div>
+          <div class="mb-2">
+            <label for="unifiedActionRemarksInput" class="form-label fw-bold text-dark">
+              Comments / Remarks <span id="unifiedActionReqStar" class="text-danger d-none">*</span>
+              <span id="unifiedActionOptTag" class="text-muted fw-normal">(Optional)</span>:
+            </label>
+            <textarea class="form-control" id="unifiedActionRemarksInput" rows="4" placeholder="Enter departmental observations, verification notes, or instructions..."></textarea>
+            <div class="invalid-feedback" id="unifiedActionFeedback">Mandatory remarks are required for this action.</div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm px-3 fw-bold" id="unifiedActionConfirmBtn" onclick="confirmUnifiedAction()">
+            <i class="bi bi-check2-circle me-1"></i> Confirm
           </button>
         </div>
       </div>
@@ -1323,12 +1357,18 @@
         // ROLE 1: TOURISM OFFICER (TO)
         // ------------------------------------------------------------
         if (role === 'to') {
-          if (currentApp.assignedRole === 'to' || [WorkflowEngine.STAGES.STAGE_2, WorkflowEngine.STAGES.STAGE_5B, WorkflowEngine.STAGES.STAGE_7].includes(st)) {
+          if (currentApp.assignedRole === 'to' || [WorkflowEngine.STAGES.STAGE_2, WorkflowEngine.STAGES.STAGE_5B, WorkflowEngine.STAGES.STAGE_5C, WorkflowEngine.STAGES.STAGE_7].includes(st)) {
+            const isOther = (WorkflowEngine.normalizeCategoryKey(currentApp.categoryKey || currentApp.category) === 'other');
             container.innerHTML = `
               <button type="button" class="btn btn-sm btn-primary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="executeToForward('dto')">
                 <i class="bi bi-send-check"></i><span>Verify &amp; Forward to DTO</span>
               </button>
               <div class="gov-action-subgroup pt-2 d-flex flex-column gap-1.5 w-100">
+                ${isOther ? `
+                  <button type="button" class="btn btn-sm btn-outline-info fw-semibold" onclick="executeToRedirectPrompt()">
+                    <i class="bi bi-signpost-split me-1"></i> Redirect Workflow / Category
+                  </button>
+                ` : ''}
                 <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalReturnToCitizen">
                   <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
                 </button>
@@ -1422,73 +1462,82 @@
         }
 
         // ------------------------------------------------------------
-        // ROLE 3: SINGLE HQ OFFICER (Initial Review + Final Approval)
+        // ROLE 3: HQ OFFICER (Step 4 Reviewing -> Step 5 Decision -> Step 7-9 Final Verification)
         // ------------------------------------------------------------
         if (role === 'hq') {
           const hasSheet = !!currentApp.approvalSheet;
-          const catKey = WorkflowEngine.normalizeCategoryKey(currentApp.categoryKey || currentApp.category);
-          const isDroneFree = (catKey === 'drone' || Number(currentApp.feeAmount || 0) === 0);
+          const isInitialHq = (st === WorkflowEngine.STAGES.STAGE_4 || st === WorkflowEngine.STAGES.STAGE_4_UNDER_REVIEW || st === WorkflowEngine.STAGES.STAGE_4B);
 
-          if (st === WorkflowEngine.STAGES.STAGE_4 && currentApp.assignedRole === 'hq') {
-            if (isDroneFree) {
-              container.innerHTML = `
-                <div class="alert alert-info small p-2 mb-2 w-100">
-                  <strong>Free Category (No Payment Required):</strong> Upload the HQ Approval Sheet and issue the Approval Letter directly.
-                </div>
-                <button type="button" class="btn btn-sm btn-primary w-100 mb-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                  <i class="bi bi-upload me-1"></i> ${hasSheet ? 'Replace Approval Sheet' : 'Upload Approval Sheet'}
-                </button>
-                <button type="button" class="btn btn-sm ${hasSheet ? 'btn-success' : 'btn-outline-secondary'} w-100 py-2 fw-bold mb-2" ${hasSheet ? '' : 'disabled'} onclick="executeHqCompleteFinalApproval()">
-                  <i class="bi bi-patch-check-fill me-1"></i> Complete Final Approval &amp; Issue Letter
-                </button>
-                <div class="gov-action-subgroup d-flex flex-column gap-1.5 w-100">
-                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
-                    <i class="bi bi-arrow-left-right me-1"></i> Return to DTO
-                  </button>
-                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="executeHqReturnToCitizenPrompt()">
-                    <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
-                  </button>
-                  <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="executeHqRejectPrompt()">
-                    <i class="bi bi-x-circle me-1"></i> Reject Application
-                  </button>
-                </div>
-              `;
-            } else {
-              container.innerHTML = `
-                <button type="button" class="btn btn-sm btn-success px-3 py-2 fw-bold w-100 mb-2" onclick="executeHqApproveForPayment()">
-                  <i class="bi bi-credit-card-2-front me-1"></i> Approve for Payment (Activate ${currentApp.fee || 'Fee'})
-                </button>
-                <div class="gov-action-subgroup d-flex flex-column gap-1.5 w-100">
-                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
-                    <i class="bi bi-arrow-left-right me-1"></i> Return to DTO
-                  </button>
-                  <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="executeHqReturnToCitizenPrompt()">
-                    <i class="bi bi-arrow-return-left me-1"></i> Return to Citizen
-                  </button>
-                  <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="executeHqRejectPrompt()">
-                    <i class="bi bi-x-circle me-1"></i> Reject Application
-                  </button>
-                </div>
-              `;
-            }
-          } else if (st === WorkflowEngine.STAGES.STAGE_8 && !isDroneFree) {
+          if (isInitialHq && currentApp.assignedRole === 'hq') {
+            const isUnderRev = (st === WorkflowEngine.STAGES.STAGE_4_UNDER_REVIEW || currentApp.status === WorkflowEngine.STATUSES.UNDER_HQ_REVIEW);
             container.innerHTML = `
-              <div class="alert alert-warning small p-3 w-100 mb-0">
-                <strong>Payment Activated</strong><br>
-                Awaiting citizen payment (${currentApp.fee || 'Fee'}). Once completed, the application will automatically return to this HQ Officer for Approval Sheet upload &amp; final approval.
+              <div class="alert ${hasSheet ? 'alert-success' : 'alert-info'} small p-2 mb-2 w-100">
+                ${hasSheet
+                  ? `<i class="bi bi-check-circle-fill me-1"></i><strong>External Approval Sheet Uploaded:</strong> ${currentApp.approvalSheet.fileName}. You may now Mark for Payment.`
+                  : (isUnderRev
+                      ? `<i class="bi bi-search me-1"></i><strong>Under Review by Headquarters:</strong> Download summary/attachments and upload the signed External Approval Sheet before marking for payment.`
+                      : `<i class="bi bi-info-circle me-1"></i><strong>HQ Review:</strong> Review/download Application Summary, mark Under Review, upload External Approval Sheet, then Mark for Payment.`)}
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary w-100 mb-2 fw-semibold" onclick="window.print()">
+                <i class="bi bi-file-earmark-arrow-down me-1"></i> Application Summary / Download
+              </button>
+              ${!isUnderRev ? `
+                <button type="button" class="btn btn-sm btn-info text-white w-100 mb-2 fw-semibold" onclick="executeHqMarkUnderReview()">
+                  <i class="bi bi-eye-fill me-1"></i> Mark Under Review
+                </button>
+              ` : ''}
+              <button type="button" class="btn btn-sm btn-primary w-100 mb-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
+                <i class="bi bi-upload me-1"></i> ${hasSheet ? 'Replace External Approval Sheet' : 'Upload External Approval Sheet'}
+              </button>
+              <button type="button" class="btn btn-sm ${hasSheet ? 'btn-success' : 'btn-outline-secondary'} px-3 py-2 fw-bold w-100 mb-2" ${hasSheet ? '' : 'disabled title="Upload External Approval Sheet first"'} onclick="executeHqApproveForPayment()">
+                <i class="bi bi-credit-card-2-front me-1"></i> Mark for Payment (${currentApp.fee || 'Free'})
+              </button>
+              ${st === WorkflowEngine.STAGES.STAGE_4 || st === WorkflowEngine.STAGES.STAGE_4_UNDER_REVIEW ? `
+                <button type="button" class="btn btn-sm btn-outline-primary w-100 mb-2 fw-semibold" onclick="executeHqForwardToDecision()">
+                  <i class="bi bi-send-check me-1"></i> Forward to HQ Decision
+                </button>
+              ` : ''}
+              <div class="gov-action-subgroup d-flex flex-column gap-1.5 w-100">
+                <button type="button" class="btn btn-sm btn-outline-secondary fw-semibold" onclick="executeHqReturnToToPrompt()">
+                  <i class="bi bi-arrow-left me-1"></i> Return to TO
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHqReturnToDto">
+                  <i class="bi bi-arrow-left-right me-1"></i> Return to DTO
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="executeHqReturnToCitizenPrompt()">
+                  <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="executeHqRejectPrompt()">
+                  <i class="bi bi-x-circle me-1"></i> Reject Application
+                </button>
               </div>
             `;
-          } else if (((st === WorkflowEngine.STAGES.STAGE_9 || st === WorkflowEngine.STAGES.STAGE_10) && currentApp.assignedRole === 'hq') || (st === WorkflowEngine.STAGES.STAGE_8 && isDroneFree)) {
+          } else if (st === WorkflowEngine.STAGES.STAGE_8) {
             container.innerHTML = `
-              <div class="alert alert-info small p-2 mb-2 w-100">
-                <strong>${isDroneFree ? 'Free Category (No Payment Required):' : 'Payment Completed!'}</strong> Upload the HQ Approval Sheet and complete final approval.
+              <div class="alert alert-warning small p-3 w-100 mb-0">
+                <strong>Awaiting Citizen Payment</strong><br>
+                External Approval Sheet is attached (${hasSheet ? currentApp.approvalSheet.fileName : 'Uploaded'}). Once citizen completes payment, the application will automatically move to HQ Final Verification.
               </div>
-              <button type="button" class="btn btn-sm btn-primary w-100 mb-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalUploadApprovalSheet">
-                <i class="bi bi-upload me-1"></i> ${hasSheet ? 'Replace Approval Sheet' : 'Upload Approval Sheet'}
+            `;
+          } else if ((st === WorkflowEngine.STAGES.STAGE_9 || st === WorkflowEngine.STAGES.STAGE_10) && currentApp.assignedRole === 'hq') {
+            container.innerHTML = `
+              <div class="alert alert-success small p-2 mb-2 w-100">
+                <strong>Payment Completed!</strong> External Approval Sheet (${hasSheet ? currentApp.approvalSheet.fileName : 'Attached'}) is retained. Perform final verification to issue the Approval Letter.
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary w-100 mb-2 fw-semibold" onclick="window.print()">
+                <i class="bi bi-download me-1"></i> Download Summary &amp; Documents
               </button>
-              <button type="button" class="btn btn-sm ${hasSheet ? 'btn-success' : 'btn-outline-secondary'} w-100 py-2 fw-bold" ${hasSheet ? '' : 'disabled'} onclick="executeHqCompleteFinalApproval()">
-                <i class="bi bi-patch-check-fill me-1"></i> Complete Final Approval &amp; Issue Letter
+              <button type="button" class="btn btn-sm btn-success w-100 py-2 fw-bold mb-2" onclick="executeHqCompleteFinalApproval()">
+                <i class="bi bi-patch-check-fill me-1"></i> Approve &amp; Issue Approval Letter
               </button>
+              <div class="gov-action-subgroup d-flex flex-column gap-1.5 w-100">
+                <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold" onclick="executeHqReturnToCitizenPrompt()">
+                  <i class="bi bi-arrow-return-left me-1"></i> Return to Applicant
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" onclick="executeHqRejectPrompt()">
+                  <i class="bi bi-x-circle me-1"></i> Reject Application
+                </button>
+              </div>
             `;
           } else if (st === WorkflowEngine.STAGES.STAGE_12) {
             container.innerHTML = `
@@ -1544,19 +1593,114 @@
       // ACTION EXECUTION HANDLERS
       // ==============================================================
 
+      // Unified Departmental Action Modal Controller (Mandatory for Return/Reject, Optional for Forward/Approve)
+      let pendingUnifiedAction = null;
+      let pendingUnifiedTarget = null;
+
+      function openUnifiedActionModal(actionType, targetVal) {
+        pendingUnifiedAction = actionType;
+        pendingUnifiedTarget = targetVal || null;
+        const cfgMap = {
+          to_forward: { title: 'Forward to DTO', summary: 'Verify Application & Forward to District Tourism Officer (DTO)', required: false, btnClass: 'btn-primary', headerClass: 'bg-primary text-white', defaultText: 'Verified by Tourism Officer (TO) and forwarded.' },
+          dto_activate_payment: { title: 'Approve & Activate Payment', summary: 'Approve initial DTO review and activate statutory payment for Citizen', required: false, btnClass: 'btn-success', headerClass: 'bg-success text-white', defaultText: 'Approved for payment activation by DTO.' },
+          dto_return_to: { title: 'Return to TO', summary: 'Return application to Tourism Officer (TO) for re-verification', required: true, btnClass: 'btn-warning text-dark', headerClass: 'bg-warning text-dark', defaultText: '' },
+          dto_final_approve: { title: 'Approve & Issue Certificate', summary: 'Grant DTO Final Approval and issue Permission Certificate', required: false, btnClass: 'btn-success', headerClass: 'bg-success text-white', defaultText: 'Final DTO approval granted and Approval Letter issued.' },
+          hq_under_review: { title: 'Mark Under Review', summary: 'Mark application as Under Review by Headquarters (reflected in Citizen Tracking)', required: false, btnClass: 'btn-info text-white', headerClass: 'bg-info text-white', defaultText: 'Application summary reviewed; marked Under Review by Headquarters.' },
+          hq_forward_decision: { title: 'Forward to HQ Decision', summary: 'Approve HQ Reviewing Officer scrutiny and forward to HQ Decision', required: false, btnClass: 'btn-primary', headerClass: 'bg-primary text-white', defaultText: 'HQ Reviewing Officer scrutiny completed. Forwarded to HQ Decision.' },
+          hq_mark_payment: { title: 'Mark for Payment', summary: 'External Approval Sheet verified — Mark for Payment and notify Citizen', required: false, btnClass: 'btn-success', headerClass: 'bg-success text-white', defaultText: 'External Approval Sheet verified; marked for online payment.' },
+          hq_final_approve: { title: 'Approve & Issue Approval Letter', summary: 'Complete HQ Final Verification and issue final Approval Letter', required: false, btnClass: 'btn-success', headerClass: 'bg-success text-white', defaultText: 'Final HQ verification completed and Approval Letter issued.' },
+          hq_return_to: { title: 'Return to TO', summary: 'Return application directly to Tourism Officer (TO)', required: true, btnClass: 'btn-warning text-dark', headerClass: 'bg-warning text-dark', defaultText: '' },
+          hq_return_citizen: { title: 'Return to Applicant', summary: 'Return application to Citizen Applicant for correction', required: true, btnClass: 'btn-warning text-dark', headerClass: 'bg-warning text-dark', defaultText: '' },
+          hq_reject: { title: 'Reject Application', summary: 'Reject and close application with statutory grounds', required: true, btnClass: 'btn-danger', headerClass: 'bg-danger text-white', defaultText: '' }
+        };
+        const cfg = cfgMap[actionType];
+        if (!cfg) return;
+
+        document.getElementById('unifiedActionTitle').textContent = cfg.title;
+        document.getElementById('unifiedActionSummary').textContent = cfg.summary;
+        document.getElementById('unifiedActionHeader').className = 'modal-header py-3 ' + cfg.headerClass;
+        const confirmBtn = document.getElementById('unifiedActionConfirmBtn');
+        confirmBtn.className = 'btn btn-sm px-3 fw-bold ' + cfg.btnClass;
+        confirmBtn.dataset.required = cfg.required ? '1' : '0';
+
+        document.getElementById('unifiedActionReqStar').classList.toggle('d-none', !cfg.required);
+        document.getElementById('unifiedActionOptTag').classList.toggle('d-none', cfg.required);
+
+        const ta = document.getElementById('unifiedActionRemarksInput');
+        ta.value = cfg.defaultText;
+        ta.classList.remove('is-invalid');
+        document.getElementById('unifiedActionFeedback').style.display = 'none';
+
+        new bootstrap.Modal(document.getElementById('modalUnifiedActionRemarks')).show();
+      }
+
+      window.confirmUnifiedAction = function () {
+        const ta = document.getElementById('unifiedActionRemarksInput');
+        const isReq = document.getElementById('unifiedActionConfirmBtn').dataset.required === '1';
+        const remarks = ta.value.trim();
+        if (isReq && !remarks) {
+          ta.classList.add('is-invalid');
+          document.getElementById('unifiedActionFeedback').style.display = 'block';
+          return;
+        }
+        ta.classList.remove('is-invalid');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalUnifiedActionRemarks'));
+        if (modal) modal.hide();
+
+        let res = { success: false, message: 'Unknown action' };
+        let toastMsg = 'Action completed.';
+        let toastType = 'success';
+
+        if (pendingUnifiedAction === 'to_forward') {
+          let droneUpdates = null;
+          if (currentApp && (currentApp.categoryKey === 'drone' || WorkflowEngine.normalizeCategoryKey(currentApp.category) === 'drone')) {
+            droneUpdates = {
+              approvedPeriod: document.getElementById('toDroneApprovedPeriod')?.value || '',
+              permissibleAltitudeAgl: document.getElementById('toDroneAltitudeAgl')?.value || '',
+              approvedFlyingArea: document.getElementById('toDroneFlyingArea')?.value || ''
+            };
+          }
+          res = WorkflowEngine.toForwardApplication(activeArn, null, pendingUnifiedTarget || 'dto', remarks, droneUpdates);
+          toastMsg = 'Application verified by TO & forwarded to DTO.';
+        } else if (pendingUnifiedAction === 'dto_activate_payment') {
+          res = WorkflowEngine.dtoActivatePayment(activeArn, null, remarks);
+          toastMsg = 'Payment activated for citizen.';
+        } else if (pendingUnifiedAction === 'dto_return_to') {
+          res = WorkflowEngine.dtoReturnToTo(activeArn, null, remarks);
+          toastMsg = 'Returned to TO with remarks.'; toastType = 'warning';
+        } else if (pendingUnifiedAction === 'dto_final_approve') {
+          res = WorkflowEngine.dtoFinalApproval(activeArn, null, remarks);
+          toastMsg = 'Final approval granted & Approval Letter issued!';
+        } else if (pendingUnifiedAction === 'hq_under_review') {
+          res = WorkflowEngine.hqMarkUnderReview(activeArn, null, remarks);
+          toastMsg = 'Application marked Under Review by Headquarters.'; toastType = 'info';
+        } else if (pendingUnifiedAction === 'hq_forward_decision') {
+          res = WorkflowEngine.hqForwardToDecision(activeArn, null, remarks);
+          toastMsg = 'Forwarded to HQ Decision stage.';
+        } else if (pendingUnifiedAction === 'hq_mark_payment') {
+          res = WorkflowEngine.hqApproveForPayment(activeArn, null, remarks);
+          toastMsg = 'Marked for payment; Citizen notified.';
+        } else if (pendingUnifiedAction === 'hq_final_approve') {
+          res = WorkflowEngine.hqCompleteFinalApproval(activeArn, null, remarks);
+          toastMsg = 'Final HQ approval granted & Approval Letter issued!';
+        } else if (pendingUnifiedAction === 'hq_return_to') {
+          res = WorkflowEngine.hqReturnToTo(activeArn, null, remarks);
+          toastMsg = 'Returned to TO with remarks.'; toastType = 'warning';
+        } else if (pendingUnifiedAction === 'hq_return_citizen') {
+          res = WorkflowEngine.hqReturnToCitizen(activeArn, null, remarks);
+          toastMsg = 'Returned to Applicant with remarks.'; toastType = 'warning';
+        } else if (pendingUnifiedAction === 'hq_reject') {
+          res = WorkflowEngine.hqRejectApplication(activeArn, null, remarks);
+          toastMsg = 'Application rejected by HQ Officer.'; toastType = 'danger';
+        }
+
+        if (res.success) { showToastAlert(toastMsg, toastType); loadAndRenderReviewScreen(); }
+        else showToastAlert(res.message, 'danger');
+      };
+
       // TO Actions
       window.executeToForward = function (target) {
-        let droneUpdates = null;
-        if (currentApp && (currentApp.categoryKey === 'drone' || WorkflowEngine.normalizeCategoryKey(currentApp.category) === 'drone')) {
-          droneUpdates = {
-            approvedPeriod: document.getElementById('toDroneApprovedPeriod')?.value || '',
-            permissibleAltitudeAgl: document.getElementById('toDroneAltitudeAgl')?.value || '',
-            approvedFlyingArea: document.getElementById('toDroneFlyingArea')?.value || ''
-          };
-        }
-        const res = WorkflowEngine.toForwardApplication(activeArn, null, target, 'Verified by Tourism Officer (TO) and forwarded.', droneUpdates);
-        if (res.success) { showToastAlert('Application verified by TO & forwarded.', 'success'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('to_forward', target);
       };
 
       // DTO Actions
@@ -1570,18 +1714,11 @@
       };
 
       window.executeDtoActivatePayment = function () {
-        if (!confirm('Approve initial review and activate payment for ' + activeArn + '?')) return;
-        const res = WorkflowEngine.dtoActivatePayment(activeArn, null, 'Approved for payment activation by DTO.');
-        if (res.success) { showToastAlert('Payment activated for citizen.', 'success'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('dto_activate_payment');
       };
 
       window.executeDtoReturnToTo = function () {
-        const remarks = prompt('Enter mandatory remarks for returning application to TO:');
-        if (!remarks || !remarks.trim()) return;
-        const res = WorkflowEngine.dtoReturnToTo(activeArn, null, remarks.trim());
-        if (res.success) { showToastAlert('Returned to TO.', 'warning'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('dto_return_to');
       };
 
       window.executeDtoReturnToCitizen = function () {
@@ -1606,10 +1743,7 @@
       };
 
       window.executeDtoFinalApproval = function () {
-        if (!confirm('Grant DTO Final Approval and issue Permission Certificate for ' + activeArn + '?')) return;
-        const res = WorkflowEngine.dtoFinalApproval(activeArn, null, 'Final DTO approval granted and Permission Certificate issued.');
-        if (res.success) { showToastAlert('Final approval granted! Certificate issued.', 'success'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('dto_final_approve');
       };
 
       window.openExtensionDecisionModal = function () {
@@ -1633,12 +1767,32 @@
         else showToastAlert(res.message, 'danger');
       };
 
-      // HQ Officer Actions
-      window.executeHqApproveForPayment = function () {
-        if (!confirm('Approve ' + activeArn + ' for payment activation? After citizen payment, this application will return to you for final approval.')) return;
-        const res = WorkflowEngine.hqApproveForPayment(activeArn, null, 'Approved for payment at HQ.');
-        if (res.success) { showToastAlert('Payment activated for citizen.', 'success'); loadAndRenderReviewScreen(); }
+      // TO Redirect Action (Other Permissions)
+      window.executeToRedirectPrompt = function () {
+        const target = prompt('Enter target category key to redirect (drone, expedition, trekking, events-fairs, satellite-phone):', 'events-fairs');
+        if (!target || !target.trim()) return;
+        const remarks = prompt('Enter mandatory remarks for redirecting this application:');
+        if (!remarks || !remarks.trim()) return;
+        const res = WorkflowEngine.toRedirectApplication(activeArn, null, target.trim(), remarks.trim());
+        if (res.success) { showToastAlert('Application redirected and forwarded to DTO.', 'info'); loadAndRenderReviewScreen(); }
         else showToastAlert(res.message, 'danger');
+      };
+
+      // HQ Officer Actions
+      window.executeHqMarkUnderReview = function () {
+        openUnifiedActionModal('hq_under_review');
+      };
+
+      window.executeHqForwardToDecision = function () {
+        openUnifiedActionModal('hq_forward_decision');
+      };
+
+      window.executeHqReturnToToPrompt = function () {
+        openUnifiedActionModal('hq_return_to');
+      };
+
+      window.executeHqApproveForPayment = function () {
+        openUnifiedActionModal('hq_mark_payment');
       };
 
       window.executeHqUploadApprovalSheet = function () {
@@ -1646,15 +1800,12 @@
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalUploadApprovalSheet'));
         if (modal) modal.hide();
         const res = WorkflowEngine.hqUploadApprovalSheet(activeArn, null, fileName, '1.4 MB');
-        if (res.success) { showToastAlert('HQ Approval Sheet attached.', 'success'); loadAndRenderReviewScreen(); }
+        if (res.success) { showToastAlert('External Approval Sheet attached.', 'success'); loadAndRenderReviewScreen(); }
         else showToastAlert(res.message, 'danger');
       };
 
       window.executeHqCompleteFinalApproval = function () {
-        if (!confirm('Complete final HQ approval and issue Approval Letter / Permission Certificate for ' + activeArn + '?')) return;
-        const res = WorkflowEngine.hqCompleteFinalApproval(activeArn, null, 'HQ final approval granted with Approval Sheet attached.');
-        if (res.success) { showToastAlert('Final HQ approval granted & Permission Certificate issued!', 'success'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('hq_final_approve');
       };
 
       window.executeHqReturnToDto = function () {
@@ -1668,19 +1819,11 @@
       };
 
       window.executeHqReturnToCitizenPrompt = function () {
-        const remarks = prompt('Enter mandatory return remarks for Citizen:');
-        if (!remarks || !remarks.trim()) return;
-        const res = WorkflowEngine.hqReturnToCitizen(activeArn, null, remarks.trim());
-        if (res.success) { showToastAlert('Returned to citizen.', 'warning'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('hq_return_citizen');
       };
 
       window.executeHqRejectPrompt = function () {
-        const remarks = prompt('Enter mandatory rejection justification:');
-        if (!remarks || !remarks.trim()) return;
-        const res = WorkflowEngine.hqRejectApplication(activeArn, null, remarks.trim());
-        if (res.success) { showToastAlert('Application rejected by HQ Officer.', 'danger'); loadAndRenderReviewScreen(); }
-        else showToastAlert(res.message, 'danger');
+        openUnifiedActionModal('hq_reject');
       };
 
       // Document Preview Modal

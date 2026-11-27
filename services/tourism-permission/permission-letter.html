@@ -437,19 +437,43 @@
           const extNote = (app.extensionRequest && app.extensionRequest.status === 'Approved')
             ? `<div class="mt-2 p-2 bg-success-subtle border border-success rounded small text-success-emphasis"><strong>Approved Extension:</strong> +${app.extensionRequest.requestedDays} Days (Valid until ${app.extensionRequest.revisedValidUntil}) &bull; Approved by DTO (${app.extensionRequest.decidedBy})</div>`
             : '';
+          const applicantOrg = app.organizationName ? `${app.applicantName} (${app.organizationName})` : (app.applicantName || '-');
+          const latLng = `${d.latitude || '-'}, ${d.longitude || '-'}`;
+          const approvedPeriodVal = app.validityLabel || d.approvedPeriod || '15 Days from approval';
           specHtml = `
-            <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">Ia. Drone Flight Clearance &amp; Remote Pilot Particulars</h2>
-            <table class="table table-bordered table-sm align-middle mb-0 gov-doc-meta-table">
+            <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">DETAILS OF APPROVED DRONE OPERATION</h2>
+            <table class="table table-bordered table-sm align-middle mb-3 gov-doc-meta-table">
+              <thead class="table-light">
+                <tr><th style="width: 8%;">Sl. No.</th><th style="width: 34%;">Particulars</th><th>Approved Details</th></tr>
+              </thead>
               <tbody>
-                <tr><th class="bg-light" style="width: 28%;">Purpose &amp; Location</th><td>${d.purpose || '-'} &bull; ${d.location || '-'} (${d.district || app.district})</td></tr>
-                <tr><th class="bg-light">Coordinates</th><td>${d.latitude || '-'}, ${d.longitude || '-'}</td></tr>
-                <tr><th class="bg-light">Drone Details</th><td>${d.makeModel || '-'} &bull; ${d.categoryWeight || '-'} &bull; UIN: <strong class="font-monospace">${d.uin || '-'}</strong></td></tr>
-                <tr><th class="bg-light">Remote Pilot Details</th><td>${d.remotePilotName || '-'} &bull; RPC No: <strong class="font-monospace">${d.remotePilotCertNo || '-'}</strong></td></tr>
-                <tr><th class="bg-light text-primary">Approved Date / Period</th><td><strong>${d.approvedPeriod || app.validityLabel || '15 Days from sanction'}</strong></td></tr>
-                <tr><th class="bg-light text-primary">Permissible Flying Altitude (AGL)</th><td><strong>${d.permissibleAltitudeAgl || 'As per DGCA &amp; TO limits'}</strong></td></tr>
-                <tr><th class="bg-light text-primary">Approved Flying Area</th><td><strong>${d.approvedFlyingArea || (d.location + ' Approved Perimeter')}</strong></td></tr>
+                <tr><td>1</td><th class="bg-light">Name of Applicant / Organisation</th><td>${applicantOrg}</td></tr>
+                <tr><td>2</td><th class="bg-light">Purpose of Drone Operation</th><td>${d.purpose || '-'}</td></tr>
+                <tr><td>3</td><th class="bg-light">Location of Operation</th><td>${d.location || '-'}</td></tr>
+                <tr><td>4</td><th class="bg-light">District</th><td>${d.district || app.district || '-'}</td></tr>
+                <tr><td>5</td><th class="bg-light">Latitude and Longitude</th><td>${latLng}</td></tr>
+                <tr><td>6</td><th class="bg-light">Drone Make and Model</th><td>${d.makeModel || '-'}</td></tr>
+                <tr><td>7</td><th class="bg-light">Drone Category / Weight</th><td>${d.categoryWeight || '-'}</td></tr>
+                <tr><td>8</td><th class="bg-light">Drone UIN</th><td class="font-monospace fw-bold">${d.uin || '-'}</td></tr>
+                <tr><td>9</td><th class="bg-light">Name of Remote Pilot</th><td>${d.remotePilotName || '-'}</td></tr>
+                <tr><td>10</td><th class="bg-light">Remote Pilot Certificate No.</th><td class="font-monospace fw-bold">${d.remotePilotCertNo || '-'}</td></tr>
+                <tr><td>11</td><th class="bg-light text-primary">Approved Date / Period</th><td><strong>${approvedPeriodVal}</strong></td></tr>
+                <tr><td>12</td><th class="bg-light text-primary">Permissible Flying Altitude (AGL)</th><td><strong>${d.permissibleAltitudeAgl || 'As per DGCA &amp; TO limits'}</strong></td></tr>
+                <tr><td>13</td><th class="bg-light text-primary">Approved Flying Area</th><td><strong>${d.approvedFlyingArea || ((d.location || 'Designated Zone') + ' Approved Perimeter')}</strong></td></tr>
               </tbody>
-            </table>${extNote}`;
+            </table>
+            ${extNote}
+            <div class="p-2.5 bg-light border rounded small mt-2">
+              <strong class="d-block text-dark mb-1">Drone Permission Conditions &amp; Validity:</strong>
+              <ol class="mb-1 ps-3" style="font-size: 0.75rem; line-height: 1.5;">
+                <li>No photography or videography of defence establishments, security installations, restricted areas or other sensitive locations without specific authorisation.</li>
+                <li>Adequate safety precautions must be maintained to prevent injury, damage to property or interference with manned aircraft.</li>
+                <li>The applicant must ensure the privacy and security of the general public are not compromised.</li>
+                <li>The competent authority reserves the right to suspend, modify or withdraw the permission at any time in the interest of public safety, security or administrative requirements.</li>
+                <li>The applicant must comply with the conditions stated in the approval letter while carrying out the proposed drone operation.</li>
+              </ol>
+              <div class="text-muted" style="font-size: 0.74rem;"><strong>Validity Clause:</strong> Valid for 15 days from approval, extendable by a maximum of 15 additional days only through DTO approval.</div>
+            </div>`;
         } else if (catKey === 'expedition') {
           const e = app.expeditionDetails || {};
           specHtml = `
@@ -479,7 +503,7 @@
               <tbody>
                 <tr><th class="bg-light" style="width: 28%;">Participants &amp; Composition</th><td>${t.participantCount || app.participantCount || 1} Trekker(s) (${t.composition || 'Indians only'})</td></tr>
                 <tr><th class="bg-light">Porters</th><td>${t.porterCount || 2} Porter(s)</td></tr>
-                <tr><th class="bg-light">Approved Validity Period</th><td><strong>${app.validityLabel || '10 Days'}</strong></td></tr>
+                <tr><th class="bg-light">Approved Validity Period</th><td><strong>${app.validityLabel || t.requestedDurationText || '-'}</strong></td></tr>
               </tbody>
             </table>
             <div class="p-2 border rounded bg-white">
@@ -503,14 +527,11 @@
               <strong>Associated IMF Letter of Recommendation:</strong> <span class="font-monospace text-primary">${imfDoc ? imfDoc.fileName : 'IMF_Recommendation_Letter.pdf'}</span>
             </div>`;
         } else if (catKey === 'events-fairs') {
-          const extNote = (app.extensionRequest && app.extensionRequest.status === 'Approved')
-            ? `<div class="mt-2 p-2 bg-success-subtle border border-success rounded small text-success-emphasis"><strong>Approved Extension:</strong> +${app.extensionRequest.requestedDays} Days (Valid until ${app.extensionRequest.revisedValidUntil}) &bull; Approved by DTO (${app.extensionRequest.decidedBy})</div>`
-            : '';
           specHtml = `
-            <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">Ia. Approved Validity Period</h2>
+            <h2 class="h6 fw-bold text-dark border-bottom pb-1 mb-2 text-uppercase" style="font-size: 0.775rem; letter-spacing: 0.5px;">Ia. Approved Event Schedule</h2>
             <div class="p-2.5 bg-light border rounded small">
-              <strong>Approved Validity:</strong> ${app.validityLabel || '1 Week (7 Days)'}
-            </div>${extNote}`;
+              <strong>Approved Date Range:</strong> ${app.validityLabel || (app.approvedStartDate ? (app.approvedStartDate + ' to ' + app.approvedExpiryDate) : 'As Approved')}
+            </div>`;
         }
         specBox.innerHTML = specHtml;
       }

@@ -74,6 +74,10 @@
         </div>
       </div>
       <div class="d-flex align-items-center gap-3">
+        <button type="button" class="btn btn-sm btn-outline-primary position-relative" onclick="toggleToNotificationsDrawer()" title="Notification Centre">
+          <i class="bi bi-bell-fill"></i>
+          <span class="badge bg-danger rounded-pill ms-1" id="toNotifCountBadge">0</span>
+        </button>
         <div class="text-end d-none d-sm-block">
           <div class="fw-bold text-dark small" id="toOfficerName">Phurba Tshering Bhutia</div>
           <div class="text-muted" style="font-size: 0.75rem;">Tourism Officer (TO)</div>
@@ -119,6 +123,37 @@
     </aside>
 
     <main id="main-to-content" class="flex-grow-1 p-3 p-lg-4" style="min-width: 0; overflow-x: hidden;">
+      <!-- Real-Time TO Notification Banner -->
+      <div id="toLiveNotificationBanner" class="alert alert-primary border border-primary shadow-xs mb-3 d-none" style="background: #eff6ff;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <div>
+              <strong id="toNotifBannerTitle" class="text-primary-emphasis small d-block">Action Required</strong>
+              <span id="toNotifBannerMsg" class="text-dark small"></span>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <a id="toNotifBannerBtn" href="#" class="btn btn-sm btn-primary fw-semibold px-3">Review Application</a>
+            <button type="button" class="btn-close btn-sm" aria-label="Dismiss" onclick="dismissLatestToNotification()"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TO Notification Drawer -->
+      <div id="toNotificationsDrawer" class="card border shadow-sm mb-3 d-none">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+          <strong class="small text-dark"><i class="bi bi-bell-fill text-primary me-1"></i> TO Notification Centre</strong>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="markAllToNotificationsRead()">Mark All Read</button>
+            <button type="button" class="btn-close btn-sm" onclick="toggleToNotificationsDrawer(false)"></button>
+          </div>
+        </div>
+        <div class="card-body p-2" id="toNotificationsListContainer"></div>
+      </div>
+
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
         <div>
           <h1 class="h4 fw-bold text-dark mb-0">Tourism Officer (TO) Initial Verification Desk</h1>
@@ -242,9 +277,9 @@
 
     function refresh() {
       const apps = getScopedApps();
-      const pending = apps.filter(a => a.assignedRole === 'to' && a.currentStage !== WorkflowEngine.STAGES.STAGE_5B);
-      const retDto = apps.filter(a => a.currentStage === WorkflowEngine.STAGES.STAGE_5B && a.assignedRole === 'to');
-      const fwd = apps.filter(a => [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_11, WorkflowEngine.STAGES.STAGE_12].includes(a.currentStage));
+      const pending = apps.filter(a => a.assignedRole === 'to' && a.currentStage !== WorkflowEngine.STAGES.STAGE_5B && a.currentStage !== WorkflowEngine.STAGES.STAGE_5C);
+      const retDto = apps.filter(a => (a.currentStage === WorkflowEngine.STAGES.STAGE_5B || a.currentStage === WorkflowEngine.STAGES.STAGE_5C) && a.assignedRole === 'to');
+      const fwd = apps.filter(a => [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_4B, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_11, WorkflowEngine.STAGES.STAGE_12].includes(a.currentStage));
       const retCit = apps.filter(a => a.status === WorkflowEngine.STATUSES.RETURNED);
 
       document.getElementById('badgePending').textContent = pending.length;
@@ -267,9 +302,9 @@
       const cat = document.getElementById('catFilter').value;
 
       let list = apps.filter(a => {
-        if (currentTab === 'pending') return a.assignedRole === 'to' && a.currentStage !== WorkflowEngine.STAGES.STAGE_5B;
-        if (currentTab === 'returnedDto') return a.currentStage === WorkflowEngine.STAGES.STAGE_5B && a.assignedRole === 'to';
-        if (currentTab === 'forwarded') return [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_11, WorkflowEngine.STAGES.STAGE_12].includes(a.currentStage);
+        if (currentTab === 'pending') return a.assignedRole === 'to' && a.currentStage !== WorkflowEngine.STAGES.STAGE_5B && a.currentStage !== WorkflowEngine.STAGES.STAGE_5C;
+        if (currentTab === 'returnedDto') return (a.currentStage === WorkflowEngine.STAGES.STAGE_5B || a.currentStage === WorkflowEngine.STAGES.STAGE_5C) && a.assignedRole === 'to';
+        if (currentTab === 'forwarded') return [WorkflowEngine.STAGES.STAGE_3, WorkflowEngine.STAGES.STAGE_4, WorkflowEngine.STAGES.STAGE_4B, WorkflowEngine.STAGES.STAGE_8, WorkflowEngine.STAGES.STAGE_9, WorkflowEngine.STAGES.STAGE_11, WorkflowEngine.STAGES.STAGE_12].includes(a.currentStage);
         if (currentTab === 'returnedCitizen') return a.status === WorkflowEngine.STATUSES.RETURNED;
         return true;
       });
@@ -289,18 +324,25 @@
       }
 
       list.forEach(app => {
+        const sn = WorkflowEngine.getStatusAndNextAction(app, 'to');
         const levelBadge = app.requiresHqVerification ? '<span class="badge bg-primary-subtle text-primary border ms-1">HQ</span>' : '<span class="badge bg-success-subtle text-success border ms-1">DTO</span>';
         const reviewUrl = `review.html?arn=${encodeURIComponent(app.refNo)}&role=to`;
         tbody.innerHTML += `
           <tr>
-            <td><strong class="font-monospace text-primary">${app.refNo}</strong></td>
+            <td>
+              <strong class="font-monospace text-primary">${app.refNo}</strong>
+              <div class="text-muted" style="font-size: 0.72rem;">${app.lastUpdated || app.submissionDate || ''}</div>
+            </td>
             <td>
               <div class="fw-semibold text-dark">${app.applicantName}</div>
               <div class="small text-muted text-truncate" style="max-width: 240px;">${app.activityTitle}</div>
             </td>
             <td><span class="small fw-semibold">${app.category}</span>${levelBadge}</td>
             <td><span class="badge bg-light text-dark border">${app.district}</span></td>
-            <td><span class="badge bg-info-subtle text-info border">${app.currentStage}</span></td>
+            <td>
+              <span class="badge ${sn.badgeClass}">${sn.statusLabel}</span>
+              <div class="text-muted small mt-1" style="font-size: 0.74rem;"><strong>Next:</strong> ${sn.nextAction}</div>
+            </td>
             <td class="text-end text-nowrap">
               <a href="${reviewUrl}" class="btn btn-sm btn-primary fw-semibold"><i class="bi bi-eye me-1"></i>Review Application</a>
             </td>
@@ -310,9 +352,10 @@
           <div class="gov-mobile-app-card p-3 border rounded mb-2 bg-white">
             <div class="d-flex justify-content-between align-items-center mb-1">
               <strong class="font-monospace text-primary small">${app.refNo}</strong>
-              <span class="badge bg-info-subtle text-info border small">${app.currentStage}</span>
+              <span class="badge ${sn.badgeClass} small">${sn.statusLabel}</span>
             </div>
             <div class="fw-semibold text-dark small">${app.applicantName} &bull; ${app.category}</div>
+            <div class="text-muted small mt-1"><strong>Next Action:</strong> ${sn.nextAction}</div>
             <div class="text-end mt-2">
               <a href="${reviewUrl}" class="btn btn-sm btn-primary">Review Application</a>
             </div>
@@ -321,12 +364,81 @@
       });
     }
 
-    function resetDemo() {
-      if (confirm('Reset prototype data to initial seed state?')) {
-        WorkflowEngine.resetToSeedData();
-        refresh();
+    function updateToNotifications() {
+      const notifs = WorkflowEngine.getNotifications('TO', 'ALL');
+      const unread = notifs.filter(n => !n.read);
+      const badgeEl = document.getElementById('toNotifCountBadge');
+      if (badgeEl) badgeEl.textContent = unread.length;
+
+      const banner = document.getElementById('toLiveNotificationBanner');
+      if (banner) {
+        if (unread.length > 0) {
+          const top = unread[0];
+          window.__latestToNotifId = top.id;
+          document.getElementById('toNotifBannerTitle').textContent = top.title;
+          document.getElementById('toNotifBannerMsg').textContent = top.message;
+          const btn = document.getElementById('toNotifBannerBtn');
+          btn.textContent = top.actionLabel || 'Review Application';
+          btn.href = top.targetUrl || `review.html?arn=${encodeURIComponent(top.refNo)}&role=to`;
+          btn.onclick = () => WorkflowEngine.markNotificationRead(top.id);
+          banner.classList.remove('d-none');
+        } else {
+          window.__latestToNotifId = null;
+          banner.classList.add('d-none');
+        }
+      }
+
+      const listEl = document.getElementById('toNotificationsListContainer');
+      if (listEl) {
+        listEl.innerHTML = notifs.length === 0
+          ? '<div class="text-muted small text-center py-2">No notifications yet.</div>'
+          : notifs.slice(0, 12).map(n => `
+            <div class="d-flex justify-content-between align-items-center gap-2 p-2 border-bottom ${n.read ? 'bg-white' : 'bg-primary-subtle bg-opacity-25'}">
+              <div>
+                <div class="small fw-semibold text-dark">${n.title} ${!n.read ? '<span class="badge bg-primary ms-1">New</span>' : ''}</div>
+                <div class="text-muted" style="font-size: 0.76rem;">${n.message} &bull; ${n.timestamp}</div>
+              </div>
+              <a href="${n.targetUrl || '#'}" class="btn btn-sm btn-outline-primary py-0 px-2 text-nowrap" onclick="WorkflowEngine.markNotificationRead('${n.id}')">${n.actionLabel || 'Open'}</a>
+            </div>
+          `).join('');
       }
     }
+
+    function dismissLatestToNotification() {
+      if (window.__latestToNotifId) WorkflowEngine.markNotificationRead(window.__latestToNotifId);
+      updateToNotifications();
+    }
+    function markAllToNotificationsRead() {
+      WorkflowEngine.markAllNotificationsRead('TO', 'ALL');
+      updateToNotifications();
+    }
+    function toggleToNotificationsDrawer(force) {
+      const d = document.getElementById('toNotificationsDrawer');
+      if (!d) return;
+      if (force === false) d.classList.add('d-none');
+      else d.classList.toggle('d-none');
+    }
+
+    function resetDemo() {
+      if (confirm('Reset prototype data to initial clean state?')) {
+        WorkflowEngine.resetToSeedData();
+        refresh();
+        updateToNotifications();
+      }
+    }
+
+    updateToNotifications();
+
+    try {
+      const ch = new BroadcastChannel('tourism_permission_sync_v1');
+      ch.onmessage = function () { refresh(); updateToNotifications(); };
+    } catch (e) {}
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'tourism_department_applications' || e.key === 'tourism_permission_submitted' || e.key === WorkflowEngine.NOTIFICATIONS_KEY) {
+        refresh();
+        updateToNotifications();
+      }
+    });
   </script>
 </body>
 </html>
