@@ -673,6 +673,9 @@
         let stageBadge = '<span class="badge bg-light text-dark border">' + app.stage + '</span>';
         if (app.status === AdventureWorkflowEngine.STATUSES.RETURNED) {
           stageBadge = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-arrow-return-left me-1"></i>Returned for Correction</span>';
+        } else if (app.deptReturnInfo && (app.currentRole === 'ta-hq' || app.currentRole === 'dist-ta')) {
+          stageBadge = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-arrow-return-left me-1"></i>Returned by ' + app.deptReturnInfo.fromRole + '</span>' +
+            '<div class="small text-warning-emphasis mt-1" style="font-size:0.74rem; max-width:260px;"><i class="bi bi-chat-left-text me-1"></i>' + app.deptReturnInfo.remarks + '</div>';
         } else if (app.stage.includes('IO') || app.stage.includes('Inspection')) {
           stageBadge = '<span class="badge bg-info-subtle text-info border border-info-subtle"><i class="bi bi-shield-check me-1"></i>IO Inspection</span>';
         }
